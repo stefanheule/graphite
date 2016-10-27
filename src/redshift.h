@@ -137,6 +137,7 @@ extern fixed_t height;
 extern fixed_t width;
 extern FFont* font_main;
 extern FFont* font_weather;
+extern FFont* font_icon;
 
 extern bool show_bluetooth_popup;
 extern AppTimer *timer_bluetooth_popup;

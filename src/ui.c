@@ -165,6 +165,11 @@ void background_update_proc(Layer *layer, GContext *ctx) {
     draw_rect(fctx, FRect(FPoint(0, height - pos_stepbar_height), FSize(pos_stepbar_endx, pos_stepbar_height)), color_accent);
     draw_circle(fctx, FPoint(pos_stepbar_endx, height), pos_stepbar_height, color_accent);
 
+    // heart rate
+    fixed_t fontsize_hr = REM(25);
+    draw_string(fctx, "1", FPoint(pos_weather_y, height - REM(13)), font_icon, GColorBlack, REM(15), GTextAlignmentLeft);
+    draw_string(fctx, "68/54", FPoint(pos_weather_y + REM(16), height - REM(26)), font_main, GColorBlack,fontsize_hr, GTextAlignmentLeft);
+
     bool bluetooth = bluetooth_connection_service_peek();
     // BatteryChargeState battery_state = battery_state_service_peek();
 

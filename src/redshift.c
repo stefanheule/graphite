@@ -85,6 +85,7 @@ fixed_t width;
 /** Fonts. */
 FFont* font_main;
 FFont* font_weather;
+FFont* font_icon;
 
 /** Is the bluetooth popup current supposed to be shown? */
 bool show_bluetooth_popup;
@@ -172,6 +173,7 @@ void window_load(Window *window) {
     // load fonts
     font_main = ffont_create_from_resource(RESOURCE_ID_MAIN_FFONT);
     font_weather = ffont_create_from_resource(RESOURCE_ID_WEATHER_FFONT);
+    font_icon = ffont_create_from_resource(RESOURCE_ID_ICON_FFONT);
 
     // initialize
     show_bluetooth_popup = false;
@@ -184,6 +186,7 @@ void window_unload(Window *window) {
     layer_destroy(layer_background);
     ffont_destroy(font_main);
     ffont_destroy(font_weather);
+    ffont_destroy(font_icon);
 }
 
 void subscribe_tick(bool also_unsubscribe) {
