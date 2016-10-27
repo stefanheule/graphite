@@ -12,6 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+#include <pebble.h>
 #include "ui.h"
 #include "redshift.h"
 
@@ -130,12 +131,6 @@ void background_update_proc(Layer *layer, GContext *ctx) {
     time_t now = time(NULL);
     struct tm *t = localtime(&now);
 
-    setlocale(LC_ALL, "");
-    strftime(buffer_1, sizeof(buffer_1), "%H:%M", t);
-    strftime(buffer_2, sizeof(buffer_1), "%A, %m/%d", t);
-    remove_leading_zero(buffer_1, sizeof(buffer_1));
-    remove_leading_zero(buffer_2, sizeof(buffer_1));
-
     // background
     GColor color_accent = GColorDarkCandyAppleRed;
     GColor color_background = GColorWhite;
@@ -145,22 +140,40 @@ void background_update_proc(Layer *layer, GContext *ctx) {
     draw_rect(fctx, FRect(bounds.origin, FSize(width, REM(30))), color_accent);
     fixed_t fontsize_weather = REM(25);
     fixed_t pos_weather_y = REM(5);
-    draw_weather(fctx, "a", "21°", FPoint(width/2, pos_weather_y), color_background, fontsize_weather, GTextAlignmentCenter);
-    draw_string(fctx, "9°", FPoint(pos_weather_y, pos_weather_y), font_main, color_background, fontsize_weather, GTextAlignmentLeft);
-    draw_string(fctx, "28°", FPoint(width - pos_weather_y, pos_weather_y), font_main, color_background, fontsize_weather, GTextAlignmentRight);
+    bool weather_is_on = config_weather_refresh > 0;
+    bool weather_is_available = weather.timestamp > 0;
+    bool weather_is_outdated = (time(NULL) - weather.timestamp) > (config_weather_expiration * 60);
+    bool show_weather = weather_is_on && weather_is_available && !weather_is_outdated;
+    if (show_weather) {
+        if (weather.failed) {
+            snprintf(buffer_1, 10, "%c", weather.icon);
+            snprintf(buffer_2, 10, "%d", weather.temperature);
+        } else {
+            snprintf(buffer_1, 10, "%c", weather.icon);
+            snprintf(buffer_2, 10, "%d°", weather.temperature);
+        }
+        draw_weather(fctx, buffer_1, buffer_2, FPoint(width/2, pos_weather_y), color_background, fontsize_weather, GTextAlignmentCenter);
+        draw_string(fctx, "9°", FPoint(pos_weather_y + REM(2), pos_weather_y), font_main, color_background, fontsize_weather, GTextAlignmentLeft);
+        draw_string(fctx, "28°", FPoint(width - pos_weather_y, pos_weather_y), font_main, color_background, fontsize_weather, GTextAlignmentRight);
+    }
 
     // time
+    setlocale(LC_ALL, "");
+    strftime(buffer_1, sizeof(buffer_1), "%H:%M", t);
+    remove_leading_zero(buffer_1, sizeof(buffer_1));
     fixed_t fontsize_time = (fixed_t)(width / 2.2);
     draw_string(fctx, buffer_1, FPoint(width / 2, height / 2 - fontsize_time / 2), font_main, GColorBlack, fontsize_time, GTextAlignmentCenter);
 
     // date
+    strftime(buffer_1, sizeof(buffer_1), "%A, %m/%d", t);
+    remove_leading_zero(buffer_1, sizeof(buffer_1));
     fixed_t fontsize_date = (fixed_t)(width / 8);
-    draw_string(fctx, buffer_2, FPoint(width / 2, height / 2 + fontsize_time / 3), font_main, color_accent, fontsize_date, GTextAlignmentCenter);
+    draw_string(fctx, buffer_1, FPoint(width / 2, height / 2 + fontsize_time / 3), font_main, color_accent, fontsize_date, GTextAlignmentCenter);
 
     // step bar
-    int steps = 2300;
+    int steps = health_service_sum_today(HealthMetricStepCount);
     int steps_goal = 10000;
-    fixed_t pos_stepbar_height = REM(4);
+    fixed_t pos_stepbar_height = REM(5);
     fixed_t pos_stepbar_endx = width * steps / steps_goal;
     draw_rect(fctx, FRect(FPoint(0, height - pos_stepbar_height), FSize(pos_stepbar_endx, pos_stepbar_height)), color_accent);
     draw_circle(fctx, FPoint(pos_stepbar_endx, height), pos_stepbar_height, color_accent);
@@ -170,10 +183,22 @@ void background_update_proc(Layer *layer, GContext *ctx) {
     draw_string(fctx, "1", FPoint(pos_weather_y, height - REM(13)), font_icon, GColorBlack, REM(15), GTextAlignmentLeft);
     draw_string(fctx, "68/54", FPoint(pos_weather_y + REM(16), height - REM(26)), font_main, GColorBlack,fontsize_hr, GTextAlignmentLeft);
 
-    bool bluetooth = bluetooth_connection_service_peek();
-    // BatteryChargeState battery_state = battery_state_service_peek();
+    // battery logo (not scaled, to allow pixel-aligned rects)
+    BatteryChargeState battery_state = battery_state_service_peek();
+    GColor color_battery = GColorDarkGray;
+    fixed_t bat_thickness = PIX(2);
+    fixed_t bat_height = PIX(18);
+    fixed_t bat_width = PIX(12);
+    fixed_t bat_sep = PIX(3);
+    bool bat_avoid_stepbar = width - (width * steps / steps_goal + pos_stepbar_height) < 2*bat_sep + bat_width;
+    FPoint bat_origin = FPoint(width - bat_sep - bat_width, height - bat_sep - bat_height - (bat_avoid_stepbar ? pos_stepbar_height : 0));
+    draw_rect(fctx, FRect(bat_origin, FSize(bat_width, bat_height)), color_battery);
+    draw_rect(fctx, FRect(FPoint(bat_origin.x + bat_thickness, bat_origin.y + bat_thickness), FSize(bat_width - 2*bat_thickness, bat_height - 2*bat_thickness)), color_background);
+    draw_rect(fctx, FRect(FPoint(bat_origin.x + 2*bat_thickness, bat_origin.y + 2*bat_thickness + (100 - battery_state.charge_percent) * bat_height / 100), FSize(bat_width - 4*bat_thickness, battery_state.charge_percent * bat_height / 100 - 4*bat_thickness)), color_battery);
+    draw_rect(fctx, FRect(FPoint(bat_origin.x + bat_thickness*3/2, bat_origin.y - bat_thickness), FSize(bat_width - 3*bat_thickness, bat_thickness)), color_battery);
 
     // draw the bluetooth popup
+    bool bluetooth = bluetooth_connection_service_peek();
     bluetooth_popup(fctx, ctx, bluetooth);
 
     // end fctx

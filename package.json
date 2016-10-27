@@ -82,7 +82,7 @@
       "MSG_KEY_WEATHER_FAILED": 104
     },
     "enableMultiJS": false,
-    "displayName": "Obsidian",
+    "displayName": "Redshift",
     "watchapp": {
       "onlyShownOnCommunication": false,
       "hiddenApp": false,

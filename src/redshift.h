@@ -166,11 +166,12 @@ extern AppTimer * weather_request_timer;
 // 100 + an upper bound for all the configuration items we have
 #define REDSHIFT_INBOX_SIZE (100 + (1 + (REDSHIFT_N_CONFIG) * (7+4)))
 
+#define PIX(x) (INT_TO_FIXED(x))
 // returns a fixed_t value that corresponds to a relatively scaled version, where 1 rem is about 1/200 of the screen width
 #ifdef PBL_PLATFORM_EMERY
 #define REM(x) (INT_TO_FIXED(x))
 #else
-#define REM(x) (INT_TO_FIXED(x) * 144 / 200)
+#define REM(x) ((fixed_t)(INT_TO_FIXED(x) * 144 / 200))
 #endif
 
 
