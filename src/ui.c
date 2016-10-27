@@ -131,9 +131,17 @@ void background_update_proc(Layer *layer, GContext *ctx) {
     time_t now = time(NULL);
     struct tm *t = localtime(&now);
 
+    // config
+//    GColor color_accent = GColorDarkCandyAppleRed;
+//    GColor color_background = GColorWhite;
+//    GColor color_main = GColorBlack;
+//    GColor color_battery = GColorDarkGray;
+    GColor color_accent = GColorVividCerulean;
+    GColor color_background = GColorBlack;
+    GColor color_main = GColorWhite;
+    GColor color_battery = GColorLightGray;
+
     // background
-    GColor color_accent = GColorDarkCandyAppleRed;
-    GColor color_background = GColorWhite;
     draw_rect(fctx, bounds, color_background);
 
     // top bar
@@ -159,10 +167,10 @@ void background_update_proc(Layer *layer, GContext *ctx) {
 
     // time
     setlocale(LC_ALL, "");
-    strftime(buffer_1, sizeof(buffer_1), "%H:%M", t);
+    strftime(buffer_1, sizeof(buffer_1), "%I:%M", t);
     remove_leading_zero(buffer_1, sizeof(buffer_1));
     fixed_t fontsize_time = (fixed_t)(width / 2.2);
-    draw_string(fctx, buffer_1, FPoint(width / 2, height / 2 - fontsize_time / 2), font_main, GColorBlack, fontsize_time, GTextAlignmentCenter);
+    draw_string(fctx, buffer_1, FPoint(width / 2, height / 2 - fontsize_time / 2), font_main, color_main, fontsize_time, GTextAlignmentCenter);
 
     // date
     strftime(buffer_1, sizeof(buffer_1), "%A, %m/%d", t);
@@ -180,12 +188,11 @@ void background_update_proc(Layer *layer, GContext *ctx) {
 
     // heart rate
     fixed_t fontsize_hr = REM(25);
-    draw_string(fctx, "1", FPoint(pos_weather_y, height - REM(13)), font_icon, GColorBlack, REM(15), GTextAlignmentLeft);
-    draw_string(fctx, "68/54", FPoint(pos_weather_y + REM(16), height - REM(26)), font_main, GColorBlack,fontsize_hr, GTextAlignmentLeft);
+    draw_string(fctx, "1", FPoint(pos_weather_y, height - REM(13)), font_icon, color_main, REM(15), GTextAlignmentLeft);
+    draw_string(fctx, "68/54", FPoint(pos_weather_y + REM(16), height - REM(26)), font_main, color_main,fontsize_hr, GTextAlignmentLeft);
 
     // battery logo (not scaled, to allow pixel-aligned rects)
     BatteryChargeState battery_state = battery_state_service_peek();
-    GColor color_battery = GColorDarkGray;
     fixed_t bat_thickness = PIX(2);
     fixed_t bat_height = PIX(18);
     fixed_t bat_width = PIX(12);
