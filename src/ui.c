@@ -145,7 +145,8 @@ void background_update_proc(Layer *layer, GContext *ctx) {
     draw_rect(fctx, bounds, color_background);
 
     // top bar
-    draw_rect(fctx, FRect(bounds.origin, FSize(width, REM(30))), color_accent);
+    fixed_t topbar_height = REM(30);
+    draw_rect(fctx, FRect(bounds.origin, FSize(width, topbar_height)), color_accent);
     fixed_t fontsize_weather = REM(25);
     fixed_t pos_weather_y = REM(5);
     bool weather_is_on = config_weather_refresh > 0;
@@ -164,6 +165,20 @@ void background_update_proc(Layer *layer, GContext *ctx) {
         draw_string(fctx, "9°", FPoint(pos_weather_y + REM(2), pos_weather_y), font_main, color_background, fontsize_weather, GTextAlignmentLeft);
         draw_string(fctx, "28°", FPoint(width - pos_weather_y, pos_weather_y), font_main, color_background, fontsize_weather, GTextAlignmentRight);
     }
+
+    // rain preview
+    uint8_t percipProb[] = {
+            63, 63, 63, 62, 62, 66, 70, 62, 66, 63, 62, 65, 59, 69, 73, 72, 70, 69, 67, 64, 56, 16, 0, 04, 15, 21, 28, 32, 30, 23, 18, 17, 17, 18, 19, 21, 21, 16, 10, 05, 03, 01, 0, 0, 0, 03, 13, 29, 42
+    };
+    int nHours = 24;
+    fixed_t perc_sep = REM(2);
+    fixed_t perc_w = (width - (nHours + 1) * perc_sep) / nHours;
+    fixed_t perc_maxheight = REM(20);
+    for (int i = 0; i < nHours; i++) {
+        FRect rect = FRect(FPoint(perc_sep + i * (perc_sep + perc_w), topbar_height), FSize(perc_w, perc_maxheight * percipProb[(nHours <= 24 ? 10 : 0)+i] / 100));
+        draw_rect(fctx, rect, color_main);
+    }
+
 
     // time
     setlocale(LC_ALL, "");

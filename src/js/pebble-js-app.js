@@ -256,9 +256,9 @@ function fetchWeather(latitude, longitude) {
 
     /** Callback on successful determination of weather conditions. */
     var success = function(temp, icon) {
-        if (+readConfig("CONFIG_WEATHER_UNIT_LOCAL") == 2) {
-            temp = temp * 9.0/5.0 + 32.0;
-        }
+        // if (+readConfig("CONFIG_WEATHER_UNIT_LOCAL") == 2) {
+        //     temp = temp * 9.0/5.0 + 32.0;
+        // }
         temp = Math.round(temp);
         if (!icon) {
             icon = "a";
