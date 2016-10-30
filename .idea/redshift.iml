@@ -2,15 +2,15 @@
 <module type="CPP_MODULE" version="4">
   <component name="NewModuleRootManager">
     <content url="file://$MODULE_DIR$">
-      <sourceFolder url="file://$MODULE_DIR$/src/ui-util.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src/redshift.c" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/ui.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/ui-util.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src/settings.h" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/src/ui.c" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/src/settings.c" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src/ui-util.c" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/settings.c" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src/config.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src/redshift.h" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/src/ui.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/ui.c" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/CMakeLists.txt" isTestSource="false" />
     </content>
     <orderEntry type="sourceFolder" forTests="false" />
@@ -21,14 +21,14 @@
           <root url="file:///usr/lib/gcc/x86_64-linux-gnu/5/include-fixed" />
           <root url="file:///usr/include" />
           <root url="file:///usr/local/include" />
-          <root url="file://$USER_HOME$/.pebble-sdk/SDKs/current/sdk-core/pebble/emery/include" />
+          <root url="file://$USER_HOME$/.pebble-sdk/SDKs/current/sdk-core/pebble/basalt/include" />
         </CLASSES>
         <SOURCES>
           <root url="file:///usr/lib/gcc/x86_64-linux-gnu/5/include" />
           <root url="file:///usr/lib/gcc/x86_64-linux-gnu/5/include-fixed" />
           <root url="file:///usr/include" />
           <root url="file:///usr/local/include" />
-          <root url="file://$USER_HOME$/.pebble-sdk/SDKs/current/sdk-core/pebble/emery/include" />
+          <root url="file://$USER_HOME$/.pebble-sdk/SDKs/current/sdk-core/pebble/basalt/include" />
         </SOURCES>
       </library>
     </orderEntry>

@@ -16,5 +16,5 @@ set(SOURCE_FILES
 
 add_executable(redshift ${SOURCE_FILES})
 
-include_directories(~/.pebble-sdk/SDKs/4.0.1/sdk-core/pebble/basalt/include)
+include_directories(~/.pebble-sdk/SDKs/current/sdk-core/pebble/basalt/include)
 include_directories(~/dev/projects/redshift/node_modules/pebble-fctx/dist/include)
