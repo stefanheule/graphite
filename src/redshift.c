@@ -81,6 +81,8 @@ char buffer_2[30];
 /** The height and width of the watch */
 fixed_t height;
 fixed_t width;
+fixed_t height_full;
+fixed_t width_full;
 
 /** Fonts. */
 FFont* font_main;

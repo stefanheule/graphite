@@ -126,6 +126,9 @@ void background_update_proc(Layer *layer, GContext *ctx) {
     FRect bounds = g2frect(layer_get_unobstructed_bounds(layer_background));
     height = bounds.size.h;
     width = bounds.size.w;
+    FRect bounds_full = g2frect(layer_get_bounds(layer_background));
+    height_full = bounds_full.size.h;
+    width_full = bounds_full.size.w;
 
     // get current time
     time_t now = time(NULL);
@@ -179,7 +182,6 @@ void background_update_proc(Layer *layer, GContext *ctx) {
         draw_rect(fctx, rect, color_main);
     }
 
-
     // time
     setlocale(LC_ALL, "");
     strftime(buffer_1, sizeof(buffer_1), "%I:%M", t);
@@ -216,7 +218,7 @@ void background_update_proc(Layer *layer, GContext *ctx) {
     FPoint bat_origin = FPoint(width - bat_sep - bat_width, height - bat_sep - bat_height - (bat_avoid_stepbar ? pos_stepbar_height : 0));
     draw_rect(fctx, FRect(bat_origin, FSize(bat_width, bat_height)), color_battery);
     draw_rect(fctx, FRect(FPoint(bat_origin.x + bat_thickness, bat_origin.y + bat_thickness), FSize(bat_width - 2*bat_thickness, bat_height - 2*bat_thickness)), color_background);
-    draw_rect(fctx, FRect(FPoint(bat_origin.x + 2*bat_thickness, bat_origin.y + 2*bat_thickness + (100 - battery_state.charge_percent) * bat_height / 100), FSize(bat_width - 4*bat_thickness, battery_state.charge_percent * bat_height / 100 - 4*bat_thickness)), color_battery);
+    draw_rect(fctx, FRect(FPoint(bat_origin.x + 2*bat_thickness, bat_origin.y + 2*bat_thickness + (100 - battery_state.charge_percent) * (bat_height - 4*bat_thickness) / 100), FSize(bat_width - 4*bat_thickness, battery_state.charge_percent * (bat_height - 4*bat_thickness) / 100)), color_battery);
     draw_rect(fctx, FRect(FPoint(bat_origin.x + bat_thickness*3/2, bat_origin.y - bat_thickness), FSize(bat_width - 3*bat_thickness, bat_thickness)), color_battery);
 
     // draw the bluetooth popup

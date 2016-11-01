@@ -135,6 +135,8 @@ extern char buffer_1[30];
 extern char buffer_2[30];
 extern fixed_t height;
 extern fixed_t width;
+extern fixed_t height_full;
+extern fixed_t width_full;
 extern FFont* font_main;
 extern FFont* font_weather;
 extern FFont* font_icon;
