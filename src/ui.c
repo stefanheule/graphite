@@ -140,17 +140,19 @@ void background_update_proc(Layer *layer, GContext *ctx) {
 //    GColor color_main = GColorBlack;
 //    GColor color_battery = GColorDarkGray;
     GColor color_accent = GColorVividCerulean;
+    GColor color_accent2 = GColorBlue;
     GColor color_background = GColorBlack;
     GColor color_main = GColorWhite;
+    GColor color_main2 = GColorLightGray;
     GColor color_battery = GColorLightGray;
 
     // background
-    draw_rect(fctx, bounds, color_background);
+    draw_rect(fctx, bounds_full, color_background);
 
     // top bar
-    fixed_t topbar_height = REM(30);
+    fixed_t fontsize_weather = REM(27);
+    fixed_t topbar_height = fontsize_weather + REM(4);
     draw_rect(fctx, FRect(bounds.origin, FSize(width, topbar_height)), color_accent);
-    fixed_t fontsize_weather = REM(25);
     fixed_t pos_weather_y = REM(5);
     bool weather_is_on = config_weather_refresh > 0;
     bool weather_is_available = weather.timestamp > 0;
@@ -173,13 +175,26 @@ void background_update_proc(Layer *layer, GContext *ctx) {
     uint8_t percipProb[] = {
             63, 63, 63, 62, 62, 66, 70, 62, 66, 63, 62, 65, 59, 69, 73, 72, 70, 69, 67, 64, 56, 16, 0, 04, 15, 21, 28, 32, 30, 23, 18, 17, 17, 18, 19, 21, 21, 16, 10, 05, 03, 01, 0, 0, 0, 03, 13, 29, 42
     };
+    fixed_t prec_t_h = REM(3);
     int nHours = 24;
     fixed_t perc_sep = REM(2);
     fixed_t perc_w = (width - (nHours + 1) * perc_sep) / nHours;
     fixed_t perc_maxheight = REM(20);
     for (int i = 0; i < nHours; i++) {
-        FRect rect = FRect(FPoint(perc_sep + i * (perc_sep + perc_w), topbar_height), FSize(perc_w, perc_maxheight * percipProb[(nHours <= 24 ? 10 : 0)+i] / 100));
-        draw_rect(fctx, rect, color_main);
+        bool h6 = (i-3) % 6 == 0;
+        h6 = false; // TODO
+        FRect rect = FRect(FPoint(perc_sep + i * (perc_sep + perc_w), topbar_height + prec_t_h), FSize(perc_w, perc_maxheight * percipProb[(nHours <= 24 ? 10 : 0)+i] / 100));
+        draw_rect(fctx, rect, h6 ? color_main2 : color_main);
+        if (h6) {
+            fixed_t perc_h6_w = REM(2);
+            draw_rect(fctx, FRect(FPoint(rect.origin.x + perc_w/2 - perc_h6_w/2, rect.origin.y), FSize(perc_h6_w, perc_maxheight)), color_main2);
+        }
+    }
+    // rain preview time indicator
+    fixed_t prec_t_w = width / (nHours / 6);
+    for (int i = 0; i < nHours / 6; i++) {
+        FRect rect = FRect(FPoint(i * prec_t_w, topbar_height), FSize(prec_t_w, prec_t_h));
+        draw_rect(fctx, rect, i % 2 == 0 ? color_accent : color_accent2);
     }
 
     // time
@@ -187,26 +202,26 @@ void background_update_proc(Layer *layer, GContext *ctx) {
     strftime(buffer_1, sizeof(buffer_1), "%I:%M", t);
     remove_leading_zero(buffer_1, sizeof(buffer_1));
     fixed_t fontsize_time = (fixed_t)(width / 2.2);
-    draw_string(fctx, buffer_1, FPoint(width / 2, height / 2 - fontsize_time / 2), font_main, color_main, fontsize_time, GTextAlignmentCenter);
+    draw_string(fctx, buffer_1, FPoint(width / 2, height_full / 2 - fontsize_time / 2), font_main, color_main, fontsize_time, GTextAlignmentCenter);
 
     // date
     strftime(buffer_1, sizeof(buffer_1), "%A, %m/%d", t);
     remove_leading_zero(buffer_1, sizeof(buffer_1));
     fixed_t fontsize_date = (fixed_t)(width / 8);
-    draw_string(fctx, buffer_1, FPoint(width / 2, height / 2 + fontsize_time / 3), font_main, color_accent, fontsize_date, GTextAlignmentCenter);
+    draw_string(fctx, buffer_1, FPoint(width / 2, height_full / 2 + fontsize_time / 3), font_main, color_accent, fontsize_date, GTextAlignmentCenter);
 
     // step bar
     int steps = health_service_sum_today(HealthMetricStepCount);
     int steps_goal = 10000;
     fixed_t pos_stepbar_height = REM(5);
     fixed_t pos_stepbar_endx = width * steps / steps_goal;
-    draw_rect(fctx, FRect(FPoint(0, height - pos_stepbar_height), FSize(pos_stepbar_endx, pos_stepbar_height)), color_accent);
-    draw_circle(fctx, FPoint(pos_stepbar_endx, height), pos_stepbar_height, color_accent);
+    draw_rect(fctx, FRect(FPoint(0, height_full - pos_stepbar_height), FSize(pos_stepbar_endx, pos_stepbar_height)), color_accent);
+    draw_circle(fctx, FPoint(pos_stepbar_endx, height_full), pos_stepbar_height, color_accent);
 
     // heart rate
     fixed_t fontsize_hr = REM(25);
-    draw_string(fctx, "1", FPoint(pos_weather_y, height - REM(13)), font_icon, color_main, REM(15), GTextAlignmentLeft);
-    draw_string(fctx, "68/54", FPoint(pos_weather_y + REM(16), height - REM(26)), font_main, color_main,fontsize_hr, GTextAlignmentLeft);
+    draw_string(fctx, "1", FPoint(pos_weather_y, height_full - REM(13)), font_icon, color_main, REM(15), GTextAlignmentLeft);
+    draw_string(fctx, "68/54", FPoint(pos_weather_y + REM(16), height_full - REM(26)), font_main, color_main,fontsize_hr, GTextAlignmentLeft);
 
     // battery logo (not scaled, to allow pixel-aligned rects)
     BatteryChargeState battery_state = battery_state_service_peek();
@@ -215,7 +230,7 @@ void background_update_proc(Layer *layer, GContext *ctx) {
     fixed_t bat_width = PIX(12);
     fixed_t bat_sep = PIX(3);
     bool bat_avoid_stepbar = width - (width * steps / steps_goal + pos_stepbar_height) < 2*bat_sep + bat_width;
-    FPoint bat_origin = FPoint(width - bat_sep - bat_width, height - bat_sep - bat_height - (bat_avoid_stepbar ? pos_stepbar_height : 0));
+    FPoint bat_origin = FPoint(width - bat_sep - bat_width, height_full - bat_sep - bat_height - (bat_avoid_stepbar ? pos_stepbar_height : 0));
     draw_rect(fctx, FRect(bat_origin, FSize(bat_width, bat_height)), color_battery);
     draw_rect(fctx, FRect(FPoint(bat_origin.x + bat_thickness, bat_origin.y + bat_thickness), FSize(bat_width - 2*bat_thickness, bat_height - 2*bat_thickness)), color_background);
     draw_rect(fctx, FRect(FPoint(bat_origin.x + 2*bat_thickness, bat_origin.y + 2*bat_thickness + (100 - battery_state.charge_percent) * (bat_height - 4*bat_thickness) / 100), FSize(bat_width - 4*bat_thickness, battery_state.charge_percent * (bat_height - 4*bat_thickness) / 100)), color_battery);

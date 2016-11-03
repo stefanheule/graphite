@@ -247,6 +247,7 @@ function fetchWeather(latitude, longitude) {
 
     var daily;
     var mode = +readConfig("CONFIG_WEATHER_MODE_LOCAL");
+    mode = 3; // TODO
     if (mode == 3) {
         // use current weather information after 2pm, until 4am
         daily = !(now.getHours() >= 14 || now.getHours() <= 3);
@@ -256,6 +257,7 @@ function fetchWeather(latitude, longitude) {
 
     /** Callback on successful determination of weather conditions. */
     var success = function(temp, icon) {
+        //TODO
         // if (+readConfig("CONFIG_WEATHER_UNIT_LOCAL") == 2) {
         //     temp = temp * 9.0/5.0 + 32.0;
         // }
