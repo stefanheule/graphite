@@ -144,12 +144,24 @@ void background_update_proc(Layer *layer, GContext *ctx) {
 //    GColor color_background = GColorWhite;
 //    GColor color_main = GColorBlack;
 //    GColor color_battery = GColorDarkGray;
+
     GColor color_accent = GColorVividCerulean;
     GColor color_night = GColorDarkGray;
     GColor color_day = GColorLightGray;
     GColor color_background = GColorBlack;
     GColor color_main = GColorWhite;
-    GColor color_battery = GColorLightGray;
+
+    GColor color_battery = color_main;
+
+    // battery status color change
+    BatteryChargeState battery_state = battery_state_service_peek();
+    if (battery_state.charge_percent <= 10) {
+        color_accent = GColorFolly;
+    } else if (battery_state.charge_percent <= 20) {
+        color_accent = GColorChromeYellow;
+    } else if (battery_state.charge_percent <= 30) {
+        color_accent = GColorYellow;
+    }
 
     // background
     draw_rect(fctx, bounds_full, color_background);
@@ -225,21 +237,29 @@ void background_update_proc(Layer *layer, GContext *ctx) {
     draw_circle(fctx, FPoint(pos_stepbar_endx, height_full), pos_stepbar_height, color_accent);
 
     // heart rate
-    fixed_t fontsize_hr = REM(25);
-    draw_string(fctx, "1", FPoint(pos_weather_y, height_full - REM(13)), font_icon, color_main, REM(15), GTextAlignmentLeft);
-    draw_string(fctx, "68/54", FPoint(pos_weather_y + REM(16), height_full - REM(26)), font_main, color_main,fontsize_hr, GTextAlignmentLeft);
+    HealthValue hr = health_service_peek_current_value(HealthMetricHeartRateBPM);
+    if (hr != 0) {
+    //    HealthValue resthr = health_service_peek_current_value(HealthMetricRestingHeartRateBPM);
+        fixed_t fontsize_hr = REM(25);
+        snprintf(buffer_1, 10, "%i", (int)hr);
+        draw_string(fctx, "1", FPoint(pos_weather_y, height_full - REM(13)), font_icon, color_main, REM(15), GTextAlignmentLeft);
+        draw_string(fctx, buffer_1, FPoint(pos_weather_y + REM(16), height_full - REM(26)), font_main, color_main,fontsize_hr, GTextAlignmentLeft);
+    }
 
     // battery logo (not scaled, to allow pixel-aligned rects)
-    BatteryChargeState battery_state = battery_state_service_peek();
     fixed_t bat_thickness = PIX(2);
     fixed_t bat_height = PIX(18);
     fixed_t bat_width = PIX(12);
     fixed_t bat_sep = PIX(3);
     bool bat_avoid_stepbar = width - (width * steps / steps_goal + pos_stepbar_height) < 2*bat_sep + bat_width;
     FPoint bat_origin = FPoint(width - bat_sep - bat_width, height_full - bat_sep - bat_height - (bat_avoid_stepbar ? pos_stepbar_height : 0));
+    // outer rect
     draw_rect(fctx, FRect(bat_origin, FSize(bat_width, bat_height)), color_battery);
+    // inner background rect
     draw_rect(fctx, FRect(FPoint(bat_origin.x + bat_thickness, bat_origin.y + bat_thickness), FSize(bat_width - 2*bat_thickness, bat_height - 2*bat_thickness)), color_background);
-    draw_rect(fctx, FRect(FPoint(bat_origin.x + 2*bat_thickness, bat_origin.y + 2*bat_thickness + (100 - battery_state.charge_percent) * (bat_height - 4*bat_thickness) / 100), FSize(bat_width - 4*bat_thickness, battery_state.charge_percent * (bat_height - 4*bat_thickness) / 100)), color_battery);
+    // inner charge rect
+    draw_rect(fctx, FRect(FPoint(bat_origin.x + bat_thickness * 3/2, bat_origin.y + bat_thickness * 3/2 + (100 - battery_state.charge_percent) * (bat_height - 3*bat_thickness) / 100), FSize(bat_width - 3*bat_thickness, battery_state.charge_percent * (bat_height - 3*bat_thickness) / 100)), color_battery);
+    // top of battery
     draw_rect(fctx, FRect(FPoint(bat_origin.x + bat_thickness*3/2, bat_origin.y - bat_thickness), FSize(bat_width - 3*bat_thickness, bat_thickness)), color_battery);
 
     // draw the bluetooth popup
