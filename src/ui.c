@@ -110,6 +110,11 @@ void draw_weather(FContext* fctx, const char* icon, const char* temp, FPoint pos
     }
 }
 
+typedef struct {
+    uint8_t h;
+    uint8_t prob;
+} __attribute__((__packed__)) PercData;
+
 /**
  * Draw the watch face.
  */
@@ -140,10 +145,10 @@ void background_update_proc(Layer *layer, GContext *ctx) {
 //    GColor color_main = GColorBlack;
 //    GColor color_battery = GColorDarkGray;
     GColor color_accent = GColorVividCerulean;
-    GColor color_accent2 = GColorBlue;
+    GColor color_night = GColorDarkGray;
+    GColor color_day = GColorLightGray;
     GColor color_background = GColorBlack;
     GColor color_main = GColorWhite;
-    GColor color_main2 = GColorLightGray;
     GColor color_battery = GColorLightGray;
 
     // background
@@ -151,9 +156,9 @@ void background_update_proc(Layer *layer, GContext *ctx) {
 
     // top bar
     fixed_t fontsize_weather = REM(27);
-    fixed_t topbar_height = fontsize_weather + REM(4);
+    fixed_t topbar_height = ROUND_UP(fontsize_weather + REM(4));
     draw_rect(fctx, FRect(bounds.origin, FSize(width, topbar_height)), color_accent);
-    fixed_t pos_weather_y = REM(5);
+    fixed_t pos_weather_y = REM(6);
     bool weather_is_on = config_weather_refresh > 0;
     bool weather_is_available = weather.timestamp > 0;
     bool weather_is_outdated = (time(NULL) - weather.timestamp) > (config_weather_expiration * 60);
@@ -175,26 +180,27 @@ void background_update_proc(Layer *layer, GContext *ctx) {
     uint8_t percipProb[] = {
             63, 63, 63, 62, 62, 66, 70, 62, 66, 63, 62, 65, 59, 69, 73, 72, 70, 69, 67, 64, 56, 16, 0, 04, 15, 21, 28, 32, 30, 23, 18, 17, 17, 18, 19, 21, 21, 16, 10, 05, 03, 01, 0, 0, 0, 03, 13, 29, 42
     };
-    fixed_t prec_t_h = REM(3);
+#define PercData(h, prob) ({.h = h, .prob = prob})
+#define getPercData(h) = (PercData(h, percipProb[i]))
+#define getHourOffset(h) = ((((h + 1) - t.tm_h + 24) % 24) - 1)
+    fixed_t perc_ti_h = ROUND_UP(REM(3));
     int nHours = 24;
-    fixed_t perc_sep = REM(2);
-    fixed_t perc_w = (width - (nHours + 1) * perc_sep) / nHours;
-    fixed_t perc_maxheight = REM(20);
-    for (int i = 0; i < nHours; i++) {
-        bool h6 = (i-3) % 6 == 0;
-        h6 = false; // TODO
-        FRect rect = FRect(FPoint(perc_sep + i * (perc_sep + perc_w), topbar_height + prec_t_h), FSize(perc_w, perc_maxheight * percipProb[(nHours <= 24 ? 10 : 0)+i] / 100));
-        draw_rect(fctx, rect, h6 ? color_main2 : color_main);
-        if (h6) {
-            fixed_t perc_h6_w = REM(2);
-            draw_rect(fctx, FRect(FPoint(rect.origin.x + perc_w/2 - perc_h6_w/2, rect.origin.y), FSize(perc_h6_w, perc_maxheight)), color_main2);
-        }
+    fixed_t perc_sep = REM(2); // space between two bars
+    fixed_t perc_bar = (width - (nHours + 1) * perc_sep) / nHours; // width of a single bar (without space)
+    fixed_t perc_w = perc_sep + perc_bar; // total width occupied by a single hour
+    fixed_t perc_maxheight = REM(20); // max height of the precipitation bar
+    fixed_t perc_minoffset = perc_w * (t->tm_min % 60) / 60; // x axis offset into the current hour
+    for (int i = -1; i < nHours; i++) {
+        uint8_t i_percip_prob = percipProb[i + 10];
+        FPoint point = FPoint(perc_minoffset + perc_sep / 2 + i * perc_w, topbar_height + perc_ti_h);
+        FSize size = FSize(perc_bar, perc_maxheight * i_percip_prob / 100);
+        draw_rect(fctx, FRect(point, size), color_main);
     }
     // rain preview time indicator
-    fixed_t prec_t_w = width / (nHours / 6);
-    for (int i = 0; i < nHours / 6; i++) {
-        FRect rect = FRect(FPoint(i * prec_t_w, topbar_height), FSize(prec_t_w, prec_t_h));
-        draw_rect(fctx, rect, i % 2 == 0 ? color_accent : color_accent2);
+    draw_rect(fctx, FRect(FPoint(0, topbar_height), FSize(width, perc_ti_h)), color_day);
+    for (int i = -1; i < 2; i++) {
+        FPoint point = FPoint(perc_minoffset + (24*i + 18 - t->tm_hour) * perc_w, topbar_height);
+        draw_rect(fctx, FRect(point, FSize(12 * perc_w, perc_ti_h)), color_night);
     }
 
     // time

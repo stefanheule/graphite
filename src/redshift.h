@@ -175,6 +175,7 @@ extern AppTimer * weather_request_timer;
 #else
 #define REM(x) ((fixed_t)(INT_TO_FIXED(x) * 144 / 200))
 #endif
+#define ROUND_UP(x) ((x) % FIXED_POINT_SCALE != 0 ? (x) + FIXED_POINT_SCALE - ((x) % FIXED_POINT_SCALE) : (x))
 
 
 ////////////////////////////////////////////
