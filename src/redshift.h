@@ -160,22 +160,23 @@ extern AppTimer * weather_request_timer;
 ////////////////////////////////////////////
 
 #define COLOR(c) ((GColor8) { .argb = (c) })
+#define MAX(x,y) ((x) < (y) ? (y) : (x))
 
 #define REDSHIFT_BLUETOOTH_POPUP_MS 5000
 
 #define REDSHIFT_OUTBOX_SIZE 100
 #define REDSHIFT_N_CONFIG CONFIG_END_MARKER
-// 100 + an upper bound for all the configuration items we have
-#define REDSHIFT_INBOX_SIZE (100 + (1 + (REDSHIFT_N_CONFIG) * (7+4)))
+#define REDSHIFT_WEATHER_N_INTS 4 // 3 temps + 1 icon
+#define REDSHIFT_WEATHER_HOURS 30
+#define REDSHIFT_WEATHER_INTS_PER_HOUR 2 // time and percentage
+// 100 + an upper bound for all the configuration items we have OR the amount of data sent as weather update
+#define REDSHIFT_INBOX_SIZE (100 + MAX(1 + (REDSHIFT_N_CONFIG) * (7+4), REDSHIFT_WEATHER_N_INTS + REDSHIFT_WEATHER_HOURS * REDSHIFT_WEATHER_INTS_PER_HOUR))
 
 #define PIX(x) (INT_TO_FIXED(x))
-// returns a fixed_t value that corresponds to a relatively scaled version, where 1 rem is about 1/200 of the screen width
-#ifdef PBL_PLATFORM_EMERY
-#define REM(x) (INT_TO_FIXED(x))
-#else
-#define REM(x) ((fixed_t)(INT_TO_FIXED(x) * 144 / 200))
-#endif
-#define ROUND_UP(x) ((x) % FIXED_POINT_SCALE != 0 ? (x) + FIXED_POINT_SCALE - ((x) % FIXED_POINT_SCALE) : (x))
+// returns a fixed_t value that corresponds to a relatively scaled version, where 1 rem is 1/200 of the screen width
+#define REM(x) ((fixed_t)(INT_TO_FIXED(x) * PBL_DISPLAY_WIDTH / 200))
+// round to a nearest pixel (from fixed to fixed)
+#define FIXED_ROUND(x) ((x) % FIXED_POINT_SCALE < FIXED_POINT_SCALE/2 ? (x) - ((x) % FIXED_POINT_SCALE) : (x) + FIXED_POINT_SCALE - ((x) % FIXED_POINT_SCALE))
 
 
 ////////////////////////////////////////////

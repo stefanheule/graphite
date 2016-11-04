@@ -146,7 +146,7 @@ void background_update_proc(Layer *layer, GContext *ctx) {
 //    GColor color_battery = GColorDarkGray;
 
     GColor color_accent = GColorVividCerulean;
-    GColor color_night = GColorDarkGray;
+    GColor color_night = GColorBlack;
     GColor color_day = GColorLightGray;
     GColor color_background = GColorBlack;
     GColor color_main = GColorWhite;
@@ -155,6 +155,9 @@ void background_update_proc(Layer *layer, GContext *ctx) {
 
     // battery status color change
     BatteryChargeState battery_state = battery_state_service_peek();
+    if (battery_state.is_charging || battery_state.is_plugged) {
+        battery_state.charge_percent = 100;
+    }
     if (battery_state.charge_percent <= 10) {
         color_accent = GColorFolly;
     } else if (battery_state.charge_percent <= 20) {
@@ -168,7 +171,7 @@ void background_update_proc(Layer *layer, GContext *ctx) {
 
     // top bar
     fixed_t fontsize_weather = REM(27);
-    fixed_t topbar_height = ROUND_UP(fontsize_weather + REM(4));
+    fixed_t topbar_height = FIXED_ROUND(fontsize_weather + REM(4));
     draw_rect(fctx, FRect(bounds.origin, FSize(width, topbar_height)), color_accent);
     fixed_t pos_weather_y = REM(6);
     bool weather_is_on = config_weather_refresh > 0;
@@ -195,7 +198,7 @@ void background_update_proc(Layer *layer, GContext *ctx) {
 #define PercData(h, prob) ({.h = h, .prob = prob})
 #define getPercData(h) = (PercData(h, percipProb[i]))
 #define getHourOffset(h) = ((((h + 1) - t.tm_h + 24) % 24) - 1)
-    fixed_t perc_ti_h = ROUND_UP(REM(3));
+    fixed_t perc_ti_h = FIXED_ROUND(REM(3));
     int nHours = 24;
     fixed_t perc_sep = REM(2); // space between two bars
     fixed_t perc_bar = (width - (nHours + 1) * perc_sep) / nHours; // width of a single bar (without space)
@@ -216,17 +219,18 @@ void background_update_proc(Layer *layer, GContext *ctx) {
     }
 
     // time
+    fixed_t time_y_offset = PBL_DISPLAY_WIDTH != 144 ? 0 : (height_full-height) / 8;
     setlocale(LC_ALL, "");
     strftime(buffer_1, sizeof(buffer_1), "%I:%M", t);
     remove_leading_zero(buffer_1, sizeof(buffer_1));
     fixed_t fontsize_time = (fixed_t)(width / 2.2);
-    draw_string(fctx, buffer_1, FPoint(width / 2, height_full / 2 - fontsize_time / 2), font_main, color_main, fontsize_time, GTextAlignmentCenter);
+    draw_string(fctx, buffer_1, FPoint(width / 2, height_full / 2 - fontsize_time / 2 - time_y_offset), font_main, color_main, fontsize_time, GTextAlignmentCenter);
 
     // date
     strftime(buffer_1, sizeof(buffer_1), "%A, %m/%d", t);
     remove_leading_zero(buffer_1, sizeof(buffer_1));
     fixed_t fontsize_date = (fixed_t)(width / 8);
-    draw_string(fctx, buffer_1, FPoint(width / 2, height_full / 2 + fontsize_time / 3), font_main, color_accent, fontsize_date, GTextAlignmentCenter);
+    draw_string(fctx, buffer_1, FPoint(width / 2, height_full / 2 + fontsize_time / 3 - time_y_offset), font_main, color_accent, fontsize_date, GTextAlignmentCenter);
 
     // step bar
     int steps = health_service_sum_today(HealthMetricStepCount);
@@ -247,10 +251,14 @@ void background_update_proc(Layer *layer, GContext *ctx) {
     }
 
     // battery logo (not scaled, to allow pixel-aligned rects)
-    fixed_t bat_thickness = PIX(2);
-    fixed_t bat_height = PIX(18);
-    fixed_t bat_width = PIX(12);
+    fixed_t bat_thickness = PIX(1);
+    fixed_t bat_gap_thickness = PIX(1);
+    fixed_t bat_height = PIX(15);
+    fixed_t bat_width = PIX(9);
     fixed_t bat_sep = PIX(3);
+    fixed_t bat_top = PIX(2);
+    fixed_t bat_inner_height = bat_height - 2 * bat_thickness - 2 * bat_gap_thickness;
+    fixed_t bat_inner_width = bat_width - 2 * bat_thickness - 2 * bat_gap_thickness;
     bool bat_avoid_stepbar = width - (width * steps / steps_goal + pos_stepbar_height) < 2*bat_sep + bat_width;
     FPoint bat_origin = FPoint(width - bat_sep - bat_width, height_full - bat_sep - bat_height - (bat_avoid_stepbar ? pos_stepbar_height : 0));
     // outer rect
@@ -258,9 +266,10 @@ void background_update_proc(Layer *layer, GContext *ctx) {
     // inner background rect
     draw_rect(fctx, FRect(FPoint(bat_origin.x + bat_thickness, bat_origin.y + bat_thickness), FSize(bat_width - 2*bat_thickness, bat_height - 2*bat_thickness)), color_background);
     // inner charge rect
-    draw_rect(fctx, FRect(FPoint(bat_origin.x + bat_thickness * 3/2, bat_origin.y + bat_thickness * 3/2 + (100 - battery_state.charge_percent) * (bat_height - 3*bat_thickness) / 100), FSize(bat_width - 3*bat_thickness, battery_state.charge_percent * (bat_height - 3*bat_thickness) / 100)), color_battery);
+    draw_rect(fctx, FRect(FPoint(bat_origin.x + bat_thickness + bat_gap_thickness, bat_origin.y + bat_thickness + bat_gap_thickness + (100 - battery_state.charge_percent) * bat_inner_height / 100), FSize(
+            bat_inner_width, battery_state.charge_percent * bat_inner_height / 100)), color_battery);
     // top of battery
-    draw_rect(fctx, FRect(FPoint(bat_origin.x + bat_thickness*3/2, bat_origin.y - bat_thickness), FSize(bat_width - 3*bat_thickness, bat_thickness)), color_battery);
+    draw_rect(fctx, FRect(FPoint(bat_origin.x + bat_thickness + bat_gap_thickness, bat_origin.y - bat_top), FSize(bat_inner_width, bat_top)), color_battery);
 
     // draw the bluetooth popup
     bool bluetooth = bluetooth_connection_service_peek();
