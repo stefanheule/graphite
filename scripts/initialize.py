@@ -143,17 +143,19 @@ def inline_render(file):
   newcontents = []
   env = Environment(line_statement_prefix=line_statement_prefix)
   contents = read_file(file)
-  current_section = ''
+  linenr = 0
+  laststart = 0
   tpl = []
   mode = 'init'
   for line in contents.split("\n"):
-    isstart = re.search(r"^ *(// --) autogen ([a-z_]+)", line)
+    linenr += 1
+    isstart = re.search(r"^ *(// --) autogen", line)
     isend = re.search(r"^ *(// --) end autogen", line)
-    istpl = re.search(r"^ *(// --)(.*)", line)
+    istpl = re.search(r"^ *(// --) (.*)", line)
     if mode == 'init':
       if isstart is not None:
         newcontents.append(line)
-        current_section = isstart.group(2)
+        laststart = linenr
         mode = 'template'
       else:
         newcontents.append(line)
@@ -162,11 +164,12 @@ def inline_render(file):
         newcontents.append(line)
         mode = 'init'
     elif mode == 'template':
-      if istpl is not None:
+      if istpl is not None and isend is None:
         tpl.append(istpl.group(2))
         newcontents.append(line)
       else:
         template = env.from_string("\n".join(tpl))
+        tpl = []
         newcontents.append(template.render(get_context()).strip("\n"))
         mode = 'ignore'
         if isend is not None:
@@ -174,7 +177,7 @@ def inline_render(file):
           mode = 'init'
 
   if mode != 'init':
-    error("Unclosed autogen section '%s', stopped in mode %s." % (current_section, mode))
+    error("Unclosed autogen section started on line %d, stopped in mode %s." % (laststart, mode))
 
   newcontents = "\n".join(newcontents)
   if contents != newcontents:

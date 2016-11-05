@@ -36,56 +36,25 @@
 //// Configuration constants
 ////////////////////////////////////////////
 
-// config keys are also duplicated in src/redshift.h, package.json, src/js/pebble-js-app.js and config/index.html
+// -- autogen
+// -- ## for key in configuration
+// -- #define {{ key["key"] }} {{ key["id"] }}
+// -- ## endfor
 #define CONFIG_COLOR_OUTER_BACKGROUND 1
-#define CONFIG_COLOR_INNER_BACKGROUND 2
-#define CONFIG_COLOR_MINUTE_HAND 3
-#define CONFIG_COLOR_INNER_MINUTE_HAND 4
-#define CONFIG_COLOR_HOUR_HAND 5
-#define CONFIG_COLOR_INNER_HOUR_HAND 6
-#define CONFIG_COLOR_CIRCLE 7
-#define CONFIG_COLOR_TICKS 8
-#define CONFIG_COLOR_DAY_OF_WEEK 9
-#define CONFIG_COLOR_DATE 10
-#define CONFIG_BATTERY_LOGO 11
-#define CONFIG_COLOR_BATTERY_LOGO 12
-#define CONFIG_COLOR_BATTERY_BG_30 13
-#define CONFIG_COLOR_BATTERY_BG_20 14
-#define CONFIG_COLOR_BATTERY_BG_10 15
-#define CONFIG_COLOR_BLUETOOTH_LOGO 16
-#define CONFIG_COLOR_BLUETOOTH_LOGO_2 17
-#define CONFIG_BLUETOOTH_LOGO 18
-#define CONFIG_VIBRATE_DISCONNECT 19
-#define CONFIG_VIBRATE_RECONNECT 20
-#define CONFIG_MESSAGE_DISCONNECT 21
-#define CONFIG_MESSAGE_RECONNECT 22
-#define CONFIG_MINUTE_TICKS 23
-#define CONFIG_HOUR_TICKS 24
-#define CONFIG_COLOR_BATTERY_30 25
-#define CONFIG_COLOR_BATTERY_20 26
-#define CONFIG_COLOR_BATTERY_10 27
-// not defining local keys here (so some IDs are missing)
-#define CONFIG_COLOR_WEATHER 29
-#define CONFIG_WEATHER_REFRESH 35
-#define CONFIG_WEATHER_EXPIRATION 36
-#define CONFIG_SQUARE 37
-#define CONFIG_SECONDS 38
-#define CONFIG_COLOR_SECONDS 39
-#define CONFIG_DATE_FORMAT 40
-#define CONFIG_END_MARKER 40
+// -- end autogen
 
-// -- autogen c_header_msg_keys
+// -- autogen
 // -- ## for key in message_keys
 // -- #define {{ key["key"] }} {{ key["id"] }}
 // -- ## endfor
- #define MSG_KEY_WEATHER_TEMP_LOW 100
- #define MSG_KEY_WEATHER_TEMP_HIGH 101
- #define MSG_KEY_WEATHER_TEMP_CUR 102
- #define MSG_KEY_WEATHER_ICON_CUR 103
- #define MSG_KEY_WEATHER_PERC_DATA 104
- #define MSG_KEY_FETCH_WEATHER 105
- #define MSG_KEY_WEATHER_FAILED 106
- #define MSG_KEY_JS_READY 107
+#define MSG_KEY_WEATHER_TEMP_LOW 100
+#define MSG_KEY_WEATHER_TEMP_HIGH 101
+#define MSG_KEY_WEATHER_TEMP_CUR 102
+#define MSG_KEY_WEATHER_ICON_CUR 103
+#define MSG_KEY_WEATHER_PERC_DATA 104
+#define MSG_KEY_FETCH_WEATHER 105
+#define MSG_KEY_WEATHER_FAILED 106
+#define MSG_KEY_JS_READY 107
 // -- end autogen
 
 // persitant storage keys (in addition to config keys above)
