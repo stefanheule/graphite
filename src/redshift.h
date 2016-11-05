@@ -170,7 +170,7 @@ extern AppTimer * weather_request_timer;
 #define REDSHIFT_WEATHER_HOURS 30
 #define REDSHIFT_WEATHER_INTS_PER_HOUR 2 // time and percentage
 // 100 + an upper bound for all the configuration items we have OR the amount of data sent as weather update
-#define REDSHIFT_INBOX_SIZE (100 + MAX(1 + (REDSHIFT_N_CONFIG) * (7+4), REDSHIFT_WEATHER_N_INTS + REDSHIFT_WEATHER_HOURS * REDSHIFT_WEATHER_INTS_PER_HOUR))
+#define REDSHIFT_INBOX_SIZE (100 + MAX(1 + (REDSHIFT_N_CONFIG) * (7+4), REDSHIFT_WEATHER_N_INTS * 4 + REDSHIFT_WEATHER_HOURS * REDSHIFT_WEATHER_INTS_PER_HOUR * 4))
 
 #define PIX(x) (INT_TO_FIXED(x))
 // returns a fixed_t value that corresponds to a relatively scaled version, where 1 rem is 1/200 of the screen width
