@@ -74,12 +74,8 @@
 #define CONFIG_DATE_FORMAT 40
 #define CONFIG_END_MARKER 40
 
-// message keys (also duplicated in appinfo.json)
-#define MSG_KEY_WEATHER_TEMP 100
-#define MSG_KEY_WEATHER_ICON 101
-#define MSG_KEY_FETCH_WEATHER 102
-#define MSG_KEY_JS_READY 103
-#define MSG_KEY_WEATHER_FAILED 104
+// -- autogen c_header_msg_keys
+// -- end autogen
 
 // persitant storage keys (in addition to config keys above)
 #define PERSIST_KEY_WEATHER 201
