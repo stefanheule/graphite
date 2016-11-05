@@ -75,6 +75,14 @@
 #define CONFIG_END_MARKER 40
 
 // -- autogen c_header_msg_keys
+ #define MSG_KEY_WEATHER_TEMP_LOW 100
+ #define MSG_KEY_WEATHER_TEMP_HIGH 101
+ #define MSG_KEY_WEATHER_TEMP_CUR 102
+ #define MSG_KEY_WEATHER_ICON_CUR 103
+ #define MSG_KEY_WEATHER_PERC_DATA 104
+ #define MSG_KEY_FETCH_WEATHER 105
+ #define MSG_KEY_WEATHER_FAILED 106
+ #define MSG_KEY_JS_READY 107
 // -- end autogen
 
 // persitant storage keys (in addition to config keys above)
@@ -141,7 +149,7 @@ extern bool show_bluetooth_popup;
 extern AppTimer *timer_bluetooth_popup;
 
 // this definition should be updated whenever the Weather struct, or it's semantic meaning changes.  this ensures that no outdated values are read from storage
-#define REDSHIFT_WEATHER_VERSION
+#define REDSHIFT_WEATHER_VERSION 1
 typedef struct {
     uint8_t version;
     time_t timestamp;

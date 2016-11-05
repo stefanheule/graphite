@@ -123,8 +123,8 @@ void inbox_received_handler(DictionaryIterator *iter, void *context) {
 
     bool ask_for_weather_update = true;
 
-    Tuple *icon_tuple = dict_find(iter, MSG_KEY_WEATHER_ICON);
-    Tuple *temp_tuple = dict_find(iter, MSG_KEY_WEATHER_TEMP);
+    Tuple *icon_tuple = dict_find(iter, MSG_KEY_WEATHER_ICON_CUR);
+    Tuple *temp_tuple = dict_find(iter, MSG_KEY_WEATHER_TEMP_CUR);
     if (icon_tuple && temp_tuple) {
         weather.timestamp = time(NULL);
         weather.icon = icon_tuple->value->int8;

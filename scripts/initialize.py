@@ -26,15 +26,8 @@ msg_keys = [
   'WEATHER_PERC_DATA',
   'FETCH_WEATHER',
   'WEATHER_FAILED',
+  'JS_READY',
 ]
-
-templates = {
-  'c_header_msg_keys': """
-## for key in message_keys
-#define {{ key["key"] }} {{ key["id"] }}
-## endfor
-"""
-}
 
 # "CONFIG_COLOR_OUTER_BACKGROUND": 1,
 # "CONFIG_COLOR_INNER_BACKGROUND": 2,
@@ -150,25 +143,34 @@ def inline_render(file):
   newcontents = []
   env = Environment(line_statement_prefix=line_statement_prefix)
   contents = read_file(file)
+  current_section = ''
+  tpl = []
   mode = 'init'
   for line in contents.split("\n"):
     isstart = re.search(r"^ *(// --) autogen ([a-z_]+)", line)
     isend = re.search(r"^ *(// --) end autogen", line)
+    istpl = re.search(r"^ *(// --)(.*)", line)
     if mode == 'init':
       if isstart is not None:
         newcontents.append(line)
         current_section = isstart.group(2)
-        template = env.from_string(templates[current_section].strip("\n"))
-        newcontents.append(template.render(get_context()).strip())
-        mode = 'ignore'
+        mode = 'template'
       else:
         newcontents.append(line)
     elif mode == 'ignore':
       if isend is not None:
         newcontents.append(line)
         mode = 'init'
+    elif mode == 'template':
+      if istpl is not None:
+        tpl.append(istpl.group(2))
+      else:
+        template = env.from_string("\n".join(tpl))
+        newcontents.append(template.render(get_context()).strip("\n"))
+        mode = 'ignore'
+
   if mode != 'init':
-    error("Unclosed autogen section.")
+    error("Unclosed autogen section '%s', stopped in mode %s." % (current_section, mode))
   write_file(file, "\n".join(newcontents))
 
   # 
