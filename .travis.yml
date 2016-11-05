@@ -1,0 +1,16 @@
+language: pebblec
+sudo: false
+before_script: bash ./before_install.sh
+script: make travis_build
+cache:
+  directories:
+    - $HOME/pebble-dev
+    - $HOME/.cache/pip
+addons:
+  apt:
+    packages:
+    - python2.7-dev
+    - python-pip
+    - python-virtualenv
+env:
+- PEBBLE_SDK=pebble-sdk-4.4.1-linux64 PEBBLE_PROJECT_PATH=stefanheule/redshift

@@ -1,9 +1,15 @@
 
+-include .redshift_config
+
+ifndef DEFAULT_PLATFORM
+$(error DEFAULT_PLATFORM is not set.  Did you run ./configure?)
+endif
+
 REDSHIFT_CONFIG=""
 REDSHIFT_FILE="out"
 
 # platform
-P="emery"
+P=$(DEFAULT_PLATFORM)
 
 VERSION=$(shell cat package.json | grep version | grep -o "[0-9]*\.[0-9]*")
 
@@ -11,10 +17,13 @@ all: build install_emulator
 
 deploy: install_deploy
 
-build:
+build: initialize
 	# copy fonts
 	cp resources/fonts/nupe2.ttf config/fonts/nupe2.ttf
 	pebble build
+
+initialize: .redshift_config package.template.json
+	@scripts/initialize.py
 
 build_quiet:
 	@scripts/build_quiet.sh
@@ -43,14 +52,14 @@ menu_icon:
 resources:
 	scripts/assemble_resources.sh
 
-screenshots: screenshot_config
+screenshots: config_screenshots
 	pebble kill
-	$(MAKE) screenshot REDSHIFT_CONFIG="SCREENSHOT_MAIN" REDSHIFT_FILE="main"
+	$(MAKE) single_screenshot REDSHIFT_CONFIG="SCREENSHOT_MAIN" REDSHIFT_FILE="main"
 	scripts/assemble_screenshots.sh
 	scripts/assemble_resources.sh
 	pebble kill
 
-screenshot_config:
+config_screenshots:
 	rm -f screenshots/aplite/config.png
 	rm -f screenshots/basalt/config.png
 	rm -f screenshots/chalk/config.png
@@ -59,7 +68,7 @@ screenshot_config:
 	pngcrush -q -rem time tmp.png screenshots/chalk/config.png
 	rm tmp.png
 
-screenshot: write_header build_quiet
+single_screenshot: write_header build_quiet
 	scripts/take_screenshot.sh $(REDSHIFT_FILE)
 
 write_header:
@@ -79,4 +88,4 @@ font_build:
 	node_modules/pebble-fctx-compiler/fctx-compiler.js -r "[0123]" resources/fonts/FontAwesome.svg
 	node_modules/pebble-fctx-compiler/fctx-compiler.js -r "[0-9a-zA-Z.:\-/° ,]" resources/fonts/OpenSans-CondensedBold.svg
 
-.PHONY: all deploy build build_quiet config log resources install_emulator install_deploy menu_icon screenshots screenshot screenshot_config write_header clean clean_header
+.PHONY: all deploy build initialize build_quiet config log resources install_emulator install_deploy menu_icon screenshots screenshot screenshot_config write_header clean clean_header

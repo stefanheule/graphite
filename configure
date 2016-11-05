@@ -1,0 +1,60 @@
+#!/bin/bash
+
+function show_help {
+  echo "$0 [--default-platform <platform>] [--supported-platforms <platforms (space separated list as a string)>]"
+  echo ""
+}
+
+function error {
+  echo "Configure failed!  Fix errors and run again."
+  echo ""
+  rm -f .redshift_config
+  show_help
+  exit
+}
+
+## Now do some parsing, look for options
+
+DEFAULT_PLATFORM="emery"
+SUPPORTED_PLATFORMS="basalt emery"
+
+while :; do
+  case $1 in
+    -h|--help)
+      show_help
+      exit
+      ;;
+    --default-platform)
+      shift
+      DEFAULT_PLATFORM="$1"
+      shift
+      ;;
+    --supported-platforms)
+      shift
+      SUPPORTED_PLATFORM="$1"
+      shift
+      ;;
+    -?*)
+      echo "ERROR: unknown option $1"
+      error
+      exit
+      ;;
+    *)
+      break
+  esac
+done
+
+echo ""
+echo "The default platform is $DEFAULT_PLATFORM and builds for '$SUPPORTED_PLATFORMS' are supported."
+
+rm -f .redshift_config
+
+## Write options to config file
+echo "DEFAULT_PLATFORM=\"$DEFAULT_PLATFORM\"" >> .redshift_config
+echo "SUPPORTED_PLATFORMS=$SUPPORTED_PLATFORMS" >> .redshift_config
+
+## All done!
+
+echo ""
+echo "You're all set to run make!"
+echo ""

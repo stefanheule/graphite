@@ -1,5 +1,7 @@
 build
 .lock-waf_linux2_build
 .idea/workspace.xml
+.redshift_config
+package.json
 
 node_modules/
