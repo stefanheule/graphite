@@ -75,6 +75,9 @@
 #define CONFIG_END_MARKER 40
 
 // -- autogen c_header_msg_keys
+// -- ## for key in message_keys
+// -- #define {{ key["key"] }} {{ key["id"] }}
+// -- ## endfor
  #define MSG_KEY_WEATHER_TEMP_LOW 100
  #define MSG_KEY_WEATHER_TEMP_HIGH 101
  #define MSG_KEY_WEATHER_TEMP_CUR 102

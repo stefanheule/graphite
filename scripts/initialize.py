@@ -164,14 +164,21 @@ def inline_render(file):
     elif mode == 'template':
       if istpl is not None:
         tpl.append(istpl.group(2))
+        newcontents.append(line)
       else:
         template = env.from_string("\n".join(tpl))
         newcontents.append(template.render(get_context()).strip("\n"))
         mode = 'ignore'
+        if isend is not None:
+          newcontents.append(line)
+          mode = 'init'
 
   if mode != 'init':
     error("Unclosed autogen section '%s', stopped in mode %s." % (current_section, mode))
-  write_file(file, "\n".join(newcontents))
+
+  newcontents = "\n".join(newcontents)
+  if contents != newcontents:
+    write_file(file, newcontents)
 
   # 
   # write_file(file.replace(".template", ""), )

@@ -31,7 +31,7 @@ while :; do
       ;;
     --supported-platforms)
       shift
-      SUPPORTED_PLATFORM="$1"
+      SUPPORTED_PLATFORMS="$1"
       shift
       ;;
     -?*)

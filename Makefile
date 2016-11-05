@@ -22,8 +22,8 @@ build: initialize
 	cp resources/fonts/nupe2.ttf config/fonts/nupe2.ttf
 	pebble build
 
-initialize: .redshift_config package.template.json
-	@scripts/initialize.py
+initialize:
+	scripts/initialize.py
 
 build_quiet:
 	@scripts/build_quiet.sh
@@ -88,4 +88,4 @@ font_build:
 	node_modules/pebble-fctx-compiler/fctx-compiler.js -r "[0123]" resources/fonts/FontAwesome.svg
 	node_modules/pebble-fctx-compiler/fctx-compiler.js -r "[0-9a-zA-Z.:\-/° ,]" resources/fonts/OpenSans-CondensedBold.svg
 
-.PHONY: all deploy build initialize build_quiet config log resources install_emulator install_deploy menu_icon screenshots screenshot screenshot_config write_header clean clean_header
+.PHONY: all deploy build build_quiet config log resources install_emulator install_deploy menu_icon screenshots screenshot screenshot_config write_header clean clean_header
