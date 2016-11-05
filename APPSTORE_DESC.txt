@@ -1,0 +1,5 @@
+App Store Descriptions
+======================
+
+To view on the appstore, use https://apps.getpebble.com/en_US/dev-settings?dev_settings=true
+
