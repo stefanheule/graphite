@@ -144,7 +144,10 @@ extern FFont* font_icon;
 extern bool show_bluetooth_popup;
 extern AppTimer *timer_bluetooth_popup;
 
+// this definition should be updated whenever the Weather struct, or it's semantic meaning changes.  this ensures that no outdated values are read from storage
+#define REDSHIFT_WEATHER_VERSION
 typedef struct {
+    uint8_t version;
     time_t timestamp;
     int8_t icon;
     int8_t temperature;

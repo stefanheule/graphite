@@ -14,6 +14,7 @@
 
 #include <pebble.h>
 #include "settings.h"
+#include "redshift.h"
 
 
 static void update_weather_helper(void *unused);
@@ -215,8 +216,15 @@ void read_config_all() {
     read_config(CONFIG_COLOR_SECONDS, &config_color_seconds);
     read_config(CONFIG_DATE_FORMAT, &config_date_format);
 
-    if (persist_exists(PERSIST_KEY_WEATHER)) {
-        persist_read_data(PERSIST_KEY_WEATHER, &weather, sizeof(Weather));
+    if (persist_exists(PERSIST_KEY_WEATHER) && persist_get_size(PERSIST_KEY_WEATHER) == sizeof(Weather)) {
+        Weather tmp;
+        persist_read_data(PERSIST_KEY_WEATHER, &tmp, sizeof(Weather));
+        // make sure we are reading weather info that's consistent with the current version number
+        if (tmp.version == REDSHIFT_WEATHER_VERSION) {
+            weather = tmp;
+        } else {
+            weather.timestamp = 0;
+        }
     } else {
         weather.timestamp = 0;
     }
