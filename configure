@@ -51,7 +51,7 @@ rm -f .redshift_config
 
 ## Write options to config file
 echo "DEFAULT_PLATFORM=\"$DEFAULT_PLATFORM\"" >> .redshift_config
-echo "SUPPORTED_PLATFORMS=$SUPPORTED_PLATFORMS" >> .redshift_config
+echo "SUPPORTED_PLATFORMS=\"$SUPPORTED_PLATFORMS\"" >> .redshift_config
 
 ## All done!
 
