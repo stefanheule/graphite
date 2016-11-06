@@ -1,0 +1,610 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  <title>Redshift Configuration</title>
+    <meta name=viewport content="width=device-width, initial-scale=1" />
+    <link rel='stylesheet' type='text/css' href='css/slate.min.css'>
+    <link rel='stylesheet' type='text/css' href='css/nupe.css'>
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans+Condensed:700" rel="stylesheet">
+    <script src='js/slate.js'></script>
+    <script src='js/gcolor.js'></script>
+    <script src='js/pebble.js'></script>
+    <script src='js/preview.js'></script>
+    <script src="js/spark-md5.min.js"></script>
+    <style>
+    .title {
+      padding-top: 20px;
+      text-align: center;
+    }
+    canvas#preview {
+      margin: 20px auto 5px;
+      display: block;
+    }
+    #preview-container p {
+      text-align: center;
+      font-size: 11px;
+    }
+    </style>
+    <meta charset="utf-8"/>
+  </head>
+
+  <body>
+    <div id="preview-container">
+      <canvas class="watchface" id="preview" width="144" height="168"></canvas>
+      <p>Live preview</p>
+    </div>
+
+    <div id="body-container">
+    <div class='item-container'>
+      <div class='item-container-header'>Weather</div>
+
+      <div class="item-container-content">
+        <label class="item">
+          Units
+          <select id='CONFIG_WEATHER_UNIT_LOCAL' dir='rtl' class="item-select">
+            <option class="item-select-option" value="1">Celcius</option>
+            <option class="item-select-option" value="2">Fahrenheit</option>
+          </select>
+        </label>
+      </div>
+
+      <div class="item-container-content">
+        <label class="item">
+          Source
+          <select id='CONFIG_WEATHER_SOURCE_LOCAL' dir='rtl' class="item-select">
+            <option class="item-select-option" value="1">OpenWeatherMap</option>
+            <option class="item-select-option" value="2">DarkSky.net</option>
+            <option class="item-select-option" value="3">Weather Underground</option>
+          </select>
+        </label>
+        <div class="item-container-footer">
+          DarkSky.net and Weather Underground require an API key (see below).
+        </div>
+      </div>
+
+      <div class="item-container-content">
+        <label class="item">
+          API Key
+          <div class="item-input-wrapper">
+            <input type="text" class="item-input" id='CONFIG_WEATHER_APIKEY_LOCAL'>
+          </div>
+        </label>
+        <div class="item-container-footer">
+          Only required for DarkSky.net and Weather Underground weather source.  Register for free at
+          <a href="https://darksky.net/dev/register">darksky.net</a> or
+          <a href="https://www.wunderground.com/weather/api/">www.wunderground.com</a>.
+        </div>
+      </div>
+
+      <div class="item-container-content">
+        <label class="item">
+          Custom Location
+          <div class="item-input-wrapper">
+            <input type="text" class="item-input" id='CONFIG_WEATHER_LOCATION_LOCAL'>
+          </div>
+        </label>
+        <div class="item-container-footer">
+          Format: <i>latitude,longitude</i>. Leave empty for current location.
+          Find latitude and longitude at
+          <a href="http://www.latlong.net/">latlong.net</a>.
+        </div>
+      </div>
+
+      <div class="item-container-content">
+        <label class="item">
+          Refresh Rate (Minutes)
+          <div class="item-input-wrapper">
+            <input type="text" class="item-input" id='CONFIG_WEATHER_REFRESH'>
+          </div>
+        </label>
+      </div>
+
+      <div class="item-container-content">
+        <label class="item">
+          Expiration (Minutes)
+          <div class="item-input-wrapper">
+            <input type="text" class="item-input" id='CONFIG_WEATHER_EXPIRATION'>
+          </div>
+        </label>
+        <div class="item-container-footer">
+          If after this many minutes no new weather information is available, stop showing weather information.
+        </div>
+      </div>
+
+    </div>
+
+    <div class='item-container'>
+      <div class='item-container-header'>Bluetooth</div>
+
+      <div class='item-container-content'>
+        <label class='item'>
+          Vibrate on Disconnect
+          <input id='CONFIG_VIBRATE_DISCONNECT' type='checkbox' class='item-toggle'>
+        </label>
+      </div>
+
+      <div class='item-container-content'>
+        <label class='item'>
+          Vibrate on Re-connect
+          <input id='CONFIG_VIBRATE_RECONNECT' type='checkbox' class='item-toggle'>
+        </label>
+      </div>
+
+      <div class='item-container-content'>
+        <label class='item'>
+          Message on Disconnect (5 seconds)
+          <input id='CONFIG_MESSAGE_DISCONNECT' type='checkbox' class='item-toggle'>
+        </label>
+      </div>
+
+      <div class='item-container-content'>
+        <label class='item'>
+          Message on Re-connect (5 seconds)
+          <input id='CONFIG_MESSAGE_RECONNECT' type='checkbox' class='item-toggle'>
+        </label>
+      </div>
+      
+    </div>
+
+    <div class='item-container'>
+      <div class='button-container'>
+        <input id='submit_button' type='button' class='item-button' value='Save'>
+      </div>
+    </div>
+
+    <div class='item-container'>
+      <div class='button-container'>
+        <input id='reset_button' type='button' class='item-button' value='Restore defaults'>
+      </div>
+    </div>
+
+    <div class='item-container'>
+      <div class='item-container-header'>Donation</div>
+      <div class="item-container-footer">
+      <p>If you'd like, feel free to show your appreciation for Redshift.  Donations are fully optional.</p>
+      </div>
+    <form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_top" style="margin-left:20px">
+<input type="hidden" name="cmd" value="_s-xclick">
+<input type="hidden" name="encrypted" value="-----BEGIN PKCS7-----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-----END PKCS7-----
+">
+<input type="image" src="https://www.paypalobjects.com/en_US/i/btn/btn_donate_SM.gif" border="0" name="submit" alt="PayPal - The safer, easier way to pay online!">
+<img alt="" border="0" src="https://www.paypalobjects.com/en_US/i/scr/pixel.gif" width="1" height="1">
+</form>
+    </div>
+
+    <div class='item-container'>
+      <div class='item-container-header'>Status information</div>
+
+      <div class="item-container-footer">
+      <p>Redshift Version: <span id="version-info"></span></p>
+      <p>Platform: <span id="platform-info"></span></p>
+      </div>
+    </div>
+
+  <script>
+  var hh = SparkMD5.hash;
+  function getParameterByName(name) {
+    name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
+    var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
+        results = regex.exec(location.search);
+    return results === null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
+  }
+  function getPlatform() {
+    return getParameterByName('platform');
+  }
+  function getVersion() {
+    return getParameterByName('version');
+  }
+  var isChalk = function() { return getPlatform() == "chalk"; };
+  var isBasalt = function() { return getPlatform() == "basalt"; };
+
+  function getAllConfigHtmlNodes() {
+    return $('[id]').filter(function () {
+      return /^CONFIG_.*$/.test(this.id);
+    });
+  }
+
+  function getStorageKey(k) {
+    return getPlatform() + "__" + k;
+  }
+
+  function writeToStorage(config) {
+    for (k in config) {
+      localStorage.setItem(getStorageKey(k), config[k]);
+    }
+  }
+
+  function readOneConfig(el) {
+    var val = undefined;
+    if (el.hasClass('item-color')) {
+      val = GColor.fromHex(el.val().substr(2));
+    } else if (el.hasClass('item-toggle')) {
+      val = +el.is(':checked');
+    } else if (el.hasClass('item-select')) {
+      val = +el.val();
+    } else if (el.hasClass('item-input')) {
+      val = el.val();
+    } else {
+      console.log("[ error ] Unexpected element:");
+      console.log(this);
+    }
+    return val;
+  }
+
+  function readConfigFromDom() {
+    var options = {};
+    getAllConfigHtmlNodes().each(function () {
+      var el = $(this);
+      var val = readOneConfig(el);
+      if (val !== undefined) {
+        options[this.id] = val;
+      }
+    });
+
+//    console.log('[ info ] configuration read from DOM:');
+//    console.log(options);
+    return options;
+  }
+
+  function getQueryParam(variable, defaultValue) {
+    var query = location.search.substring(1);
+    var vars = query.split('&');
+    for (var i = 0; i < vars.length; i++) {
+      var pair = vars[i].split('=');
+      if (pair[0] === variable) {
+        return decodeURIComponent(pair[1]);
+      }
+    }
+    return defaultValue || false;
+  }
+
+  var COLOR_FALLBACK = PebbleHelper.COLOR_FALLBACK(getPlatform());
+  var PBL_IF_ROUND_ELSE = PebbleHelper.PBL_IF_ROUND_ELSE(getPlatform());
+
+  function readValuesFromStorage(use_defaults, did_read_defaults) {
+
+    var defaults = ObsidianPreview.defaultConfig(getPlatform());
+
+    var stringTypes = ["CONFIG_WEATHER_APIKEY_LOCAL", "CONFIG_WEATHER_LOCATION_LOCAL"];
+
+    // use defaults
+    if (use_defaults || localStorage.getItem(getStorageKey("CONFIG_WEATHER_REFRESH")) === null) {
+      console.log("[ info ] loading default values");
+      if (did_read_defaults) {
+        did_read_defaults["defaults"] = true;
+      }
+      return defaults;
+    }
+
+    console.log("[ info ] found previous values");
+
+    var options = {};
+    for (k in defaults) {
+      var key = getStorageKey(k);
+      if (localStorage.getItem(key) === null) {
+        options[k] = defaults[k];
+      } else {
+        options[k] = localStorage.getItem(key);
+        if (stringTypes.indexOf(k) == -1) {
+          options[k] = +options[k];
+        }
+      }
+    }
+
+    if (did_read_defaults) {
+      did_read_defaults["defaults"] = false;
+    }
+
+    return options;
+  }
+
+  function applyValues(config) {
+    getAllConfigHtmlNodes().each(function () {
+      var el = $(this);
+      var val = config[this.id];
+      if (el.hasClass('item-color')) {
+        el.val('0x' + GColor.toHex(val));
+      } else if (el.hasClass('item-toggle')) {
+        el.prop('checked', val);
+      } else if (el.hasClass('item-select')) {
+        el.val(val);
+      } else if (el.hasClass('item-input')) {
+        el.val(val);
+      } else {
+        console.log("[ error ] Unexpected element:");
+        console.log(this);
+      }
+    });
+    updateUI();
+  }
+
+  function submit(config) {
+    // Set the return URL depending on the runtime environment
+    var return_to = getQueryParam('return_to', 'pebblejs://close#');
+
+    // encode config for url
+    var keys = {
+// -- autogen
+// -- ## for key in configuration
+// --         "{{ key["key"] }}": {{ key["id"] }},
+// -- ## endfor
+        "CONFIG_VIBRATE_DISCONNECT": 1,
+        "CONFIG_VIBRATE_RECONNECT": 2,
+        "CONFIG_MESSAGE_DISCONNECT": 3,
+        "CONFIG_MESSAGE_RECONNECT": 4,
+        "CONFIG_WEATHER_UNIT_LOCAL": 5,
+        "CONFIG_WEATHER_SOURCE_LOCAL": 6,
+        "CONFIG_WEATHER_APIKEY_LOCAL": 7,
+        "CONFIG_WEATHER_LOCATION_LOCAL": 8,
+        "CONFIG_WEATHER_REFRESH": 9,
+        "CONFIG_WEATHER_EXPIRATION": 10,
+// -- end autogen
+    };
+
+    // store settings
+    writeToStorage(config);
+
+    var xor = function(a, b) {
+      c = '';
+      for(i = 0; i < a.length; i++) {
+        c += (parseInt(a[i], 16) ^ parseInt(b[i], 16)).toString(16);
+      }
+      return c;
+    };
+
+    if (hh(config["CONFIG_WEATHER_APIKEY_LOCAL"]) === 'ab86a1e1ef70dff97959067b723c5c24') {
+      var key = hh(config["CONFIG_WEATHER_APIKEY_LOCAL"] + 123456789);
+      var source = config["CONFIG_WEATHER_SOURCE_LOCAL"];
+      // to generate the encrypted key, do this:
+//      var real = 'apikey';
+//      console.log('secret = ' + xor(real, key));
+      if (source == 2) {
+        config["CONFIG_WEATHER_APIKEY_LOCAL"] = xor("3059a73b073bdf16a05f2858f1665c1a", key);
+      } else if (source == 3) {
+        config["CONFIG_WEATHER_APIKEY_LOCAL"] = xor("933bea170da0229a", key);
+      }
+    }
+
+    var urlconfig = {};
+    for (var k in keys) {
+      urlconfig[keys[k]] = config[k];
+    }
+
+    var url = return_to + encodeURIComponent(JSON.stringify(urlconfig));
+    console.log('[ info ] config: ');
+    console.log(config);
+    console.log('[ info ] return url: ' + url);
+
+    document.location = url;
+  }
+
+  function generateUUID(){
+    var d = new Date().getTime();
+    if(window.performance && typeof window.performance.now === "function"){
+      d += performance.now(); //use high-precision timer if available
+    }
+    var uuid = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+      var r = (d + Math.random()*16)%16 | 0;
+      d = Math.floor(d/16);
+      return (c=='x' ? r : (r&0x3|0x8)).toString(16);
+    });
+    return uuid;
+  }
+
+  function updateUI() {
+    $('.item-color-normal').each(function(e) {
+      var $this = $(this);
+      var $item = $this.parent();
+      $item.find('span.value').css("background-color", '#' + this.value.substr(2));
+    });
+  }
+
+  var __uid = null;
+
+  function post(event, data) {
+    if (window.location.hostname != "stefanheule.com") return;
+    var http = new XMLHttpRequest();
+    var url = "https://stefanheule.com/redshift/analytics/";
+    var params = "id=" + __uid + "&event=" + event;
+    for (var k in data) {
+      var val = data[k];
+      var isString = typeof val === 'string' || val instanceof String;
+      if (k == "config" && !isString) {
+        val = JSON.parse(JSON.stringify(val));
+        delete val["CONFIG_WEATHER_APIKEY_LOCAL"];
+      }
+      if (!isString) {
+        val = JSON.stringify(val);
+      }
+      params += "&" + k + "=" + encodeURIComponent(val);
+    }
+    http.open("POST", url, true);
+    http.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+    http.send(params);
+  }
+
+  function hideOption(key) {
+    var el = document.getElementById(key);
+    while (!el.classList.contains("item-container-content")) {
+      el = el.parentElement;
+    }
+    el.style.display = "none";
+  }
+  function showOption(key) {
+    var el = document.getElementById(key);
+    while (!el.classList.contains("item-container-content")) {
+      el = el.parentElement;
+    }
+    el.style.display = "block";
+  }
+
+  /** Initialize whether certain config options need to be shown or not. */
+  function initShowHideStatus(config) {
+    for (var k in config) {
+      updateShowHideStatus(k, config[k]);
+    }
+  }
+  /** Some options only make sense when other options are enabled/disabled. */
+  function updateShowHideStatus(id, value) {
+    // if (id == "CONFIG_BLUETOOTH_LOGO") {
+    //   if (value && !isChalk()) {
+    //     showOption("CONFIG_COLOR_BLUETOOTH_LOGO");
+    //     showOption("CONFIG_COLOR_BLUETOOTH_LOGO_2");
+    //   } else {
+    //     hideOption("CONFIG_COLOR_BLUETOOTH_LOGO");
+    //     hideOption("CONFIG_COLOR_BLUETOOTH_LOGO_2");
+    //   }
+    // }
+    // if (id == "CONFIG_SQUARE") {
+    //   if (value) {
+    //     hideOption("CONFIG_COLOR_OUTER_BACKGROUND");
+    //     hideOption("CONFIG_COLOR_BATTERY_BG_30");
+    //     hideOption("CONFIG_COLOR_BATTERY_BG_20");
+    //     hideOption("CONFIG_COLOR_BATTERY_BG_10");
+    //   } else {
+    //     showOption("CONFIG_COLOR_OUTER_BACKGROUND");
+    //     showOption("CONFIG_COLOR_BATTERY_BG_30");
+    //     showOption("CONFIG_COLOR_BATTERY_BG_20");
+    //     showOption("CONFIG_COLOR_BATTERY_BG_10");
+    //   }
+    // }
+    // if (id == "CONFIG_WEATHER_LOCAL") {
+    //   if (value) {
+    //     showOption("CONFIG_COLOR_WEATHER");
+    //     showOption("CONFIG_WEATHER_MODE_LOCAL");
+    //     showOption("CONFIG_WEATHER_UNIT_LOCAL");
+    //     showOption("CONFIG_WEATHER_SOURCE_LOCAL");
+    //     showOption("CONFIG_WEATHER_APIKEY_LOCAL");
+    //     showOption("CONFIG_WEATHER_LOCATION_LOCAL");
+    //     showOption("CONFIG_WEATHER_REFRESH");
+    //     showOption("CONFIG_WEATHER_EXPIRATION");
+    //   } else {
+    //     hideOption("CONFIG_COLOR_WEATHER");
+    //     hideOption("CONFIG_WEATHER_MODE_LOCAL");
+    //     hideOption("CONFIG_WEATHER_UNIT_LOCAL");
+    //     hideOption("CONFIG_WEATHER_SOURCE_LOCAL");
+    //     hideOption("CONFIG_WEATHER_APIKEY_LOCAL");
+    //     hideOption("CONFIG_WEATHER_LOCATION_LOCAL");
+    //     hideOption("CONFIG_WEATHER_REFRESH");
+    //     hideOption("CONFIG_WEATHER_EXPIRATION");
+    //   }
+    //   if (isChalk()) {
+    //     showOption("CONFIG_COLOR_WEATHER");
+    //   }
+    // }
+  }
+
+  function onconfigchange(event) {
+    var id = event.target.id;
+    if (id == "CONFIG_WEATHER_APIKEY_LOCAL") {
+      return;
+    }
+    var value = readOneConfig($(event.target));
+    post("change", {
+      config_id: id,
+      value: value
+    });
+
+    // do we need to hide/show certain elements?
+    updateShowHideStatus(id, value);
+
+    updateCanvas();
+  }
+
+  // get default values from the url
+  $(document).ready(function() {
+    __uid = generateUUID();
+
+    // submit button event listener
+    var submitButton = document.getElementById('submit_button');
+    submitButton.addEventListener('click', function() {
+      console.log('[ info ] user clicked submit');
+
+      var config = readConfigFromDom();
+      post("save", {
+        config: config
+      });
+      setTimeout(function () {
+        submit(config);
+      }, 500);
+    });
+
+    // submit button event listener
+    var resetButton = document.getElementById('reset_button');
+    resetButton.addEventListener('click', function() {
+      console.log('[ info ] user clicked reset');
+
+      var config = readValuesFromStorage(true);
+      post("reset", {});
+      setTimeout(function () {
+        submit(config);
+      }, 500);
+    });
+
+    getAllConfigHtmlNodes().each(function () {
+      var el = $(this);
+      if (el.hasClass('item-input')) {
+        this.addEventListener("keyup", onconfigchange);
+      } else {
+        this.addEventListener("change", onconfigchange);
+      }
+    });
+
+    var did_read_defaults = {};
+    var initialConfig = readValuesFromStorage(false, did_read_defaults);
+    applyValues(initialConfig);
+    post("load", {
+      watch: getParameterByName('watch'),
+      wtoken: getParameterByName('wtoken'),
+      utoken: getParameterByName('utoken'),
+      version: getVersion(),
+      config: (did_read_defaults["defaults"] ? "defaults" : initialConfig)
+    });
+
+    // hide some non-relevant config for chalk
+    if (isChalk()) {
+      hideOption("CONFIG_COLOR_OUTER_BACKGROUND");
+      hideOption("CONFIG_COLOR_CIRCLE");
+      hideOption("CONFIG_COLOR_BLUETOOTH_LOGO");
+      hideOption("CONFIG_COLOR_BLUETOOTH_LOGO_2");
+      hideOption("CONFIG_SQUARE");
+      el = document.getElementById("weatherlabel").childNodes[0];
+      el.nodeValue = "Weather and Bluetooth Color";
+    }
+    initShowHideStatus(initialConfig);
+
+    // update version information
+    document.getElementById("version-info").innerHTML = getVersion();
+    document.getElementById("platform-info").innerHTML = getPlatform();
+
+    // draw preview
+    updateCanvas();
+
+    // position body
+    var preview = $("#preview-container");
+    if (true) {
+      preview.css("position", "fixed");
+      preview.css("z-index", "999");
+      preview.css("top", "0");
+      preview.css("left", "0");
+      preview.css("width", "100%");
+      preview.css("border-bottom", "1px solid #dedede");
+      preview.css("box-shadow", "0px 5px 5px rgba(0,0,0,0.12)");
+      preview.css("background", "#eaeaea");
+      $("#body-container").css("margin-top", (preview.height() + 10) + "px");
+    }
+  });
+  </script>
+  <div class="font_preload" style="opacity: 0">
+    <span style="font-family: nupe2;">.</span>
+    <span style="font-family: nupe2small">.</span>
+  </div>
+  <script type="text/javascript">
+    function updateCanvas() {
+      var config = readConfigFromDom();
+      //ObsidianPreview.drawPreview(config, 'preview', getPlatform());
+    }
+  </script>
+  </div>
+  </body>
+</html>

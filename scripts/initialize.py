@@ -75,7 +75,8 @@ files_to_inline_render = [
   "src/redshift.h",
   "src/redshift.c",
   "src/settings.c",
-  "src/js/pebble-js-app.js"
+  "src/js/pebble-js-app.js",
+  "config/index.html",
 ]
 
 
