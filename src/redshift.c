@@ -17,56 +17,23 @@
 
 
 ////////////////////////////////////////////
-//// Default values for the configuration
-////////////////////////////////////////////
-
-// defaults are also in src/redshift.c, src/js/pebble-js-app.js and config/js/preview.js
-uint8_t config_color_outer_background = COLOR_FALLBACK(GColorDarkGrayARGB8, GColorBlackARGB8);
-uint8_t config_color_inner_background = COLOR_FALLBACK(GColorWhiteARGB8, GColorWhiteARGB8);
-uint8_t config_color_minute_hand = COLOR_FALLBACK(GColorBlackARGB8, GColorBlackARGB8);
-uint8_t config_color_inner_minute_hand = COLOR_FALLBACK(GColorLightGrayARGB8, GColorBlackARGB8);
-uint8_t config_color_hour_hand = COLOR_FALLBACK(GColorJaegerGreenARGB8, GColorBlackARGB8);
-uint8_t config_color_inner_hour_hand = COLOR_FALLBACK(GColorLightGrayARGB8, GColorBlackARGB8);
-uint8_t config_color_circle = COLOR_FALLBACK(GColorBlackARGB8, GColorBlackARGB8);
-uint8_t config_color_ticks = COLOR_FALLBACK(GColorBlackARGB8, GColorBlackARGB8);
-uint8_t config_color_day_of_week = COLOR_FALLBACK(GColorJaegerGreenARGB8, GColorBlackARGB8);
-uint8_t config_color_date = COLOR_FALLBACK(GColorBlackARGB8, GColorBlackARGB8);
-uint8_t config_battery_logo = 1;
-uint8_t config_color_battery_logo = COLOR_FALLBACK(PBL_IF_ROUND_ELSE(GColorDarkGrayARGB8, GColorBlackARGB8),
-                                                   GColorWhiteARGB8);
-uint8_t config_color_battery_30 = COLOR_FALLBACK(PBL_IF_ROUND_ELSE(GColorYellowARGB8, GColorBlackARGB8),
-                                                 GColorWhiteARGB8);
-uint8_t config_color_battery_20 = COLOR_FALLBACK(PBL_IF_ROUND_ELSE(GColorOrangeARGB8, GColorBlackARGB8),
-                                                 GColorWhiteARGB8);
-uint8_t config_color_battery_10 = COLOR_FALLBACK(PBL_IF_ROUND_ELSE(GColorRedARGB8, GColorBlackARGB8),
-                                                 GColorWhiteARGB8);
-uint8_t config_color_battery_bg_30 = COLOR_FALLBACK(PBL_IF_ROUND_ELSE(GColorWhiteARGB8, GColorYellowARGB8),
-                                                    GColorBlackARGB8);
-uint8_t config_color_battery_bg_20 = COLOR_FALLBACK(PBL_IF_ROUND_ELSE(GColorWhiteARGB8, GColorOrangeARGB8),
-                                                    GColorBlackARGB8);
-uint8_t config_color_battery_bg_10 = COLOR_FALLBACK(PBL_IF_ROUND_ELSE(GColorWhiteARGB8, GColorRedARGB8),
-                                                    GColorBlackARGB8);
-uint8_t config_color_bluetooth_logo = COLOR_FALLBACK(GColorWhiteARGB8, GColorBlackARGB8);
-uint8_t config_color_bluetooth_logo_2 = COLOR_FALLBACK(GColorBlackARGB8, GColorWhiteARGB8);
-uint8_t config_bluetooth_logo = true;
-uint8_t config_vibrate_disconnect = true;
-uint8_t config_vibrate_reconnect = true;
-uint8_t config_message_disconnect = true;
-uint8_t config_message_reconnect = true;
-uint8_t config_minute_ticks = 1;
-uint8_t config_hour_ticks = 1;
-uint8_t config_color_weather = COLOR_FALLBACK(GColorBlackARGB8, GColorBlackARGB8);
-uint16_t config_weather_refresh = 30;
-uint16_t config_weather_expiration = 3*60;
-uint8_t config_square = false;
-uint8_t config_seconds = 0;
-uint8_t config_color_seconds = COLOR_FALLBACK(GColorJaegerGreenARGB8, GColorBlackARGB8);
-uint8_t config_date_format = 0;
-
-
-////////////////////////////////////////////
 //// Global variables
 ////////////////////////////////////////////
+
+// -- autogen
+// -- ## for key in configuration
+// -- ##   if not key["local"]
+// -- {{ key["type"] }} {{ key["key"] | lower }} = {{ key["default"]}};
+// -- ##   endif
+// -- ## endfor
+uint8_t _config_vibrate_disconnect = true;
+uint8_t _config_vibrate_reconnect = true;
+uint8_t _config_message_disconnect = true;
+uint8_t _config_message_reconnect = true;
+uint8_t _config_weather_refresh = 30;
+uint8_t _config_weather_expiration = 3*60;
+// -- end autogen
+
 
 /** A pointer to our window, for later deallocation. */
 Window *window;

@@ -29,18 +29,27 @@
 #include "ui-util.h"
 #include "ui.h"
 
-//#define DEBUG_DATE_POSITION
-//#define DEBUG_WEATHER_POSITION
-
 ////////////////////////////////////////////
 //// Configuration constants
 ////////////////////////////////////////////
 
 // -- autogen
 // -- ## for key in configuration
+// -- ##   if not key["local"]
 // -- #define {{ key["key"] }} {{ key["id"] }}
+// -- ##   endif
 // -- ## endfor
-#define CONFIG_COLOR_OUTER_BACKGROUND 1
+#define _CONFIG_VIBRATE_DISCONNECT 1
+#define _CONFIG_VIBRATE_RECONNECT 2
+#define _CONFIG_MESSAGE_DISCONNECT 3
+#define _CONFIG_MESSAGE_RECONNECT 4
+#define _CONFIG_WEATHER_REFRESH 9
+#define _CONFIG_WEATHER_EXPIRATION 10
+// -- end autogen
+
+// -- autogen
+// -- #define REDSHIFT_N_CONFIG {{ num_config_items }}
+#define REDSHIFT_N_CONFIG 10
 // -- end autogen
 
 // -- autogen
@@ -65,40 +74,19 @@
 //// Configuration values
 ////////////////////////////////////////////
 
-extern uint8_t config_color_outer_background;
-extern uint8_t config_color_inner_background;
-extern uint8_t config_color_minute_hand;
-extern uint8_t config_color_inner_minute_hand;
-extern uint8_t config_color_hour_hand;
-extern uint8_t config_color_inner_hour_hand;
-extern uint8_t config_color_circle;
-extern uint8_t config_color_ticks;
-extern uint8_t config_color_day_of_week;
-extern uint8_t config_color_date;
-extern uint8_t config_battery_logo;
-extern uint8_t config_color_battery_logo;
-extern uint8_t config_color_battery_30;
-extern uint8_t config_color_battery_20;
-extern uint8_t config_color_battery_10;
-extern uint8_t config_color_battery_bg_30;
-extern uint8_t config_color_battery_bg_20;
-extern uint8_t config_color_battery_bg_10;
-extern uint8_t config_color_bluetooth_logo;
-extern uint8_t config_color_bluetooth_logo_2;
-extern uint8_t config_bluetooth_logo;
-extern uint8_t config_vibrate_disconnect;
-extern uint8_t config_vibrate_reconnect;
-extern uint8_t config_message_disconnect;
-extern uint8_t config_message_reconnect;
-extern uint8_t config_minute_ticks;
-extern uint8_t config_hour_ticks;
-extern uint8_t config_color_weather;
-extern uint16_t config_weather_refresh;
-extern uint16_t config_weather_expiration;
-extern uint8_t config_square;
-extern uint8_t config_seconds;
-extern uint8_t config_color_seconds;
-extern uint8_t config_date_format;
+// -- autogen
+// -- ## for key in configuration
+// -- ##   if not key["local"]
+// -- extern {{ key["type"] }} {{ key["key"] | lower }};
+// -- ##   endif
+// -- ## endfor
+extern uint8_t _config_vibrate_disconnect;
+extern uint8_t _config_vibrate_reconnect;
+extern uint8_t _config_message_disconnect;
+extern uint8_t _config_message_reconnect;
+extern uint8_t _config_weather_refresh;
+extern uint8_t _config_weather_expiration;
+// -- end autogen
 
 
 ////////////////////////////////////////////
@@ -144,7 +132,6 @@ extern AppTimer * weather_request_timer;
 #define REDSHIFT_BLUETOOTH_POPUP_MS 5000
 
 #define REDSHIFT_OUTBOX_SIZE 100
-#define REDSHIFT_N_CONFIG CONFIG_END_MARKER
 #define REDSHIFT_WEATHER_N_INTS 4 // 3 temps + 1 icon
 #define REDSHIFT_WEATHER_HOURS 30
 #define REDSHIFT_WEATHER_INTS_PER_HOUR 2 // time and percentage

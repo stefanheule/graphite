@@ -10,11 +10,50 @@ import re
 # ------------------------------------------------------------------------------
 
 version = '1.0'
+config_version = '1'
 
 configuration = [
   {
-    'key': 'COLOR_OUTER_BACKGROUND',
+    'key': 'CONFIG_VIBRATE_DISCONNECT',
+    'default': 'true',
+  },
+  {
+    'key': 'CONFIG_VIBRATE_RECONNECT',
+    'default': 'true',
+  },
+  {
+    'key': 'CONFIG_MESSAGE_DISCONNECT',
+    'default': 'true',
+  },
+  {
+    'key': 'CONFIG_MESSAGE_RECONNECT',
+    'default': 'true',
+  },
+  {
+    'key': 'CONFIG_WEATHER_UNIT_LOCAL',
+    'default': '1',
+  },
+  {
+    'key': 'CONFIG_WEATHER_SOURCE_LOCAL',
+    'default': '1',
+  },
+  {
+    'key': 'CONFIG_WEATHER_APIKEY_LOCAL',
     'default': '',
+  },
+  {
+    'key': 'CONFIG_WEATHER_LOCATION_LOCAL',
+    'default': '',
+  },
+  {
+    'key': 'CONFIG_WEATHER_REFRESH',
+    'default': '30',
+    'type': 'uint16_t',
+  },
+  {
+    'key': 'CONFIG_WEATHER_EXPIRATION',
+    'default': '3*60',
+    'type': 'uint16_t',
   },
 ]
 
@@ -29,46 +68,14 @@ msg_keys = [
   'JS_READY',
 ]
 
-# "CONFIG_COLOR_OUTER_BACKGROUND": 1,
-# "CONFIG_COLOR_INNER_BACKGROUND": 2,
-# "CONFIG_COLOR_MINUTE_HAND": 3,
-# "CONFIG_COLOR_INNER_MINUTE_HAND": 4,
-# "CONFIG_COLOR_HOUR_HAND": 5,
-# "CONFIG_COLOR_INNER_HOUR_HAND": 6,
-# "CONFIG_COLOR_CIRCLE": 7,
-# "CONFIG_COLOR_TICKS": 8,
-# "CONFIG_COLOR_DAY_OF_WEEK": 9,
-# "CONFIG_COLOR_DATE": 10,
-# "CONFIG_BATTERY_LOGO": 11,
-# "CONFIG_COLOR_BATTERY_LOGO": 12,
-# "CONFIG_COLOR_BATTERY_BG_30": 13,
-# "CONFIG_COLOR_BATTERY_BG_20": 14,
-# "CONFIG_COLOR_BATTERY_BG_10": 15,
-# "CONFIG_COLOR_BLUETOOTH_LOGO": 16,
-# "CONFIG_COLOR_BLUETOOTH_LOGO_2": 17,
-# "CONFIG_BLUETOOTH_LOGO": 18,
-# "CONFIG_VIBRATE_DISCONNECT": 19,
-# "CONFIG_VIBRATE_RECONNECT": 20,
-# "CONFIG_MESSAGE_DISCONNECT": 21,
-# "CONFIG_MESSAGE_RECONNECT": 22,
-# "CONFIG_MINUTE_TICKS": 23,
-# "CONFIG_HOUR_TICKS": 24,
-# "CONFIG_COLOR_BATTERY_30": 25,
-# "CONFIG_COLOR_BATTERY_20": 26,
-# "CONFIG_COLOR_BATTERY_10": 27,
-# "CONFIG_WEATHER_LOCAL": 28,
-# "CONFIG_COLOR_WEATHER": 29,
-# "CONFIG_WEATHER_MODE_LOCAL": 30,
-# "CONFIG_WEATHER_UNIT_LOCAL": 31,
-# "CONFIG_WEATHER_SOURCE_LOCAL": 32,
-# "CONFIG_WEATHER_APIKEY_LOCAL": 33,
-# "CONFIG_WEATHER_LOCATION_LOCAL": 34,
-# "CONFIG_WEATHER_REFRESH": 35,
-# "CONFIG_WEATHER_EXPIRATION": 36,
-# "CONFIG_SQUARE": 37,
-# "CONFIG_SECONDS": 38,
-# "CONFIG_COLOR_SECONDS": 39,
-# "CONFIG_DATE_FORMAT": 40,
+files_to_render = [
+  "package.template.json",
+]
+files_to_inline_render = [
+  "src/redshift.h",
+  "src/redshift.c",
+]
+
 
 # ------------------------------------------------------------------------------
 # --- end configuration
@@ -82,11 +89,14 @@ def get_context():
   """Get the context used to render templates"""
   global _context
   if _context is None:
+    config = add_key_id(configuration, '', 1)
     _context =  {
       'version': version,
+      'config_version': config_version,
       'supported_platforms': read_configure('SUPPORTED_PLATFORMS').split(' '),
-      'configuration': add_key_id(configuration, 'CONFIG', 1),
-      'message_keys': add_key_id(msg_keys, 'MSG_KEY', 100),
+      'configuration': config,
+      'num_config_items': len(config),
+      'message_keys': add_key_id(msg_keys, 'MSG_KEY_', 100),
     }
   return _context
 
@@ -96,10 +106,17 @@ def add_key_id(keys, prefix, start_id):
   i = start_id
   for k in keys:
     if type(k) in [str, unicode]:
-      res.append({'key': "%s_%s" % (prefix, k), 'id': i})
+      res.append({'key': "%s%s" % (prefix, k), 'id': i})
     else:
+      name = k['key']
       k['key'] = "%s_%s" % (prefix, k['key'])
       k['id'] = i
+      
+      # also add some other helper content
+      k['local'] = name[-5:] == 'LOCAL'
+      if not hasattr(k, 'type'):
+        k['type'] = 'uint8_t'
+
       res.append(k)
     i += 1
   return res
@@ -187,8 +204,10 @@ def inline_render(file):
   # write_file(file.replace(".template", ""), )
 
 def main():
-  render("package.template.json")
-  inline_render("src/redshift.h")
+  for f in files_to_render:
+    render(f)
+  for f in files_to_inline_render:
+    inline_render(f)
 
 if __name__ == "__main__":
   main()
