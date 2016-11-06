@@ -39,11 +39,11 @@ configuration = [
   },
   {
     'key': 'CONFIG_WEATHER_APIKEY_LOCAL',
-    'default': '',
+    'default': '""',
   },
   {
     'key': 'CONFIG_WEATHER_LOCATION_LOCAL',
-    'default': '',
+    'default': '""',
   },
   {
     'key': 'CONFIG_WEATHER_REFRESH',
@@ -74,6 +74,8 @@ files_to_render = [
 files_to_inline_render = [
   "src/redshift.h",
   "src/redshift.c",
+  "src/settings.c",
+  "src/js/pebble-js-app.js"
 ]
 
 
@@ -109,12 +111,12 @@ def add_key_id(keys, prefix, start_id):
       res.append({'key': "%s%s" % (prefix, k), 'id': i})
     else:
       name = k['key']
-      k['key'] = "%s_%s" % (prefix, k['key'])
+      k['key'] = "%s%s" % (prefix, k['key'])
       k['id'] = i
       
       # also add some other helper content
       k['local'] = name[-5:] == 'LOCAL'
-      if not hasattr(k, 'type'):
+      if 'type' not in k:
         k['type'] = 'uint8_t'
 
       res.append(k)

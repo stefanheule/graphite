@@ -26,12 +26,12 @@
 // -- {{ key["type"] }} {{ key["key"] | lower }} = {{ key["default"]}};
 // -- ##   endif
 // -- ## endfor
-uint8_t _config_vibrate_disconnect = true;
-uint8_t _config_vibrate_reconnect = true;
-uint8_t _config_message_disconnect = true;
-uint8_t _config_message_reconnect = true;
-uint8_t _config_weather_refresh = 30;
-uint8_t _config_weather_expiration = 3*60;
+uint8_t config_vibrate_disconnect = true;
+uint8_t config_vibrate_reconnect = true;
+uint8_t config_message_disconnect = true;
+uint8_t config_message_reconnect = true;
+uint16_t config_weather_refresh = 30;
+uint16_t config_weather_expiration = 3*60;
 // -- end autogen
 
 

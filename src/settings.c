@@ -86,40 +86,19 @@ bool sync_helper_2(const uint32_t key, DictionaryIterator *iter, uint16_t *value
 void inbox_received_handler(DictionaryIterator *iter, void *context) {
     APP_LOG(APP_LOG_LEVEL_DEBUG, "received message");
     bool dirty = false;
-    dirty |= sync_helper(CONFIG_COLOR_OUTER_BACKGROUND, iter, &config_color_outer_background);
-    dirty |= sync_helper(CONFIG_COLOR_INNER_BACKGROUND, iter, &config_color_inner_background);
-    dirty |= sync_helper(CONFIG_COLOR_MINUTE_HAND, iter, &config_color_minute_hand);
-    dirty |= sync_helper(CONFIG_COLOR_INNER_MINUTE_HAND, iter, &config_color_inner_minute_hand);
-    dirty |= sync_helper(CONFIG_COLOR_HOUR_HAND, iter, &config_color_hour_hand);
-    dirty |= sync_helper(CONFIG_COLOR_INNER_HOUR_HAND, iter, &config_color_inner_hour_hand);
-    dirty |= sync_helper(CONFIG_COLOR_CIRCLE, iter, &config_color_circle);
-    dirty |= sync_helper(CONFIG_COLOR_TICKS, iter, &config_color_ticks);
-    dirty |= sync_helper(CONFIG_COLOR_DAY_OF_WEEK, iter, &config_color_day_of_week);
-    dirty |= sync_helper(CONFIG_COLOR_DATE, iter, &config_color_date);
-    dirty |= sync_helper(CONFIG_BATTERY_LOGO, iter, &config_battery_logo);
-    dirty |= sync_helper(CONFIG_COLOR_BATTERY_LOGO, iter, &config_color_battery_logo);
-    dirty |= sync_helper(CONFIG_COLOR_BATTERY_30, iter, &config_color_battery_30);
-    dirty |= sync_helper(CONFIG_COLOR_BATTERY_20, iter, &config_color_battery_20);
-    dirty |= sync_helper(CONFIG_COLOR_BATTERY_10, iter, &config_color_battery_10);
-    dirty |= sync_helper(CONFIG_COLOR_BATTERY_BG_30, iter, &config_color_battery_bg_30);
-    dirty |= sync_helper(CONFIG_COLOR_BATTERY_BG_20, iter, &config_color_battery_bg_20);
-    dirty |= sync_helper(CONFIG_COLOR_BATTERY_BG_10, iter, &config_color_battery_bg_10);
-    dirty |= sync_helper(CONFIG_COLOR_BLUETOOTH_LOGO, iter, &config_color_bluetooth_logo);
-    dirty |= sync_helper(CONFIG_COLOR_BLUETOOTH_LOGO_2, iter, &config_color_bluetooth_logo_2);
-    dirty |= sync_helper(CONFIG_BLUETOOTH_LOGO, iter, &config_bluetooth_logo);
+// -- autogen
+// -- ## for key in configuration
+// -- ##   if not key["local"]
+// --     dirty |= sync_helper{% if key["type"] == "uint16_t" %}_2{% endif %}({{ key["key"] }}, iter, &{{ key["key"] | lower }});
+// -- ##   endif
+// -- ## endfor
     dirty |= sync_helper(CONFIG_VIBRATE_DISCONNECT, iter, &config_vibrate_disconnect);
     dirty |= sync_helper(CONFIG_VIBRATE_RECONNECT, iter, &config_vibrate_reconnect);
     dirty |= sync_helper(CONFIG_MESSAGE_DISCONNECT, iter, &config_message_disconnect);
     dirty |= sync_helper(CONFIG_MESSAGE_RECONNECT, iter, &config_message_reconnect);
-    dirty |= sync_helper(CONFIG_MINUTE_TICKS, iter, &config_minute_ticks);
-    dirty |= sync_helper(CONFIG_HOUR_TICKS, iter, &config_hour_ticks);
-    dirty |= sync_helper(CONFIG_COLOR_WEATHER, iter, &config_color_weather);
     dirty |= sync_helper_2(CONFIG_WEATHER_REFRESH, iter, &config_weather_refresh);
     dirty |= sync_helper_2(CONFIG_WEATHER_EXPIRATION, iter, &config_weather_expiration);
-    dirty |= sync_helper(CONFIG_SQUARE, iter, &config_square);
-    dirty |= sync_helper(CONFIG_SECONDS, iter, &config_seconds);
-    dirty |= sync_helper(CONFIG_COLOR_SECONDS, iter, &config_color_seconds);
-    dirty |= sync_helper(CONFIG_DATE_FORMAT, iter, &config_date_format);
+// -- end autogen
 
     bool ask_for_weather_update = true;
 
@@ -181,40 +160,20 @@ void read_config_2(const uint32_t key, uint16_t *value) {
  * Read all items from the configuration storage.
  */
 void read_config_all() {
-    read_config(CONFIG_COLOR_OUTER_BACKGROUND, &config_color_outer_background);
-    read_config(CONFIG_COLOR_INNER_BACKGROUND, &config_color_inner_background);
-    read_config(CONFIG_COLOR_MINUTE_HAND, &config_color_minute_hand);
-    read_config(CONFIG_COLOR_INNER_MINUTE_HAND, &config_color_inner_minute_hand);
-    read_config(CONFIG_COLOR_HOUR_HAND, &config_color_hour_hand);
-    read_config(CONFIG_COLOR_INNER_HOUR_HAND, &config_color_inner_hour_hand);
-    read_config(CONFIG_COLOR_CIRCLE, &config_color_circle);
-    read_config(CONFIG_COLOR_TICKS, &config_color_ticks);
-    read_config(CONFIG_COLOR_DAY_OF_WEEK, &config_color_day_of_week);
-    read_config(CONFIG_COLOR_DATE, &config_color_date);
-    read_config(CONFIG_BATTERY_LOGO, &config_battery_logo);
-    read_config(CONFIG_COLOR_BATTERY_LOGO, &config_color_battery_logo);
-    read_config(CONFIG_COLOR_BATTERY_30, &config_color_battery_30);
-    read_config(CONFIG_COLOR_BATTERY_20, &config_color_battery_20);
-    read_config(CONFIG_COLOR_BATTERY_10, &config_color_battery_10);
-    read_config(CONFIG_COLOR_BATTERY_BG_30, &config_color_battery_bg_30);
-    read_config(CONFIG_COLOR_BATTERY_BG_20, &config_color_battery_bg_20);
-    read_config(CONFIG_COLOR_BATTERY_BG_10, &config_color_battery_bg_10);
-    read_config(CONFIG_COLOR_BLUETOOTH_LOGO, &config_color_bluetooth_logo);
-    read_config(CONFIG_COLOR_BLUETOOTH_LOGO_2, &config_color_bluetooth_logo_2);
-    read_config(CONFIG_BLUETOOTH_LOGO, &config_bluetooth_logo);
+
+// -- autogen
+// -- ## for key in configuration
+// -- ##   if not key["local"]
+// --     read_config{% if key["type"] == "uint16_t" %}_2{% endif %}({{ key["key"] }}, &{{ key["key"] | lower }});
+// -- ##   endif
+// -- ## endfor
     read_config(CONFIG_VIBRATE_DISCONNECT, &config_vibrate_disconnect);
     read_config(CONFIG_VIBRATE_RECONNECT, &config_vibrate_reconnect);
     read_config(CONFIG_MESSAGE_DISCONNECT, &config_message_disconnect);
     read_config(CONFIG_MESSAGE_RECONNECT, &config_message_reconnect);
-    read_config(CONFIG_MINUTE_TICKS, &config_minute_ticks);
-    read_config(CONFIG_HOUR_TICKS, &config_hour_ticks);
-    read_config(CONFIG_COLOR_WEATHER, &config_color_weather);
     read_config_2(CONFIG_WEATHER_REFRESH, &config_weather_refresh);
     read_config_2(CONFIG_WEATHER_EXPIRATION, &config_weather_expiration);
-    read_config(CONFIG_SQUARE, &config_square);
-    read_config(CONFIG_SECONDS, &config_seconds);
-    read_config(CONFIG_COLOR_SECONDS, &config_color_seconds);
-    read_config(CONFIG_DATE_FORMAT, &config_date_format);
+// -- end autogen
 
     if (persist_exists(PERSIST_KEY_WEATHER) && persist_get_size(PERSIST_KEY_WEATHER) == sizeof(Weather)) {
         Weather tmp;

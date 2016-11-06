@@ -39,12 +39,12 @@
 // -- #define {{ key["key"] }} {{ key["id"] }}
 // -- ##   endif
 // -- ## endfor
-#define _CONFIG_VIBRATE_DISCONNECT 1
-#define _CONFIG_VIBRATE_RECONNECT 2
-#define _CONFIG_MESSAGE_DISCONNECT 3
-#define _CONFIG_MESSAGE_RECONNECT 4
-#define _CONFIG_WEATHER_REFRESH 9
-#define _CONFIG_WEATHER_EXPIRATION 10
+#define CONFIG_VIBRATE_DISCONNECT 1
+#define CONFIG_VIBRATE_RECONNECT 2
+#define CONFIG_MESSAGE_DISCONNECT 3
+#define CONFIG_MESSAGE_RECONNECT 4
+#define CONFIG_WEATHER_REFRESH 9
+#define CONFIG_WEATHER_EXPIRATION 10
 // -- end autogen
 
 // -- autogen
@@ -80,12 +80,12 @@
 // -- extern {{ key["type"] }} {{ key["key"] | lower }};
 // -- ##   endif
 // -- ## endfor
-extern uint8_t _config_vibrate_disconnect;
-extern uint8_t _config_vibrate_reconnect;
-extern uint8_t _config_message_disconnect;
-extern uint8_t _config_message_reconnect;
-extern uint8_t _config_weather_refresh;
-extern uint8_t _config_weather_expiration;
+extern uint8_t config_vibrate_disconnect;
+extern uint8_t config_vibrate_reconnect;
+extern uint8_t config_message_disconnect;
+extern uint8_t config_message_reconnect;
+extern uint16_t config_weather_refresh;
+extern uint16_t config_weather_expiration;
 // -- end autogen
 
 

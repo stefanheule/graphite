@@ -51,7 +51,11 @@ Pebble.addEventListener('showConfiguration', function () {
     url += '&wtoken=' + encodeURIComponent(getWToken());
     url += '&utoken=' + encodeURIComponent(getUToken());
     url += '&watch=' + encodeURIComponent(getDetails());
-    url += '&version=2.6';
+// -- autogen
+// --     url += '&version={{ version }}';
+    url += '&version=1.0';
+// -- end autogen
+
     console.log('[ info/app ] Showing configuration page: ' + url);
     Pebble.openURL(url);
 });
@@ -60,48 +64,22 @@ Pebble.addEventListener('webviewclosed', function (e) {
     var urlconfig = JSON.parse(decodeURIComponent(e.response));
 
     // decode config
-    // config keys are also duplicated in src/obsidian.h, appinfo.json, src/js/pebble-js-app.js and config/js/preview.js
     var keys = {
-        "CONFIG_COLOR_OUTER_BACKGROUND": 1,
-        "CONFIG_COLOR_INNER_BACKGROUND": 2,
-        "CONFIG_COLOR_MINUTE_HAND": 3,
-        "CONFIG_COLOR_INNER_MINUTE_HAND": 4,
-        "CONFIG_COLOR_HOUR_HAND": 5,
-        "CONFIG_COLOR_INNER_HOUR_HAND": 6,
-        "CONFIG_COLOR_CIRCLE": 7,
-        "CONFIG_COLOR_TICKS": 8,
-        "CONFIG_COLOR_DAY_OF_WEEK": 9,
-        "CONFIG_COLOR_DATE": 10,
-        "CONFIG_BATTERY_LOGO": 11,
-        "CONFIG_COLOR_BATTERY_LOGO": 12,
-        "CONFIG_COLOR_BATTERY_BG_30": 13,
-        "CONFIG_COLOR_BATTERY_BG_20": 14,
-        "CONFIG_COLOR_BATTERY_BG_10": 15,
-        "CONFIG_COLOR_BLUETOOTH_LOGO": 16,
-        "CONFIG_COLOR_BLUETOOTH_LOGO_2": 17,
-        "CONFIG_BLUETOOTH_LOGO": 18,
-        "CONFIG_VIBRATE_DISCONNECT": 19,
-        "CONFIG_VIBRATE_RECONNECT": 20,
-        "CONFIG_MESSAGE_DISCONNECT": 21,
-        "CONFIG_MESSAGE_RECONNECT": 22,
-        "CONFIG_MINUTE_TICKS": 23,
-        "CONFIG_HOUR_TICKS": 24,
-        "CONFIG_COLOR_BATTERY_30": 25,
-        "CONFIG_COLOR_BATTERY_20": 26,
-        "CONFIG_COLOR_BATTERY_10": 27,
-        "CONFIG_WEATHER_LOCAL": 28,
-        "CONFIG_COLOR_WEATHER": 29,
-        "CONFIG_WEATHER_MODE_LOCAL": 30,
-        "CONFIG_WEATHER_UNIT_LOCAL": 31,
-        "CONFIG_WEATHER_SOURCE_LOCAL": 32,
-        "CONFIG_WEATHER_APIKEY_LOCAL": 33,
-        "CONFIG_WEATHER_LOCATION_LOCAL": 34,
-        "CONFIG_WEATHER_REFRESH": 35,
-        "CONFIG_WEATHER_EXPIRATION": 36,
-        "CONFIG_SQUARE": 37,
-        "CONFIG_SECONDS": 38,
-        "CONFIG_COLOR_SECONDS": 39,
-        "CONFIG_DATE_FORMAT": 40
+// -- autogen
+// -- ## for key in configuration
+// --         "{{ key["key"] }}": {{ key["id"] }},
+// -- ## endfor
+        "CONFIG_VIBRATE_DISCONNECT": 1,
+        "CONFIG_VIBRATE_RECONNECT": 2,
+        "CONFIG_MESSAGE_DISCONNECT": 3,
+        "CONFIG_MESSAGE_RECONNECT": 4,
+        "CONFIG_WEATHER_UNIT_LOCAL": 5,
+        "CONFIG_WEATHER_SOURCE_LOCAL": 6,
+        "CONFIG_WEATHER_APIKEY_LOCAL": 7,
+        "CONFIG_WEATHER_LOCATION_LOCAL": 8,
+        "CONFIG_WEATHER_REFRESH": 9,
+        "CONFIG_WEATHER_EXPIRATION": 10,
+// -- end autogen
     };
     var config = {};
     var fullconfig = {};
@@ -117,11 +95,10 @@ Pebble.addEventListener('webviewclosed', function (e) {
     if (config["CONFIG_WEATHER_REFRESH"] < 10) {
         config["CONFIG_WEATHER_REFRESH"] = 10;
     }
-    // set refresh to 0 to indicate that weather information is off
-    if (fullconfig["CONFIG_WEATHER_LOCAL"] == false) {
-        config["CONFIG_WEATHER_REFRESH"] = 0;
-    }
-
+    // // set refresh to 0 to indicate that weather information is off
+    // if (fullconfig["CONFIG_WEATHER_LOCAL"] == false) {
+    //     config["CONFIG_WEATHER_REFRESH"] = 0;
+    // }
 
     console.log('[ info/app ] Configuration page returned: ' + JSON.stringify(fullconfig));
 
@@ -136,16 +113,25 @@ Pebble.addEventListener('webviewclosed', function (e) {
 /** Read a configuration element (handles defaults) */
 function readConfig(key) {
     var res = localStorage.getItem(key);
-    // defaults are also in src/obsidian.c, src/js/pebble-js-app.js and config/js/preview.js
     if (res === null) {
-        if (key == "CONFIG_WEATHER_UNIT_LOCAL") {
-            return 2;
-        } else if (key == "CONFIG_WEATHER_MODE_LOCAL") {
+        if (false) {
+            // do nothing
+// -- autogen
+// -- ## for key in configuration
+// -- ##   if key["local"]
+// --         } else if (key == "{{ key["key"] }}") {
+// --             return {{ key["default"] }};
+// -- ##   endif
+// -- ## endfor
+        } else if (key == "CONFIG_WEATHER_UNIT_LOCAL") {
             return 1;
-        } else if (key == "CONFIG_WEATHER_LOCATION_LOCAL") {
-            return "";
         } else if (key == "CONFIG_WEATHER_SOURCE_LOCAL") {
             return 1;
+        } else if (key == "CONFIG_WEATHER_APIKEY_LOCAL") {
+            return "";
+        } else if (key == "CONFIG_WEATHER_LOCATION_LOCAL") {
+            return "";
+// -- end autogen
         }
     }
     return res;
