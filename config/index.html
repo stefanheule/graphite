@@ -524,9 +524,13 @@
       post("save", {
         config: config
       });
-      setTimeout(function () {
+      if (window.location.hostname != "stefanheule.com") {
         submit(config);
-      }, 500);
+      } else {
+        setTimeout(function () {
+          submit(config);
+        }, 500);
+      }
     });
 
     // submit button event listener
@@ -536,9 +540,13 @@
 
       var config = readValuesFromStorage(true);
       post("reset", {});
-      setTimeout(function () {
+      if (window.location.hostname != "stefanheule.com") {
         submit(config);
-      }, 500);
+      } else {
+        setTimeout(function () {
+          submit(config);
+        }, 500);
+      }
     });
 
     getAllConfigHtmlNodes().each(function () {

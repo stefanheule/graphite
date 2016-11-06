@@ -242,26 +242,25 @@ function fetchWeather(latitude, longitude) {
     }
 
     /** Callback on successful determination of weather conditions. */
-    var success = function(temp, icon) {
+    var success = function(low, high, cur, curicon) {
         //TODO
         // if (+readConfig("CONFIG_WEATHER_UNIT_LOCAL") == 2) {
         //     temp = temp * 9.0/5.0 + 32.0;
         // }
-        temp = Math.round(temp);
-        if (!icon) {
-            icon = "a";
+        low = Math.round(low);
+        high = Math.round(high);
+        cur = Math.round(cur);
+        if (!curicon) {
+            curicon = "a";
         }
-        if (daily) {
-            icon = icon.toLowerCase();
-        } else if (now.getHours() >= 20) {
-            icon = icon.toUpperCase();
-        }
-        icon = icon.charCodeAt(0);
+        icon = curicon.charCodeAt(0);
         var data = {
-            "MSG_KEY_WEATHER_ICON": icon,
-            "MSG_KEY_WEATHER_TEMP": temp
+            "MSG_KEY_WEATHER_ICON_CUR": icon,
+            "MSG_KEY_WEATHER_TEMP_CUR": cur,
+            "MSG_KEY_WEATHER_TEMP_LOW": low,
+            "MSG_KEY_WEATHER_TEMP_HIGH": high,
         };
-        console.log('[ info/app ] weather send: temp=' + temp + ", icon=" + String.fromCharCode(icon) + ".");
+        console.log('[ info/app ] weather send: temp=' + low + "/" + cur + "/" + high + ", icon=" + String.fromCharCode(icon) + ".");
         Pebble.sendAppMessage(data);
     };
 
@@ -334,34 +333,25 @@ function fetchWeather(latitude, longitude) {
         // source == 2
         var baseurl = "https://api.darksky.net/forecast/" + apikey + "/" + latitude + "," + longitude + "?units=si&";
         var exclude = "exclude=minutely,hourly,alerts,flags,";
-        if (daily) {
-            exclude += "currently"
-        } else {
-            exclude += "daily"
-        }
         runRequest(baseurl + exclude, function(response) {
-            var temp;
-            var icon;
             console.log('[ info/app ] weather information: ' + JSON.stringify(response));
-            if (daily) {
-                for (var i in response.daily.data) {
-                    var data = response.daily.data[i];
-                    var date = new Date(data.time*1000);
-                    if (sameDate(now, date)) {
-                        console.log(data);
-                        temp = data. temperatureMax;
-                        icon = data.icon;
-                        console.log('[ info/app ] using this information: ' + JSON.stringify(data));
-                        break;
-                    }
+            var low, high, cur, icon;
+            for (var i in response.daily.data) {
+                var data = response.daily.data[i];
+                var date = new Date(data.time*1000);
+                if (sameDate(now, date)) {
+                    console.log(data);
+                    low = data. temperatureMin;
+                    high = data. temperatureMax;
+                    //icon = data.icon;
+                    console.log('[ info/app ] using this information: ' + JSON.stringify(data));
+                    break;
                 }
-            } else {
-                temp = response.currently.apparentTemperature;
-                icon = response.currently.icon;
             }
-            temp = Math.round(temp);
+            cur = response.currently.temperature;
+            icon = response.currently.icon;
             icon = parseIconForecastIO(icon);
-            success(temp, icon);
+            success(low, high, cur, icon);
         });
     }
 }

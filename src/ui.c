@@ -181,14 +181,18 @@ void background_update_proc(Layer *layer, GContext *ctx) {
     if (show_weather) {
         if (weather.failed) {
             snprintf(buffer_1, 10, "%c", weather.icon);
-            snprintf(buffer_2, 10, "%d", weather.temperature);
+            snprintf(buffer_2, 10, "%d", weather.temp_cur);
+            snprintf(buffer_3, 10, "%d", weather.temp_low);
+            snprintf(buffer_4, 10, "%d", weather.temp_high);
         } else {
             snprintf(buffer_1, 10, "%c", weather.icon);
-            snprintf(buffer_2, 10, "%d°", weather.temperature);
+            snprintf(buffer_2, 10, "%d°", weather.temp_cur);
+            snprintf(buffer_3, 10, "%d°", weather.temp_low);
+            snprintf(buffer_4, 10, "%d°", weather.temp_high);
         }
         draw_weather(fctx, buffer_1, buffer_2, FPoint(width/2, pos_weather_y), color_background, fontsize_weather, GTextAlignmentCenter);
-        draw_string(fctx, "9°", FPoint(pos_weather_y + REM(2), pos_weather_y), font_main, color_background, fontsize_weather, GTextAlignmentLeft);
-        draw_string(fctx, "28°", FPoint(width - pos_weather_y, pos_weather_y), font_main, color_background, fontsize_weather, GTextAlignmentRight);
+        draw_string(fctx, buffer_3, FPoint(pos_weather_y + REM(2), pos_weather_y), font_main, color_background, fontsize_weather, GTextAlignmentLeft);
+        draw_string(fctx, buffer_4, FPoint(width - pos_weather_y, pos_weather_y), font_main, color_background, fontsize_weather, GTextAlignmentRight);
     }
 
     // rain preview

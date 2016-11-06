@@ -103,11 +103,15 @@ void inbox_received_handler(DictionaryIterator *iter, void *context) {
     bool ask_for_weather_update = true;
 
     Tuple *icon_tuple = dict_find(iter, MSG_KEY_WEATHER_ICON_CUR);
-    Tuple *temp_tuple = dict_find(iter, MSG_KEY_WEATHER_TEMP_CUR);
-    if (icon_tuple && temp_tuple) {
+    Tuple *tempcur_tuple = dict_find(iter, MSG_KEY_WEATHER_TEMP_CUR);
+    Tuple *templow_tuple = dict_find(iter, MSG_KEY_WEATHER_TEMP_LOW);
+    Tuple *temphigh_tuple = dict_find(iter, MSG_KEY_WEATHER_TEMP_HIGH);
+    if (icon_tuple && tempcur_tuple && templow_tuple && temphigh_tuple) {
         weather.timestamp = time(NULL);
         weather.icon = icon_tuple->value->int8;
-        weather.temperature = temp_tuple->value->int8;
+        weather.temp_cur = tempcur_tuple->value->int8;
+        weather.temp_low = templow_tuple->value->int8;
+        weather.temp_high = temphigh_tuple->value->int8;
         weather.failed = false;
         persist_write_data(PERSIST_KEY_WEATHER, &weather, sizeof(Weather));
         dirty = true;

@@ -97,6 +97,8 @@ extern Window *window;
 extern Layer *layer_background;
 extern char buffer_1[30];
 extern char buffer_2[30];
+extern char buffer_3[30];
+extern char buffer_4[30];
 extern fixed_t height;
 extern fixed_t width;
 extern fixed_t height_full;
@@ -109,12 +111,14 @@ extern bool show_bluetooth_popup;
 extern AppTimer *timer_bluetooth_popup;
 
 // this definition should be updated whenever the Weather struct, or it's semantic meaning changes.  this ensures that no outdated values are read from storage
-#define REDSHIFT_WEATHER_VERSION 1
+#define REDSHIFT_WEATHER_VERSION 2
 typedef struct {
     uint8_t version;
     time_t timestamp;
     int8_t icon;
-    int8_t temperature;
+    int8_t temp_cur;
+    int8_t temp_low;
+    int8_t temp_high;
     bool failed;
 } __attribute__((__packed__)) Weather;
 
