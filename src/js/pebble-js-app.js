@@ -242,7 +242,7 @@ function fetchWeather(latitude, longitude) {
     }
 
     /** Callback on successful determination of weather conditions. */
-    var success = function(low, high, cur, curicon) {
+    var success = function(low, high, cur, curicon, data, ts) {
         //TODO
         // if (+readConfig("CONFIG_WEATHER_UNIT_LOCAL") == 2) {
         //     temp = temp * 9.0/5.0 + 32.0;
@@ -253,12 +253,20 @@ function fetchWeather(latitude, longitude) {
         if (!curicon) {
             curicon = "a";
         }
-        icon = curicon.charCodeAt(0);
+// -- autogen
+// --         if (data.length > {{ perc_max_len }}) data = data.slice(0, {{ perc_max_len }});
+        if (data.length > 30) data = data.slice(0, 30);
+// -- end autogen
+
+        var icon = curicon.charCodeAt(0);
         var data = {
             "MSG_KEY_WEATHER_ICON_CUR": icon,
             "MSG_KEY_WEATHER_TEMP_CUR": cur,
             "MSG_KEY_WEATHER_TEMP_LOW": low,
             "MSG_KEY_WEATHER_TEMP_HIGH": high,
+            "MSG_KEY_WEATHER_PERC_DATA": data,
+            "MSG_KEY_WEATHER_PERC_DATA_LEN": data.length,
+            "MSG_KEY_WEATHER_PERC_DATA_TS": ts
         };
         console.log('[ info/app ] weather send: temp=' + low + "/" + cur + "/" + high + ", icon=" + String.fromCharCode(icon) + ".");
         Pebble.sendAppMessage(data);
@@ -332,7 +340,7 @@ function fetchWeather(latitude, longitude) {
     } else {
         // source == 2
         var baseurl = "https://api.darksky.net/forecast/" + apikey + "/" + latitude + "," + longitude + "?units=si&";
-        var exclude = "exclude=minutely,hourly,alerts,flags,";
+        var exclude = "exclude=minutely,alerts,flags";
         runRequest(baseurl + exclude, function(response) {
             console.log('[ info/app ] weather information: ' + JSON.stringify(response));
             var low, high, cur, icon;
@@ -351,7 +359,16 @@ function fetchWeather(latitude, longitude) {
             cur = response.currently.temperature;
             icon = response.currently.icon;
             icon = parseIconForecastIO(icon);
-            success(low, high, cur, icon);
+            // collect perc data
+            var perc_data = [];
+            var ts = 0;
+            for (var i in response.hourly.data) {
+                var elem = response.hourly.data[i];
+                if (ts == 0) ts = elem.time;
+                if (!elem.hasOwnProperty('precipProbability')) break;
+                perc_data.push(Math.round(elem.precipProbability * 100));
+            }
+            success(low, high, cur, icon, perc_data, ts);
         });
     }
 }

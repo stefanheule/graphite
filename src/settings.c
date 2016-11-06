@@ -106,12 +106,21 @@ void inbox_received_handler(DictionaryIterator *iter, void *context) {
     Tuple *tempcur_tuple = dict_find(iter, MSG_KEY_WEATHER_TEMP_CUR);
     Tuple *templow_tuple = dict_find(iter, MSG_KEY_WEATHER_TEMP_LOW);
     Tuple *temphigh_tuple = dict_find(iter, MSG_KEY_WEATHER_TEMP_HIGH);
-    if (icon_tuple && tempcur_tuple && templow_tuple && temphigh_tuple) {
+    Tuple *perc_data_tuple = dict_find(iter, MSG_KEY_WEATHER_PERC_DATA);
+    Tuple *perc_data_ts_tuple = dict_find(iter, MSG_KEY_WEATHER_PERC_DATA_TS);
+    Tuple *perc_data_len_tuple = dict_find(iter, MSG_KEY_WEATHER_PERC_DATA_LEN);
+    if (icon_tuple && tempcur_tuple && templow_tuple && temphigh_tuple && perc_data_tuple && perc_data_ts_tuple && perc_data_len_tuple) {
+        weather.version = REDSHIFT_WEATHER_VERSION;
         weather.timestamp = time(NULL);
         weather.icon = icon_tuple->value->int8;
         weather.temp_cur = tempcur_tuple->value->int8;
         weather.temp_low = templow_tuple->value->int8;
         weather.temp_high = temphigh_tuple->value->int8;
+        weather.perc_data_len = perc_data_len_tuple->value->uint8;
+        weather.perc_data_ts = perc_data_ts_tuple->value->int32;
+        for (int i = 0; i < weather.perc_data_len && i < REDSHIFT_WEATHER_PERC_MAX_LEN; i++) {
+            weather.perc_data[i] = perc_data_tuple->value->data[i];
+        }
         weather.failed = false;
         persist_write_data(PERSIST_KEY_WEATHER, &weather, sizeof(Weather));
         dirty = true;

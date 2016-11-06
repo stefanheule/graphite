@@ -61,9 +61,11 @@
 #define MSG_KEY_WEATHER_TEMP_CUR 102
 #define MSG_KEY_WEATHER_ICON_CUR 103
 #define MSG_KEY_WEATHER_PERC_DATA 104
-#define MSG_KEY_FETCH_WEATHER 105
-#define MSG_KEY_WEATHER_FAILED 106
-#define MSG_KEY_JS_READY 107
+#define MSG_KEY_WEATHER_PERC_DATA_LEN 105
+#define MSG_KEY_WEATHER_PERC_DATA_TS 106
+#define MSG_KEY_FETCH_WEATHER 107
+#define MSG_KEY_WEATHER_FAILED 108
+#define MSG_KEY_JS_READY 109
 // -- end autogen
 
 // persitant storage keys (in addition to config keys above)
@@ -112,6 +114,10 @@ extern AppTimer *timer_bluetooth_popup;
 
 // this definition should be updated whenever the Weather struct, or it's semantic meaning changes.  this ensures that no outdated values are read from storage
 #define REDSHIFT_WEATHER_VERSION 2
+// -- autogen
+// -- #define REDSHIFT_WEATHER_PERC_MAX_LEN {{ perc_max_len }}
+#define REDSHIFT_WEATHER_PERC_MAX_LEN 30
+// -- end autogen
 typedef struct {
     uint8_t version;
     time_t timestamp;
@@ -119,6 +125,9 @@ typedef struct {
     int8_t temp_cur;
     int8_t temp_low;
     int8_t temp_high;
+    uint8_t perc_data[REDSHIFT_WEATHER_PERC_MAX_LEN];
+    uint8_t perc_data_len; // maybe not all perc data items are valid
+    time_t perc_data_ts;
     bool failed;
 } __attribute__((__packed__)) Weather;
 
@@ -136,11 +145,10 @@ extern AppTimer * weather_request_timer;
 #define REDSHIFT_BLUETOOTH_POPUP_MS 5000
 
 #define REDSHIFT_OUTBOX_SIZE 100
-#define REDSHIFT_WEATHER_N_INTS 4 // 3 temps + 1 icon
+#define REDSHIFT_WEATHER_N_INTS 6 // 3 temps + 1 icon + data len + data timestamp
 #define REDSHIFT_WEATHER_HOURS 30
-#define REDSHIFT_WEATHER_INTS_PER_HOUR 2 // time and percentage
 // 100 + an upper bound for all the configuration items we have OR the amount of data sent as weather update
-#define REDSHIFT_INBOX_SIZE (100 + MAX(1 + (REDSHIFT_N_CONFIG) * (7+4), REDSHIFT_WEATHER_N_INTS * 4 + REDSHIFT_WEATHER_HOURS * REDSHIFT_WEATHER_INTS_PER_HOUR * 4))
+#define REDSHIFT_INBOX_SIZE (100 + MAX(1 + (REDSHIFT_N_CONFIG) * (7+4), REDSHIFT_WEATHER_N_INTS * 4 + REDSHIFT_WEATHER_HOURS * 4))
 
 #define PIX(x) (INT_TO_FIXED(x))
 // returns a fixed_t value that corresponds to a relatively scaled version, where 1 rem is 1/200 of the screen width

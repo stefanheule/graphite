@@ -63,10 +63,14 @@ msg_keys = [
   'WEATHER_TEMP_CUR',
   'WEATHER_ICON_CUR',
   'WEATHER_PERC_DATA',
+  'WEATHER_PERC_DATA_LEN',
+  'WEATHER_PERC_DATA_TS',
   'FETCH_WEATHER',
   'WEATHER_FAILED',
   'JS_READY',
 ]
+
+perc_max_len = 30
 
 files_to_render = [
   "package.template.json",
@@ -100,6 +104,7 @@ def get_context():
       'configuration': config,
       'num_config_items': len(config),
       'message_keys': add_key_id(msg_keys, 'MSG_KEY_', 100),
+      'perc_max_len': perc_max_len,
     }
   return _context
 

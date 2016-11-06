@@ -193,33 +193,53 @@ void background_update_proc(Layer *layer, GContext *ctx) {
         draw_weather(fctx, buffer_1, buffer_2, FPoint(width/2, pos_weather_y), color_background, fontsize_weather, GTextAlignmentCenter);
         draw_string(fctx, buffer_3, FPoint(pos_weather_y + REM(2), pos_weather_y), font_main, color_background, fontsize_weather, GTextAlignmentLeft);
         draw_string(fctx, buffer_4, FPoint(width - pos_weather_y, pos_weather_y), font_main, color_background, fontsize_weather, GTextAlignmentRight);
-    }
 
-    // rain preview
-    uint8_t percipProb[] = {
-            63, 63, 63, 62, 62, 66, 70, 62, 66, 63, 62, 65, 59, 69, 73, 72, 70, 69, 67, 64, 56, 16, 0, 04, 15, 21, 28, 32, 30, 23, 18, 17, 17, 18, 19, 21, 21, 16, 10, 05, 03, 01, 0, 0, 0, 03, 13, 29, 42
-    };
-#define PercData(h, prob) ({.h = h, .prob = prob})
-#define getPercData(h) = (PercData(h, percipProb[i]))
-#define getHourOffset(h) = ((((h + 1) - t.tm_h + 24) % 24) - 1)
-    fixed_t perc_ti_h = FIXED_ROUND(REM(3));
-    int nHours = 24;
-    fixed_t perc_sep = REM(2); // space between two bars
-    fixed_t perc_bar = (width - (nHours + 1) * perc_sep) / nHours; // width of a single bar (without space)
-    fixed_t perc_w = perc_sep + perc_bar; // total width occupied by a single hour
-    fixed_t perc_maxheight = REM(20); // max height of the precipitation bar
-    fixed_t perc_minoffset = perc_w * (t->tm_min % 60) / 60; // x axis offset into the current hour
-    for (int i = -1; i < nHours; i++) {
-        uint8_t i_percip_prob = percipProb[i + 10];
-        FPoint point = FPoint(perc_minoffset + perc_sep / 2 + i * perc_w, topbar_height + perc_ti_h);
-        FSize size = FSize(perc_bar, perc_maxheight * i_percip_prob / 100);
-        draw_rect(fctx, FRect(point, size), color_main);
-    }
-    // rain preview time indicator
-    draw_rect(fctx, FRect(FPoint(0, topbar_height), FSize(width, perc_ti_h)), color_day);
-    for (int i = -1; i < 2; i++) {
-        FPoint point = FPoint(perc_minoffset + (24*i + 18 - t->tm_hour) * perc_w, topbar_height);
-        draw_rect(fctx, FRect(point, FSize(12 * perc_w, perc_ti_h)), color_night);
+        // rain preview
+        int first_perc_index = -1;
+        const int sec_in_hour = 60*60;
+        time_t cur_h_ts = time(NULL);
+        cur_h_ts -= cur_h_ts % sec_in_hour; // align with hour
+        for (int i = 0; i < weather.perc_data_len; i++) {
+            if (cur_h_ts == weather.perc_data_ts + i * sec_in_hour) {
+                first_perc_index = i;
+                break;
+            }
+        }
+        int nHours = 24;
+        bool all_zero = true;
+        for (int i = 0; i < nHours + 1; i++) {
+            uint8_t i_percip_prob = 0;
+            if (first_perc_index + i < weather.perc_data_len) {
+                i_percip_prob = weather.perc_data[first_perc_index + i];
+            }
+            if (i_percip_prob != 0) {
+                all_zero = false;
+                break;
+            }
+        }
+        if (first_perc_index != -1 && !all_zero) {
+            fixed_t perc_ti_h = FIXED_ROUND(REM(3));
+            fixed_t perc_sep = REM(2); // space between two bars
+            fixed_t perc_bar = (width - (nHours + 1) * perc_sep) / nHours; // width of a single bar (without space)
+            fixed_t perc_w = perc_sep + perc_bar; // total width occupied by a single hour
+            fixed_t perc_maxheight = REM(20); // max height of the precipitation bar
+            fixed_t perc_minoffset = - perc_w * (t->tm_min % 60) / 60; // x axis offset into the current hour
+            for (int i = 0; i < nHours + 1; i++) {
+                uint8_t i_percip_prob = 0;
+                if (first_perc_index + i < weather.perc_data_len) {
+                    i_percip_prob = weather.perc_data[first_perc_index + i];
+                }
+                FPoint point = FPoint(perc_minoffset + perc_sep / 2 + i * perc_w, topbar_height + perc_ti_h);
+                FSize size = FSize(perc_bar, perc_maxheight * i_percip_prob / 100);
+                draw_rect(fctx, FRect(point, size), color_main);
+            }
+            // rain preview time indicator
+            draw_rect(fctx, FRect(FPoint(0, topbar_height), FSize(width, perc_ti_h)), color_day);
+            for (int i = -1; i < 2; i++) {
+                FPoint point = FPoint(perc_minoffset + (24*i + 18 - t->tm_hour) * perc_w, topbar_height);
+                draw_rect(fctx, FRect(point, FSize(12 * perc_w, perc_ti_h)), color_night);
+            }
+        }
     }
 
     // time
