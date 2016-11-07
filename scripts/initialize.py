@@ -226,9 +226,6 @@ def inline_render(file):
   if contents != newcontents:
     write_file(file, newcontents)
 
-  # 
-  # write_file(file.replace(".template", ""), )
-
 def main():
   for f in files_to_render:
     render(f)

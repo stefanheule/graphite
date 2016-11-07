@@ -110,11 +110,6 @@ void draw_weather(FContext* fctx, const char* icon, const char* temp, FPoint pos
     }
 }
 
-typedef struct {
-    uint8_t h;
-    uint8_t prob;
-} __attribute__((__packed__)) PercData;
-
 /**
  * Draw the watch face.
  */
