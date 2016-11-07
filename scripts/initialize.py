@@ -4,6 +4,7 @@ from jinja2 import Template
 from jinja2 import Environment, FileSystemLoader
 import sys
 import re
+import codecs
 
 # ------------------------------------------------------------------------------
 # --- configuration
@@ -153,12 +154,14 @@ def read_configure(key):
 
 def read_file(name):
   """Read a file from disk"""
-  with open(name) as f:
-    return f.read()
+  f = codecs.open(name, encoding='utf-8')
+  res = f.read()
+  f.close()
+  return res
 
 def write_file(name, content):
   """Write a file to disk"""
-  f = open(name, 'w')
+  f = codecs.open(name, encoding='utf-8', mode='w')
   f.write(content)
   f.close()
 

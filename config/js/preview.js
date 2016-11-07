@@ -509,6 +509,17 @@ var ObsidianPreview = (function () {
 // -- ## for key in configuration
 // --             {{ key["key"] }}: {{ key["jsdefault"] }},
 // -- ## endfor
+            CONFIG_VIBRATE_DISCONNECT: +true,
+            CONFIG_VIBRATE_RECONNECT: +true,
+            CONFIG_MESSAGE_DISCONNECT: +true,
+            CONFIG_MESSAGE_RECONNECT: +true,
+            CONFIG_WEATHER_UNIT_LOCAL: +1,
+            CONFIG_WEATHER_SOURCE_LOCAL: +1,
+            CONFIG_WEATHER_APIKEY_LOCAL: "",
+            CONFIG_WEATHER_LOCATION_LOCAL: "",
+            CONFIG_WEATHER_REFRESH: +30,
+            CONFIG_WEATHER_EXPIRATION: +3*60,
+            CONFIG_COLOR_ACCENT: +GColor.VividCerulean,
 // -- end autogen
         };
         return cloneConfig(defaults);
