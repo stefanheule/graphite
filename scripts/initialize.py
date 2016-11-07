@@ -210,10 +210,13 @@ def inline_render(file):
         tpl.append(istpl.group(2))
         newcontents.append(line)
       else:
-        template = env.from_string("\n".join(tpl))
+        tpl = "\n".join(tpl)
+        if starts_with(tpl, "c_to_js"):
+          newcontents.append(c_to_js(read_file(tpl[8:])))
+        else:
+          template = env.from_string(tpl)
+          newcontents.append(template.render(get_context()).strip("\n"))
         tpl = []
-        lol = template.render(get_context()).strip("\n")
-        newcontents.append(template.render(get_context()).strip("\n"))
         mode = 'ignore'
         if isend is not None:
           newcontents.append(line)
@@ -225,6 +228,71 @@ def inline_render(file):
   newcontents = "\n".join(newcontents)
   if contents != newcontents:
     write_file(file, newcontents)
+
+
+def c_to_js(c):
+  """Take a file in C and perform an ad-hoc translation to JavaScript"""
+
+  def starts_with(s, sub):
+    return s[0:len(sub)] == sub
+
+  newcontents = []
+  basetype = "(bool|u?int[0-9]+_t|void)"
+  ident = "[a-zA-Z_][a-zA-Z0-9_]*"
+  for line in c.split(u"\n"):
+
+    if starts_with(line, u"#include"): continue
+    if starts_with(line, u"#ifndef"): continue
+    if starts_with(line, u"#endif"): continue
+    if starts_with(line.strip(), u"//"): continue
+    if line == "": continue
+
+    rfundecl = re.match("(?P<type>" + basetype + ") (?P<name>" + ident + ")\\((?P<arglist>.*)\\) {$", line)
+    if rfundecl is not None:
+      name = rfundecl.group("name")
+      arglist = rfundecl.group("arglist")
+      arglist = ", ".join(map(lambda x: x.strip().split(" ")[-1].strip("*"), arglist.split(",")))
+      newcontents.append("function %s(%s) {" % (name, arglist))
+      continue
+
+    rlocalvar = re.match("(?P<indent> *)((const|struct) )?(?P<type>" + ident + ")\\*? \\*?(?P<name>" + ident + ") = (?P<rhs>.*)$", line)
+    if rlocalvar is not None:
+      name = rlocalvar.group("name")
+      rhs = rlocalvar.group("rhs")
+      indent =  rlocalvar.group("indent")
+      newcontents.append("%svar %s = %s" % (indent, name, rhs))
+      continue
+
+    rlocalvarnorhs = re.match("(?P<indent> *)(const )?(?P<type>" + ident + ")\\*? \\*?(?P<name>" + ident + ");$", line)
+    if rlocalvarnorhs is not None:
+      name = rlocalvarnorhs.group("name")
+      indent =  rlocalvarnorhs.group("indent")
+      newcontents.append("%svar %s;" % (indent, name))
+      continue
+
+    rforloop = re.match("(?P<indent> *)for \\(int (?P<rest>.*)$", line)
+    if rforloop is not None:
+      rest = rforloop.group("rest")
+      indent =  rforloop.group("indent")
+      newcontents.append("%sfor(%s" % (indent, rest))
+      continue
+
+    newcontents.append(line)
+
+  for i in range(len(newcontents)):
+    line = newcontents[i]
+    line = re.sub(r"GColor([A-Za-z]+)", "GColor.\\1", line)
+    if "&" in line and "&&" not in line:
+      line = line.replace("&", "");
+    if "->" in line:
+      line = line.replace("->", ".");
+    if "(int)" in line:
+      line = line.replace("(int)", "");
+    newcontents[i] = line
+
+  newcontents = u"\n".join(newcontents)
+  return newcontents
+
 
 def main():
   for f in files_to_render:

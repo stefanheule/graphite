@@ -1,424 +1,309 @@
-var ObsidianPreview = (function () {
+var RedshiftPreview = (function () {
 
     /** Map from canvasIDs to configurations. */
     var configurations = {};
     /** Map from canvasIDs to platforms. */
     var platforms = {};
 
+    // global variables
+    var ctx;
+    var PBL_IF_ROUND_ELSE;
+    var PBL_DISPLAY_WIDTH;
+    var PBL_DISPLAY_HEIGHT;
+    var weather = {
+        version: 0,
+        timestamp: 0,
+        icon: 0,
+        temp_cur: 14,
+        temp_low: 5,
+        temp_high: 28,
+        perc_data: [],
+        perc_data_len: 0,
+        perc_data_ts: 0,
+        failed: false
+    }
+
+// -- autogen
+// -- ## for key in configuration
+// --      var {{ key["key"] | lower }};
+// -- ## endfor
+     var config_vibrate_disconnect;
+     var config_vibrate_reconnect;
+     var config_message_disconnect;
+     var config_message_reconnect;
+     var config_weather_unit_local;
+     var config_weather_source_local;
+     var config_weather_apikey_local;
+     var config_weather_location_local;
+     var config_weather_refresh;
+     var config_weather_expiration;
+     var config_color_accent;
+// -- end autogen
+
+    // framework functions
+    function GPoint(x, y) { return {x: x, y: y}; }
+    function FPoint(x, y) { return {x: x, y: y}; }
+    function FSize(w, h) { return {w: w, h: h}; }
+    function GRect(x, y, w, h) { return {origin: {x: x, y: y}, size: {w: w, h: h}}; }
+    function FRect(origin, size) { return {origin: origin, size: size}; }
+    function g2frect(g) { return {origin: {x: INT_TO_FIXED(g.origin.x), y: INT_TO_FIXED(g.origin.y)}, size: {w: INT_TO_FIXED(g.size.w), h: INT_TO_FIXED(g.size.h)}}; }
+    var FIXED_POINT_SCALE = 16;
+    var layer_background = 0;
+    var NULL = 0;
+    function INT_TO_FIXED(x) { return x*FIXED_POINT_SCALE; }
+    function REM(x) { return INT_TO_FIXED(x) * PBL_DISPLAY_WIDTH / 200; }
+    function FIXED_TO_INT(x) { return Math.floor(x/FIXED_POINT_SCALE); }
+    function FIXED_ROUND(x) { return ((x) % FIXED_POINT_SCALE < FIXED_POINT_SCALE/2 ? (x) - ((x) % FIXED_POINT_SCALE) : (x) + FIXED_POINT_SCALE - ((x) % FIXED_POINT_SCALE)) }
+    function fctx_init_context() {}
+    function layer_get_unobstructed_bounds() { return layer_get_bounds(); }
+    function layer_get_bounds() { return GRect(0, 0, PBL_DISPLAY_WIDTH, PBL_DISPLAY_HEIGHT); }
+    function time() { return new Date(); }
+    function localtime() {
+        return {
+            tm_min: 11,
+            tm_hour: 48
+        };
+    }
+    function COLOR(x) { return '#' + GColor.toHex(x); }
+    function battery_state_service_peek() {
+        return {
+            charge_percent: 70,
+            is_charging: false,
+            is_plugged: false
+        }
+    }
+    function draw_rect() {
+    }
+    function draw_string() {
+    }
+
     function drawConfig(canvasId) {
         var config = configurations[canvasId];
         var platform = platforms[canvasId];
 
-        var PBL_IF_ROUND_ELSE = PebbleHelper.PBL_IF_ROUND_ELSE(platform);
-
-        var GPoint = function (x, y) {
-            return {x: x, y: y};
-        };
-        var GRect = function (x, y, w, h) {
-            return {origin: {x: x, y: y}, size: {w: w, h: h}};
-        };
-        var chalk = platform == "chalk";
         var canvas = document.getElementById(canvasId);
-        var ctx = canvas.getContext('2d');
-        var w = PBL_IF_ROUND_ELSE(180, 144);
-        var h = PBL_IF_ROUND_ELSE(180, 168);
-        var radius = w / 2;
-        var center = GPoint(w / 2, h / 2);
-        var color = function (c) {
-            return '#' + GColor.toHex(c);
-        };
-        var t = {
-            tm_min: 10,
-            tm_hour: 10
-        };
+        ctx = canvas.getContext('2d');
 
-        canvas.height = h;
-        canvas.width = w;
-        var width = w;
-        var height = h;
+        PBL_IF_ROUND_ELSE = PebbleHelper.PBL_IF_ROUND_ELSE(platform);
+        PBL_DISPLAY_WIDTH = PebbleHelper.PBL_DISPLAY_WIDTH(platform);
+        PBL_DISPLAY_HEIGHT = PebbleHelper.PBL_DISPLAY_HEIGHT(platform);
 
-        var TRIG_MAX_ANGLE = Math.PI * 2;
-        var get_radial_point = function (radius, angle) {
-            return {
-                x: Math.sin(angle) * radius + center.x,
-                y: -Math.cos(angle) * radius + center.y
-            };
-        };
-        var get_radial_border_point = function (distance_from_border, angle) {
-            var topright_angle = Math.atan2(width, height);
-            var top = angle > (TRIG_MAX_ANGLE - topright_angle) || angle <= topright_angle;
-            var bottom = angle > TRIG_MAX_ANGLE / 2 - topright_angle && angle <= TRIG_MAX_ANGLE / 2 + topright_angle;
-            var left = angle > TRIG_MAX_ANGLE / 2 + topright_angle && angle <= TRIG_MAX_ANGLE - topright_angle;
-            var sine = Math.sin(angle);
-            var cosine = Math.cos(angle);
-            var result;
-            if (top || bottom) {
-                result = {
-                    x: (top ? 1 : -1) * (sine * (height / 2 - distance_from_border) / cosine) +
-                    center.x,
-                    y: top ? distance_from_border : height - distance_from_border
-                };
-                return result;
-            }
-            result = {
-                x: left ? distance_from_border : width - distance_from_border,
-                y: (left ? 1 : -1) * (cosine * (width / 2 - distance_from_border) / sine) + center.y
-            };
-            return result;
-        };
-        var graphics_draw_line_with_width = function (ctx, p0, p1, w) {
-            ctx.lineWidth = w + 0.5;
-            if (w == 1) {
-                ctx.lineWidth = 1;
-            }
-            ctx.beginPath();
-            ctx.moveTo(p0.x, p0.y);
-            ctx.lineTo(p1.x, p1.y);
-            ctx.stroke();
-        };
-        var graphics_context_set_stroke_color = function (ctx, c) {
-            ctx.strokeStyle = color(c);
-        };
-        var graphics_context_set_fill_color = function (ctx, c) {
-            ctx.fillStyle = color(c);
-        };
-        var graphics_fill_circle = function (ctx, center, radius) {
-            ctx.beginPath();
-            ctx.arc(center.x, center.y, radius, 0, 2 * Math.PI, false);
-            ctx.fill();
-        };
-        var graphics_draw_rect = function (ctx, rect) {
-            ctx.strokeRect(rect.origin.x, rect.origin.y, rect.size.w, rect.size.h);
-        };
-        var graphics_fill_rect = function (ctx, rect) {
-            ctx.fillRect(rect.origin.x, rect.origin.y, rect.size.w, rect.size.h);
-        };
-        var draw_triangle = function (ctx, outer, width, height, angle, color) {
-            ctx.beginPath();
-            ctx.moveTo(outer.x, outer.y);
-            ctx.lineTo(outer.x - width / 2, outer.y + height);
-            ctx.lineTo(outer.x + width / 2, outer.y + height);
-            ctx.closePath();
+        canvas.height = PBL_DISPLAY_HEIGHT;
+        canvas.width = PBL_DISPLAY_WIDTH;
 
-            // Fill the path:
-            graphics_context_set_fill_color(ctx, color);
-            ctx.fill();
-            graphics_context_set_fill_color(ctx, config["CONFIG_COLOR_TICKS"]);
-            // Stroke the path:
-            ctx.lineWidth = 1;
-            graphics_context_set_stroke_color(ctx, color);
-            ctx.stroke();
-            graphics_context_set_stroke_color(ctx, config["CONFIG_COLOR_TICKS"]);
-        };
+// -- autogen
+// -- ## for key in configuration
+// --         {{ key["key"] | lower }} = config["{{ key["key"] }}"];
+// -- ## endfor
+        config_vibrate_disconnect = config["CONFIG_VIBRATE_DISCONNECT"];
+        config_vibrate_reconnect = config["CONFIG_VIBRATE_RECONNECT"];
+        config_message_disconnect = config["CONFIG_MESSAGE_DISCONNECT"];
+        config_message_reconnect = config["CONFIG_MESSAGE_RECONNECT"];
+        config_weather_unit_local = config["CONFIG_WEATHER_UNIT_LOCAL"];
+        config_weather_source_local = config["CONFIG_WEATHER_SOURCE_LOCAL"];
+        config_weather_apikey_local = config["CONFIG_WEATHER_APIKEY_LOCAL"];
+        config_weather_location_local = config["CONFIG_WEATHER_LOCATION_LOCAL"];
+        config_weather_refresh = config["CONFIG_WEATHER_REFRESH"];
+        config_weather_expiration = config["CONFIG_WEATHER_EXPIRATION"];
+        config_color_accent = config["CONFIG_COLOR_ACCENT"];
+// -- end autogen
 
-        config_square = config["CONFIG_SQUARE"];
-        var tick_to_emphasize = config["CONFIG_SECONDS"] == 0 ? -1 : 0;
-
-        if (chalk) {
-            graphics_context_set_fill_color(ctx, config["CONFIG_COLOR_INNER_BACKGROUND"]);
-            graphics_fill_circle(ctx, center, w / 2);
-        } else {
-            if (!config_square) {
-                graphics_context_set_fill_color(ctx, config["CONFIG_COLOR_OUTER_BACKGROUND"]);
-                graphics_fill_rect(ctx, GRect(0, 0, w, h));
-                graphics_context_set_fill_color(ctx, config["CONFIG_COLOR_INNER_BACKGROUND"]);
-                graphics_fill_circle(ctx, center, w / 2);
-                graphics_context_set_stroke_color(ctx, config["CONFIG_COLOR_CIRCLE"]);
-                var circleWidth = 4;
-                ctx.lineWidth = circleWidth;
-                ctx.beginPath();
-                ctx.arc(center.x, center.y, w / 2 + circleWidth / 2, 0, 2 * Math.PI, false);
-                ctx.stroke();
-            } else {
-                graphics_context_set_fill_color(ctx, config["CONFIG_COLOR_INNER_BACKGROUND"]);
-                graphics_fill_rect(ctx, GRect(0, 0, w, h));
-            }
-        }
-
-        ctx.strokeStyle = color(config["CONFIG_COLOR_TICKS"]);
-        ctx.lineCap = "round";
-        if (config["CONFIG_HOUR_TICKS"] != 3) {
-            var tick_width;
-            if (!config_square) {
-                for (var i = 0; i < 12; ++i) {
-                    if (config["CONFIG_HOUR_TICKS"] == 2 && (i % 3) != 0) continue;
-                    var angle = i * Math.PI * 2 / 12;
-                    var tick_length = PBL_IF_ROUND_ELSE(8, 6);
-                    if (i % 3 == 0) {
-                        tick_length = PBL_IF_ROUND_ELSE(12, 10);
-                        tick_width = 4;
-                    } else {
-                        tick_width = 2;
-                    }
-
-                    graphics_draw_line_with_width(ctx, get_radial_point(radius, angle),
-                        get_radial_point(radius - tick_length, angle),
-                        tick_width);
-                }
-            } else {
-                for (var i = 0; i < 12; ++i) {
-                    if (config["CONFIG_HOUR_TICKS"] == 2 && (i % 3) != 0) continue;
-                    var angle = i * TRIG_MAX_ANGLE / 12;
-                    var tick_length = 8;
-                    graphics_draw_line_with_width(ctx, get_radial_border_point(0, angle), get_radial_border_point(tick_length, angle), 4);
-                }
-            }
-        }
-
-        ctx.lineWidth = 1 + 1;
-        var square_minute_tick = 4;
-        if (config["CONFIG_MINUTE_TICKS"] == 2) {
-            // only relevant minute ticks
-            var start_min_tick = Math.floor(t.tm_min / 5) * 5;
-            for (i = start_min_tick; i < start_min_tick + 5; ++i) {
-                angle = i * Math.PI * 2 / 60;
-                if (!config_square) {
-                    graphics_draw_line_with_width(ctx, get_radial_point(radius, angle),
-                        get_radial_point(radius - PBL_IF_ROUND_ELSE(3, 3), angle), 0.5);
-                } else {
-                    graphics_draw_line_with_width(ctx, get_radial_border_point(0, angle),
-                        get_radial_border_point(square_minute_tick, angle), 1);
-                }
-            }
-        } else if (config["CONFIG_MINUTE_TICKS"] == 1) {
-            // all minute ticks
-            for (i = 0; i < 60; ++i) {
-                angle = i * Math.PI * 2 / 60;
-                if (!config_square) {
-                    graphics_draw_line_with_width(ctx, get_radial_point(radius, angle),
-                        get_radial_point(radius - PBL_IF_ROUND_ELSE(3, 3), angle), 0.5);
-                } else {
-                    graphics_draw_line_with_width(ctx, get_radial_border_point(0, angle),
-                        get_radial_border_point(square_minute_tick, angle), 1);
-                }
-            }
-        }
-
-        if (config["CONFIG_SECONDS"] != 0) {
-            draw_triangle(ctx, config_square ? get_radial_border_point(0, 0) : get_radial_point(radius, 0), PBL_IF_ROUND_ELSE(12, 10), PBL_IF_ROUND_ELSE(14, 12), 0, config["CONFIG_COLOR_SECONDS"]);
-        }
-
-        // compute angles
-        var minute_angle = t.tm_min * TRIG_MAX_ANGLE / 60;
-        var minute_hand = get_radial_point(radius - PBL_IF_ROUND_ELSE(16, 10), minute_angle);
-        var hour_tick = ((t.tm_hour % 12) * 6) + (t.tm_min / 10);
-        var hour_angle = hour_tick * TRIG_MAX_ANGLE / (12 * 6);
-        var hour_hand = get_radial_point(radius * 55 / 100, hour_angle);
-
-        // minute hand
-        var COLOR = function (x) {
-            return x;
-        };
-        var config_color_minute_hand = config["CONFIG_COLOR_MINUTE_HAND"];
-        var config_color_inner_minute_hand = config["CONFIG_COLOR_INNER_MINUTE_HAND"];
-        var config_color_hour_hand = config["CONFIG_COLOR_HOUR_HAND"];
-        var config_color_inner_hour_hand = config["CONFIG_COLOR_INNER_HOUR_HAND"];
-        var config_color_inner_background = config["CONFIG_COLOR_INNER_BACKGROUND"];
-
-        graphics_context_set_stroke_color(ctx, COLOR(config_color_minute_hand));
-        graphics_draw_line_with_width(ctx, minute_hand, center, 4);
-        graphics_context_set_stroke_color(ctx, COLOR(config_color_inner_minute_hand));
-        graphics_draw_line_with_width(ctx, get_radial_point(radius - PBL_IF_ROUND_ELSE(20, 12), minute_angle), center, 1);
-
-        // hour hand
-        graphics_context_set_stroke_color(ctx, COLOR(config_color_hour_hand));
-        graphics_draw_line_with_width(ctx, hour_hand, center, 4);
-        graphics_context_set_stroke_color(ctx, COLOR(config_color_inner_hour_hand));
-        graphics_draw_line_with_width(ctx, get_radial_point(radius * 55 / 100 - 2, hour_angle), center, 1);
-
-        // dot in the middle
-        graphics_context_set_fill_color(ctx, COLOR(config_color_minute_hand));
-        graphics_fill_circle(ctx, center, 5 + 0.5);
-        graphics_context_set_fill_color(ctx, COLOR(config_color_inner_background));
-        graphics_fill_circle(ctx, center, 2 + 0.5);
-
-        ctx.textAlign = "center";
-
-        var config_date_format = config["CONFIG_DATE_FORMAT"];
-        var format_1 = "";
-        var format_2 = "";
-        switch(config_date_format) {
-            case 0: // Mon // Oct 22 (date)
-                format_1 = "May 29";
-                format_2 = "Mon";
-                break;
-            case 1: // Oct 22 (date)
-                format_1 = "May 28";
-                break;
-            case 2: // 10/22 (date)
-                format_1 = "5/28";
-                break;
-            case 3: // 22.10. (date)
-                format_1 = "28.5.";
-                break;
-            case 4: // 22 (date)
-                format_1 = "28";
-                break;
-            case 5: // Mon 22 (date)
-                format_1 = "Mon 28";
-                break;
-            case 6: // Mon (day)
-                format_1 = "Mon";
-                break;
-            case 7: // 14:10 (time 24h)
-                format_1 = "22:10";
-                break;
-            case 8: // 2:10 (time 12h)
-                format_1 = "10:10";
-                break;
-            case 9: // 2:10 // 10/22 (date/time)
-                format_1 = "5/28";
-                format_2 = "10:10";
-                break;
-            case 10: // 14:10 // 10/22 (date/time)
-                format_1 = "5/28";
-                format_2 = "22:10";
-                break;
-            case 11: // Mon // 10/22 (date/time)
-                format_1 = "5/28";
-                format_2 = "Mon";
-                break;
-            case 12: // 2:10 // 22.10. (date/time)
-                format_1 = "28.5.";
-                format_2 = "10:10";
-                break;
-            case 13: // 14:10 // 22.10. (date/time)
-                format_1 = "28.5.";
-                format_2 = "22:10";
-                break;
-            case 14: // Mon // 22.10. (date/time)
-                format_1 = "28.5.";
-                format_2 = "Mon";
-                break;
-        }
-
-        var big = format_2 == "";
-        var base_font_size = PBL_IF_ROUND_ELSE(20, 16);
-        var date_font_size = base_font_size;
-        if (big) {
-            if (config_date_format == 1 || config_date_format == 5) {
-                date_font_size = 25;
-            } else {
-                date_font_size = 29;
-            }
-        }
-        ctx.font = date_font_size + "px 'Open Sans Condensed'";
-
-        graphics_context_set_fill_color(ctx, config["CONFIG_COLOR_DAY_OF_WEEK"]);
-        if (format_2 != "") {
-            ctx.fillText(format_2, w / 2, PBL_IF_ROUND_ELSE(130, 116));
-        }
-        graphics_context_set_fill_color(ctx, config["CONFIG_COLOR_DATE"]);
-        ctx.fillText(format_1, w / 2, PBL_IF_ROUND_ELSE(150, 130) - (big ? 6 : 0));
-
-        var config_weather = config["CONFIG_WEATHER_LOCAL"];
-        var config_weather_unit = config["CONFIG_WEATHER_UNIT_LOCAL"];
-        var config_bluetooth_logo = config["CONFIG_BLUETOOTH_LOGO"];
-        if (chalk) {
-            graphics_context_set_fill_color(ctx, config["CONFIG_COLOR_WEATHER"]);
-            ctx.textAlign = "center";
-            ctx.font = "23px nupe2";
-            if (config_weather) {
-                var weatherstr = config_bluetooth_logo ? "za" : "a";
-                var offsetweather = config_bluetooth_logo ? 14 : 11;
-                ctx.fillText(weatherstr, w / 2 - offsetweather, 60);
-                ctx.font = base_font_size + "px 'Open Sans Condensed'";
-                ctx.fillText(config_weather_unit == 2 ? "74°" : "23°", w / 2 + offsetweather, 59);
-            } else {
-                if (config_bluetooth_logo) {
-                    ctx.fillText("z", w / 2, 60);
-                }
-            }
-        } else if (config_weather) {
-            graphics_context_set_fill_color(ctx, config["CONFIG_COLOR_WEATHER"]);
-            ctx.textAlign = "center";
-            ctx.font = "23px nupe2";
-            ctx.fillText("a", w / 2 - 10, 60);
-            ctx.font = base_font_size + "px 'Open Sans Condensed'";
-            ctx.fillText(config_weather_unit == 2 ? "74°" : "23°", w / 2 + 10, 58);
-        }
-
-        var config_battery_logo = config["CONFIG_BATTERY_LOGO"];
-        var battery_state = {
-            charge_percent: 70
-        };
-        if (config_battery_logo == 1 || config_battery_logo == 2) {
-            var battery = PBL_IF_ROUND_ELSE(GRect((w
-                - 13) / 2, 21.5, 14, 8), GRect(125.5, 3.5, 14, 8));
-            if (config_square) {
-                battery.origin.x = 123.5;
-                battery.origin.y = 7.5;
-            }
-            var battery_color = config["CONFIG_COLOR_BATTERY_LOGO"];
-            ctx.lineWidth = 1.2;
-            var GCornerNone = null;
-            graphics_context_set_stroke_color(ctx, COLOR(battery_color));
-            graphics_context_set_fill_color(ctx, COLOR(battery_color));
-            graphics_draw_rect(ctx, battery);
-            graphics_fill_rect(ctx, GRect(battery.origin.x + 1.5, battery.origin.y + 1.5, battery_state.charge_percent / 10, 5),
-                0, GCornerNone);
-            graphics_draw_line_with_width(ctx, GPoint(battery.origin.x + battery.size.w + 1, battery.origin.y + 2.5),
-                GPoint(battery.origin.x + battery.size.w + 1, battery.origin.y + 5.5), 1);
-        }
-
-        if (!chalk && config_bluetooth_logo) {
-            var origin = GPoint(9.5, 9.5);
-            var BLUETOOTH_LOGO_STEP = 3;
-            var config_color_bluetooth_logo_2 = config["CONFIG_COLOR_BLUETOOTH_LOGO_2"];
-            var config_color_bluetooth_logo = config["CONFIG_COLOR_BLUETOOTH_LOGO"];
-            graphics_context_set_fill_color(ctx, COLOR(config_color_bluetooth_logo));
-            //graphics_fill_rect(ctx, GRect(origin.x - 2.5, origin.y - 2.5, BLUETOOTH_LOGO_STEP * 2 + 5, BLUETOOTH_LOGO_STEP * 4 + 5), 2);
-            roundRect(ctx, origin.x - 2.5, origin.y - 2.5, BLUETOOTH_LOGO_STEP * 2 + 5, BLUETOOTH_LOGO_STEP * 4 + 5, 2, true, false);
-
-            // logo on the inside
-            graphics_context_set_stroke_color(ctx, COLOR(config_color_bluetooth_logo_2));
-            graphics_draw_line_with_width(ctx, GPoint(origin.x + BLUETOOTH_LOGO_STEP, origin.y + 0),
-                GPoint(origin.x + BLUETOOTH_LOGO_STEP, origin.y + 4 * BLUETOOTH_LOGO_STEP), 1);
-            graphics_draw_line_with_width(ctx, GPoint(origin.x + 0, origin.y + BLUETOOTH_LOGO_STEP),
-                GPoint(origin.x + 2 * BLUETOOTH_LOGO_STEP, origin.y + 3 * BLUETOOTH_LOGO_STEP), 1);
-            graphics_draw_line_with_width(ctx, GPoint(origin.x + 0, origin.y + 3 * BLUETOOTH_LOGO_STEP),
-                GPoint(origin.x + 2 * BLUETOOTH_LOGO_STEP, origin.y + BLUETOOTH_LOGO_STEP), 1);
-            graphics_draw_line_with_width(ctx, GPoint(origin.x + BLUETOOTH_LOGO_STEP, origin.y + 0),
-                GPoint(origin.x + 2 * BLUETOOTH_LOGO_STEP, origin.y + BLUETOOTH_LOGO_STEP), 1);
-            graphics_draw_line_with_width(ctx, GPoint(origin.x + BLUETOOTH_LOGO_STEP, origin.y + 4 * BLUETOOTH_LOGO_STEP),
-                GPoint(origin.x + 2 * BLUETOOTH_LOGO_STEP, origin.y + 3 * BLUETOOTH_LOGO_STEP), 1);
-        }
+        background_update_proc(0, 0);
     }
 
-    function roundRect(ctx, x, y, width, height, radius, fill, stroke) {
-        if (typeof stroke == 'undefined') {
-            stroke = true;
+// -- autogen
+// -- c_to_js src/ui.c
+/**
+ * Is something obstructing our layer?
+ */
+function is_obstructed() {
+    var layer = layer_background;
+    var full = layer_get_bounds(layer);
+    var partial = layer_get_unobstructed_bounds(layer);
+    return full.size.h != partial.size.h || full.size.w != partial.size.w;
+}
+/**
+ * Draws a popup about the bluetooth connection
+ */
+function bluetooth_popup(fctx, ctx, connected) {
+    if (!show_bluetooth_popup) return;
+}
+/**
+ * Remove all leading zeros in a string.
+ */
+function remove_leading_zero(buffer, length) {
+    var last_was_space = true;
+    var i = 0;
+    while (buffer[i] != 0) {
+        if (buffer[i] == '0' && last_was_space) {
+            memcpy(buffer[i], buffer[i + 1], length - (i + 1));
         }
-        if (typeof radius === 'undefined') {
-            radius = 5;
-        }
-        if (typeof radius === 'number') {
-            radius = {tl: radius, tr: radius, br: radius, bl: radius};
+        last_was_space = buffer[i] == ' ' || buffer[i] == '.' || buffer[i] == '/';
+        i += 1;
+    }
+}
+function draw_weather(fctx, icon, temp, position, color, fontsize, align) {
+    var weather_fontsize = (fixed_t)(fontsize * 1.15);
+    var w1 = string_width(fctx, icon, font_weather, weather_fontsize);
+    var w2 = string_width(fctx, temp, font_main, fontsize);
+    var sep = REM(2);
+    var w = w1 + w2 + sep;
+    var a = GTextAlignmentLeft;
+    if (align == GTextAlignmentCenter) {
+        draw_string(fctx, icon, FPoint(position.x - w/2, position.y + weather_fontsize/8), font_weather, color, weather_fontsize, a);
+        draw_string(fctx, temp, FPoint(position.x - w/2 + w1 + sep, position.y), font_main, color, fontsize, a);
+    } else if (align == GTextAlignmentLeft) {
+        draw_string(fctx, icon, FPoint(position.x, position.y + weather_fontsize/2), font_weather, color, weather_fontsize, a);
+        draw_string(fctx, temp, FPoint(position.x + w1 + sep, position.y), font_main, color, fontsize, a);
+    } else {
+        draw_string(fctx, icon, FPoint(position.x - w, position.y + weather_fontsize/2), font_weather, color, weather_fontsize, a);
+        draw_string(fctx, temp, FPoint(position.x - w + w1 + sep, position.y), font_main, color, fontsize, a);
+    }
+}
+/**
+ * Draw the watch face.
+ */
+function background_update_proc(layer, ctx) {
+    var fctx_obj;
+    var fctx = fctx_obj;
+    fctx_init_context(fctx, ctx);
+    var bounds = g2frect(layer_get_unobstructed_bounds(layer_background));
+    height = bounds.size.h;
+    width = bounds.size.w;
+    var bounds_full = g2frect(layer_get_bounds(layer_background));
+    height_full = bounds_full.size.h;
+    width_full = bounds_full.size.w;
+    var now = time(NULL);
+    var t = localtime(now);
+    var color_accent = COLOR(config_color_accent);
+    var color_night = GColor.Black;
+    var color_day = GColor.LightGray;
+    var color_background = GColor.Black;
+    var color_main = GColor.White;
+    var color_battery = color_main;
+    var battery_state = battery_state_service_peek();
+    if (battery_state.is_charging || battery_state.is_plugged) {
+        battery_state.charge_percent = 100;
+    }
+    if (battery_state.charge_percent <= 10) {
+        color_accent = GColor.Folly;
+    } else if (battery_state.charge_percent <= 20) {
+        color_accent = GColor.ChromeYellow;
+    } else if (battery_state.charge_percent <= 30) {
+        color_accent = GColor.Yellow;
+    }
+    draw_rect(fctx, bounds_full, color_background);
+    var fontsize_weather = REM(27);
+    var topbar_height = FIXED_ROUND(fontsize_weather + REM(4));
+    draw_rect(fctx, FRect(bounds.origin, FSize(width, topbar_height)), color_accent);
+    var pos_weather_y = REM(6);
+    var weather_is_on = config_weather_refresh > 0;
+    var weather_is_available = weather.timestamp > 0;
+    var weather_is_outdated = (time(NULL) - weather.timestamp) > (config_weather_expiration * 60);
+    var show_weather = weather_is_on && weather_is_available && !weather_is_outdated;
+    if (show_weather) {
+        if (weather.failed) {
+            snprintf(buffer_1, 10, "%c", weather.icon);
+            snprintf(buffer_2, 10, "%d", weather.temp_cur);
+            snprintf(buffer_3, 10, "%d", weather.temp_low);
+            snprintf(buffer_4, 10, "%d", weather.temp_high);
         } else {
-            var defaultRadius = {tl: 0, tr: 0, br: 0, bl: 0};
-            for (var side in defaultRadius) {
-                radius[side] = radius[side] || defaultRadius[side];
+            snprintf(buffer_1, 10, "%c", weather.icon);
+            snprintf(buffer_2, 10, "%d°", weather.temp_cur);
+            snprintf(buffer_3, 10, "%d°", weather.temp_low);
+            snprintf(buffer_4, 10, "%d°", weather.temp_high);
+        }
+        draw_weather(fctx, buffer_1, buffer_2, FPoint(width/2, pos_weather_y), color_background, fontsize_weather, GTextAlignmentCenter);
+        draw_string(fctx, buffer_3, FPoint(pos_weather_y + REM(2), pos_weather_y), font_main, color_background, fontsize_weather, GTextAlignmentLeft);
+        draw_string(fctx, buffer_4, FPoint(width - pos_weather_y, pos_weather_y), font_main, color_background, fontsize_weather, GTextAlignmentRight);
+        var first_perc_index = -1;
+        var sec_in_hour = 60*60;
+        var cur_h_ts = time(NULL);
+        cur_h_ts -= cur_h_ts % sec_in_hour; // align with hour
+        for(i = 0; i < weather.perc_data_len; i++) {
+            if (cur_h_ts == weather.perc_data_ts + i * sec_in_hour) {
+                first_perc_index = i;
+                break;
             }
         }
-        ctx.beginPath();
-        ctx.moveTo(x + radius.tl, y);
-        ctx.lineTo(x + width - radius.tr, y);
-        ctx.quadraticCurveTo(x + width, y, x + width, y + radius.tr);
-        ctx.lineTo(x + width, y + height - radius.br);
-        ctx.quadraticCurveTo(x + width, y + height, x + width - radius.br, y + height);
-        ctx.lineTo(x + radius.bl, y + height);
-        ctx.quadraticCurveTo(x, y + height, x, y + height - radius.bl);
-        ctx.lineTo(x, y + radius.tl);
-        ctx.quadraticCurveTo(x, y, x + radius.tl, y);
-        ctx.closePath();
-        if (fill) {
-            ctx.fill();
+        var nHours = 24;
+        var all_zero = true;
+        for(i = 0; i < nHours + 1; i++) {
+            var i_percip_prob = 0;
+            if (first_perc_index + i < weather.perc_data_len) {
+                i_percip_prob = weather.perc_data[first_perc_index + i];
+            }
+            if (i_percip_prob != 0) {
+                all_zero = false;
+                break;
+            }
         }
-        if (stroke) {
-            ctx.stroke();
+        if (first_perc_index != -1 && !all_zero) {
+            var perc_ti_h = FIXED_ROUND(REM(3));
+            var perc_sep = REM(2); // space between two bars
+            var perc_bar = (width - (nHours + 1) * perc_sep) / nHours; // width of a single bar (without space)
+            var perc_w = perc_sep + perc_bar; // total width occupied by a single hour
+            var perc_maxheight = REM(20); // max height of the precipitation bar
+            var perc_minoffset = - perc_w * (t.tm_min % 60) / 60; // x axis offset into the current hour
+            for(i = 0; i < nHours + 1; i++) {
+                var i_percip_prob = 0;
+                if (first_perc_index + i < weather.perc_data_len) {
+                    i_percip_prob = weather.perc_data[first_perc_index + i];
+                }
+                var point = FPoint(perc_minoffset + perc_sep / 2 + i * perc_w, topbar_height + perc_ti_h);
+                var size = FSize(perc_bar, perc_maxheight * i_percip_prob / 100);
+                draw_rect(fctx, FRect(point, size), color_main);
+            }
+            draw_rect(fctx, FRect(FPoint(0, topbar_height), FSize(width, perc_ti_h)), color_day);
+            for(i = -1; i < 2; i++) {
+                var point = FPoint(perc_minoffset + (24*i + 18 - t.tm_hour) * perc_w, topbar_height);
+                draw_rect(fctx, FRect(point, FSize(12 * perc_w, perc_ti_h)), color_night);
+            }
         }
-
     }
+    var time_y_offset = PBL_DISPLAY_WIDTH != 144 ? 0 : (height_full-height) / 8;
+    setlocale(LC_ALL, "");
+    strftime(buffer_1, sizeof(buffer_1), "%I:%M", t);
+    remove_leading_zero(buffer_1, sizeof(buffer_1));
+    var fontsize_time = (fixed_t)(width / 2.2);
+    draw_string(fctx, buffer_1, FPoint(width / 2, height_full / 2 - fontsize_time / 2 - time_y_offset), font_main, color_main, fontsize_time, GTextAlignmentCenter);
+    strftime(buffer_1, sizeof(buffer_1), "%A, %m/%d", t);
+    remove_leading_zero(buffer_1, sizeof(buffer_1));
+    var fontsize_date = (fixed_t)(width / 8);
+    draw_string(fctx, buffer_1, FPoint(width / 2, height_full / 2 + fontsize_time / 3 - time_y_offset), font_main, color_accent, fontsize_date, GTextAlignmentCenter);
+    var steps = health_service_sum_today(HealthMetricStepCount);
+    var steps_goal = 10000;
+    var pos_stepbar_height = REM(5);
+    var pos_stepbar_endx = width * steps / steps_goal;
+    draw_rect(fctx, FRect(FPoint(0, height_full - pos_stepbar_height), FSize(pos_stepbar_endx, pos_stepbar_height)), color_accent);
+    draw_circle(fctx, FPoint(pos_stepbar_endx, height_full), pos_stepbar_height, color_accent);
+    var hr = health_service_peek_current_value(HealthMetricHeartRateBPM);
+    if (hr != 0) {
+        var fontsize_hr = REM(25);
+        snprintf(buffer_1, 10, "%i", hr);
+        draw_string(fctx, "1", FPoint(pos_weather_y, height_full - REM(13)), font_icon, color_main, REM(15), GTextAlignmentLeft);
+        draw_string(fctx, buffer_1, FPoint(pos_weather_y + REM(16), height_full - REM(26)), font_main, color_main,fontsize_hr, GTextAlignmentLeft);
+    }
+    var bat_thickness = PIX(1);
+    var bat_gap_thickness = PIX(1);
+    var bat_height = PIX(15);
+    var bat_width = PIX(9);
+    var bat_sep = PIX(3);
+    var bat_top = PIX(2);
+    var bat_inner_height = bat_height - 2 * bat_thickness - 2 * bat_gap_thickness;
+    var bat_inner_width = bat_width - 2 * bat_thickness - 2 * bat_gap_thickness;
+    var bat_avoid_stepbar = width - (width * steps / steps_goal + pos_stepbar_height) < 2*bat_sep + bat_width;
+    var bat_origin = FPoint(width - bat_sep - bat_width, height_full - bat_sep - bat_height - (bat_avoid_stepbar ? pos_stepbar_height : 0));
+    draw_rect(fctx, FRect(bat_origin, FSize(bat_width, bat_height)), color_battery);
+    draw_rect(fctx, FRect(FPoint(bat_origin.x + bat_thickness, bat_origin.y + bat_thickness), FSize(bat_width - 2*bat_thickness, bat_height - 2*bat_thickness)), color_background);
+    draw_rect(fctx, FRect(FPoint(bat_origin.x + bat_thickness + bat_gap_thickness, bat_origin.y + bat_thickness + bat_gap_thickness + (100 - battery_state.charge_percent) * bat_inner_height / 100), FSize(
+            bat_inner_width, battery_state.charge_percent * bat_inner_height / 100)), color_battery);
+    draw_rect(fctx, FRect(FPoint(bat_origin.x + bat_thickness + bat_gap_thickness, bat_origin.y - bat_top), FSize(bat_inner_width, bat_top)), color_battery);
+    var bluetooth = bluetooth_connection_service_peek();
+    bluetooth_popup(fctx, ctx, bluetooth);
+    fctx_deinit_context(fctx);
+}
+// -- end autogen
 
     var lookKeys = [
         "CONFIG_COLOR_OUTER_BACKGROUND",

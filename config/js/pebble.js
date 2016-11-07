@@ -11,6 +11,16 @@ var PebbleHelper = (function () {
                 if (platform === "chalk") return round;
                 return other;
             };
+        },
+        PBL_DISPLAY_WIDTH: function (platform) {
+            if (platform == "chalk") return 144;
+            if (platform == "emery") return 200;
+            return 144;
+        },
+        PBL_DISPLAY_HEIGHT: function (platform) {
+            if (platform == "chalk") return 144;
+            if (platform == "emery") return 228;
+            return 168;
         }
     }
 

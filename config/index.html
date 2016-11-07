@@ -277,7 +277,7 @@
 
   function readValuesFromStorage(use_defaults, did_read_defaults) {
 
-    var defaults = ObsidianPreview.defaultConfig(getPlatform());
+    var defaults = RedshiftPreview.defaultConfig(getPlatform());
 
     var stringTypes = [
 // -- autogen
@@ -625,7 +625,7 @@
   <script type="text/javascript">
     function updateCanvas() {
       var config = readConfigFromDom();
-      //ObsidianPreview.drawPreview(config, 'preview', getPlatform());
+      RedshiftPreview.drawPreview(config, 'preview', getPlatform());
     }
   </script>
   </div>
