@@ -504,48 +504,12 @@ var ObsidianPreview = (function () {
     function defaultConfig(platform) {
         var COLOR_FALLBACK = PebbleHelper.COLOR_FALLBACK(platform);
         var PBL_IF_ROUND_ELSE = PebbleHelper.PBL_IF_ROUND_ELSE(platform);
-        // defaults are also in src/obsidian.c, src/js/pebble-js-app.js and config/js/preview.js
         var defaults = {
-            CONFIG_COLOR_OUTER_BACKGROUND: COLOR_FALLBACK(GColor.DarkGray, GColor.Black),
-            CONFIG_COLOR_INNER_BACKGROUND: COLOR_FALLBACK(GColor.White, GColor.White),
-            CONFIG_COLOR_MINUTE_HAND: COLOR_FALLBACK(GColor.Black, GColor.Black),
-            CONFIG_COLOR_INNER_MINUTE_HAND: COLOR_FALLBACK(GColor.LightGray, GColor.Black),
-            CONFIG_COLOR_HOUR_HAND: COLOR_FALLBACK(GColor.JaegerGreen, GColor.Black),
-            CONFIG_COLOR_INNER_HOUR_HAND: COLOR_FALLBACK(GColor.LightGray, GColor.Black),
-            CONFIG_COLOR_CIRCLE: COLOR_FALLBACK(GColor.Black, GColor.Black),
-            CONFIG_COLOR_TICKS: COLOR_FALLBACK(GColor.Black, GColor.Black),
-            CONFIG_COLOR_DAY_OF_WEEK: COLOR_FALLBACK(GColor.JaegerGreen, GColor.Black),
-            CONFIG_COLOR_DATE: COLOR_FALLBACK(GColor.Black, GColor.Black),
-            CONFIG_BATTERY_LOGO: 1,
-            CONFIG_COLOR_BATTERY_LOGO: COLOR_FALLBACK(PBL_IF_ROUND_ELSE(GColor.DarkGray, GColor.Black), GColor.White),
-            CONFIG_COLOR_BATTERY_30: COLOR_FALLBACK(PBL_IF_ROUND_ELSE(GColor.Yellow, GColor.Black), GColor.White),
-            CONFIG_COLOR_BATTERY_20: COLOR_FALLBACK(PBL_IF_ROUND_ELSE(GColor.Orange, GColor.Black), GColor.White),
-            CONFIG_COLOR_BATTERY_10: COLOR_FALLBACK(PBL_IF_ROUND_ELSE(GColor.Red, GColor.Black), GColor.White),
-            CONFIG_COLOR_BATTERY_BG_30: COLOR_FALLBACK(PBL_IF_ROUND_ELSE(GColor.White, GColor.Yellow), GColor.Black),
-            CONFIG_COLOR_BATTERY_BG_20: COLOR_FALLBACK(PBL_IF_ROUND_ELSE(GColor.White, GColor.Orange), GColor.Black),
-            CONFIG_COLOR_BATTERY_BG_10: COLOR_FALLBACK(PBL_IF_ROUND_ELSE(GColor.White, GColor.Red), GColor.Black),
-            CONFIG_COLOR_BLUETOOTH_LOGO: COLOR_FALLBACK(GColor.White, GColor.White),
-            CONFIG_COLOR_BLUETOOTH_LOGO_2: COLOR_FALLBACK(GColor.Black, GColor.Black),
-            CONFIG_BLUETOOTH_LOGO: +true,
-            CONFIG_VIBRATE_DISCONNECT: +true,
-            CONFIG_VIBRATE_RECONNECT: +true,
-            CONFIG_MESSAGE_DISCONNECT: +true,
-            CONFIG_MESSAGE_RECONNECT: +true,
-            CONFIG_MINUTE_TICKS: 1,
-            CONFIG_HOUR_TICKS: 1,
-            CONFIG_WEATHER_LOCAL: +true,
-            CONFIG_COLOR_WEATHER: COLOR_FALLBACK(GColor.Black, GColor.Black),
-            CONFIG_WEATHER_MODE_LOCAL: 1,
-            CONFIG_WEATHER_UNIT_LOCAL: 2,
-            CONFIG_WEATHER_SOURCE_LOCAL: 1,
-            CONFIG_WEATHER_APIKEY_LOCAL: "",
-            CONFIG_WEATHER_LOCATION_LOCAL: "",
-            CONFIG_WEATHER_REFRESH: 30,
-            CONFIG_WEATHER_EXPIRATION: 3 * 60,
-            CONFIG_SQUARE: +false,
-            CONFIG_SECONDS: 0,
-            CONFIG_COLOR_SECONDS: COLOR_FALLBACK(GColor.JaegerGreen, GColor.Black),
-            CONFIG_DATE_FORMAT: 0
+// -- autogen
+// -- ## for key in configuration
+// --             {{ key["key"] }}: {{ key["jsdefault"] }},
+// -- ## endfor
+// -- end autogen
         };
         return cloneConfig(defaults);
     }

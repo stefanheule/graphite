@@ -42,7 +42,7 @@ Pebble.addEventListener('ready', function () {
 
 Pebble.addEventListener('showConfiguration', function () {
     var url = 'https://stefanheule.com/redshift/config/10/index.html';
-    url = 'https://rawgit.com/stefanheule/redshift/master/config/index.html';
+    url = 'https://rawgit.com/stefanheule/redshift/master/config/';
 
     url = 'https://local.com/redshift/config/0/index.html';
 
@@ -79,6 +79,7 @@ Pebble.addEventListener('webviewclosed', function (e) {
         "CONFIG_WEATHER_LOCATION_LOCAL": 8,
         "CONFIG_WEATHER_REFRESH": 9,
         "CONFIG_WEATHER_EXPIRATION": 10,
+        "CONFIG_COLOR_ACCENT": 11,
 // -- end autogen
     };
     var config = {};

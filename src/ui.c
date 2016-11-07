@@ -145,7 +145,7 @@ void background_update_proc(Layer *layer, GContext *ctx) {
 //    GColor color_main = GColorBlack;
 //    GColor color_battery = GColorDarkGray;
 
-    GColor color_accent = GColorVividCerulean;
+    GColor color_accent = COLOR(config_color_accent);
     GColor color_night = GColorBlack;
     GColor color_day = GColorLightGray;
     GColor color_background = GColorBlack;

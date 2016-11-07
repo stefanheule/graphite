@@ -40,10 +40,12 @@ configuration = [
   {
     'key': 'CONFIG_WEATHER_APIKEY_LOCAL',
     'default': '""',
+    'type': 'string',
   },
   {
     'key': 'CONFIG_WEATHER_LOCATION_LOCAL',
     'default': '""',
+    'type': 'string',
   },
   {
     'key': 'CONFIG_WEATHER_REFRESH',
@@ -55,6 +57,10 @@ configuration = [
     'default': '3*60',
     'type': 'uint16_t',
   },
+  {
+    'key': 'CONFIG_COLOR_ACCENT',
+    'default': 'GColorVividCeruleanARGB8',
+  }
 ]
 
 msg_keys = [
@@ -81,6 +87,7 @@ files_to_inline_render = [
   "src/settings.c",
   "src/js/pebble-js-app.js",
   "config/index.html",
+  "config/js/preview.js",
 ]
 
 
@@ -124,6 +131,13 @@ def add_key_id(keys, prefix, start_id):
       k['local'] = name[-5:] == 'LOCAL'
       if 'type' not in k:
         k['type'] = 'uint8_t'
+
+      jsdefault = k['default']
+      if 'int' in k['type']:
+        jsdefault = "+%s" % (jsdefault)
+      if "GColor" in jsdefault:
+        jsdefault = re.sub(r"GColor(.*)ARGB8", "GColor.\\1", jsdefault)
+      k['jsdefault'] = jsdefault
 
       res.append(k)
     i += 1
@@ -195,6 +209,7 @@ def inline_render(file):
       else:
         template = env.from_string("\n".join(tpl))
         tpl = []
+        lol = template.render(get_context()).strip("\n")
         newcontents.append(template.render(get_context()).strip("\n"))
         mode = 'ignore'
         if isend is not None:

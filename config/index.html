@@ -39,6 +39,20 @@
       <div class='item-container-header'>Weather</div>
 
       <div class="item-container-content">
+        <label class='item' id="weatherlabel">
+          Accent Color
+          <input id='CONFIG_COLOR_ACCENT' type='text' class='item-color item-color-normal'>
+        </label>
+      </div>
+
+    </div>
+    </div>
+
+    <div id="body-container">
+    <div class='item-container'>
+      <div class='item-container-header'>Weather</div>
+
+      <div class="item-container-content">
         <label class="item">
           Units
           <select id='CONFIG_WEATHER_UNIT_LOCAL' dir='rtl' class="item-select">
@@ -265,7 +279,17 @@
 
     var defaults = ObsidianPreview.defaultConfig(getPlatform());
 
-    var stringTypes = ["CONFIG_WEATHER_APIKEY_LOCAL", "CONFIG_WEATHER_LOCATION_LOCAL"];
+    var stringTypes = [
+// -- autogen
+// -- ## for key in configuration
+// -- ## if key["type"] == "string"
+// --       "{{ key["key"] }}",
+// -- ## endif
+// -- ## endfor
+      "CONFIG_WEATHER_APIKEY_LOCAL",
+      "CONFIG_WEATHER_LOCATION_LOCAL",
+// -- end autogen
+    ];
 
     // use defaults
     if (use_defaults || localStorage.getItem(getStorageKey("CONFIG_WEATHER_REFRESH")) === null) {
@@ -338,6 +362,7 @@
         "CONFIG_WEATHER_LOCATION_LOCAL": 8,
         "CONFIG_WEATHER_REFRESH": 9,
         "CONFIG_WEATHER_EXPIRATION": 10,
+        "CONFIG_COLOR_ACCENT": 11,
 // -- end autogen
     };
 
@@ -569,16 +594,6 @@
       config: (did_read_defaults["defaults"] ? "defaults" : initialConfig)
     });
 
-    // hide some non-relevant config for chalk
-    if (isChalk()) {
-      hideOption("CONFIG_COLOR_OUTER_BACKGROUND");
-      hideOption("CONFIG_COLOR_CIRCLE");
-      hideOption("CONFIG_COLOR_BLUETOOTH_LOGO");
-      hideOption("CONFIG_COLOR_BLUETOOTH_LOGO_2");
-      hideOption("CONFIG_SQUARE");
-      el = document.getElementById("weatherlabel").childNodes[0];
-      el.nodeValue = "Weather and Bluetooth Color";
-    }
     initShowHideStatus(initialConfig);
 
     // update version information
