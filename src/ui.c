@@ -78,6 +78,11 @@ void bluetooth_popup(FContext* fctx, GContext *ctx, bool connected) {
 /**
  * Remove all leading zeros in a string.
  */
+// -- jsalternative
+// -- function remove_leading_zero(buffer, length) {
+// --     if (buffer.substring(0, 1) == "0") buffer = buffer.substring(1);
+// --     return buffer.replace(new RegExp("[ ./]0", 'g'), "");
+// -- }
 void remove_leading_zero(char *buffer, size_t length) {
     bool last_was_space = true;
     int i = 0;
@@ -89,6 +94,7 @@ void remove_leading_zero(char *buffer, size_t length) {
         i += 1;
     }
 }
+// -- end jsalternative
 
 void draw_weather(FContext* fctx, const char* icon, const char* temp, FPoint position, GColor color, fixed_t fontsize, GTextAlignment align) {
     fixed_t weather_fontsize = (fixed_t)(fontsize * 1.15);

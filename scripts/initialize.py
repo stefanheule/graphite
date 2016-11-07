@@ -239,7 +239,29 @@ def c_to_js(c):
   newcontents = []
   basetype = "(bool|u?int[0-9]+_t|void)"
   ident = "[a-zA-Z_][a-zA-Z0-9_]*"
+  mode = "init"
   for line in c.split(u"\n"):
+
+    isstart = re.search(r"^ *(// --) jsalternative", line)
+    isend = re.search(r"^ *(// --) end jsalternative", line)
+    istpl = re.search(r"^ *(// --) (.*)", line)
+
+    if mode == 'init':
+      if isstart is not None:
+        mode = 'alt'
+        continue
+    elif mode == 'ignore':
+      if isend is not None:
+        mode = 'init'
+      continue
+    elif mode == 'alt':
+      if istpl is not None and isend is None:
+        newcontents.append(istpl.group(2))
+      else:
+        mode = 'ignore'
+        if isend is not None:
+          mode = 'init'
+      continue
 
     if starts_with(line, u"#include"): continue
     if starts_with(line, u"#ifndef"): continue
@@ -277,6 +299,19 @@ def c_to_js(c):
       newcontents.append("%sfor(%s" % (indent, rest))
       continue
 
+    rstrformat = re.match("(?P<indent> *)(?P<fun>strftime|snprintf)\\((?P<target>" + ident + "), [^,]*, (?P<format>.*), (?P<what>[^,]*)\\);$", line)
+    if rstrformat is not None:
+      indent = rstrformat.group("indent")
+      form = rstrformat.group("format")
+      target = rstrformat.group("target")
+      what = rstrformat.group("what")
+      fun = rstrformat.group("fun")
+      if fun == "strftime":
+        newcontents.append("%s%s = strftime(%s, now);" % (indent, target, form))
+      else:
+        newcontents.append("%s%s = sprintf(%s, %s);" % (indent, target, form, what))
+      continue
+
     newcontents.append(line)
 
   for i in range(len(newcontents)):
@@ -288,6 +323,8 @@ def c_to_js(c):
       line = line.replace("->", ".");
     if "(int)" in line:
       line = line.replace("(int)", "");
+    if "(fixed_t)" in line:
+      line = line.replace("(fixed_t)", "");
     newcontents[i] = line
 
   newcontents = u"\n".join(newcontents)

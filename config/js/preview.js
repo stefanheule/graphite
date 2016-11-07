@@ -22,6 +22,11 @@ var RedshiftPreview = (function () {
         perc_data_ts: 0,
         failed: false
     }
+    var buffer_1, buffer_2, buffer_3, buffer_4;
+    var font_main = '';
+    var font_weather = '';
+    var font_icon = '';
+    var show_bluetooth_popup = false;
 
 // -- autogen
 // -- ## for key in configuration
@@ -52,9 +57,11 @@ var RedshiftPreview = (function () {
     var NULL = 0;
     function INT_TO_FIXED(x) { return x*FIXED_POINT_SCALE; }
     function REM(x) { return INT_TO_FIXED(x) * PBL_DISPLAY_WIDTH / 200; }
+    function PIX(x) { return INT_TO_FIXED(x); }
     function FIXED_TO_INT(x) { return Math.floor(x/FIXED_POINT_SCALE); }
     function FIXED_ROUND(x) { return ((x) % FIXED_POINT_SCALE < FIXED_POINT_SCALE/2 ? (x) - ((x) % FIXED_POINT_SCALE) : (x) + FIXED_POINT_SCALE - ((x) % FIXED_POINT_SCALE)) }
     function fctx_init_context() {}
+    function fctx_deinit_context() {}
     function layer_get_unobstructed_bounds() { return layer_get_bounds(); }
     function layer_get_bounds() { return GRect(0, 0, PBL_DISPLAY_WIDTH, PBL_DISPLAY_HEIGHT); }
     function time() { return new Date(); }
@@ -64,6 +71,8 @@ var RedshiftPreview = (function () {
             tm_hour: 48
         };
     }
+    function setlocale() {}
+    var LC_ALL = 0;
     function COLOR(x) { return '#' + GColor.toHex(x); }
     function battery_state_service_peek() {
         return {
@@ -72,7 +81,22 @@ var RedshiftPreview = (function () {
             is_plugged: false
         }
     }
+    function sizeof() { return 0; }
+    var HealthMetricStepCount = 0;
+    function health_service_sum_today(what) {
+        if (what == HealthMetricStepCount) return 7000;
+    }
+    var HealthMetricHeartRateBPM = 0;
+    function health_service_peek_current_value(what) {
+        if (what == HealthMetricHeartRateBPM) return 65;
+    }
+    function bluetooth_connection_service_peek() { return false; }
+    var GTextAlignmentLeft = 0;
+    var GTextAlignmentCenter = 1;
+    var GTextAlignmentRight = 2;
     function draw_rect() {
+    }
+    function draw_circle() {
     }
     function draw_string() {
     }
@@ -132,18 +156,11 @@ function bluetooth_popup(fctx, ctx, connected) {
  * Remove all leading zeros in a string.
  */
 function remove_leading_zero(buffer, length) {
-    var last_was_space = true;
-    var i = 0;
-    while (buffer[i] != 0) {
-        if (buffer[i] == '0' && last_was_space) {
-            memcpy(buffer[i], buffer[i + 1], length - (i + 1));
-        }
-        last_was_space = buffer[i] == ' ' || buffer[i] == '.' || buffer[i] == '/';
-        i += 1;
-    }
+    if (buffer.substring(0, 1) == "0") buffer = buffer.substring(1);
+    return buffer.replace(new RegExp("[ ./]0", 'g'), "");
 }
 function draw_weather(fctx, icon, temp, position, color, fontsize, align) {
-    var weather_fontsize = (fixed_t)(fontsize * 1.15);
+    var weather_fontsize = (fontsize * 1.15);
     var w1 = string_width(fctx, icon, font_weather, weather_fontsize);
     var w2 = string_width(fctx, temp, font_main, fontsize);
     var sep = REM(2);
@@ -203,15 +220,15 @@ function background_update_proc(layer, ctx) {
     var show_weather = weather_is_on && weather_is_available && !weather_is_outdated;
     if (show_weather) {
         if (weather.failed) {
-            snprintf(buffer_1, 10, "%c", weather.icon);
-            snprintf(buffer_2, 10, "%d", weather.temp_cur);
-            snprintf(buffer_3, 10, "%d", weather.temp_low);
-            snprintf(buffer_4, 10, "%d", weather.temp_high);
+            buffer_1 = sprintf("%c", weather.icon);
+            buffer_2 = sprintf("%d", weather.temp_cur);
+            buffer_3 = sprintf("%d", weather.temp_low);
+            buffer_4 = sprintf("%d", weather.temp_high);
         } else {
-            snprintf(buffer_1, 10, "%c", weather.icon);
-            snprintf(buffer_2, 10, "%d°", weather.temp_cur);
-            snprintf(buffer_3, 10, "%d°", weather.temp_low);
-            snprintf(buffer_4, 10, "%d°", weather.temp_high);
+            buffer_1 = sprintf("%c", weather.icon);
+            buffer_2 = sprintf("%d°", weather.temp_cur);
+            buffer_3 = sprintf("%d°", weather.temp_low);
+            buffer_4 = sprintf("%d°", weather.temp_high);
         }
         draw_weather(fctx, buffer_1, buffer_2, FPoint(width/2, pos_weather_y), color_background, fontsize_weather, GTextAlignmentCenter);
         draw_string(fctx, buffer_3, FPoint(pos_weather_y + REM(2), pos_weather_y), font_main, color_background, fontsize_weather, GTextAlignmentLeft);
@@ -263,13 +280,13 @@ function background_update_proc(layer, ctx) {
     }
     var time_y_offset = PBL_DISPLAY_WIDTH != 144 ? 0 : (height_full-height) / 8;
     setlocale(LC_ALL, "");
-    strftime(buffer_1, sizeof(buffer_1), "%I:%M", t);
+    buffer_1 = strftime("%I:%M", now);
     remove_leading_zero(buffer_1, sizeof(buffer_1));
-    var fontsize_time = (fixed_t)(width / 2.2);
+    var fontsize_time = (width / 2.2);
     draw_string(fctx, buffer_1, FPoint(width / 2, height_full / 2 - fontsize_time / 2 - time_y_offset), font_main, color_main, fontsize_time, GTextAlignmentCenter);
-    strftime(buffer_1, sizeof(buffer_1), "%A, %m/%d", t);
+    buffer_1 = strftime("%A, %m/%d", now);
     remove_leading_zero(buffer_1, sizeof(buffer_1));
-    var fontsize_date = (fixed_t)(width / 8);
+    var fontsize_date = (width / 8);
     draw_string(fctx, buffer_1, FPoint(width / 2, height_full / 2 + fontsize_time / 3 - time_y_offset), font_main, color_accent, fontsize_date, GTextAlignmentCenter);
     var steps = health_service_sum_today(HealthMetricStepCount);
     var steps_goal = 10000;
@@ -280,7 +297,7 @@ function background_update_proc(layer, ctx) {
     var hr = health_service_peek_current_value(HealthMetricHeartRateBPM);
     if (hr != 0) {
         var fontsize_hr = REM(25);
-        snprintf(buffer_1, 10, "%i", hr);
+        buffer_1 = sprintf("%i", hr);
         draw_string(fctx, "1", FPoint(pos_weather_y, height_full - REM(13)), font_icon, color_main, REM(15), GTextAlignmentLeft);
         draw_string(fctx, buffer_1, FPoint(pos_weather_y + REM(16), height_full - REM(26)), font_main, color_main,fontsize_hr, GTextAlignmentLeft);
     }
