@@ -7,13 +7,10 @@ var RedshiftPreview = (function () {
 
     // global variables
     var ctx;
-    var PBL_IF_ROUND_ELSE;
-    var PBL_DISPLAY_WIDTH;
-    var PBL_DISPLAY_HEIGHT;
     var weather = {
         version: 0,
-        timestamp: 0,
-        icon: 0,
+        timestamp: (new Date()) * 3,
+        icon: "a".charCodeAt(0),
         temp_cur: 14,
         temp_low: 5,
         temp_high: 28,
@@ -23,10 +20,11 @@ var RedshiftPreview = (function () {
         failed: false
     }
     var buffer_1, buffer_2, buffer_3, buffer_4;
-    var font_main = '';
-    var font_weather = '';
-    var font_icon = '';
+    var font_main = 'Open Sans Condensed';
+    var font_weather = 'nupe2';
+    var font_icon = 'FontAwesome';
     var show_bluetooth_popup = false;
+    var layer_background = 0;
 
 // -- autogen
 // -- ## for key in configuration
@@ -45,15 +43,21 @@ var RedshiftPreview = (function () {
      var config_color_accent;
 // -- end autogen
 
-    // framework functions
+    // core functions and constants
+    var PBL_IF_ROUND_ELSE;
+    var PBL_DISPLAY_WIDTH;
+    var PBL_DISPLAY_HEIGHT;
+
+    // graphics functions and constants
     function GPoint(x, y) { return {x: x, y: y}; }
     function FPoint(x, y) { return {x: x, y: y}; }
     function FSize(w, h) { return {w: w, h: h}; }
     function GRect(x, y, w, h) { return {origin: {x: x, y: y}, size: {w: w, h: h}}; }
     function FRect(origin, size) { return {origin: origin, size: size}; }
     function g2frect(g) { return {origin: {x: INT_TO_FIXED(g.origin.x), y: INT_TO_FIXED(g.origin.y)}, size: {w: INT_TO_FIXED(g.size.w), h: INT_TO_FIXED(g.size.h)}}; }
+
+    // fxct functions and constants
     var FIXED_POINT_SCALE = 16;
-    var layer_background = 0;
     var NULL = 0;
     function INT_TO_FIXED(x) { return x*FIXED_POINT_SCALE; }
     function REM(x) { return INT_TO_FIXED(x) * PBL_DISPLAY_WIDTH / 200; }
@@ -73,7 +77,8 @@ var RedshiftPreview = (function () {
     }
     function setlocale() {}
     var LC_ALL = 0;
-    function COLOR(x) { return '#' + GColor.toHex(x); }
+    function COLOR(x) { return x; }
+    function to_html_color(x) { return '#' + GColor.toHex(x); }
     function battery_state_service_peek() {
         return {
             charge_percent: 70,
@@ -91,14 +96,30 @@ var RedshiftPreview = (function () {
         if (what == HealthMetricHeartRateBPM) return 65;
     }
     function bluetooth_connection_service_peek() { return false; }
-    var GTextAlignmentLeft = 0;
-    var GTextAlignmentCenter = 1;
-    var GTextAlignmentRight = 2;
-    function draw_rect() {
+    var GTextAlignmentLeft = "left";
+    var GTextAlignmentCenter = "center";
+    var GTextAlignmentRight = "right";
+    function draw_rect(fctx, rect, color) {
+        ctx.fillStyle = to_html_color(color);
+        ctx.fillRect(rect.origin.x/FIXED_POINT_SCALE, rect.origin.y/FIXED_POINT_SCALE, rect.size.w/FIXED_POINT_SCALE, rect.size.h/FIXED_POINT_SCALE);
     }
-    function draw_circle() {
+    function draw_circle(fctx, center, radius, color) {
+        ctx.fillStyle = to_html_color(color);
+        ctx.beginPath();
+        ctx.arc(center.x/FIXED_POINT_SCALE, center.y/FIXED_POINT_SCALE, radius/FIXED_POINT_SCALE, 0, 2 * Math.PI, false);
+        ctx.fill();
     }
-    function draw_string() {
+    function draw_string(fctx, str, pos, font, color, size, align) {
+        ctx.textAlign = align;
+        ctx.textBaseline = "hanging";
+        ctx.fillStyle = to_html_color(color);
+        ctx.font = (size/FIXED_POINT_SCALE) + "px '" + font + "'";
+        ctx.fillText(str, pos.x/FIXED_POINT_SCALE, pos.y/FIXED_POINT_SCALE);
+    }
+    function string_width(fctx, str, font, size) {
+        ctx.font = (size/FIXED_POINT_SCALE) + "px '" + font + "'";
+        var text = ctx.measureText(str);
+        return INT_TO_FIXED(text.width);
     }
 
     function drawConfig(canvasId) {
@@ -157,7 +178,7 @@ function bluetooth_popup(fctx, ctx, connected) {
  */
 function remove_leading_zero(buffer, length) {
     if (buffer.substring(0, 1) == "0") buffer = buffer.substring(1);
-    return buffer.replace(new RegExp("[ ./]0", 'g'), "");
+    return buffer.replace(new RegExp("([ ./])0", 'g'), "$1");
 }
 function draw_weather(fctx, icon, temp, position, color, fontsize, align) {
     var weather_fontsize = (fontsize * 1.15);
@@ -281,11 +302,11 @@ function background_update_proc(layer, ctx) {
     var time_y_offset = PBL_DISPLAY_WIDTH != 144 ? 0 : (height_full-height) / 8;
     setlocale(LC_ALL, "");
     buffer_1 = strftime("%I:%M", now);
-    remove_leading_zero(buffer_1, sizeof(buffer_1));
+    buffer_1 = remove_leading_zero(buffer_1, sizeof(buffer_1));
     var fontsize_time = (width / 2.2);
     draw_string(fctx, buffer_1, FPoint(width / 2, height_full / 2 - fontsize_time / 2 - time_y_offset), font_main, color_main, fontsize_time, GTextAlignmentCenter);
     buffer_1 = strftime("%A, %m/%d", now);
-    remove_leading_zero(buffer_1, sizeof(buffer_1));
+    buffer_1 = remove_leading_zero(buffer_1, sizeof(buffer_1));
     var fontsize_date = (width / 8);
     draw_string(fctx, buffer_1, FPoint(width / 2, height_full / 2 + fontsize_time / 3 - time_y_offset), font_main, color_accent, fontsize_date, GTextAlignmentCenter);
     var steps = health_service_sum_today(HealthMetricStepCount);
