@@ -270,6 +270,11 @@ void background_update_proc(Layer *layer, GContext *ctx) {
     fixed_t pos_stepbar_endx = width * steps / steps_goal;
     draw_rect(fctx, FRect(FPoint(0, height_full - pos_stepbar_height), FSize(pos_stepbar_endx, pos_stepbar_height)), color_accent);
     draw_circle(fctx, FPoint(pos_stepbar_endx, height_full), pos_stepbar_height, color_accent);
+    if (steps > steps_goal) {
+        pos_stepbar_endx = width * (steps - steps_goal) / steps_goal;
+        draw_rect(fctx, FRect(FPoint(0, height_full - pos_stepbar_height), FSize(pos_stepbar_endx, pos_stepbar_height)), color_main);
+        draw_circle(fctx, FPoint(pos_stepbar_endx, height_full), pos_stepbar_height, color_main);
+    }
 
     // heart rate
     HealthValue hr = health_service_peek_current_value(HealthMetricHeartRateBPM);
