@@ -307,7 +307,7 @@ def c_to_js(c):
       what = rstrformat.group("what")
       fun = rstrformat.group("fun")
       if fun == "strftime":
-        newcontents.append("%s%s = strftime(%s, now);" % (indent, target, form))
+        newcontents.append("%s%s = strftime(%s, new Date());" % (indent, target, form))
       else:
         newcontents.append("%s%s = sprintf(%s, %s);" % (indent, target, form, what))
       continue

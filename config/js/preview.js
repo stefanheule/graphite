@@ -7,24 +7,30 @@ var RedshiftPreview = (function () {
 
     // global variables
     var ctx;
-    var weather = {
-        version: 0,
-        timestamp: (new Date()) * 3,
-        icon: "a".charCodeAt(0),
-        temp_cur: 14,
-        temp_low: 5,
-        temp_high: 28,
-        perc_data: [],
-        perc_data_len: 0,
-        perc_data_ts: 0,
-        failed: false
-    }
+    var platform;
+    var tnow = time(NULL);
+    var weather;
     var buffer_1, buffer_2, buffer_3, buffer_4;
     var font_main = 'Open Sans Condensed';
     var font_weather = 'nupe2';
     var font_icon = 'FontAwesome';
     var show_bluetooth_popup = false;
     var layer_background = 0;
+
+    function getWeather() {
+        return {
+            version: 0,
+            timestamp: time(NULL),
+            icon: "a".charCodeAt(0),
+            temp_cur: 14,
+            temp_low: 5,
+            temp_high: 28,
+            perc_data: [0.5, 0.4, 0.3, 0, 0, 0, 0, 0, 0.1, 0.12, 0.1, 0.2,0.4,0.45,0.6,1,1,0.2,0,0,0,0,0,0,0,0].map(function(x){return x*100}),
+            perc_data_len: 25,
+            perc_data_ts: tnow - (tnow % (60*60)),
+            failed: false
+        };
+    }
 
 // -- autogen
 // -- ## for key in configuration
@@ -68,12 +74,12 @@ var RedshiftPreview = (function () {
     function fctx_deinit_context() {}
     function layer_get_unobstructed_bounds() { return layer_get_bounds(); }
     function layer_get_bounds() { return GRect(0, 0, PBL_DISPLAY_WIDTH, PBL_DISPLAY_HEIGHT); }
-    function time() { return new Date(); }
+    function time() { return Math.round((new Date()) / 1000); }
     function localtime() {
         return {
-            tm_min: 11,
-            tm_hour: 48
-        };
+            tm_min: (new Date()).getMinutes(),
+            tm_hour: (new Date()).getHours()
+        }
     }
     function setlocale() {}
     var LC_ALL = 0;
@@ -93,7 +99,10 @@ var RedshiftPreview = (function () {
     }
     var HealthMetricHeartRateBPM = 0;
     function health_service_peek_current_value(what) {
-        if (what == HealthMetricHeartRateBPM) return 65;
+        if (what == HealthMetricHeartRateBPM) {
+            if (platform == "basalt") return 0;
+            return 65;
+        }
     }
     function bluetooth_connection_service_peek() { return false; }
     var GTextAlignmentLeft = "left";
@@ -110,11 +119,21 @@ var RedshiftPreview = (function () {
         ctx.fill();
     }
     function draw_string(fctx, str, pos, font, color, size, align) {
+        var py = pos.y;
+        py -= REM(1);
+        if (font == font_weather) {
+            py -= size * 0.3;
+        }
+        if (font == font_icon) {
+            if (str == "1") str = "\uf004";
+            py -= REM(9);
+            size *= 0.8;
+        }
         ctx.textAlign = align;
         ctx.textBaseline = "hanging";
         ctx.fillStyle = to_html_color(color);
         ctx.font = (size/FIXED_POINT_SCALE) + "px '" + font + "'";
-        ctx.fillText(str, pos.x/FIXED_POINT_SCALE, pos.y/FIXED_POINT_SCALE);
+        ctx.fillText(str, pos.x/FIXED_POINT_SCALE, py/FIXED_POINT_SCALE);
     }
     function string_width(fctx, str, font, size) {
         ctx.font = (size/FIXED_POINT_SCALE) + "px '" + font + "'";
@@ -124,7 +143,7 @@ var RedshiftPreview = (function () {
 
     function drawConfig(canvasId) {
         var config = configurations[canvasId];
-        var platform = platforms[canvasId];
+        platform = platforms[canvasId];
 
         var canvas = document.getElementById(canvasId);
         ctx = canvas.getContext('2d');
@@ -152,6 +171,8 @@ var RedshiftPreview = (function () {
         config_weather_expiration = config["CONFIG_WEATHER_EXPIRATION"];
         config_color_accent = config["CONFIG_COLOR_ACCENT"];
 // -- end autogen
+
+        weather = getWeather(platform);
 
         background_update_proc(0, 0);
     }
@@ -301,12 +322,14 @@ function background_update_proc(layer, ctx) {
     }
     var time_y_offset = PBL_DISPLAY_WIDTH != 144 ? 0 : (height_full-height) / 8;
     setlocale(LC_ALL, "");
-    buffer_1 = strftime("%I:%M", now);
-    buffer_1 = remove_leading_zero(buffer_1, sizeof(buffer_1));
+    buffer_1 = strftime("%I:%M", new Date());
+    buffer_1 = 
+    remove_leading_zero(buffer_1, sizeof(buffer_1));
     var fontsize_time = (width / 2.2);
     draw_string(fctx, buffer_1, FPoint(width / 2, height_full / 2 - fontsize_time / 2 - time_y_offset), font_main, color_main, fontsize_time, GTextAlignmentCenter);
-    buffer_1 = strftime("%A, %m/%d", now);
-    buffer_1 = remove_leading_zero(buffer_1, sizeof(buffer_1));
+    buffer_1 = strftime("%A, %m/%d", new Date());
+    buffer_1 = 
+    remove_leading_zero(buffer_1, sizeof(buffer_1));
     var fontsize_date = (width / 8);
     draw_string(fctx, buffer_1, FPoint(width / 2, height_full / 2 + fontsize_time / 3 - time_y_offset), font_main, color_accent, fontsize_date, GTextAlignmentCenter);
     var steps = health_service_sum_today(HealthMetricStepCount);

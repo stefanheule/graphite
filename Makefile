@@ -20,6 +20,7 @@ deploy: install_deploy
 build: initialize
 	# copy fonts
 	cp resources/fonts/nupe2.ttf config/fonts/nupe2.ttf
+	cp resources/fonts/fontawesome-webfont.ttf config/fonts/FontAwesome.ttf
 	pebble build
 
 initialize:
