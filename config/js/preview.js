@@ -120,22 +120,28 @@ var RedshiftPreview = (function () {
     }
     function draw_string(fctx, str, pos, font, color, size, align) {
         var py = pos.y;
-        py -= REM(1);
         if (font == font_weather) {
-            py -= size * 0.3;
+            py -= size * 0.2;
         }
         if (font == font_icon) {
             if (str == "1") str = "\uf004";
             py -= REM(9);
             size *= 0.8;
         }
+        py += size*0.75;
         ctx.textAlign = align;
-        ctx.textBaseline = "hanging";
         ctx.fillStyle = to_html_color(color);
         ctx.font = (size/FIXED_POINT_SCALE) + "px '" + font + "'";
         ctx.fillText(str, pos.x/FIXED_POINT_SCALE, py/FIXED_POINT_SCALE);
+
+        // var rect = FRect(pos, FSize(string_width(fctx, str, font, size), size));
+        // ctx.strokeStyle = to_html_color(color);
+        // ctx.strokeRect(rect.origin.x/FIXED_POINT_SCALE, rect.origin.y/FIXED_POINT_SCALE, rect.size.w/FIXED_POINT_SCALE, rect.size.h/FIXED_POINT_SCALE);
     }
     function string_width(fctx, str, font, size) {
+        if (font == font_icon) {
+            size *= 0.8;
+        }
         ctx.font = (size/FIXED_POINT_SCALE) + "px '" + font + "'";
         var text = ctx.measureText(str);
         return INT_TO_FIXED(text.width);
