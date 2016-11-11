@@ -43,7 +43,7 @@
 
       <div class='item-container-content'>
         <label class='item'>
-          Show full appearance configuration
+          Show advanced appearance configuration
           <input id='CONFIG_ADVANCED_COLOR_LOCAL' type='checkbox' class='item-toggle'>
         </label>
       </div>
@@ -64,7 +64,7 @@
 -->
       <div class="item-container-content">
         <label class='item'>
-          Accent Color
+          Accent color
           <input id='SIMPLECONFIG_COLOR_ACCENT' type='text' class='item-color item-color-normal'>
         </label>
       </div>
@@ -89,25 +89,25 @@
 -->
       <div class="item-container-content">
         <label class='item'>
-          Top Bar Background Color
+          Top bar background color
           <input id='CONFIG_COLOR_TOPBAR_BG' type='text' class='item-color item-color-normal'>
         </label>
       </div>
       <div class="item-container-content">
         <label class='item'>
-          Color of Information Text Below Time
+          Color of information text below time
           <input id='CONFIG_COLOR_INFO_BELOW' type='text' class='item-color item-color-normal'>
         </label>
       </div>
       <div class="item-container-content">
         <label class='item'>
-          Color of Information Text Above Time
+          Color of information text above time
           <input id='CONFIG_COLOR_INFO_ABOVE' type='text' class='item-color item-color-normal'>
         </label>
       </div>
       <div class="item-container-content">
         <label class='item'>
-          Progress Bar Color
+          Progress bar color
           <input id='CONFIG_COLOR_PROGRESS_BAR' type='text' class='item-color item-color-normal'>
         </label>
       </div>
@@ -391,8 +391,25 @@
     return options;
   }
 
-  function majorityOf(vals) {
-    return vals[0];
+  function mode(array) {
+    if(array.length == 0)
+        return null;
+    var modeMap = {};
+    var maxEl = array[0], maxCount = 1;
+    for(var i = 0; i < array.length; i++)
+    {
+        var el = array[i];
+        if(modeMap[el] == null)
+            modeMap[el] = 1;
+        else
+            modeMap[el]++;  
+        if(modeMap[el] > maxCount)
+        {
+            maxEl = el;
+            maxCount = modeMap[el];
+        }
+    }
+    return maxEl;
   }
 
   function applyValue(el, val) {
@@ -417,7 +434,7 @@
 // -- autogen
 // -- ## for key in simple_config
 // --     el = $("#{{ key["key"] }}");
-// --     applyValue(el, majorityOf([
+// --     applyValue(el, mode([
 // -- ## for dep in key["depends"]
 // --       config["{{ dep }}"],
 // -- ## endfor
@@ -425,7 +442,7 @@
 // -- 
 // -- ## endfor
     el = $("#SIMPLECONFIG_COLOR_ACCENT");
-    applyValue(el, majorityOf([
+    applyValue(el, mode([
       config["CONFIG_COLOR_TOPBAR_BG"],
       config["CONFIG_COLOR_INFO_BELOW"],
       config["CONFIG_COLOR_INFO_ABOVE"],
@@ -574,52 +591,34 @@
   }
   /** Some options only make sense when other options are enabled/disabled. */
   function updateShowHideStatus(id, value) {
-    // if (id == "CONFIG_BLUETOOTH_LOGO") {
-    //   if (value && !isChalk()) {
-    //     showOption("CONFIG_COLOR_BLUETOOTH_LOGO");
-    //     showOption("CONFIG_COLOR_BLUETOOTH_LOGO_2");
-    //   } else {
-    //     hideOption("CONFIG_COLOR_BLUETOOTH_LOGO");
-    //     hideOption("CONFIG_COLOR_BLUETOOTH_LOGO_2");
-    //   }
-    // }
-    // if (id == "CONFIG_SQUARE") {
-    //   if (value) {
-    //     hideOption("CONFIG_COLOR_OUTER_BACKGROUND");
-    //     hideOption("CONFIG_COLOR_BATTERY_BG_30");
-    //     hideOption("CONFIG_COLOR_BATTERY_BG_20");
-    //     hideOption("CONFIG_COLOR_BATTERY_BG_10");
-    //   } else {
-    //     showOption("CONFIG_COLOR_OUTER_BACKGROUND");
-    //     showOption("CONFIG_COLOR_BATTERY_BG_30");
-    //     showOption("CONFIG_COLOR_BATTERY_BG_20");
-    //     showOption("CONFIG_COLOR_BATTERY_BG_10");
-    //   }
-    // }
-    // if (id == "CONFIG_WEATHER_LOCAL") {
-    //   if (value) {
-    //     showOption("CONFIG_COLOR_WEATHER");
-    //     showOption("CONFIG_WEATHER_MODE_LOCAL");
-    //     showOption("CONFIG_WEATHER_UNIT_LOCAL");
-    //     showOption("CONFIG_WEATHER_SOURCE_LOCAL");
-    //     showOption("CONFIG_WEATHER_APIKEY_LOCAL");
-    //     showOption("CONFIG_WEATHER_LOCATION_LOCAL");
-    //     showOption("CONFIG_WEATHER_REFRESH");
-    //     showOption("CONFIG_WEATHER_EXPIRATION");
-    //   } else {
-    //     hideOption("CONFIG_COLOR_WEATHER");
-    //     hideOption("CONFIG_WEATHER_MODE_LOCAL");
-    //     hideOption("CONFIG_WEATHER_UNIT_LOCAL");
-    //     hideOption("CONFIG_WEATHER_SOURCE_LOCAL");
-    //     hideOption("CONFIG_WEATHER_APIKEY_LOCAL");
-    //     hideOption("CONFIG_WEATHER_LOCATION_LOCAL");
-    //     hideOption("CONFIG_WEATHER_REFRESH");
-    //     hideOption("CONFIG_WEATHER_EXPIRATION");
-    //   }
-    //   if (isChalk()) {
-    //     showOption("CONFIG_COLOR_WEATHER");
-    //   }
-    // }
+    if (id == "CONFIG_ADVANCED_COLOR_LOCAL") {
+      var fun, fun2;
+// -- autogen
+// -- ## for key in simple_config
+// --         fun = !value ? hideOption : showOption;
+// --         fun2 = !!value ? hideOption : showOption;
+// --         fun2.call(null, "{{ key["key"] }}");
+// -- ## for dep in key["depends"]
+// --         fun.call(null, "{{ dep }}");
+// -- ## endfor
+// -- ## endfor
+        fun = !value ? hideOption : showOption;
+        fun2 = !!value ? hideOption : showOption;
+        fun2.call(null, "SIMPLECONFIG_COLOR_ACCENT");
+        fun.call(null, "CONFIG_COLOR_TOPBAR_BG");
+        fun.call(null, "CONFIG_COLOR_INFO_BELOW");
+        fun.call(null, "CONFIG_COLOR_INFO_ABOVE");
+        fun.call(null, "CONFIG_COLOR_PROGRESS_BAR");
+// -- end autogen
+    }
+  }
+
+  function allSame(array) {
+    var val = array[0];
+    for (var i = 1; i < array.length; i++) {
+      if (val != array[i]) return false;
+    }
+    return true;
   }
 
   function onconfigchange(event) {
@@ -628,6 +627,59 @@
       return;
     }
     var value = readOneConfig($(event.target));
+    var options, allDepVals;
+
+    // check consistency of simplified configuration
+    if (id == "CONFIG_ADVANCED_COLOR_LOCAL") {
+// -- autogen
+// -- ## for key in simple_config
+// --       allDepVals = [
+// -- ## for dep in key["depends"]
+// --         readOneConfig($("#{{ dep }}")),
+// -- ## endfor
+// --       ];
+// --       if (!allSame(allDepVals)) {
+// --         options = "";
+// -- ## for dep in key["depends"]
+// --         options += "\n- {{ configuration_lookup[dep]["desc"] }} (" + GColor.toName(readOneConfig($("#{{ configuration_lookup[dep]["key"] }}"))) + ")";
+// -- ## endfor
+// --         if (!window.confirm("In the simplified configuration, the colors for all of " + options + "\nare represented as just a single value called '{{ key["desc"] }}'.  However, in your current configuration, they do not have all the same value.  Do you still want to switch to the simplified configuration?  It will force all of these to have the same color: " + GColor.toName(mode(allDepVals)) + ".")) {
+// --           applyValue($("#" + id), true);
+// --           return false;
+// --         } else {
+// -- ## for dep in key["depends"]
+// --           applyValue($("#{{ dep }}"), mode(allDepVals));
+// -- ## endfor
+// --           updateUI();
+// --         }
+// --       }
+// -- ## endfor
+      allDepVals = [
+        readOneConfig($("#CONFIG_COLOR_TOPBAR_BG")),
+        readOneConfig($("#CONFIG_COLOR_INFO_BELOW")),
+        readOneConfig($("#CONFIG_COLOR_INFO_ABOVE")),
+        readOneConfig($("#CONFIG_COLOR_PROGRESS_BAR")),
+      ];
+      if (!allSame(allDepVals)) {
+        options = "";
+        options += "\n- Top bar background color (" + GColor.toName(readOneConfig($("#CONFIG_COLOR_TOPBAR_BG"))) + ")";
+        options += "\n- Color of information text below time (" + GColor.toName(readOneConfig($("#CONFIG_COLOR_INFO_BELOW"))) + ")";
+        options += "\n- Color of information text above time (" + GColor.toName(readOneConfig($("#CONFIG_COLOR_INFO_ABOVE"))) + ")";
+        options += "\n- Progress bar color (" + GColor.toName(readOneConfig($("#CONFIG_COLOR_PROGRESS_BAR"))) + ")";
+        if (!window.confirm("In the simplified configuration, the colors for all of " + options + "\nare represented as just a single value called 'Accent color'.  However, in your current configuration, they do not have all the same value.  Do you still want to switch to the simplified configuration?  It will force all of these to have the same color: " + GColor.toName(mode(allDepVals)) + ".")) {
+          applyValue($("#" + id), true);
+          return false;
+        } else {
+          applyValue($("#CONFIG_COLOR_TOPBAR_BG"), mode(allDepVals));
+          applyValue($("#CONFIG_COLOR_INFO_BELOW"), mode(allDepVals));
+          applyValue($("#CONFIG_COLOR_INFO_ABOVE"), mode(allDepVals));
+          applyValue($("#CONFIG_COLOR_PROGRESS_BAR"), mode(allDepVals));
+          updateUI();
+        }
+      }
+// -- end autogen
+    }
+
     post("change", {
       config_id: id,
       value: value

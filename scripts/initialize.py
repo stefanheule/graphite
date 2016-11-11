@@ -62,25 +62,25 @@ configuration = [
     'key': 'CONFIG_COLOR_TOPBAR_BG',
     'default': 'GColorVividCeruleanARGB8',
     'iscolor': True,
-    'desc': 'Top Bar Background Color',
+    'desc': 'Top bar background color',
   },
   {
     'key': 'CONFIG_COLOR_INFO_BELOW',
     'default': 'GColorVividCeruleanARGB8',
     'iscolor': True,
-    'desc': 'Color of Information Text Below Time',
+    'desc': 'Color of information text below time',
   },
   {
     'key': 'CONFIG_COLOR_INFO_ABOVE',
     'default': 'GColorVividCeruleanARGB8',
     'iscolor': True,
-    'desc': 'Color of Information Text Above Time',
+    'desc': 'Color of information text above time',
   },
   {
     'key': 'CONFIG_COLOR_PROGRESS_BAR',
     'default': 'GColorVividCeruleanARGB8',
     'iscolor': True,
-    'desc': 'Progress Bar Color',
+    'desc': 'Progress bar color',
   },
   {
     'key': 'CONFIG_ADVANCED_COLOR_LOCAL',
@@ -91,7 +91,7 @@ configuration = [
 simple_config = [
   {
     'key': 'SIMPLECONFIG_COLOR_ACCENT',
-    'desc': 'Accent Color',
+    'desc': 'Accent color',
     'iscolor': 'true',
     'depends': ['CONFIG_COLOR_TOPBAR_BG', 'CONFIG_COLOR_INFO_BELOW', 'CONFIG_COLOR_INFO_ABOVE', 'CONFIG_COLOR_PROGRESS_BAR'],
   }
