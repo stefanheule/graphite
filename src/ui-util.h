@@ -25,9 +25,9 @@ static inline FRect g2frect(GRect grect) {
 }
 
 static inline FRect g2frect(GRect grect);
-void draw_string(FContext *fctx, const char *str, FPoint position, FFont *font, GColor color, fixed_t size, GTextAlignment align);
+void draw_string(FContext *fctx, const char *str, FPoint position, FFont *font, uint8_t color, fixed_t size, GTextAlignment align);
 fixed_t string_width(FContext *fctx, const char *str, FFont *font, int size);
-void draw_rect(FContext *fctx, FRect rect, GColor color);
-void draw_circle(FContext *fctx, FPoint center, fixed_t r, GColor color);
+void draw_rect(FContext *fctx, FRect rect, uint8_t color);
+void draw_circle(FContext *fctx, FPoint center, fixed_t r, uint8_t color);
 
 #endif //REDSHIFT_FCTX_H

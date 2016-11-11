@@ -18,9 +18,9 @@
 /**
  * Draw a string with a given font, color, size and position.
  */
-void draw_string(FContext *fctx, const char *str, FPoint position, FFont *font, GColor color, fixed_t size, GTextAlignment align) {
+void draw_string(FContext *fctx, const char *str, FPoint position, FFont *font, uint8_t color, fixed_t size, GTextAlignment align) {
     fctx_begin_fill(fctx);
-    fctx_set_fill_color(fctx, color);
+    fctx_set_fill_color(fctx, COLOR(color));
     fctx_set_color_bias(fctx, 0);
     fctx_set_pivot(fctx, FPointZero);
     fctx_set_offset(fctx, position);
@@ -42,9 +42,9 @@ fixed_t string_width(FContext *fctx, const char *str, FFont *font, int size) {
 /**
  * Draw a filled rectangle.
  */
-void draw_rect(FContext *fctx, FRect rect, GColor color) {
+void draw_rect(FContext *fctx, FRect rect, uint8_t color) {
     fctx_begin_fill(fctx);
-    fctx_set_fill_color(fctx, color);
+    fctx_set_fill_color(fctx, COLOR(color));
     fctx_set_color_bias(fctx, 0);
     fctx_set_pivot(fctx, FPointZero);
     fctx_set_offset(fctx, FPointZero);
@@ -61,9 +61,9 @@ void draw_rect(FContext *fctx, FRect rect, GColor color) {
 /**
  * Draw a filled circle.
  */
-void draw_circle(FContext *fctx, FPoint center, fixed_t r, GColor color) {
+void draw_circle(FContext *fctx, FPoint center, fixed_t r, uint8_t color) {
     fctx_begin_fill(fctx);
-    fctx_set_fill_color(fctx, color);
+    fctx_set_fill_color(fctx, COLOR(color));
     fctx_set_color_bias(fctx, 0);
     fctx_set_pivot(fctx, FPointZero);
     fctx_set_offset(fctx, FPointZero);

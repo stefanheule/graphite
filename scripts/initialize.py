@@ -119,6 +119,7 @@ files_to_inline_render = [
   "src/redshift.h",
   "src/redshift.c",
   "src/settings.c",
+  "src/ui.c",
   "src/js/pebble-js-app.js",
   "config/js/preview.js",
   "config/index.html",
@@ -143,12 +144,20 @@ def get_context():
       'config_version': config_version,
       'supported_platforms': read_configure('SUPPORTED_PLATFORMS').split(' '),
       'configuration': config,
+      'configuration_lookup': to_lookup(config),
       'simple_config': simple_config,
+      'simple_config_lookup': to_lookup(simple_config),
       'num_config_items': len(config),
       'message_keys': add_key_id(msg_keys, 'MSG_KEY_', 100),
       'perc_max_len': perc_max_len,
     }
   return _context
+
+def to_lookup(ls):
+  res = {}
+  for l in ls:
+    res[l['key']] = l
+  return res;
 
 def add_additional_info(keys):
   res = []

@@ -248,27 +248,35 @@ function background_update_proc(layer, ctx) {
     width_full = bounds_full.size.w;
     var now = time(NULL);
     var t = localtime(now);
-    var color_accent = COLOR(config_color_accent);
-    var color_night = GColor.Black;
-    var color_day = GColor.LightGray;
-    var color_background = GColor.Black;
-    var color_main = GColor.White;
+    var color_night = GColor.BlackARGB8;
+    var color_day = GColor.LightGrayARGB8;
+    var color_background = GColor.BlackARGB8;
+    var color_main = GColor.WhiteARGB8;
     var color_battery = color_main;
     var battery_state = battery_state_service_peek();
     if (battery_state.is_charging || battery_state.is_plugged) {
         battery_state.charge_percent = 100;
     }
     if (battery_state.charge_percent <= 10) {
-        color_accent = GColor.Folly;
+      config_color_topbar_bg = GColor.FollyARGB8;
+      config_color_info_below = GColor.FollyARGB8;
+      config_color_info_above = GColor.FollyARGB8;
+      config_color_progress_bar = GColor.FollyARGB8;
     } else if (battery_state.charge_percent <= 20) {
-        color_accent = GColor.ChromeYellow;
+      config_color_topbar_bg = GColor.ChromeYellowARGB8;
+      config_color_info_below = GColor.ChromeYellowARGB8;
+      config_color_info_above = GColor.ChromeYellowARGB8;
+      config_color_progress_bar = GColor.ChromeYellowARGB8;
     } else if (battery_state.charge_percent <= 30) {
-        color_accent = GColor.Yellow;
+      config_color_topbar_bg = GColor.YellowARGB8;
+      config_color_info_below = GColor.YellowARGB8;
+      config_color_info_above = GColor.YellowARGB8;
+      config_color_progress_bar = GColor.YellowARGB8;
     }
     draw_rect(fctx, bounds_full, color_background);
     var fontsize_weather = REM(27);
     var topbar_height = FIXED_ROUND(fontsize_weather + REM(4));
-    draw_rect(fctx, FRect(bounds.origin, FSize(width, topbar_height)), color_accent);
+    draw_rect(fctx, FRect(bounds.origin, FSize(width, topbar_height)), config_color_topbar_bg);
     var pos_weather_y = REM(6);
     var weather_is_on = config_weather_refresh > 0;
     var weather_is_available = weather.timestamp > 0;
@@ -345,13 +353,13 @@ function background_update_proc(layer, ctx) {
     buffer_1 = 
     remove_leading_zero(buffer_1, sizeof(buffer_1));
     var fontsize_date = (width / 8);
-    draw_string(fctx, buffer_1, FPoint(width / 2, height_full / 2 + fontsize_time / 3 - time_y_offset), font_main, color_accent, fontsize_date, GTextAlignmentCenter);
+    draw_string(fctx, buffer_1, FPoint(width / 2, height_full / 2 + fontsize_time / 3 - time_y_offset), font_main, config_color_info_below, fontsize_date, GTextAlignmentCenter);
     var steps = health_service_sum_today(HealthMetricStepCount);
     var steps_goal = 10000;
     var pos_stepbar_height = REM(5);
     var pos_stepbar_endx = width * steps / steps_goal;
-    draw_rect(fctx, FRect(FPoint(0, height_full - pos_stepbar_height), FSize(pos_stepbar_endx, pos_stepbar_height)), color_accent);
-    draw_circle(fctx, FPoint(pos_stepbar_endx, height_full), pos_stepbar_height, color_accent);
+    draw_rect(fctx, FRect(FPoint(0, height_full - pos_stepbar_height), FSize(pos_stepbar_endx, pos_stepbar_height)), config_color_progress_bar);
+    draw_circle(fctx, FPoint(pos_stepbar_endx, height_full), pos_stepbar_height, config_color_progress_bar);
     if (steps > steps_goal) {
         pos_stepbar_endx = width * (steps - steps_goal) / steps_goal;
         draw_rect(fctx, FRect(FPoint(0, height_full - pos_stepbar_height), FSize(pos_stepbar_endx, pos_stepbar_height)), color_main);

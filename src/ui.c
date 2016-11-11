@@ -96,7 +96,7 @@ void remove_leading_zero(char *buffer, size_t length) {
 }
 // -- end jsalternative
 
-void draw_weather(FContext* fctx, const char* icon, const char* temp, FPoint position, GColor color, fixed_t fontsize, GTextAlignment align) {
+void draw_weather(FContext* fctx, const char* icon, const char* temp, FPoint position, uint8_t color, fixed_t fontsize, GTextAlignment align) {
     fixed_t weather_fontsize = (fixed_t)(fontsize * 1.15);
     fixed_t w1 = string_width(fctx, icon, font_weather, weather_fontsize);
     fixed_t w2 = string_width(fctx, temp, font_main, fontsize);
@@ -146,13 +146,12 @@ void background_update_proc(Layer *layer, GContext *ctx) {
 //    GColor color_main = GColorBlack;
 //    GColor color_battery = GColorDarkGray;
 
-    GColor color_accent = COLOR(config_color_accent);
-    GColor color_night = GColorBlack;
-    GColor color_day = GColorLightGray;
-    GColor color_background = GColorBlack;
-    GColor color_main = GColorWhite;
+    uint8_t color_night = GColorBlackARGB8;
+    uint8_t color_day = GColorLightGrayARGB8;
+    uint8_t color_background = GColorBlackARGB8;
+    uint8_t color_main = GColorWhiteARGB8;
 
-    GColor color_battery = color_main;
+    uint8_t color_battery = color_main;
 
     // battery status color change
     BatteryChargeState battery_state = battery_state_service_peek();
@@ -160,11 +159,35 @@ void background_update_proc(Layer *layer, GContext *ctx) {
         battery_state.charge_percent = 100;
     }
     if (battery_state.charge_percent <= 10) {
-        color_accent = GColorFolly;
+// -- autogen
+// -- ## for dep in simple_config_lookup["SIMPLECONFIG_COLOR_ACCENT"]["depends"]
+// --       {{ dep | lower }} = GColorFollyARGB8;
+// -- ## endfor
+      config_color_topbar_bg = GColorFollyARGB8;
+      config_color_info_below = GColorFollyARGB8;
+      config_color_info_above = GColorFollyARGB8;
+      config_color_progress_bar = GColorFollyARGB8;
+// -- end autogen
     } else if (battery_state.charge_percent <= 20) {
-        color_accent = GColorChromeYellow;
+// -- autogen
+// -- ## for dep in simple_config_lookup["SIMPLECONFIG_COLOR_ACCENT"]["depends"]
+// --       {{ dep | lower }} = GColorChromeYellowARGB8;
+// -- ## endfor
+      config_color_topbar_bg = GColorChromeYellowARGB8;
+      config_color_info_below = GColorChromeYellowARGB8;
+      config_color_info_above = GColorChromeYellowARGB8;
+      config_color_progress_bar = GColorChromeYellowARGB8;
+// -- end autogen
     } else if (battery_state.charge_percent <= 30) {
-        color_accent = GColorYellow;
+// -- autogen
+// -- ## for dep in simple_config_lookup["SIMPLECONFIG_COLOR_ACCENT"]["depends"]
+// --       {{ dep | lower }} = GColorYellowARGB8;
+// -- ## endfor
+      config_color_topbar_bg = GColorYellowARGB8;
+      config_color_info_below = GColorYellowARGB8;
+      config_color_info_above = GColorYellowARGB8;
+      config_color_progress_bar = GColorYellowARGB8;
+// -- end autogen
     }
 
     // background
@@ -173,7 +196,7 @@ void background_update_proc(Layer *layer, GContext *ctx) {
     // top bar
     fixed_t fontsize_weather = REM(27);
     fixed_t topbar_height = FIXED_ROUND(fontsize_weather + REM(4));
-    draw_rect(fctx, FRect(bounds.origin, FSize(width, topbar_height)), color_accent);
+    draw_rect(fctx, FRect(bounds.origin, FSize(width, topbar_height)), config_color_topbar_bg);
     fixed_t pos_weather_y = REM(6);
     bool weather_is_on = config_weather_refresh > 0;
     bool weather_is_available = weather.timestamp > 0;
@@ -261,15 +284,15 @@ void background_update_proc(Layer *layer, GContext *ctx) {
 // -- end jsalternative
     remove_leading_zero(buffer_1, sizeof(buffer_1));
     fixed_t fontsize_date = (fixed_t)(width / 8);
-    draw_string(fctx, buffer_1, FPoint(width / 2, height_full / 2 + fontsize_time / 3 - time_y_offset), font_main, color_accent, fontsize_date, GTextAlignmentCenter);
+    draw_string(fctx, buffer_1, FPoint(width / 2, height_full / 2 + fontsize_time / 3 - time_y_offset), font_main, config_color_info_below, fontsize_date, GTextAlignmentCenter);
 
     // step bar
     int steps = health_service_sum_today(HealthMetricStepCount);
     int steps_goal = 10000;
     fixed_t pos_stepbar_height = REM(5);
     fixed_t pos_stepbar_endx = width * steps / steps_goal;
-    draw_rect(fctx, FRect(FPoint(0, height_full - pos_stepbar_height), FSize(pos_stepbar_endx, pos_stepbar_height)), color_accent);
-    draw_circle(fctx, FPoint(pos_stepbar_endx, height_full), pos_stepbar_height, color_accent);
+    draw_rect(fctx, FRect(FPoint(0, height_full - pos_stepbar_height), FSize(pos_stepbar_endx, pos_stepbar_height)), config_color_progress_bar);
+    draw_circle(fctx, FPoint(pos_stepbar_endx, height_full), pos_stepbar_height, config_color_progress_bar);
     if (steps > steps_goal) {
         pos_stepbar_endx = width * (steps - steps_goal) / steps_goal;
         draw_rect(fctx, FRect(FPoint(0, height_full - pos_stepbar_height), FSize(pos_stepbar_endx, pos_stepbar_height)), color_main);
