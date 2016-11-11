@@ -98,7 +98,10 @@ void inbox_received_handler(DictionaryIterator *iter, void *context) {
     dirty |= sync_helper(CONFIG_MESSAGE_RECONNECT, iter, &config_message_reconnect);
     dirty |= sync_helper_2(CONFIG_WEATHER_REFRESH, iter, &config_weather_refresh);
     dirty |= sync_helper_2(CONFIG_WEATHER_EXPIRATION, iter, &config_weather_expiration);
-    dirty |= sync_helper(CONFIG_COLOR_ACCENT, iter, &config_color_accent);
+    dirty |= sync_helper(CONFIG_COLOR_TOPBAR_BG, iter, &config_color_topbar_bg);
+    dirty |= sync_helper(CONFIG_COLOR_INFO_BELOW, iter, &config_color_info_below);
+    dirty |= sync_helper(CONFIG_COLOR_INFO_ABOVE, iter, &config_color_info_above);
+    dirty |= sync_helper(CONFIG_COLOR_PROGRESS_BAR, iter, &config_color_progress_bar);
 // -- end autogen
 
     bool ask_for_weather_update = true;
@@ -187,7 +190,10 @@ void read_config_all() {
     read_config(CONFIG_MESSAGE_RECONNECT, &config_message_reconnect);
     read_config_2(CONFIG_WEATHER_REFRESH, &config_weather_refresh);
     read_config_2(CONFIG_WEATHER_EXPIRATION, &config_weather_expiration);
-    read_config(CONFIG_COLOR_ACCENT, &config_color_accent);
+    read_config(CONFIG_COLOR_TOPBAR_BG, &config_color_topbar_bg);
+    read_config(CONFIG_COLOR_INFO_BELOW, &config_color_info_below);
+    read_config(CONFIG_COLOR_INFO_ABOVE, &config_color_info_above);
+    read_config(CONFIG_COLOR_PROGRESS_BAR, &config_color_progress_bar);
 // -- end autogen
 
     if (persist_exists(PERSIST_KEY_WEATHER) && persist_get_size(PERSIST_KEY_WEATHER) == sizeof(Weather)) {

@@ -45,12 +45,15 @@
 #define CONFIG_MESSAGE_RECONNECT 4
 #define CONFIG_WEATHER_REFRESH 9
 #define CONFIG_WEATHER_EXPIRATION 10
-#define CONFIG_COLOR_ACCENT 11
+#define CONFIG_COLOR_TOPBAR_BG 11
+#define CONFIG_COLOR_INFO_BELOW 12
+#define CONFIG_COLOR_INFO_ABOVE 13
+#define CONFIG_COLOR_PROGRESS_BAR 14
 // -- end autogen
 
 // -- autogen
 // -- #define REDSHIFT_N_CONFIG {{ num_config_items }}
-#define REDSHIFT_N_CONFIG 11
+#define REDSHIFT_N_CONFIG 15
 // -- end autogen
 
 // -- autogen
@@ -89,7 +92,10 @@ extern uint8_t config_message_disconnect;
 extern uint8_t config_message_reconnect;
 extern uint16_t config_weather_refresh;
 extern uint16_t config_weather_expiration;
-extern uint8_t config_color_accent;
+extern uint8_t config_color_topbar_bg;
+extern uint8_t config_color_info_below;
+extern uint8_t config_color_info_above;
+extern uint8_t config_color_progress_bar;
 // -- end autogen
 
 

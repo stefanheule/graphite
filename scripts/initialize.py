@@ -59,8 +59,41 @@ configuration = [
     'type': 'uint16_t',
   },
   {
-    'key': 'CONFIG_COLOR_ACCENT',
+    'key': 'CONFIG_COLOR_TOPBAR_BG',
     'default': 'GColorVividCeruleanARGB8',
+    'iscolor': True,
+    'desc': 'Top Bar Background Color',
+  },
+  {
+    'key': 'CONFIG_COLOR_INFO_BELOW',
+    'default': 'GColorVividCeruleanARGB8',
+    'iscolor': True,
+    'desc': 'Color of Information Text Below Time',
+  },
+  {
+    'key': 'CONFIG_COLOR_INFO_ABOVE',
+    'default': 'GColorVividCeruleanARGB8',
+    'iscolor': True,
+    'desc': 'Color of Information Text Above Time',
+  },
+  {
+    'key': 'CONFIG_COLOR_PROGRESS_BAR',
+    'default': 'GColorVividCeruleanARGB8',
+    'iscolor': True,
+    'desc': 'Progress Bar Color',
+  },
+  {
+    'key': 'CONFIG_ADVANCED_COLOR_LOCAL',
+    'default': 'false',
+  }
+]
+
+simple_config = [
+  {
+    'key': 'SIMPLECONFIG_COLOR_ACCENT',
+    'desc': 'Accent Color',
+    'iscolor': 'true',
+    'depends': ['CONFIG_COLOR_TOPBAR_BG', 'CONFIG_COLOR_INFO_BELOW', 'CONFIG_COLOR_INFO_ABOVE', 'CONFIG_COLOR_PROGRESS_BAR'],
   }
 ]
 
@@ -87,8 +120,8 @@ files_to_inline_render = [
   "src/redshift.c",
   "src/settings.c",
   "src/js/pebble-js-app.js",
-  "config/index.html",
   "config/js/preview.js",
+  "config/index.html",
 ]
 
 
@@ -110,11 +143,35 @@ def get_context():
       'config_version': config_version,
       'supported_platforms': read_configure('SUPPORTED_PLATFORMS').split(' '),
       'configuration': config,
+      'simple_config': simple_config,
       'num_config_items': len(config),
       'message_keys': add_key_id(msg_keys, 'MSG_KEY_', 100),
       'perc_max_len': perc_max_len,
     }
   return _context
+
+def add_additional_info(keys):
+  res = []
+  for k in keys:
+    name = k['key']
+
+    k['local'] = name[-5:] == 'LOCAL'
+    if 'type' not in k:
+      k['type'] = 'uint8_t'
+
+    if 'default' in k:
+      jsdefault = k['default']
+      if 'int' in k['type']:
+        jsdefault = "+%s" % (jsdefault)
+      if "GColor" in jsdefault:
+        jsdefault = re.sub(r"GColor(.*)ARGB8", "GColor.\\1", jsdefault)
+      k['jsdefault'] = jsdefault
+
+    if 'iscolor' not in k:
+      k['iscolor'] = False
+
+    res.append(k)
+  return res
 
 def add_key_id(keys, prefix, start_id):
   """Helper to add id's to some list of keys"""
@@ -140,9 +197,12 @@ def add_key_id(keys, prefix, start_id):
         jsdefault = re.sub(r"GColor(.*)ARGB8", "GColor.\\1", jsdefault)
       k['jsdefault'] = jsdefault
 
+      if 'iscolor' not in k:
+        k['iscolor'] = False
+
       res.append(k)
     i += 1
-  return res
+  return add_additional_info(res)
 
 def read_configure(key):
   """Read the value of a ./configure setting"""
@@ -182,6 +242,7 @@ def inline_render(file):
   def starts_with(s, sub):
     return s[0:len(sub)] == sub
 
+  ishtml = False
   newcontents = []
   env = Environment(line_statement_prefix=line_statement_prefix)
   contents = read_file(file)
@@ -194,6 +255,7 @@ def inline_render(file):
     isstart = re.search(r"^ *(// --) autogen", line)
     isend = re.search(r"^ *(// --) end autogen", line)
     istpl = re.search(r"^ *(// --) (.*)", line)
+    ishtmlcomment = re.search(r"^<!--", line)
     if mode == 'init':
       if isstart is not None:
         newcontents.append(line)
@@ -201,6 +263,10 @@ def inline_render(file):
         mode = 'template'
       else:
         newcontents.append(line)
+        if ishtmlcomment is not None:
+          ishtml = True
+        else:
+          ishtml = False
     elif mode == 'ignore':
       if isend is not None:
         newcontents.append(line)
@@ -215,7 +281,9 @@ def inline_render(file):
           newcontents.append(c_to_js(read_file(tpl[8:])))
         else:
           template = env.from_string(tpl)
+          if ishtml: newcontents.append('-->')
           newcontents.append(template.render(get_context()).strip("\n"))
+          if ishtml: newcontents.append('<!--')
         tpl = []
         mode = 'ignore'
         if isend is not None:

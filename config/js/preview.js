@@ -46,7 +46,11 @@ var RedshiftPreview = (function () {
      var config_weather_location_local;
      var config_weather_refresh;
      var config_weather_expiration;
-     var config_color_accent;
+     var config_color_topbar_bg;
+     var config_color_info_below;
+     var config_color_info_above;
+     var config_color_progress_bar;
+     var config_advanced_color_local;
 // -- end autogen
 
     // core functions and constants
@@ -175,7 +179,11 @@ var RedshiftPreview = (function () {
         config_weather_location_local = config["CONFIG_WEATHER_LOCATION_LOCAL"];
         config_weather_refresh = config["CONFIG_WEATHER_REFRESH"];
         config_weather_expiration = config["CONFIG_WEATHER_EXPIRATION"];
-        config_color_accent = config["CONFIG_COLOR_ACCENT"];
+        config_color_topbar_bg = config["CONFIG_COLOR_TOPBAR_BG"];
+        config_color_info_below = config["CONFIG_COLOR_INFO_BELOW"];
+        config_color_info_above = config["CONFIG_COLOR_INFO_ABOVE"];
+        config_color_progress_bar = config["CONFIG_COLOR_PROGRESS_BAR"];
+        config_advanced_color_local = config["CONFIG_ADVANCED_COLOR_LOCAL"];
 // -- end autogen
 
         weather = getWeather(platform);
@@ -344,6 +352,11 @@ function background_update_proc(layer, ctx) {
     var pos_stepbar_endx = width * steps / steps_goal;
     draw_rect(fctx, FRect(FPoint(0, height_full - pos_stepbar_height), FSize(pos_stepbar_endx, pos_stepbar_height)), color_accent);
     draw_circle(fctx, FPoint(pos_stepbar_endx, height_full), pos_stepbar_height, color_accent);
+    if (steps > steps_goal) {
+        pos_stepbar_endx = width * (steps - steps_goal) / steps_goal;
+        draw_rect(fctx, FRect(FPoint(0, height_full - pos_stepbar_height), FSize(pos_stepbar_endx, pos_stepbar_height)), color_main);
+        draw_circle(fctx, FPoint(pos_stepbar_endx, height_full), pos_stepbar_height, color_main);
+    }
     var hr = health_service_peek_current_value(HealthMetricHeartRateBPM);
     if (hr != 0) {
         var fontsize_hr = REM(25);
@@ -471,7 +484,11 @@ function background_update_proc(layer, ctx) {
             CONFIG_WEATHER_LOCATION_LOCAL: "",
             CONFIG_WEATHER_REFRESH: +30,
             CONFIG_WEATHER_EXPIRATION: +3*60,
-            CONFIG_COLOR_ACCENT: +GColor.VividCerulean,
+            CONFIG_COLOR_TOPBAR_BG: +GColor.VividCerulean,
+            CONFIG_COLOR_INFO_BELOW: +GColor.VividCerulean,
+            CONFIG_COLOR_INFO_ABOVE: +GColor.VividCerulean,
+            CONFIG_COLOR_PROGRESS_BAR: +GColor.VividCerulean,
+            CONFIG_ADVANCED_COLOR_LOCAL: +false,
 // -- end autogen
         };
         return cloneConfig(defaults);

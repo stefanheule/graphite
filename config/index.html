@@ -37,20 +37,87 @@
     </div>
 
     <div id="body-container">
+
     <div class='item-container'>
       <div class='item-container-header'>Appearance</div>
 
-      <div class="item-container-content">
-        <label class='item' id="weatherlabel">
-          Accent Color
-          <input id='CONFIG_COLOR_ACCENT' type='text' class='item-color item-color-normal'>
+      <div class='item-container-content'>
+        <label class='item'>
+          Show full appearance configuration
+          <input id='CONFIG_ADVANCED_COLOR_LOCAL' type='checkbox' class='item-toggle'>
         </label>
       </div>
 
-    </div>
+      <div id="appearance-simple">
+<!--
+// -- autogen
+// -- ## for key in simple_config
+// -- ##   if key["iscolor"]
+// --       <div class="item-container-content">
+// --         <label class='item'>
+// --           {{ key['desc'] }}
+// --           <input id='{{ key['key'] }}' type='text' class='item-color item-color-normal'>
+// --         </label>
+// --       </div>
+// -- ##   endif
+// -- ## endfor
+-->
+      <div class="item-container-content">
+        <label class='item'>
+          Accent Color
+          <input id='SIMPLECONFIG_COLOR_ACCENT' type='text' class='item-color item-color-normal'>
+        </label>
+      </div>
+<!--
+// -- end autogen
+-->
+      </div>
+
+      <div id="appearance-full">
+<!--
+// -- autogen
+// -- ## for key in configuration
+// -- ##   if key["iscolor"]
+// --       <div class="item-container-content">
+// --         <label class='item'>
+// --           {{ key['desc'] }}
+// --           <input id='{{ key['key'] }}' type='text' class='item-color item-color-normal'>
+// --         </label>
+// --       </div>
+// -- ##   endif
+// -- ## endfor
+-->
+      <div class="item-container-content">
+        <label class='item'>
+          Top Bar Background Color
+          <input id='CONFIG_COLOR_TOPBAR_BG' type='text' class='item-color item-color-normal'>
+        </label>
+      </div>
+      <div class="item-container-content">
+        <label class='item'>
+          Color of Information Text Below Time
+          <input id='CONFIG_COLOR_INFO_BELOW' type='text' class='item-color item-color-normal'>
+        </label>
+      </div>
+      <div class="item-container-content">
+        <label class='item'>
+          Color of Information Text Above Time
+          <input id='CONFIG_COLOR_INFO_ABOVE' type='text' class='item-color item-color-normal'>
+        </label>
+      </div>
+      <div class="item-container-content">
+        <label class='item'>
+          Progress Bar Color
+          <input id='CONFIG_COLOR_PROGRESS_BAR' type='text' class='item-color item-color-normal'>
+        </label>
+      </div>
+<!--
+// -- end autogen
+-->
+      </div>
+
     </div>
 
-    <div id="body-container">
     <div class='item-container'>
       <div class='item-container-header'>Weather</div>
 
@@ -324,22 +391,52 @@
     return options;
   }
 
+  function majorityOf(vals) {
+    return vals[0];
+  }
+
+  function applyValue(el, val) {
+    if (el.hasClass('item-color')) {
+      el.val('0x' + GColor.toHex(val));
+    } else if (el.hasClass('item-toggle')) {
+      el.prop('checked', val);
+    } else if (el.hasClass('item-select')) {
+      el.val(val);
+    } else if (el.hasClass('item-input')) {
+      el.val(val);
+    } else {
+      console.log("[ error ] Unexpected element:");
+      console.log(this);
+    }
+  }
+
   function applyValues(config) {
+
+    var el, i;
+
+// -- autogen
+// -- ## for key in simple_config
+// --     el = $("#{{ key["key"] }}");
+// --     applyValue(el, majorityOf([
+// -- ## for dep in key["depends"]
+// --       config["{{ dep }}"],
+// -- ## endfor
+// --     ]));
+// -- 
+// -- ## endfor
+    el = $("#SIMPLECONFIG_COLOR_ACCENT");
+    applyValue(el, majorityOf([
+      config["CONFIG_COLOR_TOPBAR_BG"],
+      config["CONFIG_COLOR_INFO_BELOW"],
+      config["CONFIG_COLOR_INFO_ABOVE"],
+      config["CONFIG_COLOR_PROGRESS_BAR"],
+    ]));
+// -- end autogen
+
     getAllConfigHtmlNodes().each(function () {
       var el = $(this);
       var val = config[this.id];
-      if (el.hasClass('item-color')) {
-        el.val('0x' + GColor.toHex(val));
-      } else if (el.hasClass('item-toggle')) {
-        el.prop('checked', val);
-      } else if (el.hasClass('item-select')) {
-        el.val(val);
-      } else if (el.hasClass('item-input')) {
-        el.val(val);
-      } else {
-        console.log("[ error ] Unexpected element:");
-        console.log(this);
-      }
+      applyValue(el, val);
     });
     updateUI();
   }
@@ -364,7 +461,11 @@
         "CONFIG_WEATHER_LOCATION_LOCAL": 8,
         "CONFIG_WEATHER_REFRESH": 9,
         "CONFIG_WEATHER_EXPIRATION": 10,
-        "CONFIG_COLOR_ACCENT": 11,
+        "CONFIG_COLOR_TOPBAR_BG": 11,
+        "CONFIG_COLOR_INFO_BELOW": 12,
+        "CONFIG_COLOR_INFO_ABOVE": 13,
+        "CONFIG_COLOR_PROGRESS_BAR": 14,
+        "CONFIG_ADVANCED_COLOR_LOCAL": 15,
 // -- end autogen
     };
 

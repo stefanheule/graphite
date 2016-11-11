@@ -32,7 +32,10 @@ uint8_t config_message_disconnect = true;
 uint8_t config_message_reconnect = true;
 uint16_t config_weather_refresh = 30;
 uint16_t config_weather_expiration = 3*60;
-uint8_t config_color_accent = GColorVividCeruleanARGB8;
+uint8_t config_color_topbar_bg = GColorVividCeruleanARGB8;
+uint8_t config_color_info_below = GColorVividCeruleanARGB8;
+uint8_t config_color_info_above = GColorVividCeruleanARGB8;
+uint8_t config_color_progress_bar = GColorVividCeruleanARGB8;
 // -- end autogen
 
 
