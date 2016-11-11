@@ -248,30 +248,30 @@ function background_update_proc(layer, ctx) {
     width_full = bounds_full.size.w;
     var now = time(NULL);
     var t = localtime(now);
-    var color_night = GColor.BlackARGB8;
-    var color_day = GColor.LightGrayARGB8;
-    var color_background = GColor.BlackARGB8;
-    var color_main = GColor.WhiteARGB8;
+    var color_night = GColor.Black;
+    var color_day = GColor.LightGray;
+    var color_background = GColor.Black;
+    var color_main = GColor.White;
     var color_battery = color_main;
     var battery_state = battery_state_service_peek();
     if (battery_state.is_charging || battery_state.is_plugged) {
         battery_state.charge_percent = 100;
     }
     if (battery_state.charge_percent <= 10) {
-      config_color_topbar_bg = GColor.FollyARGB8;
-      config_color_info_below = GColor.FollyARGB8;
-      config_color_info_above = GColor.FollyARGB8;
-      config_color_progress_bar = GColor.FollyARGB8;
+      config_color_topbar_bg = GColor.Folly;
+      config_color_info_below = GColor.Folly;
+      config_color_info_above = GColor.Folly;
+      config_color_progress_bar = GColor.Folly;
     } else if (battery_state.charge_percent <= 20) {
-      config_color_topbar_bg = GColor.ChromeYellowARGB8;
-      config_color_info_below = GColor.ChromeYellowARGB8;
-      config_color_info_above = GColor.ChromeYellowARGB8;
-      config_color_progress_bar = GColor.ChromeYellowARGB8;
+      config_color_topbar_bg = GColor.ChromeYellow;
+      config_color_info_below = GColor.ChromeYellow;
+      config_color_info_above = GColor.ChromeYellow;
+      config_color_progress_bar = GColor.ChromeYellow;
     } else if (battery_state.charge_percent <= 30) {
-      config_color_topbar_bg = GColor.YellowARGB8;
-      config_color_info_below = GColor.YellowARGB8;
-      config_color_info_above = GColor.YellowARGB8;
-      config_color_progress_bar = GColor.YellowARGB8;
+      config_color_topbar_bg = GColor.Yellow;
+      config_color_info_below = GColor.Yellow;
+      config_color_info_above = GColor.Yellow;
+      config_color_progress_bar = GColor.Yellow;
     }
     draw_rect(fctx, bounds_full, color_background);
     var fontsize_weather = REM(27);

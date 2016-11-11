@@ -393,7 +393,7 @@ def c_to_js(c):
 
   for i in range(len(newcontents)):
     line = newcontents[i]
-    line = re.sub(r"GColor([A-Za-z]+)", "GColor.\\1", line)
+    line = re.sub(r"GColor([A-Za-z]+)ARGB8", "GColor.\\1", line)
     if "&" in line and "&&" not in line:
       line = line.replace("&", "");
     if "->" in line:
