@@ -50,7 +50,15 @@ var RedshiftPreview = (function () {
      var config_color_info_below;
      var config_color_info_above;
      var config_color_progress_bar;
-     var config_advanced_color_local;
+     var config_color_progress_bar2;
+     var config_color_time;
+     var config_color_perc;
+     var config_color_bottom_complications;
+     var config_color_background;
+     var config_color_top_complications;
+     var config_color_day;
+     var config_color_night;
+     var config_advanced_appearance_local;
 // -- end autogen
 
     // core functions and constants
@@ -183,7 +191,15 @@ var RedshiftPreview = (function () {
         config_color_info_below = config["CONFIG_COLOR_INFO_BELOW"];
         config_color_info_above = config["CONFIG_COLOR_INFO_ABOVE"];
         config_color_progress_bar = config["CONFIG_COLOR_PROGRESS_BAR"];
-        config_advanced_color_local = config["CONFIG_ADVANCED_COLOR_LOCAL"];
+        config_color_progress_bar2 = config["CONFIG_COLOR_PROGRESS_BAR2"];
+        config_color_time = config["CONFIG_COLOR_TIME"];
+        config_color_perc = config["CONFIG_COLOR_PERC"];
+        config_color_bottom_complications = config["CONFIG_COLOR_BOTTOM_COMPLICATIONS"];
+        config_color_background = config["CONFIG_COLOR_BACKGROUND"];
+        config_color_top_complications = config["CONFIG_COLOR_TOP_COMPLICATIONS"];
+        config_color_day = config["CONFIG_COLOR_DAY"];
+        config_color_night = config["CONFIG_COLOR_NIGHT"];
+        config_advanced_appearance_local = config["CONFIG_ADVANCED_APPEARANCE_LOCAL"];
 // -- end autogen
 
         weather = getWeather(platform);
@@ -248,11 +264,6 @@ function background_update_proc(layer, ctx) {
     width_full = bounds_full.size.w;
     var now = time(NULL);
     var t = localtime(now);
-    var color_night = GColor.Black;
-    var color_day = GColor.LightGray;
-    var color_background = GColor.Black;
-    var color_main = GColor.White;
-    var color_battery = color_main;
     var battery_state = battery_state_service_peek();
     if (battery_state.is_charging || battery_state.is_plugged) {
         battery_state.charge_percent = 100;
@@ -273,7 +284,7 @@ function background_update_proc(layer, ctx) {
       config_color_info_above = GColor.Yellow;
       config_color_progress_bar = GColor.Yellow;
     }
-    draw_rect(fctx, bounds_full, color_background);
+    draw_rect(fctx, bounds_full, config_color_background);
     var fontsize_weather = REM(27);
     var topbar_height = FIXED_ROUND(fontsize_weather + REM(4));
     draw_rect(fctx, FRect(bounds.origin, FSize(width, topbar_height)), config_color_topbar_bg);
@@ -294,9 +305,9 @@ function background_update_proc(layer, ctx) {
             buffer_3 = sprintf("%d°", weather.temp_low);
             buffer_4 = sprintf("%d°", weather.temp_high);
         }
-        draw_weather(fctx, buffer_1, buffer_2, FPoint(width/2, pos_weather_y), color_background, fontsize_weather, GTextAlignmentCenter);
-        draw_string(fctx, buffer_3, FPoint(pos_weather_y + REM(2), pos_weather_y), font_main, color_background, fontsize_weather, GTextAlignmentLeft);
-        draw_string(fctx, buffer_4, FPoint(width - pos_weather_y, pos_weather_y), font_main, color_background, fontsize_weather, GTextAlignmentRight);
+        draw_weather(fctx, buffer_1, buffer_2, FPoint(width/2, pos_weather_y), config_color_top_complications, fontsize_weather, GTextAlignmentCenter);
+        draw_string(fctx, buffer_3, FPoint(pos_weather_y + REM(2), pos_weather_y), font_main, config_color_top_complications, fontsize_weather, GTextAlignmentLeft);
+        draw_string(fctx, buffer_4, FPoint(width - pos_weather_y, pos_weather_y), font_main, config_color_top_complications, fontsize_weather, GTextAlignmentRight);
         var first_perc_index = -1;
         var sec_in_hour = 60*60;
         var cur_h_ts = time(NULL);
@@ -333,12 +344,12 @@ function background_update_proc(layer, ctx) {
                 }
                 var point = FPoint(perc_minoffset + perc_sep / 2 + i * perc_w, topbar_height + perc_ti_h);
                 var size = FSize(perc_bar, perc_maxheight * i_percip_prob / 100);
-                draw_rect(fctx, FRect(point, size), color_main);
+                draw_rect(fctx, FRect(point, size), config_color_perc);
             }
-            draw_rect(fctx, FRect(FPoint(0, topbar_height), FSize(width, perc_ti_h)), color_day);
+            draw_rect(fctx, FRect(FPoint(0, topbar_height), FSize(width, perc_ti_h)), config_color_day);
             for(i = -1; i < 2; i++) {
                 var point = FPoint(perc_minoffset + (24*i + 18 - t.tm_hour) * perc_w, topbar_height);
-                draw_rect(fctx, FRect(point, FSize(12 * perc_w, perc_ti_h)), color_night);
+                draw_rect(fctx, FRect(point, FSize(12 * perc_w, perc_ti_h)), config_color_night);
             }
         }
     }
@@ -348,7 +359,7 @@ function background_update_proc(layer, ctx) {
     buffer_1 = 
     remove_leading_zero(buffer_1, sizeof(buffer_1));
     var fontsize_time = (width / 2.2);
-    draw_string(fctx, buffer_1, FPoint(width / 2, height_full / 2 - fontsize_time / 2 - time_y_offset), font_main, color_main, fontsize_time, GTextAlignmentCenter);
+    draw_string(fctx, buffer_1, FPoint(width / 2, height_full / 2 - fontsize_time / 2 - time_y_offset), font_main, config_color_time, fontsize_time, GTextAlignmentCenter);
     buffer_1 = strftime("%A, %m/%d", new Date());
     buffer_1 = 
     remove_leading_zero(buffer_1, sizeof(buffer_1));
@@ -362,15 +373,15 @@ function background_update_proc(layer, ctx) {
     draw_circle(fctx, FPoint(pos_stepbar_endx, height_full), pos_stepbar_height, config_color_progress_bar);
     if (steps > steps_goal) {
         pos_stepbar_endx = width * (steps - steps_goal) / steps_goal;
-        draw_rect(fctx, FRect(FPoint(0, height_full - pos_stepbar_height), FSize(pos_stepbar_endx, pos_stepbar_height)), color_main);
-        draw_circle(fctx, FPoint(pos_stepbar_endx, height_full), pos_stepbar_height, color_main);
+        draw_rect(fctx, FRect(FPoint(0, height_full - pos_stepbar_height), FSize(pos_stepbar_endx, pos_stepbar_height)), config_color_progress_bar2);
+        draw_circle(fctx, FPoint(pos_stepbar_endx, height_full), pos_stepbar_height, config_color_progress_bar2);
     }
     var hr = health_service_peek_current_value(HealthMetricHeartRateBPM);
     if (hr != 0) {
         var fontsize_hr = REM(25);
         buffer_1 = sprintf("%i", hr);
-        draw_string(fctx, "1", FPoint(pos_weather_y, height_full - REM(13)), font_icon, color_main, REM(15), GTextAlignmentLeft);
-        draw_string(fctx, buffer_1, FPoint(pos_weather_y + REM(16), height_full - REM(26)), font_main, color_main,fontsize_hr, GTextAlignmentLeft);
+        draw_string(fctx, "1", FPoint(pos_weather_y, height_full - REM(13)), font_icon, config_color_bottom_complications, REM(15), GTextAlignmentLeft);
+        draw_string(fctx, buffer_1, FPoint(pos_weather_y + REM(16), height_full - REM(26)), font_main, config_color_bottom_complications,fontsize_hr, GTextAlignmentLeft);
     }
     var bat_thickness = PIX(1);
     var bat_gap_thickness = PIX(1);
@@ -382,11 +393,11 @@ function background_update_proc(layer, ctx) {
     var bat_inner_width = bat_width - 2 * bat_thickness - 2 * bat_gap_thickness;
     var bat_avoid_stepbar = width - (width * steps / steps_goal + pos_stepbar_height) < 2*bat_sep + bat_width;
     var bat_origin = FPoint(width - bat_sep - bat_width, height_full - bat_sep - bat_height - (bat_avoid_stepbar ? pos_stepbar_height : 0));
-    draw_rect(fctx, FRect(bat_origin, FSize(bat_width, bat_height)), color_battery);
-    draw_rect(fctx, FRect(FPoint(bat_origin.x + bat_thickness, bat_origin.y + bat_thickness), FSize(bat_width - 2*bat_thickness, bat_height - 2*bat_thickness)), color_background);
+    draw_rect(fctx, FRect(bat_origin, FSize(bat_width, bat_height)), config_color_bottom_complications);
+    draw_rect(fctx, FRect(FPoint(bat_origin.x + bat_thickness, bat_origin.y + bat_thickness), FSize(bat_width - 2*bat_thickness, bat_height - 2*bat_thickness)), config_color_background);
     draw_rect(fctx, FRect(FPoint(bat_origin.x + bat_thickness + bat_gap_thickness, bat_origin.y + bat_thickness + bat_gap_thickness + (100 - battery_state.charge_percent) * bat_inner_height / 100), FSize(
-            bat_inner_width, battery_state.charge_percent * bat_inner_height / 100)), color_battery);
-    draw_rect(fctx, FRect(FPoint(bat_origin.x + bat_thickness + bat_gap_thickness, bat_origin.y - bat_top), FSize(bat_inner_width, bat_top)), color_battery);
+            bat_inner_width, battery_state.charge_percent * bat_inner_height / 100)), config_color_bottom_complications);
+    draw_rect(fctx, FRect(FPoint(bat_origin.x + bat_thickness + bat_gap_thickness, bat_origin.y - bat_top), FSize(bat_inner_width, bat_top)), config_color_bottom_complications);
     var bluetooth = bluetooth_connection_service_peek();
     bluetooth_popup(fctx, ctx, bluetooth);
     fctx_deinit_context(fctx);
@@ -496,7 +507,15 @@ function background_update_proc(layer, ctx) {
             CONFIG_COLOR_INFO_BELOW: +GColor.VividCerulean,
             CONFIG_COLOR_INFO_ABOVE: +GColor.VividCerulean,
             CONFIG_COLOR_PROGRESS_BAR: +GColor.VividCerulean,
-            CONFIG_ADVANCED_COLOR_LOCAL: +false,
+            CONFIG_COLOR_PROGRESS_BAR2: +GColor.White,
+            CONFIG_COLOR_TIME: +GColor.White,
+            CONFIG_COLOR_PERC: +GColor.White,
+            CONFIG_COLOR_BOTTOM_COMPLICATIONS: +GColor.White,
+            CONFIG_COLOR_BACKGROUND: +GColor.Black,
+            CONFIG_COLOR_TOP_COMPLICATIONS: +GColor.Black,
+            CONFIG_COLOR_DAY: +GColor.LightGray,
+            CONFIG_COLOR_NIGHT: +GColor.Black,
+            CONFIG_ADVANCED_APPEARANCE_LOCAL: +false,
 // -- end autogen
         };
         return cloneConfig(defaults);

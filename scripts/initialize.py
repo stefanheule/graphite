@@ -61,40 +61,89 @@ configuration = [
   {
     'key': 'CONFIG_COLOR_TOPBAR_BG',
     'default': 'GColorVividCeruleanARGB8',
-    'iscolor': True,
     'desc': 'Top bar background color',
   },
   {
     'key': 'CONFIG_COLOR_INFO_BELOW',
     'default': 'GColorVividCeruleanARGB8',
-    'iscolor': True,
     'desc': 'Color of information text below time',
   },
   {
     'key': 'CONFIG_COLOR_INFO_ABOVE',
     'default': 'GColorVividCeruleanARGB8',
-    'iscolor': True,
     'desc': 'Color of information text above time',
   },
   {
     'key': 'CONFIG_COLOR_PROGRESS_BAR',
     'default': 'GColorVividCeruleanARGB8',
-    'iscolor': True,
     'desc': 'Progress bar color',
   },
   {
-    'key': 'CONFIG_ADVANCED_COLOR_LOCAL',
+    'key': 'CONFIG_COLOR_PROGRESS_BAR2',
+    'default': 'GColorWhiteARGB8',
+    'desc': 'Second progress bar color',
+  },
+
+  {
+    'key': 'CONFIG_COLOR_TIME',
+    'default': 'GColorWhiteARGB8',
+    'desc': 'Time color',
+  },
+  {
+    'key': 'CONFIG_COLOR_PERC',
+    'default': 'GColorWhiteARGB8',
+    'desc': 'Precipitation bars color',
+  },
+  {
+    'key': 'CONFIG_COLOR_BOTTOM_COMPLICATIONS',
+    'default': 'GColorWhiteARGB8',
+    'desc': 'Bottom complications color',
+  },
+
+  {
+    'key': 'CONFIG_COLOR_BACKGROUND',
+    'default': 'GColorBlackARGB8',
+    'desc': 'Background color',
+  },
+  {
+    'key': 'CONFIG_COLOR_TOP_COMPLICATIONS',
+    'default': 'GColorBlackARGB8',
+    'desc': 'Top complications color',
+  },
+
+  {
+    'key': 'CONFIG_COLOR_DAY',
+    'default': 'GColorLightGrayARGB8',
+    'desc': 'Precipitation day time indicator color',
+  },
+  {
+    'key': 'CONFIG_COLOR_NIGHT',
+    'default': 'GColorBlackARGB8',
+    'desc': 'Precipitation night time indicator color',
+  },
+
+  {
+    'key': 'CONFIG_ADVANCED_APPEARANCE_LOCAL',
     'default': 'false',
   }
 ]
 
 simple_config = [
   {
+    'key': 'SIMPLECONFIG_COLOR_MAIN',
+    'desc': 'Main color',
+    'depends': ['CONFIG_COLOR_TIME', 'CONFIG_COLOR_PERC', 'CONFIG_COLOR_BOTTOM_COMPLICATIONS', 'CONFIG_COLOR_PROGRESS_BAR2'],
+  },
+  {
     'key': 'SIMPLECONFIG_COLOR_ACCENT',
     'desc': 'Accent color',
-    'iscolor': 'true',
     'depends': ['CONFIG_COLOR_TOPBAR_BG', 'CONFIG_COLOR_INFO_BELOW', 'CONFIG_COLOR_INFO_ABOVE', 'CONFIG_COLOR_PROGRESS_BAR'],
-  }
+  },
+  {
+    'key': 'SIMPLECONFIG_COLOR_BACKGROUND',
+    'desc': 'Background color',
+    'depends': ['CONFIG_COLOR_BACKGROUND', 'CONFIG_COLOR_TOP_COMPLICATIONS'],
+  },
 ]
 
 msg_keys = [
@@ -139,19 +188,29 @@ def get_context():
   global _context
   if _context is None:
     config = add_key_id(configuration, '', 1)
+    sc = add_additional_info(simple_config)
+    pre_process(config, simple_config)
     _context =  {
       'version': version,
       'config_version': config_version,
       'supported_platforms': read_configure('SUPPORTED_PLATFORMS').split(' '),
       'configuration': config,
       'configuration_lookup': to_lookup(config),
-      'simple_config': simple_config,
-      'simple_config_lookup': to_lookup(simple_config),
+      'simple_config': sc,
+      'simple_config_lookup': to_lookup(sc),
       'num_config_items': len(config),
       'message_keys': add_key_id(msg_keys, 'MSG_KEY_', 100),
       'perc_max_len': perc_max_len,
     }
   return _context
+
+def pre_process(config, simple_config):
+  lc = to_lookup(config)
+  # decide which colors are part of a simple color, and which are not
+  for k in simple_config:
+    for i in k['depends']:
+      lc[i]['belongs_to_simple'] = True
+
 
 def to_lookup(ls):
   res = {}
@@ -176,8 +235,8 @@ def add_additional_info(keys):
         jsdefault = re.sub(r"GColor(.*)ARGB8", "GColor.\\1", jsdefault)
       k['jsdefault'] = jsdefault
 
-    if 'iscolor' not in k:
-      k['iscolor'] = False
+    k['iscolor'] = "_COLOR_" in name
+    k['belongs_to_simple'] = False
 
     res.append(k)
   return res

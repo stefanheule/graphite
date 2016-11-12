@@ -36,6 +36,14 @@ uint8_t config_color_topbar_bg = GColorVividCeruleanARGB8;
 uint8_t config_color_info_below = GColorVividCeruleanARGB8;
 uint8_t config_color_info_above = GColorVividCeruleanARGB8;
 uint8_t config_color_progress_bar = GColorVividCeruleanARGB8;
+uint8_t config_color_progress_bar2 = GColorWhiteARGB8;
+uint8_t config_color_time = GColorWhiteARGB8;
+uint8_t config_color_perc = GColorWhiteARGB8;
+uint8_t config_color_bottom_complications = GColorWhiteARGB8;
+uint8_t config_color_background = GColorBlackARGB8;
+uint8_t config_color_top_complications = GColorBlackARGB8;
+uint8_t config_color_day = GColorLightGrayARGB8;
+uint8_t config_color_night = GColorBlackARGB8;
 // -- end autogen
 
 

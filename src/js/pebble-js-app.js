@@ -83,7 +83,15 @@ Pebble.addEventListener('webviewclosed', function (e) {
         "CONFIG_COLOR_INFO_BELOW": 12,
         "CONFIG_COLOR_INFO_ABOVE": 13,
         "CONFIG_COLOR_PROGRESS_BAR": 14,
-        "CONFIG_ADVANCED_COLOR_LOCAL": 15,
+        "CONFIG_COLOR_PROGRESS_BAR2": 15,
+        "CONFIG_COLOR_TIME": 16,
+        "CONFIG_COLOR_PERC": 17,
+        "CONFIG_COLOR_BOTTOM_COMPLICATIONS": 18,
+        "CONFIG_COLOR_BACKGROUND": 19,
+        "CONFIG_COLOR_TOP_COMPLICATIONS": 20,
+        "CONFIG_COLOR_DAY": 21,
+        "CONFIG_COLOR_NIGHT": 22,
+        "CONFIG_ADVANCED_APPEARANCE_LOCAL": 23,
 // -- end autogen
     };
     var config = {};
@@ -136,7 +144,7 @@ function readConfig(key) {
             return "";
         } else if (key == "CONFIG_WEATHER_LOCATION_LOCAL") {
             return "";
-        } else if (key == "CONFIG_ADVANCED_COLOR_LOCAL") {
+        } else if (key == "CONFIG_ADVANCED_APPEARANCE_LOCAL") {
             return false;
 // -- end autogen
         }

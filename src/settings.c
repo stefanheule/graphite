@@ -102,6 +102,14 @@ void inbox_received_handler(DictionaryIterator *iter, void *context) {
     dirty |= sync_helper(CONFIG_COLOR_INFO_BELOW, iter, &config_color_info_below);
     dirty |= sync_helper(CONFIG_COLOR_INFO_ABOVE, iter, &config_color_info_above);
     dirty |= sync_helper(CONFIG_COLOR_PROGRESS_BAR, iter, &config_color_progress_bar);
+    dirty |= sync_helper(CONFIG_COLOR_PROGRESS_BAR2, iter, &config_color_progress_bar2);
+    dirty |= sync_helper(CONFIG_COLOR_TIME, iter, &config_color_time);
+    dirty |= sync_helper(CONFIG_COLOR_PERC, iter, &config_color_perc);
+    dirty |= sync_helper(CONFIG_COLOR_BOTTOM_COMPLICATIONS, iter, &config_color_bottom_complications);
+    dirty |= sync_helper(CONFIG_COLOR_BACKGROUND, iter, &config_color_background);
+    dirty |= sync_helper(CONFIG_COLOR_TOP_COMPLICATIONS, iter, &config_color_top_complications);
+    dirty |= sync_helper(CONFIG_COLOR_DAY, iter, &config_color_day);
+    dirty |= sync_helper(CONFIG_COLOR_NIGHT, iter, &config_color_night);
 // -- end autogen
 
     bool ask_for_weather_update = true;
@@ -194,6 +202,14 @@ void read_config_all() {
     read_config(CONFIG_COLOR_INFO_BELOW, &config_color_info_below);
     read_config(CONFIG_COLOR_INFO_ABOVE, &config_color_info_above);
     read_config(CONFIG_COLOR_PROGRESS_BAR, &config_color_progress_bar);
+    read_config(CONFIG_COLOR_PROGRESS_BAR2, &config_color_progress_bar2);
+    read_config(CONFIG_COLOR_TIME, &config_color_time);
+    read_config(CONFIG_COLOR_PERC, &config_color_perc);
+    read_config(CONFIG_COLOR_BOTTOM_COMPLICATIONS, &config_color_bottom_complications);
+    read_config(CONFIG_COLOR_BACKGROUND, &config_color_background);
+    read_config(CONFIG_COLOR_TOP_COMPLICATIONS, &config_color_top_complications);
+    read_config(CONFIG_COLOR_DAY, &config_color_day);
+    read_config(CONFIG_COLOR_NIGHT, &config_color_night);
 // -- end autogen
 
     if (persist_exists(PERSIST_KEY_WEATHER) && persist_get_size(PERSIST_KEY_WEATHER) == sizeof(Weather)) {

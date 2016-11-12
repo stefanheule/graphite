@@ -49,11 +49,19 @@
 #define CONFIG_COLOR_INFO_BELOW 12
 #define CONFIG_COLOR_INFO_ABOVE 13
 #define CONFIG_COLOR_PROGRESS_BAR 14
+#define CONFIG_COLOR_PROGRESS_BAR2 15
+#define CONFIG_COLOR_TIME 16
+#define CONFIG_COLOR_PERC 17
+#define CONFIG_COLOR_BOTTOM_COMPLICATIONS 18
+#define CONFIG_COLOR_BACKGROUND 19
+#define CONFIG_COLOR_TOP_COMPLICATIONS 20
+#define CONFIG_COLOR_DAY 21
+#define CONFIG_COLOR_NIGHT 22
 // -- end autogen
 
 // -- autogen
 // -- #define REDSHIFT_N_CONFIG {{ num_config_items }}
-#define REDSHIFT_N_CONFIG 15
+#define REDSHIFT_N_CONFIG 23
 // -- end autogen
 
 // -- autogen
@@ -96,6 +104,14 @@ extern uint8_t config_color_topbar_bg;
 extern uint8_t config_color_info_below;
 extern uint8_t config_color_info_above;
 extern uint8_t config_color_progress_bar;
+extern uint8_t config_color_progress_bar2;
+extern uint8_t config_color_time;
+extern uint8_t config_color_perc;
+extern uint8_t config_color_bottom_complications;
+extern uint8_t config_color_background;
+extern uint8_t config_color_top_complications;
+extern uint8_t config_color_day;
+extern uint8_t config_color_night;
 // -- end autogen
 
 
