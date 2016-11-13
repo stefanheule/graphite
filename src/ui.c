@@ -302,6 +302,10 @@ void background_update_proc(Layer *layer, GContext *ctx) {
         draw_string(fctx, buffer_1, FPoint(pos_weather_y + REM(16), height_full - REM(26)), font_main, config_color_bottom_complications,fontsize_hr, GTextAlignmentLeft);
     }
 
+    // bluetooth logo
+    complication_bluetooth_disconly(fctx, FPoint(width/2, height_full - REM(13)), GTextAlignmentCenter, config_color_bottom_complications, config_color_background);
+    // draw_string(fctx, "23", , font_icon, config_color_bottom_complications, REM(20), GTextAlignmentCenter);
+
     // battery logo (not scaled, to allow pixel-aligned rects)
     fixed_t bat_thickness = PIX(1);
     fixed_t bat_gap_thickness = PIX(1);

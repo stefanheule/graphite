@@ -137,6 +137,8 @@ var RedshiftPreview = (function () {
         }
         if (font == font_icon) {
             if (str == "1") str = "\uf004";
+            if (str == "2") str = "\uf293";
+            if (str == "3") str = "\uf294";
             py -= REM(9);
             size *= 0.8;
         }
@@ -206,6 +208,18 @@ var RedshiftPreview = (function () {
 
         background_update_proc(0, 0);
     }
+
+// -- autogen
+// -- c_to_js src/complications.c
+complication_render_t complications[] = {
+    complication_bluetooth_disconly, // id 0
+};
+function complication_bluetooth_disconly(fctx, position, align, foreground_color, background_color) {
+  if (bluetooth_connection_service_peek()) {
+    draw_string(fctx, "2", position, font_icon, foreground_color, REM(20), align);
+  }
+}
+// -- end autogen
 
 // -- autogen
 // -- c_to_js src/ui.c
@@ -383,6 +397,7 @@ function background_update_proc(layer, ctx) {
         draw_string(fctx, "1", FPoint(pos_weather_y, height_full - REM(13)), font_icon, config_color_bottom_complications, REM(15), GTextAlignmentLeft);
         draw_string(fctx, buffer_1, FPoint(pos_weather_y + REM(16), height_full - REM(26)), font_main, config_color_bottom_complications,fontsize_hr, GTextAlignmentLeft);
     }
+    complication_bluetooth_disconly(fctx, FPoint(width/2, height_full - REM(13)), GTextAlignmentCenter, config_color_bottom_complications, config_color_background);
     var bat_thickness = PIX(1);
     var bat_gap_thickness = PIX(1);
     var bat_height = PIX(15);

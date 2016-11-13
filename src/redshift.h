@@ -28,6 +28,7 @@
 #include "settings.h"
 #include "ui-util.h"
 #include "ui.h"
+#include "complications.h"
 
 ////////////////////////////////////////////
 //// Configuration constants
@@ -113,6 +114,14 @@ extern uint8_t config_color_top_complications;
 extern uint8_t config_color_day;
 extern uint8_t config_color_night;
 // -- end autogen
+
+
+////////////////////////////////////////////
+//// Complications
+////////////////////////////////////////////
+
+typedef void (*complication_render_t)(FContext* fctx, FPoint position, GTextAlignment align, uint8_t foreground_color, uint8_t background_color);
+extern complication_render_t complications[];
 
 
 ////////////////////////////////////////////

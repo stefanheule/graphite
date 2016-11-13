@@ -83,7 +83,6 @@ configuration = [
     'default': 'GColorWhiteARGB8',
     'desc': 'Second progress bar color',
   },
-
   {
     'key': 'CONFIG_COLOR_TIME',
     'default': 'GColorWhiteARGB8',
@@ -99,7 +98,6 @@ configuration = [
     'default': 'GColorWhiteARGB8',
     'desc': 'Bottom complications color',
   },
-
   {
     'key': 'CONFIG_COLOR_BACKGROUND',
     'default': 'GColorBlackARGB8',
@@ -110,7 +108,6 @@ configuration = [
     'default': 'GColorBlackARGB8',
     'desc': 'Top complications color',
   },
-
   {
     'key': 'CONFIG_COLOR_DAY',
     'default': 'GColorLightGrayARGB8',
@@ -121,7 +118,6 @@ configuration = [
     'default': 'GColorBlackARGB8',
     'desc': 'Precipitation night time indicator color',
   },
-
   {
     'key': 'CONFIG_ADVANCED_APPEARANCE_LOCAL',
     'default': 'false',
@@ -146,6 +142,16 @@ simple_config = [
   },
 ]
 
+complications = [
+  {
+    'key': 'COMPLICATION_BLUETOOTH_DISCONLY',
+    'desc': 'Bluetooth (on disconnect only)',
+  },
+  # {
+  #   'key': 'COMPLICATION_STEPS',
+  # },
+]
+
 msg_keys = [
   'WEATHER_TEMP_LOW',
   'WEATHER_TEMP_HIGH',
@@ -168,6 +174,8 @@ files_to_inline_render = [
   "src/redshift.h",
   "src/redshift.c",
   "src/settings.c",
+  "src/complications.c",
+  "src/complications.h",
   "src/ui.c",
   "src/js/pebble-js-app.js",
   "config/js/preview.js",
@@ -190,6 +198,7 @@ def get_context():
     config = add_key_id(configuration, '', 1)
     sc = add_additional_info(simple_config)
     pre_process(config, simple_config)
+    compls = add_key_id(complications, '', 0)
     _context =  {
       'version': version,
       'config_version': config_version,
@@ -198,6 +207,7 @@ def get_context():
       'configuration_lookup': to_lookup(config),
       'simple_config': sc,
       'simple_config_lookup': to_lookup(sc),
+      'complications': compls,
       'num_config_items': len(config),
       'message_keys': add_key_id(msg_keys, 'MSG_KEY_', 100),
       'perc_max_len': perc_max_len,
@@ -252,22 +262,6 @@ def add_key_id(keys, prefix, start_id):
       name = k['key']
       k['key'] = "%s%s" % (prefix, k['key'])
       k['id'] = i
-      
-      # also add some other helper content
-      k['local'] = name[-5:] == 'LOCAL'
-      if 'type' not in k:
-        k['type'] = 'uint8_t'
-
-      jsdefault = k['default']
-      if 'int' in k['type']:
-        jsdefault = "+%s" % (jsdefault)
-      if "GColor" in jsdefault:
-        jsdefault = re.sub(r"GColor(.*)ARGB8", "GColor.\\1", jsdefault)
-      k['jsdefault'] = jsdefault
-
-      if 'iscolor' not in k:
-        k['iscolor'] = False
-
       res.append(k)
     i += 1
   return add_additional_info(res)
@@ -402,6 +396,7 @@ def c_to_js(c):
     if starts_with(line, u"#include"): continue
     if starts_with(line, u"#ifndef"): continue
     if starts_with(line, u"#endif"): continue
+    if starts_with(line, u"typedef"): continue
     if starts_with(line.strip(), u"//"): continue
     if line == "": continue
 

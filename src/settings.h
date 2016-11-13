@@ -12,8 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef REDSHIFT_CONFIGURATION_H
-#define REDSHIFT_CONFIGURATION_H
+#ifndef REDSHIFT_SETTINGS_H
+#define REDSHIFT_SETTINGS_H
 
 #include "redshift.h"
 
@@ -22,4 +22,4 @@ void inbox_received_handler(DictionaryIterator *iter, void *context);
 void read_config_all();
 void subscribe_tick(bool also_unsubscribe);
 
-#endif //REDSHIFT_CONFIGURATION_H
+#endif //REDSHIFT_SETTINGS_H
