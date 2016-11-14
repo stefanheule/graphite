@@ -178,8 +178,8 @@ files_to_inline_render = [
   "src/complications.h",
   "src/ui.c",
   "src/js/pebble-js-app.js",
-  "config/js/preview.js",
   "config/index.html",
+  "config/js/preview.js",
 ]
 
 
@@ -340,7 +340,7 @@ def inline_render(file):
       else:
         tpl = "\n".join(tpl)
         if starts_with(tpl, "c_to_js"):
-          newcontents.append(c_to_js(read_file(tpl[8:])))
+          newcontents.append(c_to_js(tpl[8:]))
         else:
           template = env.from_string(tpl)
           if ishtml: newcontents.append('-->')
@@ -360,14 +360,16 @@ def inline_render(file):
     write_file(file, newcontents)
 
 
-def c_to_js(c):
+def c_to_js(f):
   """Take a file in C and perform an ad-hoc translation to JavaScript"""
+
+  c = read_file(f)
 
   def starts_with(s, sub):
     return s[0:len(sub)] == sub
 
   newcontents = []
-  basetype = "(bool|u?int[0-9]+_t|void)"
+  basetype = "(bool|[a-z_0-9]+_t|void)"
   ident = "[a-zA-Z_][a-zA-Z0-9_]*"
   mode = "init"
   for line in c.split(u"\n"):
@@ -408,7 +410,7 @@ def c_to_js(c):
       newcontents.append("function %s(%s) {" % (name, arglist))
       continue
 
-    rlocalvar = re.match("(?P<indent> *)((const|struct) )?(?P<type>" + ident + ")\\*? \\*?(?P<name>" + ident + ") = (?P<rhs>.*)$", line)
+    rlocalvar = re.match("(?P<indent> *)((const|struct) )?(?P<type>" + ident + ")\\*? \\*?(?P<name>" + ident + ")(\\[\\])? = (?P<rhs>.*)$", line)
     if rlocalvar is not None:
       name = rlocalvar.group("name")
       rhs = rlocalvar.group("rhs")
@@ -444,6 +446,9 @@ def c_to_js(c):
       continue
 
     newcontents.append(line)
+
+  if mode != 'init':
+    error("Unclosed jsalternative section started, stopped in mode %s." % (mode))
 
   for i in range(len(newcontents)):
     line = newcontents[i]

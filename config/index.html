@@ -22,6 +22,16 @@
       margin: 20px auto 5px;
       display: block;
     }
+    #preview-container {
+      position: fixed;
+      z-index: 999;
+      top: 0;
+      left: 0;
+      width: 100%;
+      border-bottom: 1px solid #dedede;
+      box-shadow: 0px 5px 5px rgba(0,0,0,0.12);
+      background: #eaeaea;
+    }
     #preview-container p {
       text-align: center;
       font-size: 11px;
@@ -889,17 +899,7 @@
 
     // position body
     var preview = $("#preview-container");
-    if (true) {
-      preview.css("position", "fixed");
-      preview.css("z-index", "999");
-      preview.css("top", "0");
-      preview.css("left", "0");
-      preview.css("width", "100%");
-      preview.css("border-bottom", "1px solid #dedede");
-      preview.css("box-shadow", "0px 5px 5px rgba(0,0,0,0.12)");
-      preview.css("background", "#eaeaea");
-      $("#body-container").css("margin-top", (preview.height() + 10) + "px");
-    }
+    $("#body-container").css("margin-top", (preview.height() + 10) + "px");
   });
   </script>
   <div class="font_preload" style="opacity: 0">

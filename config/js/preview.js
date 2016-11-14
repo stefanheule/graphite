@@ -211,11 +211,11 @@ var RedshiftPreview = (function () {
 
 // -- autogen
 // -- c_to_js src/complications.c
-complication_render_t complications[] = {
+var complications = [
     complication_bluetooth_disconly, // id 0
-};
+];
 function complication_bluetooth_disconly(fctx, position, align, foreground_color, background_color) {
-  if (bluetooth_connection_service_peek()) {
+  if (!bluetooth_connection_service_peek()) {
     draw_string(fctx, "2", position, font_icon, foreground_color, REM(20), align);
   }
 }
