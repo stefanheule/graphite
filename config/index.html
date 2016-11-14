@@ -19,7 +19,7 @@
       text-align: center;
     }
     canvas#preview {
-      margin: 20px auto 5px;
+      margin: 10px auto 5px;
       display: block;
     }
     #preview-container {
@@ -896,6 +896,10 @@
 
     // draw preview
     updateCanvas();
+
+    // resize preview to not take up too much space
+    var oldHeight = $("#preview").height();
+    $("#preview").css("height", Math.round(Math.min(oldHeight, window.innerHeight*0.4)) + "px");
 
     // position body
     var preview = $("#preview-container");
