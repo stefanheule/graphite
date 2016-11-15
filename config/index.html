@@ -36,17 +36,22 @@
       text-align: center;
       font-size: 11px;
     }
+    .complication {
+      border: 1px solid black;
+    }
     </style>
     <meta charset="utf-8"/>
   </head>
 
   <body>
     <div id="preview-container">
-      <canvas class="watchface" id="preview" width="144" height="168"></canvas>
+      <canvas class="watchface" id="preview"></canvas>
       <p>Live preview</p>
     </div>
 
     <div id="body-container">
+
+    <canvas class="complication" id="complication1"></canvas>
 
     <div class='item-container'>
       <div class='item-container-header'>Appearance</div>
@@ -914,6 +919,8 @@
     function updateCanvas() {
       var config = readConfigFromDom();
       RedshiftPreview.drawPreview(config, 'preview', getPlatform());
+
+      RedshiftPreview.previewComplication(0, config, 'complication1', getPlatform());
     }
   </script>
   </div>

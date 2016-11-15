@@ -140,12 +140,6 @@ void background_update_proc(Layer *layer, GContext *ctx) {
     time_t now = time(NULL);
     struct tm *t = localtime(&now);
 
-    // config
-//    GColor color_accent = GColorDarkCandyAppleRed;
-//    GColor color_background = GColorWhite;
-//    GColor color_main = GColorBlack;
-//    GColor color_battery = GColorDarkGray;
-
     // battery status color change
     BatteryChargeState battery_state = battery_state_service_peek();
     if (battery_state.is_charging || battery_state.is_plugged) {

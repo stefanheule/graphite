@@ -7,6 +7,7 @@ var RedshiftPreview = (function () {
 
     // global variables
     var ctx;
+    var canvas;
     var platform;
     var tnow = time(NULL);
     var weather;
@@ -161,19 +162,16 @@ var RedshiftPreview = (function () {
         return INT_TO_FIXED(text.width);
     }
 
-    function drawConfig(canvasId) {
+    function initializeDrawingState(canvasId) {
         var config = configurations[canvasId];
         platform = platforms[canvasId];
 
-        var canvas = document.getElementById(canvasId);
+        canvas = document.getElementById(canvasId);
         ctx = canvas.getContext('2d');
 
         PBL_IF_ROUND_ELSE = PebbleHelper.PBL_IF_ROUND_ELSE(platform);
         PBL_DISPLAY_WIDTH = PebbleHelper.PBL_DISPLAY_WIDTH(platform);
         PBL_DISPLAY_HEIGHT = PebbleHelper.PBL_DISPLAY_HEIGHT(platform);
-
-        canvas.height = PBL_DISPLAY_HEIGHT;
-        canvas.width = PBL_DISPLAY_WIDTH;
 
 // -- autogen
 // -- ## for key in configuration
@@ -205,6 +203,31 @@ var RedshiftPreview = (function () {
 // -- end autogen
 
         weather = getWeather(platform);
+    }
+
+    function drawComplication(canvasId, complication) {
+        initializeDrawingState(canvasId);
+
+        var w = 50;
+        var h = 30;
+        var sep = REM(5);
+        var fctx;
+
+        canvas.height = h;
+        canvas.width = w;
+
+        var pos = FPoint(REM(w)/2, sep);
+        var foreground_color = GColor.Black;
+        var background_color = GColor.White;
+        draw_rect(fctx, FRect(FPoint(0, 0), FSize(REM(w), REM(h))), background_color);
+        complication_bluetooth_disconly(fctx, pos, GTextAlignmentCenter, foreground_color, background_color);
+    }
+
+    function drawConfig(canvasId, ignored) {
+        initializeDrawingState(canvasId);
+
+        canvas.height = PBL_DISPLAY_HEIGHT;
+        canvas.width = PBL_DISPLAY_WIDTH;
 
         background_update_proc(0, 0);
     }
@@ -544,6 +567,30 @@ function background_update_proc(layer, ctx) {
         return res;
     }
 
+    function drawHelper(f, config, canvasId, platform, data) {
+        var first = !(canvasId in configurations);
+        platforms[canvasId] = platform;
+        configurations[canvasId] = config;
+        if (first) {
+            // schedule updates to redraw the configuration in case the fonts aren't loaded yet
+            var fontUpdate = function (data, f, i) {
+                var timeout = 1000;
+                if (i < 5) {
+                    timeout = 500;
+                } else if (i > 10) {
+                    timeout = 10000;
+                }
+                if (i > 15) return;
+                setTimeout(function () {
+                    f(canvasId, data);
+                    fontUpdate(data, f, i + 1);
+                }, timeout);
+            };
+            fontUpdate(data, f, 0);
+        }
+        f(canvasId, data);
+    }
+
     return {
         filterLook: filterLook,
         sameLook: sameLook,
@@ -551,28 +598,11 @@ function background_update_proc(layer, ctx) {
         lookSignature: lookSignature,
         defaultConfig: defaultConfig,
         drawPreview: function (config, canvasId, platform) {
-            var first = !(canvasId in configurations);
-            platforms[canvasId] = platform;
-            configurations[canvasId] = config;
-            if (first) {
-                // schedule updates to redraw the configuration in case the fonts aren't loaded yet
-                var fontUpdate = function (i) {
-                    var timeout = 1000;
-                    if (i < 5) {
-                        timeout = 500;
-                    } else if (i > 10) {
-                        timeout = 10000;
-                    }
-                    if (i > 15) return;
-                    setTimeout(function () {
-                        drawConfig(canvasId);
-                        fontUpdate(i + 1);
-                    }, timeout);
-                };
-                fontUpdate(0);
-            }
-            drawConfig(canvasId);
-        }
+            drawHelper(drawConfig, config, canvasId, platform, null);
+        },
+        previewComplication: function (complication, config, canvasId, platform) {
+            drawHelper(drawComplication, config, canvasId, platform, complication);
+        },
     }
 
 }());
