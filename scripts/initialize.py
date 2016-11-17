@@ -398,7 +398,7 @@ def c_to_js(f):
 
   newcontents = []
   basetype = "(bool|[a-z_0-9]+_t|void)"
-  ident = "[a-zA-Z_][a-zA-Z0-9_]*"
+  ident = "(?!return)[a-zA-Z_][a-zA-Z0-9_]*"
   mode = "init"
   for line in c.split(u"\n"):
 
@@ -457,7 +457,7 @@ def c_to_js(f):
     if rforloop is not None:
       rest = rforloop.group("rest")
       indent =  rforloop.group("indent")
-      newcontents.append("%sfor(%s" % (indent, rest))
+      newcontents.append("%sfor(var %s" % (indent, rest))
       continue
 
     rstrformat = re.match("(?P<indent> *)(?P<fun>strftime|snprintf)\\((?P<target>" + ident + "), [^,]*, (?P<format>.*), (?P<what>[^,]*)\\);$", line)

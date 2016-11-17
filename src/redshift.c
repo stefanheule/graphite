@@ -72,7 +72,7 @@ fixed_t width_full;
 FFont* font_main;
 FFont* font_weather;
 FFont* font_icon;
-fixed_t fontsize_complications = REM(27);
+fixed_t fontsize_complications;
 
 /** Is the bluetooth popup current supposed to be shown? */
 bool show_bluetooth_popup;

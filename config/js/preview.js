@@ -19,7 +19,7 @@ var RedshiftPreview = (function () {
     var font_icon = 'FontAwesome';
     var show_bluetooth_popup = false;
     var layer_background = 0;
-    var fontsize_complications = REM(27);
+    var fontsize_complications;
     var height, width, height_full, width_full;
 
     function getWeather() {
@@ -337,7 +337,7 @@ function show_weather() {
   var weather_is_available = weather.timestamp > 0;
   var weather_is_outdated = (time(NULL) - weather.timestamp) > (config_weather_expiration * 60);
   var show_weather = weather_is_on && weather_is_available && !weather_is_outdated;
-  var show_weather;
+  return show_weather;
 }
 /**
  * Draw the watch face.
@@ -352,6 +352,7 @@ function background_update_proc(layer, ctx) {
     var bounds_full = g2frect(layer_get_bounds(layer_background));
     height_full = bounds_full.size.h;
     width_full = bounds_full.size.w;
+    fontsize_complications = REM(27);
     var now = time(NULL);
     var t = localtime(now);
     var battery_state = battery_state_service_peek();
@@ -391,7 +392,7 @@ function background_update_proc(layer, ctx) {
         var sec_in_hour = 60*60;
         var cur_h_ts = time(NULL);
         cur_h_ts -= cur_h_ts % sec_in_hour; // align with hour
-        for(i = 0; i < weather.perc_data_len; i++) {
+        for(var i = 0; i < weather.perc_data_len; i++) {
             if (cur_h_ts == weather.perc_data_ts + i * sec_in_hour) {
                 first_perc_index = i;
                 break;
@@ -399,7 +400,7 @@ function background_update_proc(layer, ctx) {
         }
         var nHours = 24;
         var all_zero = true;
-        for(i = 0; i < nHours + 1; i++) {
+        for(var i = 0; i < nHours + 1; i++) {
             var i_percip_prob = 0;
             if (first_perc_index + i < weather.perc_data_len) {
                 i_percip_prob = weather.perc_data[first_perc_index + i];
@@ -416,7 +417,7 @@ function background_update_proc(layer, ctx) {
             var perc_w = perc_sep + perc_bar; // total width occupied by a single hour
             var perc_maxheight = REM(20); // max height of the precipitation bar
             var perc_minoffset = - perc_w * (t.tm_min % 60) / 60; // x axis offset into the current hour
-            for(i = 0; i < nHours + 1; i++) {
+            for(var i = 0; i < nHours + 1; i++) {
                 var i_percip_prob = 0;
                 if (first_perc_index + i < weather.perc_data_len) {
                     i_percip_prob = weather.perc_data[first_perc_index + i];
@@ -426,7 +427,7 @@ function background_update_proc(layer, ctx) {
                 draw_rect(fctx, FRect(point, size), config_color_perc);
             }
             draw_rect(fctx, FRect(FPoint(0, topbar_height), FSize(width, perc_ti_h)), config_color_day);
-            for(i = -1; i < 2; i++) {
+            for(var i = -1; i < 2; i++) {
                 var point = FPoint(perc_minoffset + (24*i + 18 - t.tm_hour) * perc_w, topbar_height);
                 draw_rect(fctx, FRect(point, FSize(12 * perc_w, perc_ti_h)), config_color_night);
             }
