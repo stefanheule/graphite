@@ -104,16 +104,26 @@ void draw_weather(FContext* fctx, const char* icon, const char* temp, FPoint pos
     fixed_t w = w1 + w2 + sep;
     GTextAlignment a = GTextAlignmentLeft;
 
+    fixed_t icon_y = position.y + weather_fontsize/8;
     if (align == GTextAlignmentCenter) {
-        draw_string(fctx, icon, FPoint(position.x - w/2, position.y + weather_fontsize/8), font_weather, color, weather_fontsize, a);
+        draw_string(fctx, icon, FPoint(position.x - w/2, icon_y), font_weather, color, weather_fontsize, a);
         draw_string(fctx, temp, FPoint(position.x - w/2 + w1 + sep, position.y), font_main, color, fontsize, a);
     } else if (align == GTextAlignmentLeft) {
-        draw_string(fctx, icon, FPoint(position.x, position.y + weather_fontsize/2), font_weather, color, weather_fontsize, a);
+        draw_string(fctx, icon, FPoint(position.x, icon_y), font_weather, color, weather_fontsize, a);
         draw_string(fctx, temp, FPoint(position.x + w1 + sep, position.y), font_main, color, fontsize, a);
     } else {
-        draw_string(fctx, icon, FPoint(position.x - w, position.y + weather_fontsize/2), font_weather, color, weather_fontsize, a);
+        draw_string(fctx, icon, FPoint(position.x - w, icon_y), font_weather, color, weather_fontsize, a);
         draw_string(fctx, temp, FPoint(position.x - w + w1 + sep, position.y), font_main, color, fontsize, a);
     }
+}
+
+/** Should the weather information be shown (based on whether it's enabled, available and up-to-date). */
+bool show_weather() {
+  bool weather_is_on = config_weather_refresh > 0;
+  bool weather_is_available = weather.timestamp > 0;
+  bool weather_is_outdated = (time(NULL) - weather.timestamp) > (config_weather_expiration * 60);
+  bool show_weather = weather_is_on && weather_is_available && !weather_is_outdated;
+  return show_weather;
 }
 
 /**
@@ -135,12 +145,6 @@ void background_update_proc(Layer *layer, GContext *ctx) {
     FRect bounds_full = g2frect(layer_get_bounds(layer_background));
     height_full = bounds_full.size.h;
     width_full = bounds_full.size.w;
-
-    // update weather variable
-    bool weather_is_on = config_weather_refresh > 0;
-    bool weather_is_available = weather.timestamp > 0;
-    bool weather_is_outdated = (time(NULL) - weather.timestamp) > (config_weather_expiration * 60);
-    bool show_weather = weather_is_on && weather_is_available && !weather_is_outdated;
 
     // get current time
     time_t now = time(NULL);
@@ -190,24 +194,19 @@ void background_update_proc(Layer *layer, GContext *ctx) {
     fixed_t fontsize_weather = fontsize_complications;
     fixed_t topbar_height = FIXED_ROUND(fontsize_weather + REM(4));
     draw_rect(fctx, FRect(bounds.origin, FSize(width, topbar_height)), config_color_topbar_bg);
-    fixed_t pos_weather_y = REM(6);
-    if (show_weather) {
-        if (weather.failed) {
-            snprintf(buffer_1, 10, "%c", weather.icon);
-            snprintf(buffer_2, 10, "%d", weather.temp_cur);
-            snprintf(buffer_3, 10, "%d", weather.temp_low);
-            snprintf(buffer_4, 10, "%d", weather.temp_high);
-        } else {
-            snprintf(buffer_1, 10, "%c", weather.icon);
-            snprintf(buffer_2, 10, "%d°", weather.temp_cur);
-            snprintf(buffer_3, 10, "%d°", weather.temp_low);
-            snprintf(buffer_4, 10, "%d°", weather.temp_high);
-        }
-        draw_weather(fctx, buffer_1, buffer_2, FPoint(width/2, pos_weather_y), config_color_top_complications, fontsize_weather, GTextAlignmentCenter);
-        draw_string(fctx, buffer_3, FPoint(pos_weather_y + REM(2), pos_weather_y), font_main, config_color_top_complications, fontsize_weather, GTextAlignmentLeft);
-        draw_string(fctx, buffer_4, FPoint(width - pos_weather_y, pos_weather_y), font_main, config_color_top_complications, fontsize_weather, GTextAlignmentRight);
 
-        // rain preview
+    // complications
+    fixed_t complications_margin_topbottom = REM(6); // gap between watch bounds and complications
+    fixed_t complications_margin_leftright = REM(8);
+    config_complication_1 = 1;
+    config_complication_2 = 0;
+    config_complication_3 = 2;
+    complications[config_complication_1](fctx, FPoint(complications_margin_leftright, complications_margin_topbottom), GTextAlignmentLeft, config_color_top_complications, config_color_topbar_bg);
+    complications[config_complication_2](fctx, FPoint(width/2, complications_margin_topbottom), GTextAlignmentCenter, config_color_top_complications, config_color_topbar_bg);
+    complications[config_complication_3](fctx, FPoint(width - complications_margin_leftright, complications_margin_topbottom), GTextAlignmentRight, config_color_top_complications, config_color_topbar_bg);
+
+    // rain preview
+    if (show_weather()) {
         int first_perc_index = -1;
         const int sec_in_hour = 60*60;
         time_t cur_h_ts = time(NULL);
@@ -294,8 +293,8 @@ void background_update_proc(Layer *layer, GContext *ctx) {
     //    HealthValue resthr = health_service_peek_current_value(HealthMetricRestingHeartRateBPM);
         fixed_t fontsize_hr = REM(25);
         snprintf(buffer_1, 10, "%i", (int)hr);
-        draw_string(fctx, "1", FPoint(pos_weather_y, height_full - REM(13)), font_icon, config_color_bottom_complications, REM(15), GTextAlignmentLeft);
-        draw_string(fctx, buffer_1, FPoint(pos_weather_y + REM(16), height_full - REM(26)), font_main, config_color_bottom_complications,fontsize_hr, GTextAlignmentLeft);
+        draw_string(fctx, "1", FPoint(complications_margin_leftright, height_full - REM(13)), font_icon, config_color_bottom_complications, REM(15), GTextAlignmentLeft);
+        draw_string(fctx, buffer_1, FPoint(complications_margin_leftright + REM(16), height_full - REM(26)), font_main, config_color_bottom_complications,fontsize_hr, GTextAlignmentLeft);
     }
 
     // bluetooth logo

@@ -19,5 +19,7 @@
 
 void bluetooth_popup(FContext* fctx, GContext *ctx, bool connected);
 void background_update_proc(Layer *layer, GContext *ctx);
+bool show_weather();
+void draw_weather(FContext* fctx, const char* icon, const char* temp, FPoint position, uint8_t color, fixed_t fontsize, GTextAlignment align);
 
 #endif //REDSHIFT_DRAWING_H
