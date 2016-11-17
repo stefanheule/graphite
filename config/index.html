@@ -51,7 +51,19 @@
 
     <div id="body-container">
 
-    <canvas class="complication" id="complication1"></canvas>
+<!--
+// -- autogen
+// -- ## for key in complications
+// --       <canvas class="complication" id="complication{{ key["id"] }}"></canvas>
+// -- ## endfor
+-->
+      <canvas class="complication" id="complication0"></canvas>
+      <canvas class="complication" id="complication1"></canvas>
+      <canvas class="complication" id="complication2"></canvas>
+      <canvas class="complication" id="complication3"></canvas>
+<!--
+// -- end autogen
+-->
 
     <div class='item-container'>
       <div class='item-container-header'>Appearance</div>
@@ -977,7 +989,15 @@
       var config = readConfigFromDom();
       RedshiftPreview.drawPreview(config, 'preview', getPlatform());
 
+// -- autogen
+// -- ## for key in complications
+// --       RedshiftPreview.previewComplication({{ key["id"] }}, config, 'complication{{ key["id"] }}', getPlatform());
+// -- ## endfor
+      RedshiftPreview.previewComplication(0, config, 'complication0', getPlatform());
       RedshiftPreview.previewComplication(1, config, 'complication1', getPlatform());
+      RedshiftPreview.previewComplication(2, config, 'complication2', getPlatform());
+      RedshiftPreview.previewComplication(3, config, 'complication3', getPlatform());
+// -- end autogen
     }
   </script>
   </div>

@@ -21,6 +21,7 @@ var RedshiftPreview = (function () {
     var layer_background = 0;
     var fontsize_complications;
     var height, width, height_full, width_full;
+    var rem_is_pix = false;
 
     function getWeather() {
         return {
@@ -86,7 +87,7 @@ var RedshiftPreview = (function () {
     var FIXED_POINT_SCALE = 16;
     var NULL = 0;
     function INT_TO_FIXED(x) { return x*FIXED_POINT_SCALE; }
-    function REM(x) { return INT_TO_FIXED(x) * PBL_DISPLAY_WIDTH / 200; }
+    function REM(x) { return rem_is_pix ? INT_TO_FIXED(x) : INT_TO_FIXED(x) * PBL_DISPLAY_WIDTH / 200; }
     function PIX(x) { return INT_TO_FIXED(x); }
     function FIXED_TO_INT(x) { return Math.floor(x/FIXED_POINT_SCALE); }
     function FIXED_ROUND(x) { return ((x) % FIXED_POINT_SCALE < FIXED_POINT_SCALE/2 ? (x) - ((x) % FIXED_POINT_SCALE) : (x) + FIXED_POINT_SCALE - ((x) % FIXED_POINT_SCALE)) }
@@ -216,12 +217,17 @@ var RedshiftPreview = (function () {
     }
 
     function drawComplication(canvasId, complication) {
+        var backup = rem_is_pix;
+        rem_is_pix = true;
+
         initializeDrawingState(canvasId);
 
-        var w = 50;
+        var w = 100;
         var h = 30;
         var sep = REM(5);
         var fctx;
+        // unfortunately this line is duplicated
+        fontsize_complications = REM(27);
 
         canvas.height = h;
         canvas.width = w;
@@ -231,6 +237,8 @@ var RedshiftPreview = (function () {
         var background_color = GColor.White;
         draw_rect(fctx, FRect(FPoint(0, 0), FSize(REM(w), REM(h))), background_color);
         complications[complication](fctx, pos, GTextAlignmentCenter, foreground_color, background_color);
+
+        rem_is_pix = backup;
     }
 
     function drawConfig(canvasId, ignored) {
