@@ -155,6 +155,10 @@ simple_config = [
 
 complications = [
   {
+    'key': 'COMPLICATION_EMPTY',
+    'desc': 'Empty',
+  },
+  {
     'key': 'COMPLICATION_WEATHER_CUR_TEMP_ICON',
     'desc': 'Weather: Current temperature and icon',
   },

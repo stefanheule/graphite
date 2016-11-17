@@ -253,11 +253,14 @@ var RedshiftPreview = (function () {
 // -- autogen
 // -- c_to_js src/complications.c
 var complications = [
-    complication_weather_cur_temp_icon, // id 0
-    complication_weather_low_temp, // id 1
-    complication_weather_high_temp, // id 2
-    complication_bluetooth_disconly, // id 3
+    complication_empty, // id 0
+    complication_weather_cur_temp_icon, // id 1
+    complication_weather_low_temp, // id 2
+    complication_weather_high_temp, // id 3
+    complication_bluetooth_disconly, // id 4
 ];
+function complication_empty(fctx, position, align, foreground_color, background_color) {
+}
 function complication_bluetooth_disconly(fctx, position, align, foreground_color, background_color) {
   if (!bluetooth_connection_service_peek()) {
     draw_string(fctx, "2", position, font_icon, foreground_color, REM(20), align);
@@ -389,9 +392,9 @@ function background_update_proc(layer, ctx) {
     draw_rect(fctx, FRect(bounds.origin, FSize(width, topbar_height)), config_color_topbar_bg);
     var complications_margin_topbottom = REM(6); // gap between watch bounds and complications
     var complications_margin_leftright = REM(8);
-    config_complication_1 = 1;
-    config_complication_2 = 0;
-    config_complication_3 = 2;
+    config_complication_1 = 2;
+    config_complication_2 = 1;
+    config_complication_3 = 3;
     complications[config_complication_1](fctx, FPoint(complications_margin_leftright, complications_margin_topbottom), GTextAlignmentLeft, config_color_top_complications, config_color_topbar_bg);
     complications[config_complication_2](fctx, FPoint(width/2, complications_margin_topbottom), GTextAlignmentCenter, config_color_top_complications, config_color_topbar_bg);
     complications[config_complication_3](fctx, FPoint(width - complications_margin_leftright, complications_margin_topbottom), GTextAlignmentRight, config_color_top_complications, config_color_topbar_bg);
@@ -605,9 +608,9 @@ function background_update_proc(layer, ctx) {
             CONFIG_COLOR_DAY: +GColor.LightGray,
             CONFIG_COLOR_NIGHT: +GColor.Black,
             CONFIG_ADVANCED_APPEARANCE_LOCAL: +false,
-            CONFIG_COMPLICATION_1: +1,
-            CONFIG_COMPLICATION_2: +0,
-            CONFIG_COMPLICATION_3: +2,
+            CONFIG_COMPLICATION_1: +2,
+            CONFIG_COMPLICATION_2: +1,
+            CONFIG_COMPLICATION_3: +3,
 // -- end autogen
         };
         return cloneConfig(defaults);

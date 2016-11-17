@@ -31,10 +31,11 @@ complication_render_t complications[] = {
 // -- ## for key in complications
 // --     {{ key["key"] | lower }}, // id {{ key["id"] }}
 // -- ## endfor
-    complication_weather_cur_temp_icon, // id 0
-    complication_weather_low_temp, // id 1
-    complication_weather_high_temp, // id 2
-    complication_bluetooth_disconly, // id 3
+    complication_empty, // id 0
+    complication_weather_cur_temp_icon, // id 1
+    complication_weather_low_temp, // id 2
+    complication_weather_high_temp, // id 3
+    complication_bluetooth_disconly, // id 4
 // -- end autogen
 
 // -- jsalternative
@@ -47,6 +48,8 @@ complication_render_t complications[] = {
 //// Complication render implementations
 ////////////////////////////////////////////
 
+void complication_empty(FContext* fctx, FPoint position, GTextAlignment align, uint8_t foreground_color, uint8_t background_color) {
+}
 
 void complication_bluetooth_disconly(FContext* fctx, FPoint position, GTextAlignment align, uint8_t foreground_color, uint8_t background_color) {
   if (!bluetooth_connection_service_peek()) {

@@ -39,6 +39,29 @@
     .complication {
       border: 1px solid black;
     }
+    #complications-preview {
+      position: fixed;
+      left: 15px;
+      right: 15px;
+      top: 15px;
+      bottom: 15px;
+      max-width: 400px;
+      z-index: 9999;
+      background: #FFF;
+      border: #666;
+      padding: 15px;
+      margin: auto;
+      box-shadow: 0px 0px 30px rgba(0,0,0,0.7);
+      overflow-y: scroll;
+    }
+    #complications-preview .button-container {
+      margin-top: 15px;
+    }
+    .complication-preview {
+      border-top: 1px solid rgb(222, 222, 222);
+      border-bottom: 1px solid rgb(222, 222, 222);
+      padding: 5px 0;
+    }
     </style>
     <meta charset="utf-8"/>
   </head>
@@ -51,19 +74,43 @@
 
     <div id="body-container">
 
+    <div id="complications-preview">
 <!--
 // -- autogen
 // -- ## for key in complications
-// --       <canvas class="complication" id="complication{{ key["id"] }}"></canvas>
+// --       <div class="complication-preview" id="complication-preview-{{ key["id"] }}">
+// --         <p>{{ key["desc"] }}</p>
+// --         <canvas class="complication" id="complication-preview-{{ key["id"] }}-canvas"></canvas>
+// --       </div>
 // -- ## endfor
 -->
-      <canvas class="complication" id="complication0"></canvas>
-      <canvas class="complication" id="complication1"></canvas>
-      <canvas class="complication" id="complication2"></canvas>
-      <canvas class="complication" id="complication3"></canvas>
+      <div class="complication-preview">
+        <p>Empty</p>
+        <canvas class="complication" id="complication-preview-0"></canvas>
+      </div>
+      <div class="complication-preview">
+        <p>Weather: Current temperature and iconWeather: Current temperature and icon</p>
+        <canvas class="complication" id="complication-preview-1"></canvas>
+      </div>
+      <div class="complication-preview">
+        <p>Weather: Today's low</p>
+        <canvas class="complication" id="complication-preview-2"></canvas>
+      </div>
+      <div class="complication-preview">
+        <p>Weather: Today's high</p>
+        <canvas class="complication" id="complication-preview-3"></canvas>
+      </div>
+      <div class="complication-preview">
+        <p>Bluetooth (on disconnect only)</p>
+        <canvas class="complication" id="complication-preview-4"></canvas>
+      </div>
 <!--
 // -- end autogen
 -->
+      <div class='button-container'>
+        <input id='complication_cancel_button' type='button' class='item-button' value='Cancel'>
+      </div>
+    </div>
 
     <div class='item-container'>
       <div class='item-container-header'>Appearance</div>
@@ -991,12 +1038,13 @@
 
 // -- autogen
 // -- ## for key in complications
-// --       RedshiftPreview.previewComplication({{ key["id"] }}, config, 'complication{{ key["id"] }}', getPlatform());
+// --       RedshiftPreview.previewComplication({{ key["id"] }}, config, 'complication-preview-{{ key["id"] }}-canvas', getPlatform());
 // -- ## endfor
-      RedshiftPreview.previewComplication(0, config, 'complication0', getPlatform());
-      RedshiftPreview.previewComplication(1, config, 'complication1', getPlatform());
-      RedshiftPreview.previewComplication(2, config, 'complication2', getPlatform());
-      RedshiftPreview.previewComplication(3, config, 'complication3', getPlatform());
+      RedshiftPreview.previewComplication(0, config, 'complication-preview-0', getPlatform());
+      RedshiftPreview.previewComplication(1, config, 'complication-preview-1', getPlatform());
+      RedshiftPreview.previewComplication(2, config, 'complication-preview-2', getPlatform());
+      RedshiftPreview.previewComplication(3, config, 'complication-preview-3', getPlatform());
+      RedshiftPreview.previewComplication(4, config, 'complication-preview-4', getPlatform());
 // -- end autogen
     }
   </script>

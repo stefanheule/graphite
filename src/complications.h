@@ -21,6 +21,7 @@
 // -- ## for key in complications
 // -- void {{ key["key"] | lower }}(FContext* fctx, FPoint position, GTextAlignment align, uint8_t foreground_color, uint8_t background_color);
 // -- ## endfor
+void complication_empty(FContext* fctx, FPoint position, GTextAlignment align, uint8_t foreground_color, uint8_t background_color);
 void complication_weather_cur_temp_icon(FContext* fctx, FPoint position, GTextAlignment align, uint8_t foreground_color, uint8_t background_color);
 void complication_weather_low_temp(FContext* fctx, FPoint position, GTextAlignment align, uint8_t foreground_color, uint8_t background_color);
 void complication_weather_high_temp(FContext* fctx, FPoint position, GTextAlignment align, uint8_t foreground_color, uint8_t background_color);

@@ -199,9 +199,9 @@ void background_update_proc(Layer *layer, GContext *ctx) {
     // complications
     fixed_t complications_margin_topbottom = REM(6); // gap between watch bounds and complications
     fixed_t complications_margin_leftright = REM(8);
-    config_complication_1 = 1;
-    config_complication_2 = 0;
-    config_complication_3 = 2;
+    config_complication_1 = 2;
+    config_complication_2 = 1;
+    config_complication_3 = 3;
     complications[config_complication_1](fctx, FPoint(complications_margin_leftright, complications_margin_topbottom), GTextAlignmentLeft, config_color_top_complications, config_color_topbar_bg);
     complications[config_complication_2](fctx, FPoint(width/2, complications_margin_topbottom), GTextAlignmentCenter, config_color_top_complications, config_color_topbar_bg);
     complications[config_complication_3](fctx, FPoint(width - complications_margin_leftright, complications_margin_topbottom), GTextAlignmentRight, config_color_top_complications, config_color_topbar_bg);
