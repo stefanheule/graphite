@@ -17,6 +17,7 @@ var RedshiftPreview = (function () {
     var font_icon = 'FontAwesome';
     var show_bluetooth_popup = false;
     var layer_background = 0;
+    var fontsize_complications = REM(27);
 
     function getWeather() {
         return {
@@ -60,6 +61,9 @@ var RedshiftPreview = (function () {
      var config_color_day;
      var config_color_night;
      var config_advanced_appearance_local;
+     var config_complication_1;
+     var config_complication_2;
+     var config_complication_3;
 // -- end autogen
 
     // core functions and constants
@@ -200,6 +204,9 @@ var RedshiftPreview = (function () {
         config_color_day = config["CONFIG_COLOR_DAY"];
         config_color_night = config["CONFIG_COLOR_NIGHT"];
         config_advanced_appearance_local = config["CONFIG_ADVANCED_APPEARANCE_LOCAL"];
+        config_complication_1 = config["CONFIG_COMPLICATION_1"];
+        config_complication_2 = config["CONFIG_COMPLICATION_2"];
+        config_complication_3 = config["CONFIG_COMPLICATION_3"];
 // -- end autogen
 
         weather = getWeather(platform);
@@ -235,7 +242,10 @@ var RedshiftPreview = (function () {
 // -- autogen
 // -- c_to_js src/complications.c
 var complications = [
-    complication_bluetooth_disconly, // id 0
+    complication_weather_cur_temp_icon, // id 0
+    complication_weather_low_temp, // id 1
+    complication_weather_high_temp, // id 2
+    complication_bluetooth_disconly, // id 3
 ];
 function complication_bluetooth_disconly(fctx, position, align, foreground_color, background_color) {
   if (!bluetooth_connection_service_peek()) {
@@ -322,7 +332,7 @@ function background_update_proc(layer, ctx) {
       config_color_progress_bar = GColor.Yellow;
     }
     draw_rect(fctx, bounds_full, config_color_background);
-    var fontsize_weather = REM(27);
+    var fontsize_weather = fontsize_complications;
     var topbar_height = FIXED_ROUND(fontsize_weather + REM(4));
     draw_rect(fctx, FRect(bounds.origin, FSize(width, topbar_height)), config_color_topbar_bg);
     var pos_weather_y = REM(6);
@@ -554,6 +564,9 @@ function background_update_proc(layer, ctx) {
             CONFIG_COLOR_DAY: +GColor.LightGray,
             CONFIG_COLOR_NIGHT: +GColor.Black,
             CONFIG_ADVANCED_APPEARANCE_LOCAL: +false,
+            CONFIG_COMPLICATION_1: +1,
+            CONFIG_COMPLICATION_2: +0,
+            CONFIG_COMPLICATION_3: +2,
 // -- end autogen
         };
         return cloneConfig(defaults);

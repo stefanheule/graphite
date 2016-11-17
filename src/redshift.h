@@ -58,11 +58,14 @@
 #define CONFIG_COLOR_TOP_COMPLICATIONS 20
 #define CONFIG_COLOR_DAY 21
 #define CONFIG_COLOR_NIGHT 22
+#define CONFIG_COMPLICATION_1 24
+#define CONFIG_COMPLICATION_2 25
+#define CONFIG_COMPLICATION_3 26
 // -- end autogen
 
 // -- autogen
 // -- #define REDSHIFT_N_CONFIG {{ num_config_items }}
-#define REDSHIFT_N_CONFIG 23
+#define REDSHIFT_N_CONFIG 26
 // -- end autogen
 
 // -- autogen
@@ -113,6 +116,9 @@ extern uint8_t config_color_background;
 extern uint8_t config_color_top_complications;
 extern uint8_t config_color_day;
 extern uint8_t config_color_night;
+extern uint8_t config_complication_1;
+extern uint8_t config_complication_2;
+extern uint8_t config_complication_3;
 // -- end autogen
 
 
@@ -141,6 +147,7 @@ extern fixed_t width_full;
 extern FFont* font_main;
 extern FFont* font_weather;
 extern FFont* font_icon;
+extern fixed_t fontsize_complications;
 
 extern bool show_bluetooth_popup;
 extern AppTimer *timer_bluetooth_popup;

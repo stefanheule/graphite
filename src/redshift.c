@@ -44,6 +44,9 @@ uint8_t config_color_background = GColorBlackARGB8;
 uint8_t config_color_top_complications = GColorBlackARGB8;
 uint8_t config_color_day = GColorLightGrayARGB8;
 uint8_t config_color_night = GColorBlackARGB8;
+uint8_t config_complication_1 = 1;
+uint8_t config_complication_2 = 0;
+uint8_t config_complication_3 = 2;
 // -- end autogen
 
 
@@ -69,6 +72,7 @@ fixed_t width_full;
 FFont* font_main;
 FFont* font_weather;
 FFont* font_icon;
+fixed_t fontsize_complications = REM(27);
 
 /** Is the bluetooth popup current supposed to be shown? */
 bool show_bluetooth_popup;

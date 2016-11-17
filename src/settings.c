@@ -110,6 +110,9 @@ void inbox_received_handler(DictionaryIterator *iter, void *context) {
     dirty |= sync_helper(CONFIG_COLOR_TOP_COMPLICATIONS, iter, &config_color_top_complications);
     dirty |= sync_helper(CONFIG_COLOR_DAY, iter, &config_color_day);
     dirty |= sync_helper(CONFIG_COLOR_NIGHT, iter, &config_color_night);
+    dirty |= sync_helper(CONFIG_COMPLICATION_1, iter, &config_complication_1);
+    dirty |= sync_helper(CONFIG_COMPLICATION_2, iter, &config_complication_2);
+    dirty |= sync_helper(CONFIG_COMPLICATION_3, iter, &config_complication_3);
 // -- end autogen
 
     bool ask_for_weather_update = true;
@@ -210,6 +213,9 @@ void read_config_all() {
     read_config(CONFIG_COLOR_TOP_COMPLICATIONS, &config_color_top_complications);
     read_config(CONFIG_COLOR_DAY, &config_color_day);
     read_config(CONFIG_COLOR_NIGHT, &config_color_night);
+    read_config(CONFIG_COMPLICATION_1, &config_complication_1);
+    read_config(CONFIG_COMPLICATION_2, &config_complication_2);
+    read_config(CONFIG_COMPLICATION_3, &config_complication_3);
 // -- end autogen
 
     if (persist_exists(PERSIST_KEY_WEATHER) && persist_get_size(PERSIST_KEY_WEATHER) == sizeof(Weather)) {

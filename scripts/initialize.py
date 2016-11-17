@@ -121,7 +121,18 @@ configuration = [
   {
     'key': 'CONFIG_ADVANCED_APPEARANCE_LOCAL',
     'default': 'false',
-  }
+  },
+  {
+    'key': 'CONFIG_COMPLICATION_1',
+    'default': 'COMPLICATION_WEATHER_LOW_TEMP',
+  },
+  {
+    'key': 'CONFIG_COMPLICATION_2',
+    'default': 'COMPLICATION_WEATHER_CUR_TEMP_ICON',
+  },{
+    'key': 'CONFIG_COMPLICATION_3',
+    'default': 'COMPLICATION_WEATHER_HIGH_TEMP',
+  },
 ]
 
 simple_config = [
@@ -144,12 +155,21 @@ simple_config = [
 
 complications = [
   {
+    'key': 'COMPLICATION_WEATHER_CUR_TEMP_ICON',
+    'desc': 'Weather: Current temperature and icon',
+  },
+  {
+    'key': 'COMPLICATION_WEATHER_LOW_TEMP',
+    'desc': 'Weather: Today\'s low',
+  },
+  {
+    'key': 'COMPLICATION_WEATHER_HIGH_TEMP',
+    'desc': 'Weather: Today\'s high',
+  },
+  {
     'key': 'COMPLICATION_BLUETOOTH_DISCONLY',
     'desc': 'Bluetooth (on disconnect only)',
   },
-  # {
-  #   'key': 'COMPLICATION_STEPS',
-  # },
 ]
 
 msg_keys = [
@@ -197,8 +217,8 @@ def get_context():
   if _context is None:
     config = add_key_id(configuration, '', 1)
     sc = add_additional_info(simple_config)
-    pre_process(config, simple_config)
     compls = add_key_id(complications, '', 0)
+    pre_process(config, simple_config, compls)
     _context =  {
       'version': version,
       'config_version': config_version,
@@ -214,12 +234,20 @@ def get_context():
     }
   return _context
 
-def pre_process(config, simple_config):
+def pre_process(config, simple_config, compls):
   lc = to_lookup(config)
   # decide which colors are part of a simple color, and which are not
   for k in simple_config:
     for i in k['depends']:
       lc[i]['belongs_to_simple'] = True
+
+  # resolve complication defaults
+  clc = to_lookup(compls)
+  for k in config:
+    if "COMPLICATION_" in k['default']:
+      i = clc[k['default']]['id']
+      k['default'] = i
+      k['jsdefault'] = "+%d" % (i)
 
 
 def to_lookup(ls):

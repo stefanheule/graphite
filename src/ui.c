@@ -136,6 +136,12 @@ void background_update_proc(Layer *layer, GContext *ctx) {
     height_full = bounds_full.size.h;
     width_full = bounds_full.size.w;
 
+    // update weather variable
+    bool weather_is_on = config_weather_refresh > 0;
+    bool weather_is_available = weather.timestamp > 0;
+    bool weather_is_outdated = (time(NULL) - weather.timestamp) > (config_weather_expiration * 60);
+    bool show_weather = weather_is_on && weather_is_available && !weather_is_outdated;
+
     // get current time
     time_t now = time(NULL);
     struct tm *t = localtime(&now);
@@ -181,14 +187,10 @@ void background_update_proc(Layer *layer, GContext *ctx) {
     draw_rect(fctx, bounds_full, config_color_background);
 
     // top bar
-    fixed_t fontsize_weather = REM(27);
+    fixed_t fontsize_weather = fontsize_complications;
     fixed_t topbar_height = FIXED_ROUND(fontsize_weather + REM(4));
     draw_rect(fctx, FRect(bounds.origin, FSize(width, topbar_height)), config_color_topbar_bg);
     fixed_t pos_weather_y = REM(6);
-    bool weather_is_on = config_weather_refresh > 0;
-    bool weather_is_available = weather.timestamp > 0;
-    bool weather_is_outdated = (time(NULL) - weather.timestamp) > (config_weather_expiration * 60);
-    bool show_weather = weather_is_on && weather_is_available && !weather_is_outdated;
     if (show_weather) {
         if (weather.failed) {
             snprintf(buffer_1, 10, "%c", weather.icon);
