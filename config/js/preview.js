@@ -1,3 +1,5 @@
+"use strict";
+
 var RedshiftPreview = (function () {
 
     /** Map from canvasIDs to configurations. */
@@ -18,6 +20,7 @@ var RedshiftPreview = (function () {
     var show_bluetooth_popup = false;
     var layer_background = 0;
     var fontsize_complications = REM(27);
+    var height, width, height_full, width_full;
 
     function getWeather() {
         return {
@@ -603,7 +606,7 @@ function background_update_proc(layer, ctx) {
 
     function cloneConfig(config) {
         var res = {};
-        for (k in config) {
+        for (var k in config) {
             res[k] = config[k];
         }
         return res;
