@@ -230,7 +230,7 @@ var RedshiftPreview = (function () {
         var foreground_color = GColor.Black;
         var background_color = GColor.White;
         draw_rect(fctx, FRect(FPoint(0, 0), FSize(REM(w), REM(h))), background_color);
-        complication_bluetooth_disconly(fctx, pos, GTextAlignmentCenter, foreground_color, background_color);
+        complications[complication](fctx, pos, GTextAlignmentCenter, foreground_color, background_color);
     }
 
     function drawConfig(canvasId, ignored) {

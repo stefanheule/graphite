@@ -379,6 +379,12 @@
     });
   }
 
+  function getAllSimpleConfigHtmlNodes() {
+    return $('[id]').filter(function () {
+      return /^SIMPLECONFIG_.*$/.test(this.id);
+    });
+  }
+
   function getStorageKey(k) {
     return getPlatform() + "__" + k;
   }
@@ -728,6 +734,45 @@
     return true;
   }
 
+  function onsimpleconfigchange(event) {
+    var id = event.target.id;
+    var value = readOneConfig($(event.target));
+
+    // update regular config items accordingly
+    // -- autogen
+// -- ## for key in simple_config
+// --     if (id == "{{ key["key"] }}") {
+// -- ## for dep in key["depends"]
+// --       applyValue($("#{{ dep }}"), value);
+// -- ## endfor
+// --     }
+// -- ## endfor
+    if (id == "SIMPLECONFIG_COLOR_MAIN") {
+      applyValue($("#CONFIG_COLOR_TIME"), value);
+      applyValue($("#CONFIG_COLOR_PERC"), value);
+      applyValue($("#CONFIG_COLOR_BOTTOM_COMPLICATIONS"), value);
+      applyValue($("#CONFIG_COLOR_PROGRESS_BAR2"), value);
+    }
+    if (id == "SIMPLECONFIG_COLOR_ACCENT") {
+      applyValue($("#CONFIG_COLOR_TOPBAR_BG"), value);
+      applyValue($("#CONFIG_COLOR_INFO_BELOW"), value);
+      applyValue($("#CONFIG_COLOR_INFO_ABOVE"), value);
+      applyValue($("#CONFIG_COLOR_PROGRESS_BAR"), value);
+    }
+    if (id == "SIMPLECONFIG_COLOR_BACKGROUND") {
+      applyValue($("#CONFIG_COLOR_BACKGROUND"), value);
+      applyValue($("#CONFIG_COLOR_TOP_COMPLICATIONS"), value);
+    }
+// -- end autogen
+
+    post("change", {
+      config_id: id,
+      value: value
+    });
+
+    updateCanvas();
+  }
+
   function onconfigchange(event) {
     var id = event.target.id;
     if (id == "CONFIG_WEATHER_APIKEY_LOCAL") {
@@ -885,6 +930,15 @@
       }
     });
 
+    getAllSimpleConfigHtmlNodes().each(function () {
+      var el = $(this);
+      if (el.hasClass('item-input')) {
+        this.addEventListener("keyup", onsimpleconfigchange);
+      } else {
+        this.addEventListener("change", onsimpleconfigchange);
+      }
+    });
+
     var did_read_defaults = {};
     var initialConfig = readValuesFromStorage(false, did_read_defaults);
     applyValues(initialConfig);
@@ -923,7 +977,7 @@
       var config = readConfigFromDom();
       RedshiftPreview.drawPreview(config, 'preview', getPlatform());
 
-      RedshiftPreview.previewComplication(0, config, 'complication1', getPlatform());
+      RedshiftPreview.previewComplication(1, config, 'complication1', getPlatform());
     }
   </script>
   </div>
