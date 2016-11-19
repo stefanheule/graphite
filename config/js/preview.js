@@ -4,6 +4,8 @@ var RedshiftPreview = (function () {
 
     /** Map from canvasIDs to configurations. */
     var configurations = {};
+    /** Map from canvasIDs to extra data. */
+    var datas = {};
     /** Map from canvasIDs to platforms. */
     var platforms = {};
 
@@ -216,11 +218,12 @@ var RedshiftPreview = (function () {
         weather = getWeather(platform);
     }
 
-    function drawComplication(canvasId, complication) {
+    function drawComplication(canvasId) {
         var backup = rem_is_pix;
         rem_is_pix = true;
 
         initializeDrawingState(canvasId);
+        var data = datas[canvasId];
 
         var w = 100;
         var h = 30;
@@ -236,7 +239,7 @@ var RedshiftPreview = (function () {
         var foreground_color = GColor.Black;
         var background_color = GColor.White;
         draw_rect(fctx, FRect(FPoint(0, 0), FSize(REM(w), REM(h))), background_color);
-        complications[complication](fctx, pos, GTextAlignmentCenter, foreground_color, background_color);
+        complications[data](fctx, pos, GTextAlignmentCenter, foreground_color, background_color);
 
         rem_is_pix = backup;
     }
@@ -263,7 +266,7 @@ function complication_empty(fctx, position, align, foreground_color, background_
 }
 function complication_bluetooth_disconly(fctx, position, align, foreground_color, background_color) {
   if (!bluetooth_connection_service_peek()) {
-    draw_string(fctx, "2", position, font_icon, foreground_color, REM(20), align);
+    draw_string(fctx, "2", FPoint(position.x, position.y + REM(11)), font_icon, foreground_color, REM(23), align);
   }
 }
 function complication_weather_cur_temp_icon(fctx, position, align, foreground_color, background_color) {
@@ -392,9 +395,6 @@ function background_update_proc(layer, ctx) {
     draw_rect(fctx, FRect(bounds.origin, FSize(width, topbar_height)), config_color_topbar_bg);
     var complications_margin_topbottom = REM(6); // gap between watch bounds and complications
     var complications_margin_leftright = REM(8);
-    config_complication_1 = 2;
-    config_complication_2 = 1;
-    config_complication_3 = 3;
     complications[config_complication_1](fctx, FPoint(complications_margin_leftright, complications_margin_topbottom), GTextAlignmentLeft, config_color_top_complications, config_color_topbar_bg);
     complications[config_complication_2](fctx, FPoint(width/2, complications_margin_topbottom), GTextAlignmentCenter, config_color_top_complications, config_color_topbar_bg);
     complications[config_complication_3](fctx, FPoint(width - complications_margin_leftright, complications_margin_topbottom), GTextAlignmentRight, config_color_top_complications, config_color_topbar_bg);
@@ -628,9 +628,10 @@ function background_update_proc(layer, ctx) {
         var first = !(canvasId in configurations);
         platforms[canvasId] = platform;
         configurations[canvasId] = config;
+        datas[canvasId] = data;
         if (first) {
             // schedule updates to redraw the configuration in case the fonts aren't loaded yet
-            var fontUpdate = function (data, f, i) {
+            var fontUpdate = function (f, i) {
                 var timeout = 1000;
                 if (i < 5) {
                     timeout = 500;
@@ -639,13 +640,13 @@ function background_update_proc(layer, ctx) {
                 }
                 if (i > 15) return;
                 setTimeout(function () {
-                    f(canvasId, data);
-                    fontUpdate(data, f, i + 1);
+                    f(canvasId);
+                    fontUpdate(f, i + 1);
                 }, timeout);
             };
-            fontUpdate(data, f, 0);
+            fontUpdate(f, 0);
         }
-        f(canvasId, data);
+        f(canvasId);
     }
 
     return {

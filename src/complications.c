@@ -53,7 +53,7 @@ void complication_empty(FContext* fctx, FPoint position, GTextAlignment align, u
 
 void complication_bluetooth_disconly(FContext* fctx, FPoint position, GTextAlignment align, uint8_t foreground_color, uint8_t background_color) {
   if (!bluetooth_connection_service_peek()) {
-    draw_string(fctx, "2", position, font_icon, foreground_color, REM(20), align);
+    draw_string(fctx, "2", FPoint(position.x, position.y + REM(11)), font_icon, foreground_color, REM(23), align);
   }
 }
 
