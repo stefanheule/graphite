@@ -47,6 +47,9 @@ uint8_t config_color_night = GColorBlackARGB8;
 uint8_t config_complication_1 = 2;
 uint8_t config_complication_2 = 1;
 uint8_t config_complication_3 = 3;
+uint8_t config_complication_4 = 5;
+uint8_t config_complication_5 = 4;
+uint8_t config_complication_6 = 6;
 // -- end autogen
 
 

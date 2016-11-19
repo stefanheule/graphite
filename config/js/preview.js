@@ -70,6 +70,9 @@ var RedshiftPreview = (function () {
      var config_complication_1;
      var config_complication_2;
      var config_complication_3;
+     var config_complication_4;
+     var config_complication_5;
+     var config_complication_6;
 // -- end autogen
 
     // core functions and constants
@@ -213,6 +216,9 @@ var RedshiftPreview = (function () {
         config_complication_1 = config["CONFIG_COMPLICATION_1"];
         config_complication_2 = config["CONFIG_COMPLICATION_2"];
         config_complication_3 = config["CONFIG_COMPLICATION_3"];
+        config_complication_4 = config["CONFIG_COMPLICATION_4"];
+        config_complication_5 = config["CONFIG_COMPLICATION_5"];
+        config_complication_6 = config["CONFIG_COMPLICATION_6"];
 // -- end autogen
 
         weather = getWeather(platform);
@@ -239,7 +245,7 @@ var RedshiftPreview = (function () {
         var foreground_color = GColor.Black;
         var background_color = GColor.White;
         draw_rect(fctx, FRect(FPoint(0, 0), FSize(REM(w), REM(h))), background_color);
-        complications[data](fctx, pos, GTextAlignmentCenter, foreground_color, background_color);
+        complications[data](fctx, true, pos, GTextAlignmentCenter, foreground_color, background_color);
 
         rem_is_pix = backup;
     }
@@ -261,15 +267,30 @@ var complications = [
     complication_weather_low_temp, // id 2
     complication_weather_high_temp, // id 3
     complication_bluetooth_disconly, // id 4
+    complication_heartrate_cur, // id 5
+    complication_battery_icon, // id 6
 ];
-function complication_empty(fctx, position, align, foreground_color, background_color) {
+function complication_empty(fctx, draw, position, align, foreground_color, background_color) {
+  return 0;
 }
-function complication_bluetooth_disconly(fctx, position, align, foreground_color, background_color) {
-  if (!bluetooth_connection_service_peek()) {
-    draw_string(fctx, "2", FPoint(position.x, position.y + REM(11)), font_icon, foreground_color, REM(23), align);
+function complication_heartrate_cur(fctx, draw, position, align, foreground_color, background_color) {
+  var hr = health_service_peek_current_value(HealthMetricHeartRateBPM);
+  if (hr != 0) {
   }
+  return 0;
 }
-function complication_weather_cur_temp_icon(fctx, position, align, foreground_color, background_color) {
+function complication_battery_icon(fctx, draw, position, align, foreground_color, background_color) {
+  return 0;
+}
+function complication_bluetooth_disconly(fctx, draw, position, align, foreground_color, background_color) {
+  if (!bluetooth_connection_service_peek()) {
+    var fontsize_bt_icon = REM(23);
+    if (draw) draw_string(fctx, "2", FPoint(position.x, position.y + REM(11)), font_icon, foreground_color, fontsize_bt_icon, align);
+    return string_width(fctx, "2", font_icon, fontsize_complications);
+  }
+  return 0;
+}
+function complication_weather_cur_temp_icon(fctx, draw, position, align, foreground_color, background_color) {
   if (show_weather()) {
     buffer_1 = sprintf("%c", weather.icon);
     if (weather.failed) {
@@ -277,28 +298,33 @@ function complication_weather_cur_temp_icon(fctx, position, align, foreground_co
     } else {
         buffer_2 = sprintf("%d°", weather.temp_cur);
     }
-    draw_weather(fctx, buffer_1, buffer_2, position, foreground_color, fontsize_complications, align);
+    return draw_weather(fctx, draw, buffer_1, buffer_2, position, foreground_color, fontsize_complications, align);
   }
+  return 0;
 }
-function complication_weather_low_temp(fctx, position, align, foreground_color, background_color) {
+function complication_weather_low_temp(fctx, draw, position, align, foreground_color, background_color) {
   if (show_weather()) {
     if (weather.failed) {
         buffer_1 = sprintf("%d", weather.temp_low);
     } else {
         buffer_1 = sprintf("%d°", weather.temp_low);
     }
-    draw_string(fctx, buffer_1, position, font_main, foreground_color, fontsize_complications, align);
+    if (draw) draw_string(fctx, buffer_1, position, font_main, foreground_color, fontsize_complications, align);
+    return string_width(fctx, buffer_1, font_main, fontsize_complications);
   }
+  return 0;
 }
-function complication_weather_high_temp(fctx, position, align, foreground_color, background_color) {
+function complication_weather_high_temp(fctx, draw, position, align, foreground_color, background_color) {
   if (show_weather()) {
     if (weather.failed) {
         buffer_1 = sprintf("%d", weather.temp_high);
     } else {
         buffer_1 = sprintf("%d°", weather.temp_high);
     }
-    draw_string(fctx, buffer_1, position, font_main, foreground_color, fontsize_complications, align);
+    if (draw) draw_string(fctx, buffer_1, position, font_main, foreground_color, fontsize_complications, align);
+    return string_width(fctx, buffer_1, font_main, fontsize_complications);
   }
+  return 0;
 }
 // -- end autogen
 
@@ -326,24 +352,27 @@ function remove_leading_zero(buffer, length) {
     if (buffer.substring(0, 1) == "0") buffer = buffer.substring(1);
     return buffer.replace(new RegExp("([ ./])0", 'g'), "$1");
 }
-function draw_weather(fctx, icon, temp, position, color, fontsize, align) {
+function draw_weather(fctx, draw, icon, temp, position, color, fontsize, align) {
     var weather_fontsize = (fontsize * 1.15);
     var w1 = string_width(fctx, icon, font_weather, weather_fontsize);
     var w2 = string_width(fctx, temp, font_main, fontsize);
     var sep = REM(2);
     var w = w1 + w2 + sep;
     var a = GTextAlignmentLeft;
-    var icon_y = position.y + weather_fontsize/8;
-    if (align == GTextAlignmentCenter) {
-        draw_string(fctx, icon, FPoint(position.x - w/2, icon_y), font_weather, color, weather_fontsize, a);
-        draw_string(fctx, temp, FPoint(position.x - w/2 + w1 + sep, position.y), font_main, color, fontsize, a);
-    } else if (align == GTextAlignmentLeft) {
-        draw_string(fctx, icon, FPoint(position.x, icon_y), font_weather, color, weather_fontsize, a);
-        draw_string(fctx, temp, FPoint(position.x + w1 + sep, position.y), font_main, color, fontsize, a);
-    } else {
-        draw_string(fctx, icon, FPoint(position.x - w, icon_y), font_weather, color, weather_fontsize, a);
-        draw_string(fctx, temp, FPoint(position.x - w + w1 + sep, position.y), font_main, color, fontsize, a);
+    if (draw) {
+        var icon_y = position.y + weather_fontsize/8;
+        if (align == GTextAlignmentCenter) {
+            draw_string(fctx, icon, FPoint(position.x - w/2, icon_y), font_weather, color, weather_fontsize, a);
+            draw_string(fctx, temp, FPoint(position.x - w/2 + w1 + sep, position.y), font_main, color, fontsize, a);
+        } else if (align == GTextAlignmentLeft) {
+            draw_string(fctx, icon, FPoint(position.x, icon_y), font_weather, color, weather_fontsize, a);
+            draw_string(fctx, temp, FPoint(position.x + w1 + sep, position.y), font_main, color, fontsize, a);
+        } else {
+            draw_string(fctx, icon, FPoint(position.x - w, icon_y), font_weather, color, weather_fontsize, a);
+            draw_string(fctx, temp, FPoint(position.x - w + w1 + sep, position.y), font_main, color, fontsize, a);
+        }
     }
+    return w;
 }
 /** Should the weather information be shown (based on whether it's enabled, available and up-to-date). */
 function show_weather() {
@@ -395,9 +424,9 @@ function background_update_proc(layer, ctx) {
     draw_rect(fctx, FRect(bounds.origin, FSize(width, topbar_height)), config_color_topbar_bg);
     var complications_margin_topbottom = REM(6); // gap between watch bounds and complications
     var complications_margin_leftright = REM(8);
-    complications[config_complication_1](fctx, FPoint(complications_margin_leftright, complications_margin_topbottom), GTextAlignmentLeft, config_color_top_complications, config_color_topbar_bg);
-    complications[config_complication_2](fctx, FPoint(width/2, complications_margin_topbottom), GTextAlignmentCenter, config_color_top_complications, config_color_topbar_bg);
-    complications[config_complication_3](fctx, FPoint(width - complications_margin_leftright, complications_margin_topbottom), GTextAlignmentRight, config_color_top_complications, config_color_topbar_bg);
+    complications[config_complication_1](fctx, true, FPoint(complications_margin_leftright, complications_margin_topbottom), GTextAlignmentLeft, config_color_top_complications, config_color_topbar_bg);
+    complications[config_complication_2](fctx, true, FPoint(width/2, complications_margin_topbottom), GTextAlignmentCenter, config_color_top_complications, config_color_topbar_bg);
+    complications[config_complication_3](fctx, true, FPoint(width - complications_margin_leftright, complications_margin_topbottom), GTextAlignmentRight, config_color_top_complications, config_color_topbar_bg);
     if (show_weather()) {
         var first_perc_index = -1;
         var sec_in_hour = 60*60;
@@ -467,29 +496,7 @@ function background_update_proc(layer, ctx) {
         draw_rect(fctx, FRect(FPoint(0, height_full - pos_stepbar_height), FSize(pos_stepbar_endx, pos_stepbar_height)), config_color_progress_bar2);
         draw_circle(fctx, FPoint(pos_stepbar_endx, height_full), pos_stepbar_height, config_color_progress_bar2);
     }
-    var hr = health_service_peek_current_value(HealthMetricHeartRateBPM);
-    if (hr != 0) {
-        var fontsize_hr = REM(25);
-        buffer_1 = sprintf("%i", hr);
-        draw_string(fctx, "1", FPoint(complications_margin_leftright, height_full - REM(13)), font_icon, config_color_bottom_complications, REM(15), GTextAlignmentLeft);
-        draw_string(fctx, buffer_1, FPoint(complications_margin_leftright + REM(16), height_full - REM(26)), font_main, config_color_bottom_complications,fontsize_hr, GTextAlignmentLeft);
-    }
-    complication_bluetooth_disconly(fctx, FPoint(width/2, height_full - REM(13)), GTextAlignmentCenter, config_color_bottom_complications, config_color_background);
-    var bat_thickness = PIX(1);
-    var bat_gap_thickness = PIX(1);
-    var bat_height = PIX(15);
-    var bat_width = PIX(9);
-    var bat_sep = PIX(3);
-    var bat_top = PIX(2);
-    var bat_inner_height = bat_height - 2 * bat_thickness - 2 * bat_gap_thickness;
-    var bat_inner_width = bat_width - 2 * bat_thickness - 2 * bat_gap_thickness;
-    var bat_avoid_stepbar = width - (width * steps / steps_goal + pos_stepbar_height) < 2*bat_sep + bat_width;
-    var bat_origin = FPoint(width - bat_sep - bat_width, height_full - bat_sep - bat_height - (bat_avoid_stepbar ? pos_stepbar_height : 0));
-    draw_rect(fctx, FRect(bat_origin, FSize(bat_width, bat_height)), config_color_bottom_complications);
-    draw_rect(fctx, FRect(FPoint(bat_origin.x + bat_thickness, bat_origin.y + bat_thickness), FSize(bat_width - 2*bat_thickness, bat_height - 2*bat_thickness)), config_color_background);
-    draw_rect(fctx, FRect(FPoint(bat_origin.x + bat_thickness + bat_gap_thickness, bat_origin.y + bat_thickness + bat_gap_thickness + (100 - battery_state.charge_percent) * bat_inner_height / 100), FSize(
-            bat_inner_width, battery_state.charge_percent * bat_inner_height / 100)), config_color_bottom_complications);
-    draw_rect(fctx, FRect(FPoint(bat_origin.x + bat_thickness + bat_gap_thickness, bat_origin.y - bat_top), FSize(bat_inner_width, bat_top)), config_color_bottom_complications);
+    complication_bluetooth_disconly(fctx, true, FPoint(width/2, height_full - REM(13)), GTextAlignmentCenter, config_color_bottom_complications, config_color_background);
     var bluetooth = bluetooth_connection_service_peek();
     bluetooth_popup(fctx, ctx, bluetooth);
     fctx_deinit_context(fctx);
@@ -611,6 +618,9 @@ function background_update_proc(layer, ctx) {
             CONFIG_COMPLICATION_1: +2,
             CONFIG_COMPLICATION_2: +1,
             CONFIG_COMPLICATION_3: +3,
+            CONFIG_COMPLICATION_4: +5,
+            CONFIG_COMPLICATION_5: +4,
+            CONFIG_COMPLICATION_6: +6,
 // -- end autogen
         };
         return cloneConfig(defaults);

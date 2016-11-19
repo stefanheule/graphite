@@ -113,6 +113,9 @@ void inbox_received_handler(DictionaryIterator *iter, void *context) {
     dirty |= sync_helper(CONFIG_COMPLICATION_1, iter, &config_complication_1);
     dirty |= sync_helper(CONFIG_COMPLICATION_2, iter, &config_complication_2);
     dirty |= sync_helper(CONFIG_COMPLICATION_3, iter, &config_complication_3);
+    dirty |= sync_helper(CONFIG_COMPLICATION_4, iter, &config_complication_4);
+    dirty |= sync_helper(CONFIG_COMPLICATION_5, iter, &config_complication_5);
+    dirty |= sync_helper(CONFIG_COMPLICATION_6, iter, &config_complication_6);
 // -- end autogen
 
     bool ask_for_weather_update = true;
@@ -216,6 +219,9 @@ void read_config_all() {
     read_config(CONFIG_COMPLICATION_1, &config_complication_1);
     read_config(CONFIG_COMPLICATION_2, &config_complication_2);
     read_config(CONFIG_COMPLICATION_3, &config_complication_3);
+    read_config(CONFIG_COMPLICATION_4, &config_complication_4);
+    read_config(CONFIG_COMPLICATION_5, &config_complication_5);
+    read_config(CONFIG_COMPLICATION_6, &config_complication_6);
 // -- end autogen
 
     if (persist_exists(PERSIST_KEY_WEATHER) && persist_get_size(PERSIST_KEY_WEATHER) == sizeof(Weather)) {

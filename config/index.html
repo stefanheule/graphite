@@ -111,6 +111,14 @@
         <p>Bluetooth (on disconnect only)</p>
         <canvas class="complication" id="complication-preview-4-canvas"></canvas>
       </div>
+      <div class="complication-preview" id="complication-preview-5">
+        <p>Heart rate</p>
+        <canvas class="complication" id="complication-preview-5-canvas"></canvas>
+      </div>
+      <div class="complication-preview" id="complication-preview-6">
+        <p>Battery icon</p>
+        <canvas class="complication" id="complication-preview-6-canvas"></canvas>
+      </div>
 <!--
 // -- end autogen
 -->
@@ -687,6 +695,9 @@
         "CONFIG_COMPLICATION_1": 24,
         "CONFIG_COMPLICATION_2": 25,
         "CONFIG_COMPLICATION_3": 26,
+        "CONFIG_COMPLICATION_4": 27,
+        "CONFIG_COMPLICATION_5": 28,
+        "CONFIG_COMPLICATION_6": 29,
 // -- end autogen
     };
 
@@ -999,6 +1010,8 @@
       $("#complication-preview-2").on("click", function(){ pickComplication(2); });
       $("#complication-preview-3").on("click", function(){ pickComplication(3); });
       $("#complication-preview-4").on("click", function(){ pickComplication(4); });
+      $("#complication-preview-5").on("click", function(){ pickComplication(5); });
+      $("#complication-preview-6").on("click", function(){ pickComplication(6); });
 // -- end autogen
   }
 
@@ -1107,6 +1120,8 @@
       RedshiftPreview.previewComplication(2, config, 'complication-preview-2-canvas', getPlatform());
       RedshiftPreview.previewComplication(3, config, 'complication-preview-3-canvas', getPlatform());
       RedshiftPreview.previewComplication(4, config, 'complication-preview-4-canvas', getPlatform());
+      RedshiftPreview.previewComplication(5, config, 'complication-preview-5-canvas', getPlatform());
+      RedshiftPreview.previewComplication(6, config, 'complication-preview-6-canvas', getPlatform());
 // -- end autogen
 
       RedshiftPreview.previewComplication(1, config, 'complication1', getPlatform());

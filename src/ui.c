@@ -96,7 +96,7 @@ void remove_leading_zero(char *buffer, size_t length) {
 }
 // -- end jsalternative
 
-void draw_weather(FContext* fctx, const char* icon, const char* temp, FPoint position, uint8_t color, fixed_t fontsize, GTextAlignment align) {
+fixed_t draw_weather(FContext* fctx, bool draw, const char* icon, const char* temp, FPoint position, uint8_t color, fixed_t fontsize, GTextAlignment align) {
     fixed_t weather_fontsize = (fixed_t)(fontsize * 1.15);
     fixed_t w1 = string_width(fctx, icon, font_weather, weather_fontsize);
     fixed_t w2 = string_width(fctx, temp, font_main, fontsize);
@@ -104,17 +104,21 @@ void draw_weather(FContext* fctx, const char* icon, const char* temp, FPoint pos
     fixed_t w = w1 + w2 + sep;
     GTextAlignment a = GTextAlignmentLeft;
 
-    fixed_t icon_y = position.y + weather_fontsize/8;
-    if (align == GTextAlignmentCenter) {
-        draw_string(fctx, icon, FPoint(position.x - w/2, icon_y), font_weather, color, weather_fontsize, a);
-        draw_string(fctx, temp, FPoint(position.x - w/2 + w1 + sep, position.y), font_main, color, fontsize, a);
-    } else if (align == GTextAlignmentLeft) {
-        draw_string(fctx, icon, FPoint(position.x, icon_y), font_weather, color, weather_fontsize, a);
-        draw_string(fctx, temp, FPoint(position.x + w1 + sep, position.y), font_main, color, fontsize, a);
-    } else {
-        draw_string(fctx, icon, FPoint(position.x - w, icon_y), font_weather, color, weather_fontsize, a);
-        draw_string(fctx, temp, FPoint(position.x - w + w1 + sep, position.y), font_main, color, fontsize, a);
+    if (draw) {
+        fixed_t icon_y = position.y + weather_fontsize/8;
+        if (align == GTextAlignmentCenter) {
+            draw_string(fctx, icon, FPoint(position.x - w/2, icon_y), font_weather, color, weather_fontsize, a);
+            draw_string(fctx, temp, FPoint(position.x - w/2 + w1 + sep, position.y), font_main, color, fontsize, a);
+        } else if (align == GTextAlignmentLeft) {
+            draw_string(fctx, icon, FPoint(position.x, icon_y), font_weather, color, weather_fontsize, a);
+            draw_string(fctx, temp, FPoint(position.x + w1 + sep, position.y), font_main, color, fontsize, a);
+        } else {
+            draw_string(fctx, icon, FPoint(position.x - w, icon_y), font_weather, color, weather_fontsize, a);
+            draw_string(fctx, temp, FPoint(position.x - w + w1 + sep, position.y), font_main, color, fontsize, a);
+        }
     }
+
+    return w;
 }
 
 /** Should the weather information be shown (based on whether it's enabled, available and up-to-date). */
@@ -196,13 +200,6 @@ void background_update_proc(Layer *layer, GContext *ctx) {
     fixed_t topbar_height = FIXED_ROUND(fontsize_weather + REM(4));
     draw_rect(fctx, FRect(bounds.origin, FSize(width, topbar_height)), config_color_topbar_bg);
 
-    // complications
-    fixed_t complications_margin_topbottom = REM(6); // gap between watch bounds and complications
-    fixed_t complications_margin_leftright = REM(8);
-    complications[config_complication_1](fctx, FPoint(complications_margin_leftright, complications_margin_topbottom), GTextAlignmentLeft, config_color_top_complications, config_color_topbar_bg);
-    complications[config_complication_2](fctx, FPoint(width/2, complications_margin_topbottom), GTextAlignmentCenter, config_color_top_complications, config_color_topbar_bg);
-    complications[config_complication_3](fctx, FPoint(width - complications_margin_leftright, complications_margin_topbottom), GTextAlignmentRight, config_color_top_complications, config_color_topbar_bg);
-
     // rain preview
     if (show_weather()) {
         int first_perc_index = -1;
@@ -272,53 +269,41 @@ void background_update_proc(Layer *layer, GContext *ctx) {
     fixed_t fontsize_date = (fixed_t)(width / 8);
     draw_string(fctx, buffer_1, FPoint(width / 2, height_full / 2 + fontsize_time / 3 - time_y_offset), font_main, config_color_info_below, fontsize_date, GTextAlignmentCenter);
 
-    // step bar
-    int steps = health_service_sum_today(HealthMetricStepCount);
-    int steps_goal = 10000;
-    fixed_t pos_stepbar_height = REM(5);
-    fixed_t pos_stepbar_endx = width * steps / steps_goal;
-    draw_rect(fctx, FRect(FPoint(0, height_full - pos_stepbar_height), FSize(pos_stepbar_endx, pos_stepbar_height)), config_color_progress_bar);
-    draw_circle(fctx, FPoint(pos_stepbar_endx, height_full), pos_stepbar_height, config_color_progress_bar);
-    if (steps > steps_goal) {
-        pos_stepbar_endx = width * (steps - steps_goal) / steps_goal;
-        draw_rect(fctx, FRect(FPoint(0, height_full - pos_stepbar_height), FSize(pos_stepbar_endx, pos_stepbar_height)), config_color_progress_bar2);
-        draw_circle(fctx, FPoint(pos_stepbar_endx, height_full), pos_stepbar_height, config_color_progress_bar2);
+    // progress bar
+    int progress_cur = health_service_sum_today(HealthMetricStepCount);
+    int progress_max = 10000;
+    fixed_t progress_height = REM(5);
+    fixed_t progress_endx = width * progress_cur / progress_max;
+    draw_rect(fctx, FRect(FPoint(0, height_full - progress_height), FSize(progress_endx, progress_height)), config_color_progress_bar);
+    draw_circle(fctx, FPoint(progress_endx, height_full), progress_height, config_color_progress_bar);
+    if (progress_cur > progress_max) {
+        fixed_t progress_endx2 = width * (progress_cur - progress_max) / progress_max;
+        draw_rect(fctx, FRect(FPoint(0, height_full - progress_height), FSize(progress_endx2, progress_height)), config_color_progress_bar2);
+        draw_circle(fctx, FPoint(progress_endx2, height_full), progress_height, config_color_progress_bar2);
     }
 
-    // heart rate
-    HealthValue hr = health_service_peek_current_value(HealthMetricHeartRateBPM);
-    if (hr != 0) {
-    //    HealthValue resthr = health_service_peek_current_value(HealthMetricRestingHeartRateBPM);
-        fixed_t fontsize_hr = REM(25);
-        snprintf(buffer_1, 10, "%i", (int)hr);
-        draw_string(fctx, "1", FPoint(complications_margin_leftright, height_full - REM(13)), font_icon, config_color_bottom_complications, REM(15), GTextAlignmentLeft);
-        draw_string(fctx, buffer_1, FPoint(complications_margin_leftright + REM(16), height_full - REM(26)), font_main, config_color_bottom_complications,fontsize_hr, GTextAlignmentLeft);
-    }
+    // top complications
+    fixed_t complications_margin_topbottom = REM(6); // gap between watch bounds and complications
+    fixed_t complications_margin_leftright = REM(8);
+    complications[config_complication_1](fctx, true, FPoint(complications_margin_leftright, complications_margin_topbottom), GTextAlignmentLeft, config_color_top_complications, config_color_topbar_bg);
+    complications[config_complication_2](fctx, true, FPoint(width/2, complications_margin_topbottom), GTextAlignmentCenter, config_color_top_complications, config_color_topbar_bg);
+    complications[config_complication_3](fctx, true, FPoint(width - complications_margin_leftright, complications_margin_topbottom), GTextAlignmentRight, config_color_top_complications, config_color_topbar_bg);
 
-    // bluetooth logo
-    complication_bluetooth_disconly(fctx, FPoint(width/2, height_full - REM(13)), GTextAlignmentCenter, config_color_bottom_complications, config_color_background);
-    // draw_string(fctx, "23", , font_icon, config_color_bottom_complications, REM(20), GTextAlignmentCenter);
-
-    // battery logo (not scaled, to allow pixel-aligned rects)
-    fixed_t bat_thickness = PIX(1);
-    fixed_t bat_gap_thickness = PIX(1);
-    fixed_t bat_height = PIX(15);
-    fixed_t bat_width = PIX(9);
-    fixed_t bat_sep = PIX(3);
-    fixed_t bat_top = PIX(2);
-    fixed_t bat_inner_height = bat_height - 2 * bat_thickness - 2 * bat_gap_thickness;
-    fixed_t bat_inner_width = bat_width - 2 * bat_thickness - 2 * bat_gap_thickness;
-    bool bat_avoid_stepbar = width - (width * steps / steps_goal + pos_stepbar_height) < 2*bat_sep + bat_width;
-    FPoint bat_origin = FPoint(width - bat_sep - bat_width, height_full - bat_sep - bat_height - (bat_avoid_stepbar ? pos_stepbar_height : 0));
-    // outer rect
-    draw_rect(fctx, FRect(bat_origin, FSize(bat_width, bat_height)), config_color_bottom_complications);
-    // inner background rect
-    draw_rect(fctx, FRect(FPoint(bat_origin.x + bat_thickness, bat_origin.y + bat_thickness), FSize(bat_width - 2*bat_thickness, bat_height - 2*bat_thickness)), config_color_background);
-    // inner charge rect
-    draw_rect(fctx, FRect(FPoint(bat_origin.x + bat_thickness + bat_gap_thickness, bat_origin.y + bat_thickness + bat_gap_thickness + (100 - battery_state.charge_percent) * bat_inner_height / 100), FSize(
-            bat_inner_width, battery_state.charge_percent * bat_inner_height / 100)), config_color_bottom_complications);
-    // top of battery
-    draw_rect(fctx, FRect(FPoint(bat_origin.x + bat_thickness + bat_gap_thickness, bat_origin.y - bat_top), FSize(bat_inner_width, bat_top)), config_color_bottom_complications);
+    // bottom complications
+    fixed_t compl_y = height_full - fontsize_complications;
+    fixed_t compl_y2 = compl_y - progress_height;
+    fixed_t compl_w;
+    bool avoid_progress;
+    // complication 4 (always higher)
+    complications[config_complication_4](fctx, true, FPoint(complications_margin_leftright, compl_y2), GTextAlignmentLeft, config_color_bottom_complications, config_color_background);
+    // complication 5 (sometimes higher)
+    compl_w = complications[config_complication_5](fctx, false, FPointZero, GTextAlignmentLeft, config_color_bottom_complications, config_color_background);
+    avoid_progress = width/2 - compl_w/2 < progress_endx + REM(5);
+    complications[config_complication_5](fctx, true, FPoint(width/2, avoid_progress ? compl_y2 : compl_y), GTextAlignmentCenter, config_color_bottom_complications, config_color_background);
+    // complication 6 (sometimes higher)
+    compl_w = complications[config_complication_6](fctx, false, FPointZero, GTextAlignmentLeft, config_color_bottom_complications, config_color_background);
+    avoid_progress = width - complications_margin_leftright - compl_w < progress_endx + REM(5);
+    complications[config_complication_6](fctx, true, FPoint(width - complications_margin_leftright, avoid_progress ? compl_y2 : compl_y), GTextAlignmentRight, config_color_bottom_complications, config_color_background);
 
     // draw the bluetooth popup
     bool bluetooth = bluetooth_connection_service_peek();

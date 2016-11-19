@@ -129,9 +129,21 @@ configuration = [
   {
     'key': 'CONFIG_COMPLICATION_2',
     'default': 'COMPLICATION_WEATHER_CUR_TEMP_ICON',
-  },{
+  },
+  {
     'key': 'CONFIG_COMPLICATION_3',
     'default': 'COMPLICATION_WEATHER_HIGH_TEMP',
+  },
+  {
+    'key': 'CONFIG_COMPLICATION_4',
+    'default': 'COMPLICATION_HEARTRATE_CUR',
+  },
+  {
+    'key': 'CONFIG_COMPLICATION_5',
+    'default': 'COMPLICATION_BLUETOOTH_DISCONLY',
+  },{
+    'key': 'CONFIG_COMPLICATION_6',
+    'default': 'COMPLICATION_BATTERY_ICON',
   },
 ]
 
@@ -173,6 +185,14 @@ complications = [
   {
     'key': 'COMPLICATION_BLUETOOTH_DISCONLY',
     'desc': 'Bluetooth (on disconnect only)',
+  },
+  {
+    'key': 'COMPLICATION_HEARTRATE_CUR',
+    'desc': 'Heart rate',
+  },
+  {
+    'key': 'COMPLICATION_BATTERY_ICON',
+    'desc': 'Battery icon',
   },
 ]
 

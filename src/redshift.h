@@ -61,11 +61,14 @@
 #define CONFIG_COMPLICATION_1 24
 #define CONFIG_COMPLICATION_2 25
 #define CONFIG_COMPLICATION_3 26
+#define CONFIG_COMPLICATION_4 27
+#define CONFIG_COMPLICATION_5 28
+#define CONFIG_COMPLICATION_6 29
 // -- end autogen
 
 // -- autogen
 // -- #define REDSHIFT_N_CONFIG {{ num_config_items }}
-#define REDSHIFT_N_CONFIG 26
+#define REDSHIFT_N_CONFIG 29
 // -- end autogen
 
 // -- autogen
@@ -119,6 +122,9 @@ extern uint8_t config_color_night;
 extern uint8_t config_complication_1;
 extern uint8_t config_complication_2;
 extern uint8_t config_complication_3;
+extern uint8_t config_complication_4;
+extern uint8_t config_complication_5;
+extern uint8_t config_complication_6;
 // -- end autogen
 
 
@@ -126,7 +132,9 @@ extern uint8_t config_complication_3;
 //// Complications
 ////////////////////////////////////////////
 
-typedef void (*complication_render_t)(FContext* fctx, FPoint position, GTextAlignment align, uint8_t foreground_color, uint8_t background_color);
+// complications take a parameter draw and only will actually draw the content
+// if draw==true.  Otherwise they just return the width of the complication.
+typedef fixed_t (*complication_render_t)(FContext* fctx, bool draw, FPoint position, GTextAlignment align, uint8_t foreground_color, uint8_t background_color);
 extern complication_render_t complications[];
 
 

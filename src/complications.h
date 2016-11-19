@@ -19,13 +19,15 @@
 
 // -- autogen
 // -- ## for key in complications
-// -- void {{ key["key"] | lower }}(FContext* fctx, FPoint position, GTextAlignment align, uint8_t foreground_color, uint8_t background_color);
+// -- fixed_t {{ key["key"] | lower }}(FContext* fctx, bool draw, FPoint position, GTextAlignment align, uint8_t foreground_color, uint8_t background_color);
 // -- ## endfor
-void complication_empty(FContext* fctx, FPoint position, GTextAlignment align, uint8_t foreground_color, uint8_t background_color);
-void complication_weather_cur_temp_icon(FContext* fctx, FPoint position, GTextAlignment align, uint8_t foreground_color, uint8_t background_color);
-void complication_weather_low_temp(FContext* fctx, FPoint position, GTextAlignment align, uint8_t foreground_color, uint8_t background_color);
-void complication_weather_high_temp(FContext* fctx, FPoint position, GTextAlignment align, uint8_t foreground_color, uint8_t background_color);
-void complication_bluetooth_disconly(FContext* fctx, FPoint position, GTextAlignment align, uint8_t foreground_color, uint8_t background_color);
+fixed_t complication_empty(FContext* fctx, bool draw, FPoint position, GTextAlignment align, uint8_t foreground_color, uint8_t background_color);
+fixed_t complication_weather_cur_temp_icon(FContext* fctx, bool draw, FPoint position, GTextAlignment align, uint8_t foreground_color, uint8_t background_color);
+fixed_t complication_weather_low_temp(FContext* fctx, bool draw, FPoint position, GTextAlignment align, uint8_t foreground_color, uint8_t background_color);
+fixed_t complication_weather_high_temp(FContext* fctx, bool draw, FPoint position, GTextAlignment align, uint8_t foreground_color, uint8_t background_color);
+fixed_t complication_bluetooth_disconly(FContext* fctx, bool draw, FPoint position, GTextAlignment align, uint8_t foreground_color, uint8_t background_color);
+fixed_t complication_heartrate_cur(FContext* fctx, bool draw, FPoint position, GTextAlignment align, uint8_t foreground_color, uint8_t background_color);
+fixed_t complication_battery_icon(FContext* fctx, bool draw, FPoint position, GTextAlignment align, uint8_t foreground_color, uint8_t background_color);
 // -- end autogen
 
 

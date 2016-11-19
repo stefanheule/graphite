@@ -95,6 +95,9 @@ Pebble.addEventListener('webviewclosed', function (e) {
         "CONFIG_COMPLICATION_1": 24,
         "CONFIG_COMPLICATION_2": 25,
         "CONFIG_COMPLICATION_3": 26,
+        "CONFIG_COMPLICATION_4": 27,
+        "CONFIG_COMPLICATION_5": 28,
+        "CONFIG_COMPLICATION_6": 29,
 // -- end autogen
     };
     var config = {};
