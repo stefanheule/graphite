@@ -282,6 +282,12 @@
           <input id='CONFIG_COLOR_TOP_COMPLICATIONS' type='text' class='item-color item-color-normal'>
         </label>
       </div>
+      <div class="item-container-content">
+        <label class='item'>
+          Precipitation night time indicator color
+          <input id='CONFIG_COLOR_NIGHT' type='text' class='item-color item-color-normal'>
+        </label>
+      </div>
 <!--
 // -- end autogen
 -->
@@ -304,12 +310,6 @@
         <label class='item'>
           Precipitation day time indicator color
           <input id='CONFIG_COLOR_DAY' type='text' class='item-color item-color-normal'>
-        </label>
-      </div>
-      <div class="item-container-content">
-        <label class='item'>
-          Precipitation night time indicator color
-          <input id='CONFIG_COLOR_NIGHT' type='text' class='item-color item-color-normal'>
         </label>
       </div>
 <!--
@@ -670,6 +670,7 @@
     applyValue(el, mode([
       config["CONFIG_COLOR_BACKGROUND"],
       config["CONFIG_COLOR_TOP_COMPLICATIONS"],
+      config["CONFIG_COLOR_NIGHT"],
     ]));
 // -- end autogen
 
@@ -875,6 +876,7 @@
     if (id == "SIMPLECONFIG_COLOR_BACKGROUND") {
       applyValue($("#CONFIG_COLOR_BACKGROUND"), value);
       applyValue($("#CONFIG_COLOR_TOP_COMPLICATIONS"), value);
+      applyValue($("#CONFIG_COLOR_NIGHT"), value);
     }
 // -- end autogen
 
@@ -969,17 +971,20 @@
       allDepVals = [
         readOneConfig($("#CONFIG_COLOR_BACKGROUND")),
         readOneConfig($("#CONFIG_COLOR_TOP_COMPLICATIONS")),
+        readOneConfig($("#CONFIG_COLOR_NIGHT")),
       ];
       if (!allSame(allDepVals)) {
         options = "";
         options += "\n- Background color (" + GColor.toName(readOneConfig($("#CONFIG_COLOR_BACKGROUND"))) + ")";
         options += "\n- Top complications color (" + GColor.toName(readOneConfig($("#CONFIG_COLOR_TOP_COMPLICATIONS"))) + ")";
+        options += "\n- Precipitation night time indicator color (" + GColor.toName(readOneConfig($("#CONFIG_COLOR_NIGHT"))) + ")";
         if (!window.confirm("In the simplified configuration, the colors for all of " + options + "\nare represented as just a single value called 'Background color'.  However, in your current configuration, they do not have all the same value.  Do you still want to switch to the simplified configuration?  It will force all of these to have the same color: " + GColor.toName(mode(allDepVals)) + ".")) {
           applyValue($("#" + id), true);
           return false;
         } else {
           applyValue($("#CONFIG_COLOR_BACKGROUND"), mode(allDepVals));
           applyValue($("#CONFIG_COLOR_TOP_COMPLICATIONS"), mode(allDepVals));
+          applyValue($("#CONFIG_COLOR_NIGHT"), mode(allDepVals));
           updateUI();
         }
       }

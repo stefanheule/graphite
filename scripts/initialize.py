@@ -161,7 +161,7 @@ simple_config = [
   {
     'key': 'SIMPLECONFIG_COLOR_BACKGROUND',
     'desc': 'Background color',
-    'depends': ['CONFIG_COLOR_BACKGROUND', 'CONFIG_COLOR_TOP_COMPLICATIONS'],
+    'depends': ['CONFIG_COLOR_BACKGROUND', 'CONFIG_COLOR_TOP_COMPLICATIONS', 'CONFIG_COLOR_NIGHT'],
   },
 ]
 
