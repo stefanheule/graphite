@@ -26,6 +26,8 @@ var RedshiftPreview = (function () {
     var rem_is_pix = false;
 
     function getWeather() {
+        var d = [0.5, 0.4, 0.3, 0, 0, 0, 0, 0, 0.1, 0.12, 0.1, 0.2,0.4,0.45,0.6,1,1,0.2,0,0,0,0,0,0,0,0].map(function(x){return x*100});
+        if (!config_weather_rain_local) d = [];
         return {
             version: 0,
             timestamp: time(NULL),
@@ -33,8 +35,8 @@ var RedshiftPreview = (function () {
             temp_cur: 14,
             temp_low: 5,
             temp_high: 28,
-            perc_data: [0.5, 0.4, 0.3, 0, 0, 0, 0, 0, 0.1, 0.12, 0.1, 0.2,0.4,0.45,0.6,1,1,0.2,0,0,0,0,0,0,0,0].map(function(x){return x*100}),
-            perc_data_len: 25,
+            perc_data: d,
+            perc_data_len: d.length,
             perc_data_ts: tnow - (tnow % (60*60)),
             failed: false
         };
@@ -49,6 +51,7 @@ var RedshiftPreview = (function () {
      var config_message_disconnect;
      var config_message_reconnect;
      var config_weather_unit_local;
+     var config_weather_rain_local;
      var config_weather_source_local;
      var config_weather_apikey_local;
      var config_weather_location_local;
@@ -195,6 +198,7 @@ var RedshiftPreview = (function () {
         config_message_disconnect = config["CONFIG_MESSAGE_DISCONNECT"];
         config_message_reconnect = config["CONFIG_MESSAGE_RECONNECT"];
         config_weather_unit_local = config["CONFIG_WEATHER_UNIT_LOCAL"];
+        config_weather_rain_local = config["CONFIG_WEATHER_RAIN_LOCAL"];
         config_weather_source_local = config["CONFIG_WEATHER_SOURCE_LOCAL"];
         config_weather_apikey_local = config["CONFIG_WEATHER_APIKEY_LOCAL"];
         config_weather_location_local = config["CONFIG_WEATHER_LOCATION_LOCAL"];
@@ -607,6 +611,7 @@ function background_update_proc(layer, ctx) {
             CONFIG_MESSAGE_DISCONNECT: +true,
             CONFIG_MESSAGE_RECONNECT: +true,
             CONFIG_WEATHER_UNIT_LOCAL: +1,
+            CONFIG_WEATHER_RAIN_LOCAL: +true,
             CONFIG_WEATHER_SOURCE_LOCAL: +1,
             CONFIG_WEATHER_APIKEY_LOCAL: "",
             CONFIG_WEATHER_LOCATION_LOCAL: "",

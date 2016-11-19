@@ -74,30 +74,31 @@ Pebble.addEventListener('webviewclosed', function (e) {
         "CONFIG_MESSAGE_DISCONNECT": 3,
         "CONFIG_MESSAGE_RECONNECT": 4,
         "CONFIG_WEATHER_UNIT_LOCAL": 5,
-        "CONFIG_WEATHER_SOURCE_LOCAL": 6,
-        "CONFIG_WEATHER_APIKEY_LOCAL": 7,
-        "CONFIG_WEATHER_LOCATION_LOCAL": 8,
-        "CONFIG_WEATHER_REFRESH": 9,
-        "CONFIG_WEATHER_EXPIRATION": 10,
-        "CONFIG_COLOR_TOPBAR_BG": 11,
-        "CONFIG_COLOR_INFO_BELOW": 12,
-        "CONFIG_COLOR_INFO_ABOVE": 13,
-        "CONFIG_COLOR_PROGRESS_BAR": 14,
-        "CONFIG_COLOR_PROGRESS_BAR2": 15,
-        "CONFIG_COLOR_TIME": 16,
-        "CONFIG_COLOR_PERC": 17,
-        "CONFIG_COLOR_BOTTOM_COMPLICATIONS": 18,
-        "CONFIG_COLOR_BACKGROUND": 19,
-        "CONFIG_COLOR_TOP_COMPLICATIONS": 20,
-        "CONFIG_COLOR_DAY": 21,
-        "CONFIG_COLOR_NIGHT": 22,
-        "CONFIG_ADVANCED_APPEARANCE_LOCAL": 23,
-        "CONFIG_COMPLICATION_1": 24,
-        "CONFIG_COMPLICATION_2": 25,
-        "CONFIG_COMPLICATION_3": 26,
-        "CONFIG_COMPLICATION_4": 27,
-        "CONFIG_COMPLICATION_5": 28,
-        "CONFIG_COMPLICATION_6": 29,
+        "CONFIG_WEATHER_RAIN_LOCAL": 6,
+        "CONFIG_WEATHER_SOURCE_LOCAL": 7,
+        "CONFIG_WEATHER_APIKEY_LOCAL": 8,
+        "CONFIG_WEATHER_LOCATION_LOCAL": 9,
+        "CONFIG_WEATHER_REFRESH": 10,
+        "CONFIG_WEATHER_EXPIRATION": 11,
+        "CONFIG_COLOR_TOPBAR_BG": 12,
+        "CONFIG_COLOR_INFO_BELOW": 13,
+        "CONFIG_COLOR_INFO_ABOVE": 14,
+        "CONFIG_COLOR_PROGRESS_BAR": 15,
+        "CONFIG_COLOR_PROGRESS_BAR2": 16,
+        "CONFIG_COLOR_TIME": 17,
+        "CONFIG_COLOR_PERC": 18,
+        "CONFIG_COLOR_BOTTOM_COMPLICATIONS": 19,
+        "CONFIG_COLOR_BACKGROUND": 20,
+        "CONFIG_COLOR_TOP_COMPLICATIONS": 21,
+        "CONFIG_COLOR_DAY": 22,
+        "CONFIG_COLOR_NIGHT": 23,
+        "CONFIG_ADVANCED_APPEARANCE_LOCAL": 24,
+        "CONFIG_COMPLICATION_1": 25,
+        "CONFIG_COMPLICATION_2": 26,
+        "CONFIG_COMPLICATION_3": 27,
+        "CONFIG_COMPLICATION_4": 28,
+        "CONFIG_COMPLICATION_5": 29,
+        "CONFIG_COMPLICATION_6": 30,
 // -- end autogen
     };
     var config = {};
@@ -144,6 +145,8 @@ function readConfig(key) {
 // -- ## endfor
         } else if (key == "CONFIG_WEATHER_UNIT_LOCAL") {
             return 1;
+        } else if (key == "CONFIG_WEATHER_RAIN_LOCAL") {
+            return true;
         } else if (key == "CONFIG_WEATHER_SOURCE_LOCAL") {
             return 1;
         } else if (key == "CONFIG_WEATHER_APIKEY_LOCAL") {
@@ -284,11 +287,13 @@ function fetchWeather(latitude, longitude) {
             "MSG_KEY_WEATHER_ICON_CUR": icon,
             "MSG_KEY_WEATHER_TEMP_CUR": cur,
             "MSG_KEY_WEATHER_TEMP_LOW": low,
-            "MSG_KEY_WEATHER_TEMP_HIGH": high,
-            "MSG_KEY_WEATHER_PERC_DATA": data,
-            "MSG_KEY_WEATHER_PERC_DATA_LEN": data.length,
-            "MSG_KEY_WEATHER_PERC_DATA_TS": ts
+            "MSG_KEY_WEATHER_TEMP_HIGH": high
         };
+        if (readConfig("CONFIG_WEATHER_RAIN_LOCAL")) {
+            data["MSG_KEY_WEATHER_PERC_DATA"] = data;
+            data["MSG_KEY_WEATHER_PERC_DATA_LEN"] = data.length;
+            data["MSG_KEY_WEATHER_PERC_DATA_TS"] = ts;
+        }
         console.log('[ info/app ] weather send: temp=' + low + "/" + cur + "/" + high + ", icon=" + String.fromCharCode(icon) + ".");
         Pebble.sendAppMessage(data);
     };
@@ -322,6 +327,7 @@ function fetchWeather(latitude, longitude) {
 
     var source = +readConfig("CONFIG_WEATHER_SOURCE_LOCAL");
     var apikey = readConfig("CONFIG_WEATHER_APIKEY_LOCAL");
+    var load_rain = readConfig("CONFIG_WEATHER_RAIN_LOCAL");
     console.log('[ info/app ] requesting weather information (' + (daily ? "daily" : "currently") + ')...');
     if (source == 1) {
         var query = "lat=" + latitude + "&lon=" + longitude;
@@ -362,6 +368,9 @@ function fetchWeather(latitude, longitude) {
         // source == 2
         var baseurl = "https://api.darksky.net/forecast/" + apikey + "/" + latitude + "," + longitude + "?units=si&";
         var exclude = "exclude=minutely,alerts,flags";
+        if (!load_rain) {
+            exclude += ",hourly"
+        }
         runRequest(baseurl + exclude, function(response) {
             console.log('[ info/app ] weather information: ' + JSON.stringify(response));
             var low, high, cur, icon;
@@ -383,11 +392,13 @@ function fetchWeather(latitude, longitude) {
             // collect perc data
             var perc_data = [];
             var ts = 0;
-            for (var i in response.hourly.data) {
-                var elem = response.hourly.data[i];
-                if (ts == 0) ts = elem.time;
-                if (!elem.hasOwnProperty('precipProbability')) break;
-                perc_data.push(Math.round(elem.precipProbability * 100));
+            if (load_rain) {
+                for (var i in response.hourly.data) {
+                    var elem = response.hourly.data[i];
+                    if (ts == 0) ts = elem.time;
+                    if (!elem.hasOwnProperty('precipProbability')) break;
+                    perc_data.push(Math.round(elem.precipProbability * 100));
+                }
             }
             success(low, high, cur, icon, perc_data, ts);
         });

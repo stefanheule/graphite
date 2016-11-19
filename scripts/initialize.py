@@ -35,6 +35,10 @@ configuration = [
     'default': '1',
   },
   {
+    'key': 'CONFIG_WEATHER_RAIN_LOCAL',
+    'default': 'true',
+  },
+  {
     'key': 'CONFIG_WEATHER_SOURCE_LOCAL',
     'default': '1',
   },
@@ -141,7 +145,8 @@ configuration = [
   {
     'key': 'CONFIG_COMPLICATION_5',
     'default': 'COMPLICATION_BLUETOOTH_DISCONLY',
-  },{
+  },
+  {
     'key': 'CONFIG_COMPLICATION_6',
     'default': 'COMPLICATION_BATTERY_ICON',
   },
