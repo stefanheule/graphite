@@ -1043,7 +1043,7 @@
 
   function initComplicationChooser() {
     for (var i = 1; i < 7; i++) {
-      $("#complication" + i).on("click", (function(x) { return function(ev) { openComplicationChooser(x); ev.stopPropagation } })(i));
+      $("#complication" + i).on("click", (function(x) { return function(ev) { openComplicationChooser(x); ev.stopPropagation(); } })(i));
     }
     $("#complication_cancel_button").on("click", closeComplicationChooser);
     $(document).click(function(ev) {
