@@ -159,6 +159,25 @@
           You can also directly click on the complication slots in the live preview to change them.
         </div>
       </div>
+
+      <div class="item-container-content">
+        <label class="item">
+          Show 24h rain forecast
+          <input id='CONFIG_WEATHER_RAIN_LOCAL' type='checkbox' class='item-toggle'>
+        </label>
+      </div>
+
+      <div class="item-container-content">
+        <label class="item">
+          Progress bar
+          <select id='CONFIG_PROGRESS' dir='rtl' class="item-select">
+            <option class="item-select-option" value="0">None</option>
+            <option class="item-select-option" value="1">Steps</option>
+            <option class="item-select-option" value="2">Battery</option>
+          </select>
+        </label>
+      </div>
+
     </div>
 
     <div class='item-container'>
@@ -328,13 +347,6 @@
             <option class="item-select-option" value="1">Celcius</option>
             <option class="item-select-option" value="2">Fahrenheit</option>
           </select>
-        </label>
-      </div>
-
-      <div class="item-container-content">
-        <label class="item">
-          Show 24h rain forecast
-          <input id='CONFIG_WEATHER_RAIN_LOCAL' type='checkbox' class='item-toggle'>
         </label>
       </div>
 
@@ -729,6 +741,7 @@
         "CONFIG_COMPLICATION_4": 28,
         "CONFIG_COMPLICATION_5": 29,
         "CONFIG_COMPLICATION_6": 30,
+        "CONFIG_PROGRESS": 31,
 // -- end autogen
     };
 

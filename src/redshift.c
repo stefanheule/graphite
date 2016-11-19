@@ -50,6 +50,7 @@ uint8_t config_complication_3 = 3;
 uint8_t config_complication_4 = 5;
 uint8_t config_complication_5 = 4;
 uint8_t config_complication_6 = 6;
+uint8_t config_progress = 1;
 // -- end autogen
 
 

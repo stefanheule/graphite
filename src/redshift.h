@@ -64,11 +64,12 @@
 #define CONFIG_COMPLICATION_4 28
 #define CONFIG_COMPLICATION_5 29
 #define CONFIG_COMPLICATION_6 30
+#define CONFIG_PROGRESS 31
 // -- end autogen
 
 // -- autogen
 // -- #define REDSHIFT_N_CONFIG {{ num_config_items }}
-#define REDSHIFT_N_CONFIG 30
+#define REDSHIFT_N_CONFIG 31
 // -- end autogen
 
 // -- autogen
@@ -125,6 +126,7 @@ extern uint8_t config_complication_3;
 extern uint8_t config_complication_4;
 extern uint8_t config_complication_5;
 extern uint8_t config_complication_6;
+extern uint8_t config_progress;
 // -- end autogen
 
 

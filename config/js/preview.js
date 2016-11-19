@@ -76,6 +76,7 @@ var RedshiftPreview = (function () {
      var config_complication_4;
      var config_complication_5;
      var config_complication_6;
+     var config_progress;
 // -- end autogen
 
     // core functions and constants
@@ -223,6 +224,7 @@ var RedshiftPreview = (function () {
         config_complication_4 = config["CONFIG_COMPLICATION_4"];
         config_complication_5 = config["CONFIG_COMPLICATION_5"];
         config_complication_6 = config["CONFIG_COMPLICATION_6"];
+        config_progress = config["CONFIG_PROGRESS"];
 // -- end autogen
 
         weather = getWeather(platform);
@@ -486,6 +488,7 @@ function background_update_proc(layer, ctx) {
     draw_string(fctx, buffer_1, FPoint(width / 2, height_full / 2 + fontsize_time / 3 - time_y_offset), font_main, config_color_info_below, fontsize_date, GTextAlignmentCenter);
     var progress_cur = health_service_sum_today(HealthMetricStepCount);
     var progress_max = 10000;
+    var progress_no = false;
     var progress_height = REM(5);
     var progress_endx = width * progress_cur / progress_max;
     draw_rect(fctx, FRect(FPoint(0, height_full - progress_height), FSize(progress_endx, progress_height)), config_color_progress_bar);
@@ -504,7 +507,7 @@ function background_update_proc(layer, ctx) {
     var compl_y2 = compl_y - progress_height;
     var compl_w;
     var avoid_progress;
-    complications[config_complication_4](fctx, true, FPoint(complications_margin_leftright, compl_y2), GTextAlignmentLeft, config_color_bottom_complications, config_color_background);
+    complications[config_complication_4](fctx, true, FPoint(complications_margin_leftright, progress_no ? compl_y : compl_y2), GTextAlignmentLeft, config_color_bottom_complications, config_color_background);
     compl_w = complications[config_complication_5](fctx, false, FPoint(0,0), GTextAlignmentLeft, config_color_bottom_complications, config_color_background);
     avoid_progress = width/2 - compl_w/2 < progress_endx + REM(5);
     complications[config_complication_5](fctx, true, FPoint(width/2, avoid_progress ? compl_y2 : compl_y), GTextAlignmentCenter, config_color_bottom_complications, config_color_background);
@@ -636,6 +639,7 @@ function background_update_proc(layer, ctx) {
             CONFIG_COMPLICATION_4: +5,
             CONFIG_COMPLICATION_5: +4,
             CONFIG_COMPLICATION_6: +6,
+            CONFIG_PROGRESS: +1,
 // -- end autogen
         };
         return cloneConfig(defaults);

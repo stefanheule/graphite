@@ -270,8 +270,16 @@ void background_update_proc(Layer *layer, GContext *ctx) {
     draw_string(fctx, buffer_1, FPoint(width / 2, height_full / 2 + fontsize_time / 3 - time_y_offset), font_main, config_color_info_below, fontsize_date, GTextAlignmentCenter);
 
     // progress bar
-    int progress_cur = health_service_sum_today(HealthMetricStepCount);
+    int progress_cur = 0;
     int progress_max = 10000;
+    bool progress_no = config_progress == 0;
+    if (config_progress == 1) {
+        progress_cur = health_service_sum_today(HealthMetricStepCount);
+        progress_max = 10000;
+    } else if (config_progress == 2) {
+        progress_cur = battery_state.charge_percent;
+        progress_max = 100;
+    }
     fixed_t progress_height = REM(5);
     fixed_t progress_endx = width * progress_cur / progress_max;
     draw_rect(fctx, FRect(FPoint(0, height_full - progress_height), FSize(progress_endx, progress_height)), config_color_progress_bar);
@@ -295,7 +303,7 @@ void background_update_proc(Layer *layer, GContext *ctx) {
     fixed_t compl_w;
     bool avoid_progress;
     // complication 4 (always higher)
-    complications[config_complication_4](fctx, true, FPoint(complications_margin_leftright, compl_y2), GTextAlignmentLeft, config_color_bottom_complications, config_color_background);
+    complications[config_complication_4](fctx, true, FPoint(complications_margin_leftright, progress_no ? compl_y : compl_y2), GTextAlignmentLeft, config_color_bottom_complications, config_color_background);
     // complication 5 (sometimes higher)
     compl_w = complications[config_complication_5](fctx, false, FPoint(0,0), GTextAlignmentLeft, config_color_bottom_complications, config_color_background);
     avoid_progress = width/2 - compl_w/2 < progress_endx + REM(5);

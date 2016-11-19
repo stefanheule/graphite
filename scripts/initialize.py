@@ -150,6 +150,10 @@ configuration = [
     'key': 'CONFIG_COMPLICATION_6',
     'default': 'COMPLICATION_BATTERY_ICON',
   },
+  {
+    'key': 'CONFIG_PROGRESS',
+    'default': '1',
+  },
 ]
 
 simple_config = [
