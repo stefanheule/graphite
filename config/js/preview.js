@@ -486,9 +486,16 @@ function background_update_proc(layer, ctx) {
     remove_leading_zero(buffer_1, sizeof(buffer_1));
     var fontsize_date = (width / 8);
     draw_string(fctx, buffer_1, FPoint(width / 2, height_full / 2 + fontsize_time / 3 - time_y_offset), font_main, config_color_info_below, fontsize_date, GTextAlignmentCenter);
-    var progress_cur = health_service_sum_today(HealthMetricStepCount);
+    var progress_cur = 0;
     var progress_max = 10000;
-    var progress_no = false;
+    var progress_no = config_progress == 0;
+    if (config_progress == 1) {
+        progress_cur = health_service_sum_today(HealthMetricStepCount);
+        progress_max = 10000;
+    } else if (config_progress == 2) {
+        progress_cur = battery_state.charge_percent;
+        progress_max = 100;
+    }
     var progress_height = REM(5);
     var progress_endx = width * progress_cur / progress_max;
     draw_rect(fctx, FRect(FPoint(0, height_full - progress_height), FSize(progress_endx, progress_height)), config_color_progress_bar);
