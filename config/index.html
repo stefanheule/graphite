@@ -1136,6 +1136,16 @@
 
     initShowHideStatus(initialConfig);
 
+    // remove settings that don't apply to certain platforms
+// -- autogen
+// -- ## for key in complications
+// -- ##   for platform in key['noton']
+// --       if (getPlatform() == "{{ platform }}") $("#complication-preview-{{ key["id"] }}").hide();
+// -- ##   endfor
+// -- ## endfor
+      if (getPlatform() == "basalt") $("#complication-preview-5").hide();
+// -- end autogen
+
     // update version information
     document.getElementById("version-info").innerHTML = getVersion();
     document.getElementById("platform-info").innerHTML = getPlatform();

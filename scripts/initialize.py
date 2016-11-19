@@ -189,6 +189,7 @@ complications = [
   {
     'key': 'COMPLICATION_HEARTRATE_CUR',
     'desc': 'Heart rate',
+    'noton': ['basalt'],
   },
   {
     'key': 'COMPLICATION_BATTERY_ICON',
