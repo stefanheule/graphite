@@ -138,9 +138,26 @@
       <div class='item-container-header'>Complications</div>
       <div class='item-container-content'>
         <label class='item'>
-          Top right
-          <canvas class="complication" id="complication1"></canvas>
+          Top
+          <span style="float:right;">
+            <canvas class="complication" id="complication1"></canvas>
+            <canvas class="complication" id="complication2"></canvas>
+            <canvas class="complication" id="complication3"></canvas>
+          </span>
         </label>
+      </div>
+      <div class='item-container-content'>
+        <label class='item'>
+          Bottom
+          <span style="float:right;">
+            <canvas class="complication" id="complication4"></canvas>
+            <canvas class="complication" id="complication5"></canvas>
+            <canvas class="complication" id="complication6"></canvas>
+          </span>
+        </label>
+        <div class="item-container-footer">
+          You can also directly click on the complication slots in the live preview to change them.
+        </div>
       </div>
     </div>
 
@@ -996,6 +1013,7 @@
       }
       openComplicationChooser(complication);
     }
+    ev.stopPropagation();
   }
 
   var _current_complication_slot_nr;
@@ -1008,6 +1026,7 @@
 
   function closeComplicationChooser() {
     var chooser = $("#complications-preview");
+    if (chooser.css("display") == "none") return;
     chooser.css("display", "none");
     document.body.classList.toggle('noscroll', false);
   }
@@ -1023,8 +1042,15 @@
   }
 
   function initComplicationChooser() {
-    $("#complication1").on("click", function() { openComplicationChooser(1); });
+    for (var i = 1; i < 7; i++) {
+      $("#complication" + i).on("click", (function(x) { return function(ev) { openComplicationChooser(x); ev.stopPropagation } })(i));
+    }
     $("#complication_cancel_button").on("click", closeComplicationChooser);
+    $(document).click(function(ev) {
+      if (!$(ev.target).closest("#complications-preview").length) {
+        closeComplicationChooser();
+      }
+    });
 // -- autogen
 // -- ## for key in complications
 // --       $("#complication-preview-{{ key["id"] }}").on("click", function(){ pickComplication({{ key["id"] }}); });
@@ -1149,7 +1175,9 @@
       RedshiftPreview.previewComplication(6, config, 'complication-preview-6-canvas', getPlatform());
 // -- end autogen
 
-      RedshiftPreview.previewComplication(1, config, 'complication1', getPlatform());
+      for (var i = 1; i < 7; i++) {
+        RedshiftPreview.previewComplication(config["CONFIG_COMPLICATION_" + i], config, 'complication' + i, getPlatform());
+      }
     }
   </script>
   </div>
