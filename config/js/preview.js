@@ -422,11 +422,6 @@ function background_update_proc(layer, ctx) {
     var fontsize_weather = fontsize_complications;
     var topbar_height = FIXED_ROUND(fontsize_weather + REM(4));
     draw_rect(fctx, FRect(bounds.origin, FSize(width, topbar_height)), config_color_topbar_bg);
-    var complications_margin_topbottom = REM(6); // gap between watch bounds and complications
-    var complications_margin_leftright = REM(8);
-    complications[config_complication_1](fctx, true, FPoint(complications_margin_leftright, complications_margin_topbottom), GTextAlignmentLeft, config_color_top_complications, config_color_topbar_bg);
-    complications[config_complication_2](fctx, true, FPoint(width/2, complications_margin_topbottom), GTextAlignmentCenter, config_color_top_complications, config_color_topbar_bg);
-    complications[config_complication_3](fctx, true, FPoint(width - complications_margin_leftright, complications_margin_topbottom), GTextAlignmentRight, config_color_top_complications, config_color_topbar_bg);
     if (show_weather()) {
         var first_perc_index = -1;
         var sec_in_hour = 60*60;
@@ -485,18 +480,33 @@ function background_update_proc(layer, ctx) {
     remove_leading_zero(buffer_1, sizeof(buffer_1));
     var fontsize_date = (width / 8);
     draw_string(fctx, buffer_1, FPoint(width / 2, height_full / 2 + fontsize_time / 3 - time_y_offset), font_main, config_color_info_below, fontsize_date, GTextAlignmentCenter);
-    var steps = health_service_sum_today(HealthMetricStepCount);
-    var steps_goal = 10000;
-    var pos_stepbar_height = REM(5);
-    var pos_stepbar_endx = width * steps / steps_goal;
-    draw_rect(fctx, FRect(FPoint(0, height_full - pos_stepbar_height), FSize(pos_stepbar_endx, pos_stepbar_height)), config_color_progress_bar);
-    draw_circle(fctx, FPoint(pos_stepbar_endx, height_full), pos_stepbar_height, config_color_progress_bar);
-    if (steps > steps_goal) {
-        pos_stepbar_endx = width * (steps - steps_goal) / steps_goal;
-        draw_rect(fctx, FRect(FPoint(0, height_full - pos_stepbar_height), FSize(pos_stepbar_endx, pos_stepbar_height)), config_color_progress_bar2);
-        draw_circle(fctx, FPoint(pos_stepbar_endx, height_full), pos_stepbar_height, config_color_progress_bar2);
+    var progress_cur = health_service_sum_today(HealthMetricStepCount);
+    var progress_max = 10000;
+    var progress_height = REM(5);
+    var progress_endx = width * progress_cur / progress_max;
+    draw_rect(fctx, FRect(FPoint(0, height_full - progress_height), FSize(progress_endx, progress_height)), config_color_progress_bar);
+    draw_circle(fctx, FPoint(progress_endx, height_full), progress_height, config_color_progress_bar);
+    if (progress_cur > progress_max) {
+        var progress_endx2 = width * (progress_cur - progress_max) / progress_max;
+        draw_rect(fctx, FRect(FPoint(0, height_full - progress_height), FSize(progress_endx2, progress_height)), config_color_progress_bar2);
+        draw_circle(fctx, FPoint(progress_endx2, height_full), progress_height, config_color_progress_bar2);
     }
-    complication_bluetooth_disconly(fctx, true, FPoint(width/2, height_full - REM(13)), GTextAlignmentCenter, config_color_bottom_complications, config_color_background);
+    var complications_margin_topbottom = REM(6); // gap between watch bounds and complications
+    var complications_margin_leftright = REM(8);
+    complications[config_complication_1](fctx, true, FPoint(complications_margin_leftright, complications_margin_topbottom), GTextAlignmentLeft, config_color_top_complications, config_color_topbar_bg);
+    complications[config_complication_2](fctx, true, FPoint(width/2, complications_margin_topbottom), GTextAlignmentCenter, config_color_top_complications, config_color_topbar_bg);
+    complications[config_complication_3](fctx, true, FPoint(width - complications_margin_leftright, complications_margin_topbottom), GTextAlignmentRight, config_color_top_complications, config_color_topbar_bg);
+    var compl_y = height_full - fontsize_complications;
+    var compl_y2 = compl_y - progress_height;
+    var compl_w;
+    var avoid_progress;
+    complications[config_complication_4](fctx, true, FPoint(complications_margin_leftright, compl_y2), GTextAlignmentLeft, config_color_bottom_complications, config_color_background);
+    compl_w = complications[config_complication_5](fctx, false, FPoint(0,0), GTextAlignmentLeft, config_color_bottom_complications, config_color_background);
+    avoid_progress = width/2 - compl_w/2 < progress_endx + REM(5);
+    complications[config_complication_5](fctx, true, FPoint(width/2, avoid_progress ? compl_y2 : compl_y), GTextAlignmentCenter, config_color_bottom_complications, config_color_background);
+    compl_w = complications[config_complication_6](fctx, false, FPoint(0,0), GTextAlignmentLeft, config_color_bottom_complications, config_color_background);
+    avoid_progress = width - complications_margin_leftright - compl_w < progress_endx + REM(5);
+    complications[config_complication_6](fctx, true, FPoint(width - complications_margin_leftright, avoid_progress ? compl_y2 : compl_y), GTextAlignmentRight, config_color_bottom_complications, config_color_background);
     var bluetooth = bluetooth_connection_service_peek();
     bluetooth_popup(fctx, ctx, bluetooth);
     fctx_deinit_context(fctx);

@@ -130,6 +130,9 @@
     <input type="text" class="hidden item-input" id='CONFIG_COMPLICATION_1'>
     <input type="text" class="hidden item-input" id='CONFIG_COMPLICATION_2'>
     <input type="text" class="hidden item-input" id='CONFIG_COMPLICATION_3'>
+    <input type="text" class="hidden item-input" id='CONFIG_COMPLICATION_4'>
+    <input type="text" class="hidden item-input" id='CONFIG_COMPLICATION_5'>
+    <input type="text" class="hidden item-input" id='CONFIG_COMPLICATION_6'>
 
     <div class='item-container'>
       <div class='item-container-header'>Complications</div>
@@ -574,6 +577,8 @@
       did_read_defaults["defaults"] = false;
     }
 
+    console.log(options);
+
     return options;
   }
 
@@ -974,6 +979,25 @@
     updateCanvas();
   }
 
+  function preview_click_handler(ev) {
+    var bounds = document.getElementById("preview").getBoundingClientRect();
+    var x = ev.clientX - bounds.left;
+    var y = ev.clientY - bounds.top;
+    var w = bounds.width;
+    var h = bounds.height;
+    var top = h / 6;
+    var complication;
+    if (y < top || y > h - top) {
+      complication = 3;
+      if (x < w/3) complication = 1;
+      else if (x < 2*w/3) complication = 2;
+      if (y > h - top) {
+        complication += 3;
+      }
+      openComplicationChooser(complication);
+    }
+  }
+
   var _current_complication_slot_nr;
   function pickComplication(pickedComplicationNr) {
     closeComplicationChooser();
@@ -1096,6 +1120,7 @@
     // resize preview to not take up too much space
     var oldHeight = $("#preview").height();
     $("#preview").css("height", Math.round(Math.min(oldHeight, window.innerHeight*0.4)) + "px");
+    $("#preview").on("click", preview_click_handler)
 
     // position body
     var preview = $("#preview-container");

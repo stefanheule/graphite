@@ -297,11 +297,11 @@ void background_update_proc(Layer *layer, GContext *ctx) {
     // complication 4 (always higher)
     complications[config_complication_4](fctx, true, FPoint(complications_margin_leftright, compl_y2), GTextAlignmentLeft, config_color_bottom_complications, config_color_background);
     // complication 5 (sometimes higher)
-    compl_w = complications[config_complication_5](fctx, false, FPointZero, GTextAlignmentLeft, config_color_bottom_complications, config_color_background);
+    compl_w = complications[config_complication_5](fctx, false, FPoint(0,0), GTextAlignmentLeft, config_color_bottom_complications, config_color_background);
     avoid_progress = width/2 - compl_w/2 < progress_endx + REM(5);
     complications[config_complication_5](fctx, true, FPoint(width/2, avoid_progress ? compl_y2 : compl_y), GTextAlignmentCenter, config_color_bottom_complications, config_color_background);
     // complication 6 (sometimes higher)
-    compl_w = complications[config_complication_6](fctx, false, FPointZero, GTextAlignmentLeft, config_color_bottom_complications, config_color_background);
+    compl_w = complications[config_complication_6](fctx, false, FPoint(0,0), GTextAlignmentLeft, config_color_bottom_complications, config_color_background);
     avoid_progress = width - complications_margin_leftright - compl_w < progress_endx + REM(5);
     complications[config_complication_6](fctx, true, FPoint(width - complications_margin_leftright, avoid_progress ? compl_y2 : compl_y), GTextAlignmentRight, config_color_bottom_complications, config_color_background);
 
