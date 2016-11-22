@@ -25,23 +25,6 @@ var RedshiftPreview = (function () {
     var height, width, height_full, width_full;
     var rem_is_pix = false;
 
-    function getWeather() {
-        var d = [0.5, 0.4, 0.3, 0, 0, 0, 0, 0, 0.1, 0.12, 0.1, 0.2,0.4,0.45,0.6,1,1,0.2,0,0,0,0,0,0,0,0].map(function(x){return x*100});
-        if (!config_weather_rain_local) d = [];
-        return {
-            version: 0,
-            timestamp: time(NULL),
-            icon: "a".charCodeAt(0),
-            temp_cur: 14,
-            temp_low: 5,
-            temp_high: 28,
-            perc_data: d,
-            perc_data_len: d.length,
-            perc_data_ts: tnow - (tnow % (60*60)),
-            failed: false
-        };
-    }
-
 // -- autogen
 // -- ## for key in configuration
 // --      var {{ key["key"] | lower }};
@@ -78,6 +61,26 @@ var RedshiftPreview = (function () {
      var config_complication_6;
      var config_progress;
 // -- end autogen
+
+    function getWeather() {
+        var d = [0.5, 0.4, 0.3, 0, 0, 0, 0, 0, 0.1, 0.12, 0.1, 0.2,0.4,0.45,0.6,1,1,0.2,0,0,0,0,0,0,0,0].map(function(x){return x*100});
+        var temp = function (t) {
+            return config_weather_unit_local == 1 ? t : 9/5 * t + 32;
+        }
+        if (!config_weather_rain_local) d = [];
+        return {
+            version: 0,
+            timestamp: time(NULL),
+            icon: "a".charCodeAt(0),
+            temp_cur: temp(14),
+            temp_low: temp(5),
+            temp_high: temp(28),
+            perc_data: d,
+            perc_data_len: d.length,
+            perc_data_ts: tnow - (tnow % (60*60)),
+            failed: false
+        };
+    }
 
     // core functions and constants
     var PBL_IF_ROUND_ELSE;
@@ -286,7 +289,25 @@ function complication_heartrate_cur(fctx, draw, position, align, foreground_colo
   return 0;
 }
 function complication_battery_icon(fctx, draw, position, align, foreground_color, background_color) {
-  return 0;
+  var bat_thickness = PIX(1);
+  var bat_gap_thickness = PIX(1);
+  var bat_height = PIX(15);
+  var bat_width = PIX(9);
+  var bat_top = PIX(2);
+  var bat_inner_height = bat_height - 2 * bat_thickness - 2 * bat_gap_thickness;
+  var bat_inner_width = bat_width - 2 * bat_thickness - 2 * bat_gap_thickness;
+  if (!draw) return bat_width;
+  var offset = 0;
+  if (align == GTextAlignmentCenter) offset = bat_width / 2;
+  if (align == GTextAlignmentRight) offset = bat_width;
+  var battery_state = battery_state_service_peek();
+  var bat_origin = FPoint(FIXED_ROUND(position.x - offset), FIXED_ROUND(position.y + (REM(21)-bat_height)/2));
+  draw_rect(fctx, FRect(bat_origin, FSize(bat_width, bat_height)), foreground_color);
+  draw_rect(fctx, FRect(FPoint(bat_origin.x + bat_thickness, bat_origin.y + bat_thickness), FSize(bat_width - 2*bat_thickness, bat_height - 2*bat_thickness)), background_color);
+  draw_rect(fctx, FRect(FPoint(bat_origin.x + bat_thickness + bat_gap_thickness, bat_origin.y + bat_thickness + bat_gap_thickness + (100 - battery_state.charge_percent) * bat_inner_height / 100), FSize(
+          bat_inner_width, battery_state.charge_percent * bat_inner_height / 100)), foreground_color);
+  draw_rect(fctx, FRect(FPoint(bat_origin.x + bat_thickness + bat_gap_thickness, bat_origin.y - bat_top), FSize(bat_inner_width, bat_top)), foreground_color);
+  return bat_width;
 }
 function complication_bluetooth_disconly(fctx, draw, position, align, foreground_color, background_color) {
   if (!bluetooth_connection_service_peek()) {

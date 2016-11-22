@@ -64,27 +64,33 @@ fixed_t complication_heartrate_cur(FContext* fctx, bool draw, FPoint position, G
 }
 
 fixed_t complication_battery_icon(FContext* fctx, bool draw, FPoint position, GTextAlignment align, uint8_t foreground_color, uint8_t background_color) {
+
   // battery logo (not scaled, to allow pixel-aligned rects)
-  // fixed_t bat_thickness = PIX(1);
-  // fixed_t bat_gap_thickness = PIX(1);
-  // fixed_t bat_height = PIX(15);
-  // fixed_t bat_width = PIX(9);
-  // fixed_t bat_sep = PIX(3);
-  // fixed_t bat_top = PIX(2);
-  // fixed_t bat_inner_height = bat_height - 2 * bat_thickness - 2 * bat_gap_thickness;
-  // fixed_t bat_inner_width = bat_width - 2 * bat_thickness - 2 * bat_gap_thickness;
-  // bool bat_avoid_stepbar = width - (width * steps / steps_goal + pos_stepbar_height) < 2*bat_sep + bat_width;
-  // FPoint bat_origin = FPoint(width - bat_sep - bat_width, height_full - bat_sep - bat_height - (bat_avoid_stepbar ? pos_stepbar_height : 0));
-  // // outer rect
-  // draw_rect(fctx, FRect(bat_origin, FSize(bat_width, bat_height)), config_color_bottom_complications);
-  // // inner background rect
-  // draw_rect(fctx, FRect(FPoint(bat_origin.x + bat_thickness, bat_origin.y + bat_thickness), FSize(bat_width - 2*bat_thickness, bat_height - 2*bat_thickness)), config_color_background);
-  // // inner charge rect
-  // draw_rect(fctx, FRect(FPoint(bat_origin.x + bat_thickness + bat_gap_thickness, bat_origin.y + bat_thickness + bat_gap_thickness + (100 - battery_state.charge_percent) * bat_inner_height / 100), FSize(
-  //         bat_inner_width, battery_state.charge_percent * bat_inner_height / 100)), config_color_bottom_complications);
-  // // top of battery
-  // draw_rect(fctx, FRect(FPoint(bat_origin.x + bat_thickness + bat_gap_thickness, bat_origin.y - bat_top), FSize(bat_inner_width, bat_top)), config_color_bottom_complications);
-  return 0;
+  fixed_t bat_thickness = PIX(1);
+  fixed_t bat_gap_thickness = PIX(1);
+  fixed_t bat_height = PIX(15);
+  fixed_t bat_width = PIX(9);
+  fixed_t bat_top = PIX(2);
+  fixed_t bat_inner_height = bat_height - 2 * bat_thickness - 2 * bat_gap_thickness;
+  fixed_t bat_inner_width = bat_width - 2 * bat_thickness - 2 * bat_gap_thickness;
+
+  if (!draw) return bat_width;
+
+  fixed_t offset = 0;
+  if (align == GTextAlignmentCenter) offset = bat_width / 2;
+  if (align == GTextAlignmentRight) offset = bat_width;
+  BatteryChargeState battery_state = battery_state_service_peek();
+  FPoint bat_origin = FPoint(FIXED_ROUND(position.x - offset), FIXED_ROUND(position.y + (REM(21)-bat_height)/2));
+  // outer rect
+  draw_rect(fctx, FRect(bat_origin, FSize(bat_width, bat_height)), foreground_color);
+  // inner background rect
+  draw_rect(fctx, FRect(FPoint(bat_origin.x + bat_thickness, bat_origin.y + bat_thickness), FSize(bat_width - 2*bat_thickness, bat_height - 2*bat_thickness)), background_color);
+  // inner charge rect
+  draw_rect(fctx, FRect(FPoint(bat_origin.x + bat_thickness + bat_gap_thickness, bat_origin.y + bat_thickness + bat_gap_thickness + (100 - battery_state.charge_percent) * bat_inner_height / 100), FSize(
+          bat_inner_width, battery_state.charge_percent * bat_inner_height / 100)), foreground_color);
+  // top of battery
+  draw_rect(fctx, FRect(FPoint(bat_origin.x + bat_thickness + bat_gap_thickness, bat_origin.y - bat_top), FSize(bat_inner_width, bat_top)), foreground_color);
+  return bat_width;
 }
 
 fixed_t complication_bluetooth_disconly(FContext* fctx, bool draw, FPoint position, GTextAlignment align, uint8_t foreground_color, uint8_t background_color) {
