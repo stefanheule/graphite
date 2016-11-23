@@ -282,12 +282,14 @@ void background_update_proc(Layer *layer, GContext *ctx) {
     }
     fixed_t progress_height = REM(5);
     fixed_t progress_endx = width * progress_cur / progress_max;
-    draw_rect(fctx, FRect(FPoint(0, height_full - progress_height), FSize(progress_endx, progress_height)), config_color_progress_bar);
-    draw_circle(fctx, FPoint(progress_endx, height_full), progress_height, config_color_progress_bar);
-    if (progress_cur > progress_max) {
-        fixed_t progress_endx2 = width * (progress_cur - progress_max) / progress_max;
-        draw_rect(fctx, FRect(FPoint(0, height_full - progress_height), FSize(progress_endx2, progress_height)), config_color_progress_bar2);
-        draw_circle(fctx, FPoint(progress_endx2, height_full), progress_height, config_color_progress_bar2);
+    if (!progress_no) {
+        draw_rect(fctx, FRect(FPoint(0, height_full - progress_height), FSize(progress_endx, progress_height)), config_color_progress_bar);
+        draw_circle(fctx, FPoint(progress_endx, height_full), progress_height, config_color_progress_bar);
+        if (progress_cur > progress_max) {
+            fixed_t progress_endx2 = width * (progress_cur - progress_max) / progress_max;
+            draw_rect(fctx, FRect(FPoint(0, height_full - progress_height), FSize(progress_endx2, progress_height)), config_color_progress_bar2);
+            draw_circle(fctx, FPoint(progress_endx2, height_full), progress_height, config_color_progress_bar2);
+        }
     }
 
     // top complications

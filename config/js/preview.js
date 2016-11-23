@@ -519,12 +519,14 @@ function background_update_proc(layer, ctx) {
     }
     var progress_height = REM(5);
     var progress_endx = width * progress_cur / progress_max;
-    draw_rect(fctx, FRect(FPoint(0, height_full - progress_height), FSize(progress_endx, progress_height)), config_color_progress_bar);
-    draw_circle(fctx, FPoint(progress_endx, height_full), progress_height, config_color_progress_bar);
-    if (progress_cur > progress_max) {
-        var progress_endx2 = width * (progress_cur - progress_max) / progress_max;
-        draw_rect(fctx, FRect(FPoint(0, height_full - progress_height), FSize(progress_endx2, progress_height)), config_color_progress_bar2);
-        draw_circle(fctx, FPoint(progress_endx2, height_full), progress_height, config_color_progress_bar2);
+    if (!progress_no) {
+        draw_rect(fctx, FRect(FPoint(0, height_full - progress_height), FSize(progress_endx, progress_height)), config_color_progress_bar);
+        draw_circle(fctx, FPoint(progress_endx, height_full), progress_height, config_color_progress_bar);
+        if (progress_cur > progress_max) {
+            var progress_endx2 = width * (progress_cur - progress_max) / progress_max;
+            draw_rect(fctx, FRect(FPoint(0, height_full - progress_height), FSize(progress_endx2, progress_height)), config_color_progress_bar2);
+            draw_circle(fctx, FPoint(progress_endx2, height_full), progress_height, config_color_progress_bar2);
+        }
     }
     var complications_margin_topbottom = REM(6); // gap between watch bounds and complications
     var complications_margin_leftright = REM(8);
