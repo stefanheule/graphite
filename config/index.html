@@ -340,7 +340,7 @@
 
     </div>
 
-    <div class='item-container'>
+    <div class='item-container' id="GROUP_WEATHER">
       <div class='item-container-header'>Weather</div>
 
       <div class="item-container-content">
@@ -541,6 +541,9 @@
     }
     return val;
   }
+  function readConfig(key) {
+    return readOneConfig($("#" + key))
+  }
 
   function readConfigFromDom() {
     var options = {};
@@ -555,6 +558,14 @@
 //    console.log('[ info ] configuration read from DOM:');
 //    console.log(options);
     return options;
+  }
+
+  function has_complication(ids) {
+    for (var i = 1; i < 7; i++) {
+      var id = +readConfig("CONFIG_COMPLICATION_" + i);
+      if (ids.indexOf(id) !== -1) return true;
+    }
+    return false;
   }
 
   function getQueryParam(variable, defaultValue) {
@@ -701,7 +712,9 @@
       var val = config[this.id];
       applyValue(el, val);
     });
+
     updateUI();
+    updateCanvas();
   }
 
   function submit(config) {
@@ -844,15 +857,24 @@
     }
     el.style.display = "block";
   }
+  function showHideOption(key, show) {
+    if (show) showOption(key);
+    else hideOption(key);
+  }
+  function showHideEl(el, show) {
+    if (show) $(el).show();
+    else $(el).hide();
+  }
 
   /** Initialize whether certain config options need to be shown or not. */
   function initShowHideStatus(config) {
     for (var k in config) {
-      updateShowHideStatus(k, config[k]);
+      updateShowHideStatusIndividual(k, config[k]);
     }
+    updateShowHideStatus();
   }
   /** Some options only make sense when other options are enabled/disabled. */
-  function updateShowHideStatus(id, value) {
+  function updateShowHideStatusIndividual(id, value) {
     if (id == "CONFIG_ADVANCED_APPEARANCE_LOCAL") {
       if (!value) {
         document.getElementById("appearance-simple").style.display = "block";
@@ -862,6 +884,27 @@
         document.getElementById("appearance-full").style.display = "block";
       }
     }
+  }
+  /** Some rules are run every time */
+  function updateShowHideStatus() {
+// -- autogen
+// -- ## for key in configuration
+// --   ## if key["show_only_if"]
+// --     showHideOption("{{ key["key"] }}", {{ key["show_only_if"] }});
+// --   ## endif
+// -- ## endfor
+    showHideOption("CONFIG_COLOR_DAY", readConfig("CONFIG_WEATHER_RAIN_LOCAL") == 1);
+    showHideOption("CONFIG_COLOR_NIGHT", readConfig("CONFIG_WEATHER_RAIN_LOCAL") == 1);
+// -- end autogen
+
+// -- autogen
+// -- ## for key in config_groups
+// --   ## if key["show_only_if"]
+// --     showHideEl("#{{ key["key"] }}", {{ key["show_only_if"] }});
+// --   ## endif
+// -- ## endfor
+    showHideEl("#GROUP_WEATHER", has_complication([1, 2, 3]));
+// -- end autogen
   }
 
   function allSame(array) {
@@ -877,7 +920,7 @@
     var value = readOneConfig($(event.target));
 
     // update regular config items accordingly
-    // -- autogen
+// -- autogen
 // -- ## for key in simple_config
 // --     if (id == "{{ key["key"] }}") {
 // -- ## for dep in key["depends"]
@@ -1021,7 +1064,8 @@
     });
 
     // do we need to hide/show certain elements?
-    updateShowHideStatus(id, value);
+    updateShowHideStatusIndividual(id, value);
+    updateShowHideStatus();
 
     updateCanvas();
   }
@@ -1052,6 +1096,8 @@
     var forSlotNr = _current_complication_slot_nr;
     applyValue($("#CONFIG_COMPLICATION_" + forSlotNr), "" + pickedComplicationNr);
     updateCanvas();
+    updateUI();
+    updateShowHideStatus();
   }
 
   function closeComplicationChooser() {

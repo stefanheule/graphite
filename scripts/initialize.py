@@ -116,11 +116,13 @@ configuration = [
     'key': 'CONFIG_COLOR_DAY',
     'default': 'GColorLightGrayARGB8',
     'desc': 'Precipitation day time indicator color',
+    'show_only_if': 'readConfig("CONFIG_WEATHER_RAIN_LOCAL") == 1',
   },
   {
     'key': 'CONFIG_COLOR_NIGHT',
     'default': 'GColorBlackARGB8',
     'desc': 'Precipitation night time indicator color',
+    'show_only_if': 'readConfig("CONFIG_WEATHER_RAIN_LOCAL") == 1',
   },
   {
     'key': 'CONFIG_ADVANCED_APPEARANCE_LOCAL',
@@ -182,14 +184,17 @@ complications = [
   {
     'key': 'COMPLICATION_WEATHER_CUR_TEMP_ICON',
     'desc': 'Weather: Current temperature and icon',
+    'group': 'WEATHER',
   },
   {
     'key': 'COMPLICATION_WEATHER_LOW_TEMP',
     'desc': 'Weather: Today\'s low',
+    'group': 'WEATHER',
   },
   {
     'key': 'COMPLICATION_WEATHER_HIGH_TEMP',
     'desc': 'Weather: Today\'s high',
+    'group': 'WEATHER',
   },
   {
     'key': 'COMPLICATION_BLUETOOTH_DISCONLY',
@@ -203,6 +208,13 @@ complications = [
   {
     'key': 'COMPLICATION_BATTERY_ICON',
     'desc': 'Battery icon',
+  },
+]
+
+config_groups = [
+  {
+    'name': 'WEATHER',
+    'show_only_if': 'has_complication(ALL_WEATHER_COMPLICATION_IDS)',
   },
 ]
 
@@ -252,7 +264,7 @@ def get_context():
     config = add_key_id(configuration, '', 1)
     sc = add_additional_info(simple_config)
     compls = add_key_id(complications, '', 0)
-    pre_process(config, simple_config, compls)
+    pre_process(config, simple_config, compls, config_groups)
     _context =  {
       'version': version,
       'config_version': config_version,
@@ -261,6 +273,7 @@ def get_context():
       'configuration_lookup': to_lookup(config),
       'simple_config': sc,
       'simple_config_lookup': to_lookup(sc),
+      'config_groups': config_groups,
       'complications': compls,
       'num_config_items': len(config),
       'message_keys': add_key_id(msg_keys, 'MSG_KEY_', 100),
@@ -268,7 +281,7 @@ def get_context():
     }
   return _context
 
-def pre_process(config, simple_config, compls):
+def pre_process(config, simple_config, compls, groups):
   lc = to_lookup(config)
   # decide which colors are part of a simple color, and which are not
   for k in simple_config:
@@ -277,12 +290,26 @@ def pre_process(config, simple_config, compls):
 
   # resolve complication defaults
   clc = to_lookup(compls)
+  group_ids = {}
   for k in config:
     if "COMPLICATION_" in k['default']:
       i = clc[k['default']]['id']
       k['default'] = i
       k['jsdefault'] = "+%d" % (i)
 
+  # prepare complication groups
+  for k in compls:
+    if 'group' in k:
+      if k['group'] not in group_ids:
+        group_ids[k['group']] = []
+      group_ids[k['group']].append(k['id'])
+  for k in groups:
+    name = k['name']
+    k['key'] = "GROUP_%s" % (name)
+    ids = map(lambda x: str(x), group_ids[name])
+    resolved = "[%s]" % (", ".join(ids))
+    for kk in k:
+      k[kk] = k[kk].replace("ALL_%s_COMPLICATION_IDS" % (name), resolved)
 
 def to_lookup(ls):
   res = {}
