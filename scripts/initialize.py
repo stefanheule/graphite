@@ -81,11 +81,13 @@ configuration = [
     'key': 'CONFIG_COLOR_PROGRESS_BAR',
     'default': 'GColorVividCeruleanARGB8',
     'desc': 'Progress bar color',
+    'show_only_if': '+readConfig("CONFIG_PROGRESS") != 0',
   },
   {
     'key': 'CONFIG_COLOR_PROGRESS_BAR2',
     'default': 'GColorWhiteARGB8',
     'desc': 'Second progress bar color',
+    'show_only_if': '+readConfig("CONFIG_PROGRESS") != 0',
   },
   {
     'key': 'CONFIG_COLOR_TIME',

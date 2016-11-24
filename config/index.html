@@ -877,11 +877,11 @@
   function updateShowHideStatusIndividual(id, value) {
     if (id == "CONFIG_ADVANCED_APPEARANCE_LOCAL") {
       if (!value) {
-        document.getElementById("appearance-simple").style.display = "block";
-        document.getElementById("appearance-full").style.display = "none";
+        $("#appearance-simple").show();
+        $("#appearance-full").hide();
       } else {
-        document.getElementById("appearance-simple").style.display = "none";
-        document.getElementById("appearance-full").style.display = "block";
+        $("#appearance-simple").hide();
+        $("#appearance-full").show();
       }
     }
   }
@@ -893,6 +893,8 @@
 // --     showHideOption("{{ key["key"] }}", {{ key["show_only_if"] }});
 // --   ## endif
 // -- ## endfor
+    showHideOption("CONFIG_COLOR_PROGRESS_BAR", +readConfig("CONFIG_PROGRESS") != 0);
+    showHideOption("CONFIG_COLOR_PROGRESS_BAR2", +readConfig("CONFIG_PROGRESS") != 0);
     showHideOption("CONFIG_COLOR_DAY", readConfig("CONFIG_WEATHER_RAIN_LOCAL") == 1);
     showHideOption("CONFIG_COLOR_NIGHT", readConfig("CONFIG_WEATHER_RAIN_LOCAL") == 1);
 // -- end autogen
