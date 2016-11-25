@@ -159,8 +159,8 @@ configuration = [
     'default': '1',
   },
   {
-    'key': 'CONFIG_INFO_ABOVE',
-    'default': '""',
+    'key': 'CONFIG_TIME_FORMAT',
+    'default': '"%I:0%M"',
     'type': 'string'
   },
   {

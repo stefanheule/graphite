@@ -60,7 +60,7 @@ var RedshiftPreview = (function () {
      var config_complication_5;
      var config_complication_6;
      var config_progress;
-     var config_info_above;
+     var config_time_format;
      var config_info_below;
 // -- end autogen
 
@@ -230,7 +230,7 @@ var RedshiftPreview = (function () {
         config_complication_5 = config["CONFIG_COMPLICATION_5"];
         config_complication_6 = config["CONFIG_COMPLICATION_6"];
         config_progress = config["CONFIG_PROGRESS"];
-        config_info_above = config["CONFIG_INFO_ABOVE"];
+        config_time_format = config["CONFIG_TIME_FORMAT"];
         config_info_below = config["CONFIG_INFO_BELOW"];
 // -- end autogen
 
@@ -501,7 +501,7 @@ function background_update_proc(layer, ctx) {
     }
     var time_y_offset = PBL_DISPLAY_WIDTH != 144 ? 0 : (height_full-height) / 8;
     setlocale(LC_ALL, "");
-    buffer_1 = strftime("%I:0%M", new Date());
+    buffer_1 = strftime(config_time_format, new Date());
     buffer_1 = 
     remove_leading_zero(buffer_1, sizeof(buffer_1));
     var fontsize_time = (width / 2.2);
@@ -674,7 +674,7 @@ function background_update_proc(layer, ctx) {
             CONFIG_COMPLICATION_5: +4,
             CONFIG_COMPLICATION_6: +6,
             CONFIG_PROGRESS: +1,
-            CONFIG_INFO_ABOVE: "",
+            CONFIG_TIME_FORMAT: "%I:0%M",
             CONFIG_INFO_BELOW: "%A, %m/%d",
 // -- end autogen
         };

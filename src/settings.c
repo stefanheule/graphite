@@ -124,7 +124,7 @@ void inbox_received_handler(DictionaryIterator *iter, void *context) {
     dirty |= sync_helper_uint8_t(CONFIG_COMPLICATION_5, iter, &config_complication_5);
     dirty |= sync_helper_uint8_t(CONFIG_COMPLICATION_6, iter, &config_complication_6);
     dirty |= sync_helper_uint8_t(CONFIG_PROGRESS, iter, &config_progress);
-    dirty |= sync_helper_string(CONFIG_INFO_ABOVE, iter, config_info_above);
+    dirty |= sync_helper_string(CONFIG_TIME_FORMAT, iter, config_time_format);
     dirty |= sync_helper_string(CONFIG_INFO_BELOW, iter, config_info_below);
 // -- end autogen
 
@@ -243,7 +243,7 @@ void read_config_all() {
     read_config_uint8_t(CONFIG_COMPLICATION_5, &config_complication_5);
     read_config_uint8_t(CONFIG_COMPLICATION_6, &config_complication_6);
     read_config_uint8_t(CONFIG_PROGRESS, &config_progress);
-    read_config_string(CONFIG_INFO_ABOVE, config_info_above);
+    read_config_string(CONFIG_TIME_FORMAT, config_time_format);
     read_config_string(CONFIG_INFO_BELOW, config_info_below);
 // -- end autogen
 

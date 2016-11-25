@@ -55,7 +55,7 @@ uint8_t config_complication_4 = 5;
 uint8_t config_complication_5 = 4;
 uint8_t config_complication_6 = 6;
 uint8_t config_progress = 1;
-char config_info_above[REDSHIFT_STRINGCONFIG_MAXLEN+1] = "";
+char config_time_format[REDSHIFT_STRINGCONFIG_MAXLEN+1] = "%I:0%M";
 char config_info_below[REDSHIFT_STRINGCONFIG_MAXLEN+1] = "%A, %m/%d";
 // -- end autogen
 

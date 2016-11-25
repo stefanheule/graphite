@@ -65,7 +65,7 @@
 #define CONFIG_COMPLICATION_5 29
 #define CONFIG_COMPLICATION_6 30
 #define CONFIG_PROGRESS 31
-#define CONFIG_INFO_ABOVE 32
+#define CONFIG_TIME_FORMAT 32
 #define CONFIG_INFO_BELOW 33
 // -- end autogen
 
@@ -135,7 +135,7 @@ extern uint8_t config_complication_4;
 extern uint8_t config_complication_5;
 extern uint8_t config_complication_6;
 extern uint8_t config_progress;
-extern char config_info_above[REDSHIFT_STRINGCONFIG_MAXLEN+1];
+extern char config_time_format[REDSHIFT_STRINGCONFIG_MAXLEN+1];
 extern char config_info_below[REDSHIFT_STRINGCONFIG_MAXLEN+1];
 // -- end autogen
 

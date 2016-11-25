@@ -100,7 +100,7 @@ Pebble.addEventListener('webviewclosed', function (e) {
         "CONFIG_COMPLICATION_5": 29,
         "CONFIG_COMPLICATION_6": 30,
         "CONFIG_PROGRESS": 31,
-        "CONFIG_INFO_ABOVE": 32,
+        "CONFIG_TIME_FORMAT": 32,
         "CONFIG_INFO_BELOW": 33,
 // -- end autogen
     };
