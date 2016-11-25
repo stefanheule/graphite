@@ -81,7 +81,7 @@ void bluetooth_popup(FContext* fctx, GContext *ctx, bool connected) {
 // -- jsalternative
 // -- function remove_leading_zero(buffer, length) {
 // --     if (buffer.substring(0, 1) == "0") buffer = buffer.substring(1);
-// --     return buffer.replace(new RegExp("([ ./])0", 'g'), "$1");
+// --     return buffer.replace(new RegExp("([^0-9])0", 'g'), "$1");
 // -- }
 void remove_leading_zero(char *buffer, size_t length) {
     bool last_was_space = true;
@@ -90,7 +90,7 @@ void remove_leading_zero(char *buffer, size_t length) {
         if (buffer[i] == '0' && last_was_space) {
             memcpy(&buffer[i], &buffer[i + 1], length - (i + 1));
         }
-        last_was_space = buffer[i] == ' ' || buffer[i] == '.' || buffer[i] == '/';
+        last_was_space = !(buffer[i] <= '9' && buffer[i] >= '0');
         i += 1;
     }
 }
@@ -252,7 +252,7 @@ void background_update_proc(Layer *layer, GContext *ctx) {
     // time
     fixed_t time_y_offset = PBL_DISPLAY_WIDTH != 144 ? 0 : (height_full-height) / 8;
     setlocale(LC_ALL, "");
-    strftime(buffer_1, sizeof(buffer_1), "%I:%M", t);
+    strftime(buffer_1, sizeof(buffer_1), "%I:0%M", t);
 // -- jsalternative
 // --     buffer_1 = 
 // -- end jsalternative
@@ -261,7 +261,7 @@ void background_update_proc(Layer *layer, GContext *ctx) {
     draw_string(fctx, buffer_1, FPoint(width / 2, height_full / 2 - fontsize_time / 2 - time_y_offset), font_main, config_color_time, fontsize_time, GTextAlignmentCenter);
 
     // date
-    strftime(buffer_1, sizeof(buffer_1), "%A, %m/%d", t);
+    strftime(buffer_1, sizeof(buffer_1), config_info_below, t);
 // -- jsalternative
 // --     buffer_1 = 
 // -- end jsalternative

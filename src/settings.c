@@ -56,9 +56,9 @@ static void update_weather_helper(void *unused) {
 }
 
 /**
- * Helper to process new configuration.
+ * Helpers to process new configuration.
  */
-bool sync_helper(const uint32_t key, DictionaryIterator *iter, uint8_t *value) {
+bool sync_helper_uint8_t(const uint32_t key, DictionaryIterator *iter, uint8_t *value) {
     Tuple *new_tuple = dict_find(iter, key);
     if (new_tuple == NULL) return false;
     if ((*value) != new_tuple->value->uint8) {
@@ -68,16 +68,23 @@ bool sync_helper(const uint32_t key, DictionaryIterator *iter, uint8_t *value) {
     }
     return false;
 }
-
-/**
- * Helper to process new configuration.
- */
-bool sync_helper_2(const uint32_t key, DictionaryIterator *iter, uint16_t *value) {
+bool sync_helper_uint16_t(const uint32_t key, DictionaryIterator *iter, uint16_t *value) {
     Tuple *new_tuple = dict_find(iter, key);
     if (new_tuple == NULL) return false;
     if ((*value) != new_tuple->value->uint16) {
         (*value) = new_tuple->value->uint16;
         persist_write_int(key, *value);
+        return true;
+    }
+    return false;
+}
+bool sync_helper_string(const uint32_t key, DictionaryIterator *iter, char *buffer) {
+    int maxlen = REDSHIFT_STRINGCONFIG_MAXLEN;
+    Tuple *new_tuple = dict_find(iter, key);
+    if (new_tuple == NULL) return false;
+    if (strncmp(buffer, new_tuple->value->cstring, maxlen)) {
+        strncpy(buffer, new_tuple->value->cstring, maxlen);
+        persist_write_string(key, buffer);
         return true;
     }
     return false;
@@ -89,34 +96,36 @@ void inbox_received_handler(DictionaryIterator *iter, void *context) {
 // -- autogen
 // -- ## for key in configuration
 // -- ##   if not key["local"]
-// --     dirty |= sync_helper{% if key["type"] == "uint16_t" %}_2{% endif %}({{ key["key"] }}, iter, &{{ key["key"] | lower }});
+// --     dirty |= sync_helper_{{ key["type"] }}({{ key["key"] }}, iter, {% if key["type"] != "string" %}&{% endif %}{{ key["key"] | lower }});
 // -- ##   endif
 // -- ## endfor
-    dirty |= sync_helper(CONFIG_VIBRATE_DISCONNECT, iter, &config_vibrate_disconnect);
-    dirty |= sync_helper(CONFIG_VIBRATE_RECONNECT, iter, &config_vibrate_reconnect);
-    dirty |= sync_helper(CONFIG_MESSAGE_DISCONNECT, iter, &config_message_disconnect);
-    dirty |= sync_helper(CONFIG_MESSAGE_RECONNECT, iter, &config_message_reconnect);
-    dirty |= sync_helper_2(CONFIG_WEATHER_REFRESH, iter, &config_weather_refresh);
-    dirty |= sync_helper_2(CONFIG_WEATHER_EXPIRATION, iter, &config_weather_expiration);
-    dirty |= sync_helper(CONFIG_COLOR_TOPBAR_BG, iter, &config_color_topbar_bg);
-    dirty |= sync_helper(CONFIG_COLOR_INFO_BELOW, iter, &config_color_info_below);
-    dirty |= sync_helper(CONFIG_COLOR_INFO_ABOVE, iter, &config_color_info_above);
-    dirty |= sync_helper(CONFIG_COLOR_PROGRESS_BAR, iter, &config_color_progress_bar);
-    dirty |= sync_helper(CONFIG_COLOR_PROGRESS_BAR2, iter, &config_color_progress_bar2);
-    dirty |= sync_helper(CONFIG_COLOR_TIME, iter, &config_color_time);
-    dirty |= sync_helper(CONFIG_COLOR_PERC, iter, &config_color_perc);
-    dirty |= sync_helper(CONFIG_COLOR_BOTTOM_COMPLICATIONS, iter, &config_color_bottom_complications);
-    dirty |= sync_helper(CONFIG_COLOR_BACKGROUND, iter, &config_color_background);
-    dirty |= sync_helper(CONFIG_COLOR_TOP_COMPLICATIONS, iter, &config_color_top_complications);
-    dirty |= sync_helper(CONFIG_COLOR_DAY, iter, &config_color_day);
-    dirty |= sync_helper(CONFIG_COLOR_NIGHT, iter, &config_color_night);
-    dirty |= sync_helper(CONFIG_COMPLICATION_1, iter, &config_complication_1);
-    dirty |= sync_helper(CONFIG_COMPLICATION_2, iter, &config_complication_2);
-    dirty |= sync_helper(CONFIG_COMPLICATION_3, iter, &config_complication_3);
-    dirty |= sync_helper(CONFIG_COMPLICATION_4, iter, &config_complication_4);
-    dirty |= sync_helper(CONFIG_COMPLICATION_5, iter, &config_complication_5);
-    dirty |= sync_helper(CONFIG_COMPLICATION_6, iter, &config_complication_6);
-    dirty |= sync_helper(CONFIG_PROGRESS, iter, &config_progress);
+    dirty |= sync_helper_uint8_t(CONFIG_VIBRATE_DISCONNECT, iter, &config_vibrate_disconnect);
+    dirty |= sync_helper_uint8_t(CONFIG_VIBRATE_RECONNECT, iter, &config_vibrate_reconnect);
+    dirty |= sync_helper_uint8_t(CONFIG_MESSAGE_DISCONNECT, iter, &config_message_disconnect);
+    dirty |= sync_helper_uint8_t(CONFIG_MESSAGE_RECONNECT, iter, &config_message_reconnect);
+    dirty |= sync_helper_uint16_t(CONFIG_WEATHER_REFRESH, iter, &config_weather_refresh);
+    dirty |= sync_helper_uint16_t(CONFIG_WEATHER_EXPIRATION, iter, &config_weather_expiration);
+    dirty |= sync_helper_uint8_t(CONFIG_COLOR_TOPBAR_BG, iter, &config_color_topbar_bg);
+    dirty |= sync_helper_uint8_t(CONFIG_COLOR_INFO_BELOW, iter, &config_color_info_below);
+    dirty |= sync_helper_uint8_t(CONFIG_COLOR_INFO_ABOVE, iter, &config_color_info_above);
+    dirty |= sync_helper_uint8_t(CONFIG_COLOR_PROGRESS_BAR, iter, &config_color_progress_bar);
+    dirty |= sync_helper_uint8_t(CONFIG_COLOR_PROGRESS_BAR2, iter, &config_color_progress_bar2);
+    dirty |= sync_helper_uint8_t(CONFIG_COLOR_TIME, iter, &config_color_time);
+    dirty |= sync_helper_uint8_t(CONFIG_COLOR_PERC, iter, &config_color_perc);
+    dirty |= sync_helper_uint8_t(CONFIG_COLOR_BOTTOM_COMPLICATIONS, iter, &config_color_bottom_complications);
+    dirty |= sync_helper_uint8_t(CONFIG_COLOR_BACKGROUND, iter, &config_color_background);
+    dirty |= sync_helper_uint8_t(CONFIG_COLOR_TOP_COMPLICATIONS, iter, &config_color_top_complications);
+    dirty |= sync_helper_uint8_t(CONFIG_COLOR_DAY, iter, &config_color_day);
+    dirty |= sync_helper_uint8_t(CONFIG_COLOR_NIGHT, iter, &config_color_night);
+    dirty |= sync_helper_uint8_t(CONFIG_COMPLICATION_1, iter, &config_complication_1);
+    dirty |= sync_helper_uint8_t(CONFIG_COMPLICATION_2, iter, &config_complication_2);
+    dirty |= sync_helper_uint8_t(CONFIG_COMPLICATION_3, iter, &config_complication_3);
+    dirty |= sync_helper_uint8_t(CONFIG_COMPLICATION_4, iter, &config_complication_4);
+    dirty |= sync_helper_uint8_t(CONFIG_COMPLICATION_5, iter, &config_complication_5);
+    dirty |= sync_helper_uint8_t(CONFIG_COMPLICATION_6, iter, &config_complication_6);
+    dirty |= sync_helper_uint8_t(CONFIG_PROGRESS, iter, &config_progress);
+    dirty |= sync_helper_string(CONFIG_INFO_ABOVE, iter, config_info_above);
+    dirty |= sync_helper_string(CONFIG_INFO_BELOW, iter, config_info_below);
 // -- end autogen
 
     bool ask_for_weather_update = true;
@@ -175,22 +184,25 @@ void inbox_received_handler(DictionaryIterator *iter, void *context) {
 /**
  * Read a value from the persistent storage (or load the default value).
  */
-void read_config(const uint32_t key, uint8_t *value) {
+void read_config_uint8_t(const uint32_t key, uint8_t *value) {
     if (persist_exists(key)) {
         *value = persist_read_int(key);
     } else {
         persist_write_int(key, *value);
     }
 }
-
-/**
- * Read a value from the persistent storage (or load the default value).
- */
-void read_config_2(const uint32_t key, uint16_t *value) {
+void read_config_uint16_t(const uint32_t key, uint16_t *value) {
     if (persist_exists(key)) {
         *value = persist_read_int(key);
     } else {
         persist_write_int(key, *value);
+    }
+}
+void read_config_string(const uint32_t key, char *buffer) {
+    if (persist_exists(key)) {
+        persist_read_string(key, buffer, REDSHIFT_STRINGCONFIG_MAXLEN);
+    } else {
+        persist_write_string(key, buffer);
     }
 }
 
@@ -203,34 +215,36 @@ void read_config_all() {
 // -- autogen
 // -- ## for key in configuration
 // -- ##   if not key["local"]
-// --     read_config{% if key["type"] == "uint16_t" %}_2{% endif %}({{ key["key"] }}, &{{ key["key"] | lower }});
+// --     read_config_{{ key["type"] }}({{ key["key"] }}, {% if key["type"] != "string" %}&{% endif %}{{ key["key"] | lower }});
 // -- ##   endif
 // -- ## endfor
-    read_config(CONFIG_VIBRATE_DISCONNECT, &config_vibrate_disconnect);
-    read_config(CONFIG_VIBRATE_RECONNECT, &config_vibrate_reconnect);
-    read_config(CONFIG_MESSAGE_DISCONNECT, &config_message_disconnect);
-    read_config(CONFIG_MESSAGE_RECONNECT, &config_message_reconnect);
-    read_config_2(CONFIG_WEATHER_REFRESH, &config_weather_refresh);
-    read_config_2(CONFIG_WEATHER_EXPIRATION, &config_weather_expiration);
-    read_config(CONFIG_COLOR_TOPBAR_BG, &config_color_topbar_bg);
-    read_config(CONFIG_COLOR_INFO_BELOW, &config_color_info_below);
-    read_config(CONFIG_COLOR_INFO_ABOVE, &config_color_info_above);
-    read_config(CONFIG_COLOR_PROGRESS_BAR, &config_color_progress_bar);
-    read_config(CONFIG_COLOR_PROGRESS_BAR2, &config_color_progress_bar2);
-    read_config(CONFIG_COLOR_TIME, &config_color_time);
-    read_config(CONFIG_COLOR_PERC, &config_color_perc);
-    read_config(CONFIG_COLOR_BOTTOM_COMPLICATIONS, &config_color_bottom_complications);
-    read_config(CONFIG_COLOR_BACKGROUND, &config_color_background);
-    read_config(CONFIG_COLOR_TOP_COMPLICATIONS, &config_color_top_complications);
-    read_config(CONFIG_COLOR_DAY, &config_color_day);
-    read_config(CONFIG_COLOR_NIGHT, &config_color_night);
-    read_config(CONFIG_COMPLICATION_1, &config_complication_1);
-    read_config(CONFIG_COMPLICATION_2, &config_complication_2);
-    read_config(CONFIG_COMPLICATION_3, &config_complication_3);
-    read_config(CONFIG_COMPLICATION_4, &config_complication_4);
-    read_config(CONFIG_COMPLICATION_5, &config_complication_5);
-    read_config(CONFIG_COMPLICATION_6, &config_complication_6);
-    read_config(CONFIG_PROGRESS, &config_progress);
+    read_config_uint8_t(CONFIG_VIBRATE_DISCONNECT, &config_vibrate_disconnect);
+    read_config_uint8_t(CONFIG_VIBRATE_RECONNECT, &config_vibrate_reconnect);
+    read_config_uint8_t(CONFIG_MESSAGE_DISCONNECT, &config_message_disconnect);
+    read_config_uint8_t(CONFIG_MESSAGE_RECONNECT, &config_message_reconnect);
+    read_config_uint16_t(CONFIG_WEATHER_REFRESH, &config_weather_refresh);
+    read_config_uint16_t(CONFIG_WEATHER_EXPIRATION, &config_weather_expiration);
+    read_config_uint8_t(CONFIG_COLOR_TOPBAR_BG, &config_color_topbar_bg);
+    read_config_uint8_t(CONFIG_COLOR_INFO_BELOW, &config_color_info_below);
+    read_config_uint8_t(CONFIG_COLOR_INFO_ABOVE, &config_color_info_above);
+    read_config_uint8_t(CONFIG_COLOR_PROGRESS_BAR, &config_color_progress_bar);
+    read_config_uint8_t(CONFIG_COLOR_PROGRESS_BAR2, &config_color_progress_bar2);
+    read_config_uint8_t(CONFIG_COLOR_TIME, &config_color_time);
+    read_config_uint8_t(CONFIG_COLOR_PERC, &config_color_perc);
+    read_config_uint8_t(CONFIG_COLOR_BOTTOM_COMPLICATIONS, &config_color_bottom_complications);
+    read_config_uint8_t(CONFIG_COLOR_BACKGROUND, &config_color_background);
+    read_config_uint8_t(CONFIG_COLOR_TOP_COMPLICATIONS, &config_color_top_complications);
+    read_config_uint8_t(CONFIG_COLOR_DAY, &config_color_day);
+    read_config_uint8_t(CONFIG_COLOR_NIGHT, &config_color_night);
+    read_config_uint8_t(CONFIG_COMPLICATION_1, &config_complication_1);
+    read_config_uint8_t(CONFIG_COMPLICATION_2, &config_complication_2);
+    read_config_uint8_t(CONFIG_COMPLICATION_3, &config_complication_3);
+    read_config_uint8_t(CONFIG_COMPLICATION_4, &config_complication_4);
+    read_config_uint8_t(CONFIG_COMPLICATION_5, &config_complication_5);
+    read_config_uint8_t(CONFIG_COMPLICATION_6, &config_complication_6);
+    read_config_uint8_t(CONFIG_PROGRESS, &config_progress);
+    read_config_string(CONFIG_INFO_ABOVE, config_info_above);
+    read_config_string(CONFIG_INFO_BELOW, config_info_below);
 // -- end autogen
 
     if (persist_exists(PERSIST_KEY_WEATHER) && persist_get_size(PERSIST_KEY_WEATHER) == sizeof(Weather)) {

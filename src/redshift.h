@@ -65,11 +65,13 @@
 #define CONFIG_COMPLICATION_5 29
 #define CONFIG_COMPLICATION_6 30
 #define CONFIG_PROGRESS 31
+#define CONFIG_INFO_ABOVE 32
+#define CONFIG_INFO_BELOW 33
 // -- end autogen
 
 // -- autogen
 // -- #define REDSHIFT_N_CONFIG {{ num_config_items }}
-#define REDSHIFT_N_CONFIG 31
+#define REDSHIFT_N_CONFIG 33
 // -- end autogen
 
 // -- autogen
@@ -96,10 +98,16 @@
 //// Configuration values
 ////////////////////////////////////////////
 
+#define REDSHIFT_STRINGCONFIG_MAXLEN 70
+
 // -- autogen
 // -- ## for key in configuration
 // -- ##   if not key["local"]
-// -- extern {{ key["type"] }} {{ key["key"] | lower }};
+// -- ##   if key["type"] != "string"
+// -- extern {{ key["type"] | replace("string", "char") }} {{ key["key"] | lower }};
+// -- ##   else
+// -- extern char {{ key["key"] | lower }}[REDSHIFT_STRINGCONFIG_MAXLEN+1];
+// -- ##   endif
 // -- ##   endif
 // -- ## endfor
 extern uint8_t config_vibrate_disconnect;
@@ -127,6 +135,8 @@ extern uint8_t config_complication_4;
 extern uint8_t config_complication_5;
 extern uint8_t config_complication_6;
 extern uint8_t config_progress;
+extern char config_info_above[REDSHIFT_STRINGCONFIG_MAXLEN+1];
+extern char config_info_below[REDSHIFT_STRINGCONFIG_MAXLEN+1];
 // -- end autogen
 
 

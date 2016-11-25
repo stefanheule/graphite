@@ -60,6 +60,8 @@ var RedshiftPreview = (function () {
      var config_complication_5;
      var config_complication_6;
      var config_progress;
+     var config_info_above;
+     var config_info_below;
 // -- end autogen
 
     function getWeather() {
@@ -228,6 +230,8 @@ var RedshiftPreview = (function () {
         config_complication_5 = config["CONFIG_COMPLICATION_5"];
         config_complication_6 = config["CONFIG_COMPLICATION_6"];
         config_progress = config["CONFIG_PROGRESS"];
+        config_info_above = config["CONFIG_INFO_ABOVE"];
+        config_info_below = config["CONFIG_INFO_BELOW"];
 // -- end autogen
 
         weather = getWeather(platform);
@@ -377,7 +381,7 @@ function bluetooth_popup(fctx, ctx, connected) {
  */
 function remove_leading_zero(buffer, length) {
     if (buffer.substring(0, 1) == "0") buffer = buffer.substring(1);
-    return buffer.replace(new RegExp("([ ./])0", 'g'), "$1");
+    return buffer.replace(new RegExp("([^0-9])0", 'g'), "$1");
 }
 function draw_weather(fctx, draw, icon, temp, position, color, fontsize, align) {
     var weather_fontsize = (fontsize * 1.15);
@@ -497,12 +501,12 @@ function background_update_proc(layer, ctx) {
     }
     var time_y_offset = PBL_DISPLAY_WIDTH != 144 ? 0 : (height_full-height) / 8;
     setlocale(LC_ALL, "");
-    buffer_1 = strftime("%I:%M", new Date());
+    buffer_1 = strftime("%I:0%M", new Date());
     buffer_1 = 
     remove_leading_zero(buffer_1, sizeof(buffer_1));
     var fontsize_time = (width / 2.2);
     draw_string(fctx, buffer_1, FPoint(width / 2, height_full / 2 - fontsize_time / 2 - time_y_offset), font_main, config_color_time, fontsize_time, GTextAlignmentCenter);
-    buffer_1 = strftime("%A, %m/%d", new Date());
+    buffer_1 = strftime(config_info_below, new Date());
     buffer_1 = 
     remove_leading_zero(buffer_1, sizeof(buffer_1));
     var fontsize_date = (width / 8);
@@ -670,6 +674,8 @@ function background_update_proc(layer, ctx) {
             CONFIG_COMPLICATION_5: +4,
             CONFIG_COMPLICATION_6: +6,
             CONFIG_PROGRESS: +1,
+            CONFIG_INFO_ABOVE: "",
+            CONFIG_INFO_BELOW: "%A, %m/%d",
 // -- end autogen
         };
         return cloneConfig(defaults);

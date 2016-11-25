@@ -23,7 +23,11 @@
 // -- autogen
 // -- ## for key in configuration
 // -- ##   if not key["local"]
+// -- ##   if key["type"] != "string"
 // -- {{ key["type"] }} {{ key["key"] | lower }} = {{ key["default"]}};
+// -- ##   else
+// -- char {{ key["key"] | lower }}[REDSHIFT_STRINGCONFIG_MAXLEN+1] = {{ key["default"]}};
+// -- ##   endif
 // -- ##   endif
 // -- ## endfor
 uint8_t config_vibrate_disconnect = true;
@@ -51,6 +55,8 @@ uint8_t config_complication_4 = 5;
 uint8_t config_complication_5 = 4;
 uint8_t config_complication_6 = 6;
 uint8_t config_progress = 1;
+char config_info_above[REDSHIFT_STRINGCONFIG_MAXLEN+1] = "";
+char config_info_below[REDSHIFT_STRINGCONFIG_MAXLEN+1] = "%A, %m/%d";
 // -- end autogen
 
 

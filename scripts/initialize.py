@@ -158,6 +158,16 @@ configuration = [
     'key': 'CONFIG_PROGRESS',
     'default': '1',
   },
+  {
+    'key': 'CONFIG_INFO_ABOVE',
+    'default': '""',
+    'type': 'string'
+  },
+  {
+    'key': 'CONFIG_INFO_BELOW',
+    'default': '"%A, %m/%d"',
+    'type': 'string'
+  },
 ]
 
 simple_config = [
