@@ -246,6 +246,42 @@ complications = [
     'key': 'COMPLICATION_BATTERY_ICON',
     'desc': 'Battery icon',
   },
+  {
+    'key': 'COMPLICATION_STEPS',
+    'desc': 'Steps',
+  },
+  # {
+  #   'key': 'COMPLICATION_DISTANCE_KM',
+  #   'desc': 'Distance walked (km)',
+  # },
+  # {
+  #   'key': 'COMPLICATION_DISTANCE_MI',
+  #   'desc': 'Distance walked (miles)',
+  # },
+  # {
+  #   'key': 'COMPLICATION_ACTIVE_TIME',
+  #   'desc': 'Minutes spent active',
+  # },
+  # {
+  #   'key': 'COMPLICATION_CALORIES',
+  #   'desc': 'Calories burned (active)',
+  # },
+  # {
+  #   'key': 'COMPLICATION_CALORIES_FULL',
+  #   'desc': 'Calories burned (active + resting)',
+  # },
+  # {
+  #   'key': 'COMPLICATION_AMPM',
+  #   'desc': 'AM/PM (uppercase)',
+  # },
+  # {
+  #   'key': 'COMPLICATION_AMPM_LOWER',
+  #   'desc': 'am/pm (lowercase)',
+  # },
+  # {
+  #   'key': 'COMPLICATION_',
+  #   'desc': 'Battery',
+  # },
 ]
 
 config_groups = [

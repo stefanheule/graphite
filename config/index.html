@@ -126,6 +126,10 @@
         <p>Battery icon</p>
         <canvas class="complication" id="complication-preview-6-canvas"></canvas>
       </div>
+      <div class="complication-preview" id="complication-preview-7">
+        <p>Steps</p>
+        <canvas class="complication" id="complication-preview-7-canvas"></canvas>
+      </div>
 <!--
 // -- end autogen
 -->
@@ -1259,6 +1263,7 @@
       $("#complication-preview-4").on("click", function(){ pickComplication(4); });
       $("#complication-preview-5").on("click", function(){ pickComplication(5); });
       $("#complication-preview-6").on("click", function(){ pickComplication(6); });
+      $("#complication-preview-7").on("click", function(){ pickComplication(7); });
 // -- end autogen
   }
 
@@ -1380,6 +1385,7 @@
       RedshiftPreview.previewComplication(4, config, 'complication-preview-4-canvas', getPlatform());
       RedshiftPreview.previewComplication(5, config, 'complication-preview-5-canvas', getPlatform());
       RedshiftPreview.previewComplication(6, config, 'complication-preview-6-canvas', getPlatform());
+      RedshiftPreview.previewComplication(7, config, 'complication-preview-7-canvas', getPlatform());
 // -- end autogen
 
       for (var i = 1; i < 7; i++) {

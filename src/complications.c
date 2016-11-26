@@ -36,6 +36,7 @@ complication_render_t complications[] = {
     complication_bluetooth_disconly, // id 4
     complication_heartrate_cur, // id 5
     complication_battery_icon, // id 6
+    complication_steps, // id 7
 // -- end autogen
 
 // -- jsalternative
@@ -47,6 +48,49 @@ complication_render_t complications[] = {
 ////////////////////////////////////////////
 //// Complication render implementations
 ////////////////////////////////////////////
+
+typedef const char* (*num_formater_t)(int num, void* data);
+
+fixed_t draw_icon_number_complication(FContext* fctx, bool draw, FPoint position, GTextAlignment align, uint8_t foreground_color, uint8_t background_color, const char* icon, int num, num_formater_t formater, bool show_icon, void* data) {
+  fixed_t fontsize_icon = (fixed_t)(fontsize_complications * 0.53);
+  const char* text = formater(num, data);
+  fixed_t w1 = !show_icon ? 0 : string_width(fctx, icon, font_icon, fontsize_icon);
+  fixed_t w2 = string_width(fctx, text, font_main, fontsize_complications);
+  fixed_t sep = REM(2);
+  fixed_t w = w1 + w2 + sep;
+  GTextAlignment a = GTextAlignmentLeft;
+  uint8_t color = foreground_color;
+
+  if (draw) {
+      fixed_t icon_y = position.y + fontsize_icon/8;
+      if (align == GTextAlignmentCenter) {
+          if (w1) draw_string(fctx, icon, FPoint(position.x - w/2, icon_y), font_icon, color, fontsize_icon, a);
+          draw_string(fctx, text, FPoint(position.x - w/2 + w1 + sep, position.y), font_main, color, fontsize_complications, a);
+      } else if (align == GTextAlignmentLeft) {
+          if (w1) draw_string(fctx, icon, FPoint(position.x, icon_y), font_icon, color, fontsize_icon, a);
+          draw_string(fctx, text, FPoint(position.x + w1 + sep, position.y), font_main, color, fontsize_complications, a);
+      } else {
+          if (w1) draw_string(fctx, icon, FPoint(position.x - w, icon_y), font_icon, color, fontsize_icon, a);
+          draw_string(fctx, text, FPoint(position.x - w + w1 + sep, position.y), font_main, color, fontsize_complications, a);
+      }
+  }
+
+  return w;
+}
+
+const char* format_unitless(int num, void* data) {
+  buffer_1[0] = 0;
+  return buffer_1;
+}
+
+fixed_t complication_steps(FContext* fctx, bool draw, FPoint position, GTextAlignment align, uint8_t foreground_color, uint8_t background_color) {
+  int num = 0;
+  num_formater_t format = format_unitless;
+  const char* icon = "1";
+  bool show_icon = true;
+  int data = 0;
+  return draw_icon_number_complication(fctx, draw, position, align, foreground_color, background_color, icon, num, format, show_icon, &data);
+}
 
 fixed_t complication_empty(FContext* fctx, bool draw, FPoint position, GTextAlignment align, uint8_t foreground_color, uint8_t background_color) {
   return 0;
