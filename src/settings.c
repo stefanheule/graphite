@@ -107,7 +107,6 @@ void inbox_received_handler(DictionaryIterator *iter, void *context) {
     dirty |= sync_helper_uint16_t(CONFIG_WEATHER_EXPIRATION, iter, &config_weather_expiration);
     dirty |= sync_helper_uint8_t(CONFIG_COLOR_TOPBAR_BG, iter, &config_color_topbar_bg);
     dirty |= sync_helper_uint8_t(CONFIG_COLOR_INFO_BELOW, iter, &config_color_info_below);
-    dirty |= sync_helper_uint8_t(CONFIG_COLOR_INFO_ABOVE, iter, &config_color_info_above);
     dirty |= sync_helper_uint8_t(CONFIG_COLOR_PROGRESS_BAR, iter, &config_color_progress_bar);
     dirty |= sync_helper_uint8_t(CONFIG_COLOR_PROGRESS_BAR2, iter, &config_color_progress_bar2);
     dirty |= sync_helper_uint8_t(CONFIG_COLOR_TIME, iter, &config_color_time);
@@ -230,7 +229,6 @@ void read_config_all() {
     read_config_uint16_t(CONFIG_WEATHER_EXPIRATION, &config_weather_expiration);
     read_config_uint8_t(CONFIG_COLOR_TOPBAR_BG, &config_color_topbar_bg);
     read_config_uint8_t(CONFIG_COLOR_INFO_BELOW, &config_color_info_below);
-    read_config_uint8_t(CONFIG_COLOR_INFO_ABOVE, &config_color_info_above);
     read_config_uint8_t(CONFIG_COLOR_PROGRESS_BAR, &config_color_progress_bar);
     read_config_uint8_t(CONFIG_COLOR_PROGRESS_BAR2, &config_color_progress_bar2);
     read_config_uint8_t(CONFIG_COLOR_TIME, &config_color_time);

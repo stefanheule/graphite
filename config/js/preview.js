@@ -42,7 +42,6 @@ var RedshiftPreview = (function () {
      var config_weather_expiration;
      var config_color_topbar_bg;
      var config_color_info_below;
-     var config_color_info_above;
      var config_color_progress_bar;
      var config_color_progress_bar2;
      var config_color_time;
@@ -216,7 +215,6 @@ var RedshiftPreview = (function () {
         config_weather_expiration = config["CONFIG_WEATHER_EXPIRATION"];
         config_color_topbar_bg = config["CONFIG_COLOR_TOPBAR_BG"];
         config_color_info_below = config["CONFIG_COLOR_INFO_BELOW"];
-        config_color_info_above = config["CONFIG_COLOR_INFO_ABOVE"];
         config_color_progress_bar = config["CONFIG_COLOR_PROGRESS_BAR"];
         config_color_progress_bar2 = config["CONFIG_COLOR_PROGRESS_BAR2"];
         config_color_time = config["CONFIG_COLOR_TIME"];
@@ -316,8 +314,8 @@ function draw_icon_number_complication(fctx, draw, position, align, foreground_c
   }
   return w;
 }
-const char* format_unitless(int num, void* data) {
-  buffer_1[0] = 0;
+function format_unitless(num, data) {
+  buffer_1 = sprintf("%d", num);
   return buffer_1;
 }
 function complication_steps(fctx, draw, position, align, foreground_color, background_color) {
@@ -420,6 +418,14 @@ function is_obstructed() {
  */
 function bluetooth_popup(fctx, ctx, connected) {
     if (!show_bluetooth_popup) return;
+    var h = FIXED_ROUND(REM(60));
+    draw_rect(fctx, FRect(FPoint(0, 0), FSize(width, h + PIX(2))), GColor.Black);
+    draw_rect(fctx, FRect(FPoint(0, 0), FSize(width, h)), GColor.White);
+    var fs = REM(24);
+    var rh_size = REM(40);
+    var str2 = connected ? "Connected" : "Disconnected";
+    draw_string(fctx, "Bluetooth", FPoint((width - rh_size)/2, REM(7)), font_main, GColor.Black, fs, GTextAlignmentCenter);
+    draw_string(fctx, str2, FPoint((width - rh_size)/2, REM(35)), font_main, GColor.Black, fs, GTextAlignmentCenter);
 }
 /**
  * Remove all leading zeros in a string.
@@ -482,17 +488,14 @@ function background_update_proc(layer, ctx) {
         if (battery_state.charge_percent <= 10) {
           config_color_topbar_bg = config_color_bat_10;
           config_color_info_below = config_color_bat_10;
-          config_color_info_above = config_color_bat_10;
           config_color_progress_bar = config_color_bat_10;
         } else if (battery_state.charge_percent <= 20) {
           config_color_topbar_bg = config_color_bat_20;
           config_color_info_below = config_color_bat_20;
-          config_color_info_above = config_color_bat_20;
           config_color_progress_bar = config_color_bat_20;
         } else if (battery_state.charge_percent <= 30) {
           config_color_topbar_bg = config_color_bat_30;
           config_color_info_below = config_color_bat_30;
-          config_color_info_above = config_color_bat_30;
           config_color_progress_bar = config_color_bat_30;
         }
     }
@@ -703,7 +706,6 @@ function background_update_proc(layer, ctx) {
             CONFIG_WEATHER_EXPIRATION: +3*60,
             CONFIG_COLOR_TOPBAR_BG: +GColor.VividCerulean,
             CONFIG_COLOR_INFO_BELOW: +GColor.VividCerulean,
-            CONFIG_COLOR_INFO_ABOVE: +GColor.VividCerulean,
             CONFIG_COLOR_PROGRESS_BAR: +GColor.VividCerulean,
             CONFIG_COLOR_PROGRESS_BAR2: +GColor.White,
             CONFIG_COLOR_TIME: +GColor.White,

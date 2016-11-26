@@ -48,34 +48,33 @@
 #define CONFIG_WEATHER_EXPIRATION 11
 #define CONFIG_COLOR_TOPBAR_BG 12
 #define CONFIG_COLOR_INFO_BELOW 13
-#define CONFIG_COLOR_INFO_ABOVE 14
-#define CONFIG_COLOR_PROGRESS_BAR 15
-#define CONFIG_COLOR_PROGRESS_BAR2 16
-#define CONFIG_COLOR_TIME 17
-#define CONFIG_COLOR_PERC 18
-#define CONFIG_COLOR_BOTTOM_COMPLICATIONS 19
-#define CONFIG_COLOR_BACKGROUND 20
-#define CONFIG_COLOR_TOP_COMPLICATIONS 21
-#define CONFIG_COLOR_DAY 22
-#define CONFIG_COLOR_NIGHT 23
-#define CONFIG_COLOR_BAT_30 24
-#define CONFIG_COLOR_BAT_20 25
-#define CONFIG_COLOR_BAT_10 26
-#define CONFIG_LOWBAT_COL 27
-#define CONFIG_COMPLICATION_1 29
-#define CONFIG_COMPLICATION_2 30
-#define CONFIG_COMPLICATION_3 31
-#define CONFIG_COMPLICATION_4 32
-#define CONFIG_COMPLICATION_5 33
-#define CONFIG_COMPLICATION_6 34
-#define CONFIG_PROGRESS 35
-#define CONFIG_TIME_FORMAT 36
-#define CONFIG_INFO_BELOW 37
+#define CONFIG_COLOR_PROGRESS_BAR 14
+#define CONFIG_COLOR_PROGRESS_BAR2 15
+#define CONFIG_COLOR_TIME 16
+#define CONFIG_COLOR_PERC 17
+#define CONFIG_COLOR_BOTTOM_COMPLICATIONS 18
+#define CONFIG_COLOR_BACKGROUND 19
+#define CONFIG_COLOR_TOP_COMPLICATIONS 20
+#define CONFIG_COLOR_DAY 21
+#define CONFIG_COLOR_NIGHT 22
+#define CONFIG_COLOR_BAT_30 23
+#define CONFIG_COLOR_BAT_20 24
+#define CONFIG_COLOR_BAT_10 25
+#define CONFIG_LOWBAT_COL 26
+#define CONFIG_COMPLICATION_1 28
+#define CONFIG_COMPLICATION_2 29
+#define CONFIG_COMPLICATION_3 30
+#define CONFIG_COMPLICATION_4 31
+#define CONFIG_COMPLICATION_5 32
+#define CONFIG_COMPLICATION_6 33
+#define CONFIG_PROGRESS 34
+#define CONFIG_TIME_FORMAT 35
+#define CONFIG_INFO_BELOW 36
 // -- end autogen
 
 // -- autogen
 // -- #define REDSHIFT_N_CONFIG {{ num_config_items }}
-#define REDSHIFT_N_CONFIG 37
+#define REDSHIFT_N_CONFIG 36
 // -- end autogen
 
 // -- autogen
@@ -122,7 +121,6 @@ extern uint16_t config_weather_refresh;
 extern uint16_t config_weather_expiration;
 extern uint8_t config_color_topbar_bg;
 extern uint8_t config_color_info_below;
-extern uint8_t config_color_info_above;
 extern uint8_t config_color_progress_bar;
 extern uint8_t config_color_progress_bar2;
 extern uint8_t config_color_time;

@@ -36,43 +36,15 @@ void bluetooth_popup(FContext* fctx, GContext *ctx, bool connected) {
     if (!show_bluetooth_popup) return;
 #endif
 
-    // int16_t yoffset = PBL_IF_ROUND_ELSE(70, 50);
-    // graphics_context_set_fill_color(ctx, GColorBlack);
-    // GRect notification_rect = GRect(-10, height - yoffset - 7, width + 20, 50);
-    // graphics_fill_rect(ctx, notification_rect, 0, GCornersAll);
-    // graphics_context_set_fill_color(ctx, GColorWhite);
-    // graphics_fill_rect(ctx, GRect(-10, height - yoffset - 3, width + 20, 50 - 8), 0, GCornersAll);
-    // char *str1 = "Bluetooth";
-    // char *str2 = connected ? "Connected" : "Disconnected";
-    // GPoint pos = GPoint((width - 24) / 2 - width/2, notification_rect.origin.y + 4);
-    // draw_string(fctx, str1, pos, font_main, GColorBlack, 18, true);
-    // draw_string(fctx, str2, GPoint(pos.x, pos.y + 20), font_main, GColorBlack, 18, true);
-    // if (connected) {
-    //     graphics_context_set_fill_color(ctx, COLOR_FALLBACK(GColorGreen, GColorBlack));
-    // } else {
-    //     graphics_context_set_fill_color(ctx, COLOR_FALLBACK(GColorRed, GColorBlack));
-    // }
+    fixed_t h = FIXED_ROUND(REM(60));
+    draw_rect(fctx, FRect(FPoint(0, 0), FSize(width, h + PIX(2))), GColorBlackARGB8);
+    draw_rect(fctx, FRect(FPoint(0, 0), FSize(width, h)), GColorWhiteARGB8);
 
-    // GPoint icon_center = GPoint(PBL_IF_ROUND_ELSE(135, width - 24) + 3,
-    //                             notification_rect.origin.y + notification_rect.size.h - 26);
-    // graphics_fill_circle(ctx, icon_center, 9);
-    // graphics_context_set_stroke_color(ctx, GColorWhite);
-
-    // if (connected) {
-    //     graphics_draw_line_with_width(ctx,
-    //                                   GPoint(icon_center.x + 4, icon_center.y - 3),
-    //                                   GPoint(icon_center.x - 2, icon_center.y + 3), 2);
-    //     graphics_draw_line_with_width(ctx,
-    //                                   GPoint(icon_center.x - 4, icon_center.y + 0),
-    //                                   GPoint(icon_center.x - 2, icon_center.y + 3), 2);
-    // } else {
-    //     graphics_draw_line_with_width(ctx,
-    //                                   GPoint(icon_center.x + 3, icon_center.y - 3),
-    //                                   GPoint(icon_center.x - 3, icon_center.y + 3), 2);
-    //     graphics_draw_line_with_width(ctx,
-    //                                   GPoint(icon_center.x - 3, icon_center.y - 3),
-    //                                   GPoint(icon_center.x + 3, icon_center.y + 3), 2);
-    // }
+    fixed_t fs = REM(24);
+    fixed_t rh_size = REM(40);
+    char *str2 = connected ? "Connected" : "Disconnected";
+    draw_string(fctx, "Bluetooth", FPoint((width - rh_size)/2, REM(7)), font_main, GColorBlackARGB8, fs, GTextAlignmentCenter);
+    draw_string(fctx, str2, FPoint((width - rh_size)/2, REM(35)), font_main, GColorBlackARGB8, fs, GTextAlignmentCenter);
 }
 
 /**
@@ -168,7 +140,6 @@ void background_update_proc(Layer *layer, GContext *ctx) {
 // -- ## endfor
           config_color_topbar_bg = config_color_bat_10;
           config_color_info_below = config_color_bat_10;
-          config_color_info_above = config_color_bat_10;
           config_color_progress_bar = config_color_bat_10;
 // -- end autogen
         } else if (battery_state.charge_percent <= 20) {
@@ -178,7 +149,6 @@ void background_update_proc(Layer *layer, GContext *ctx) {
 // -- ## endfor
           config_color_topbar_bg = config_color_bat_20;
           config_color_info_below = config_color_bat_20;
-          config_color_info_above = config_color_bat_20;
           config_color_progress_bar = config_color_bat_20;
 // -- end autogen
         } else if (battery_state.charge_percent <= 30) {
@@ -188,7 +158,6 @@ void background_update_proc(Layer *layer, GContext *ctx) {
 // -- ## endfor
           config_color_topbar_bg = config_color_bat_30;
           config_color_info_below = config_color_bat_30;
-          config_color_info_above = config_color_bat_30;
           config_color_progress_bar = config_color_bat_30;
 // -- end autogen
         }

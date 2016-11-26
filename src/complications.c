@@ -49,7 +49,7 @@ complication_render_t complications[] = {
 //// Complication render implementations
 ////////////////////////////////////////////
 
-typedef const char* (*num_formater_t)(int num, void* data);
+typedef char* (*num_formater_t)(int num, void* data);
 
 fixed_t draw_icon_number_complication(FContext* fctx, bool draw, FPoint position, GTextAlignment align, uint8_t foreground_color, uint8_t background_color, const char* icon, int num, num_formater_t formater, bool show_icon, void* data) {
   fixed_t fontsize_icon = (fixed_t)(fontsize_complications * 0.53);
@@ -78,8 +78,8 @@ fixed_t draw_icon_number_complication(FContext* fctx, bool draw, FPoint position
   return w;
 }
 
-const char* format_unitless(int num, void* data) {
-  buffer_1[0] = 0;
+char* format_unitless(int num, void* data) {
+  snprintf(buffer_1, 10, "%d", num);
   return buffer_1;
 }
 

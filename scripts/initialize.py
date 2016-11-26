@@ -73,11 +73,6 @@ configuration = [
     'desc': 'Color of information text below time',
   },
   {
-    'key': 'CONFIG_COLOR_INFO_ABOVE',
-    'default': 'GColorVividCeruleanARGB8',
-    'desc': 'Color of information text above time',
-  },
-  {
     'key': 'CONFIG_COLOR_PROGRESS_BAR',
     'default': 'GColorVividCeruleanARGB8',
     'desc': 'Progress bar color',
@@ -204,7 +199,7 @@ simple_config = [
   {
     'key': 'SIMPLECONFIG_COLOR_ACCENT',
     'desc': 'Accent color',
-    'depends': ['CONFIG_COLOR_TOPBAR_BG', 'CONFIG_COLOR_INFO_BELOW', 'CONFIG_COLOR_INFO_ABOVE', 'CONFIG_COLOR_PROGRESS_BAR'],
+    'depends': ['CONFIG_COLOR_TOPBAR_BG', 'CONFIG_COLOR_INFO_BELOW', 'CONFIG_COLOR_PROGRESS_BAR'],
   },
   {
     'key': 'SIMPLECONFIG_COLOR_BACKGROUND',
@@ -531,7 +526,7 @@ def c_to_js(f):
     return s[0:len(sub)] == sub
 
   newcontents = []
-  basetype = "(bool|[a-z_0-9]+_t|void)"
+  basetype = "(char|bool|[a-z_0-9]+_t|void)"
   ident = "(?!return)[a-zA-Z_][a-zA-Z0-9_]*"
   mode = "init"
   for line in c.split(u"\n"):
@@ -564,7 +559,7 @@ def c_to_js(f):
     if starts_with(line.strip(), u"//"): continue
     if line == "": continue
 
-    rfundecl = re.match("(?P<type>" + basetype + ") (?P<name>" + ident + ")\\((?P<arglist>.*)\\) {$", line)
+    rfundecl = re.match("(?P<type>" + basetype + "\\*?) (?P<name>" + ident + ")\\((?P<arglist>.*)\\) {$", line)
     if rfundecl is not None:
       name = rfundecl.group("name")
       arglist = rfundecl.group("arglist")
