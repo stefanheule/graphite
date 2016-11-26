@@ -117,6 +117,10 @@ void inbox_received_handler(DictionaryIterator *iter, void *context) {
     dirty |= sync_helper_uint8_t(CONFIG_COLOR_TOP_COMPLICATIONS, iter, &config_color_top_complications);
     dirty |= sync_helper_uint8_t(CONFIG_COLOR_DAY, iter, &config_color_day);
     dirty |= sync_helper_uint8_t(CONFIG_COLOR_NIGHT, iter, &config_color_night);
+    dirty |= sync_helper_uint8_t(CONFIG_COLOR_BAT_30, iter, &config_color_bat_30);
+    dirty |= sync_helper_uint8_t(CONFIG_COLOR_BAT_20, iter, &config_color_bat_20);
+    dirty |= sync_helper_uint8_t(CONFIG_COLOR_BAT_10, iter, &config_color_bat_10);
+    dirty |= sync_helper_uint8_t(CONFIG_LOWBAT_COL, iter, &config_lowbat_col);
     dirty |= sync_helper_uint8_t(CONFIG_COMPLICATION_1, iter, &config_complication_1);
     dirty |= sync_helper_uint8_t(CONFIG_COMPLICATION_2, iter, &config_complication_2);
     dirty |= sync_helper_uint8_t(CONFIG_COMPLICATION_3, iter, &config_complication_3);
@@ -236,6 +240,10 @@ void read_config_all() {
     read_config_uint8_t(CONFIG_COLOR_TOP_COMPLICATIONS, &config_color_top_complications);
     read_config_uint8_t(CONFIG_COLOR_DAY, &config_color_day);
     read_config_uint8_t(CONFIG_COLOR_NIGHT, &config_color_night);
+    read_config_uint8_t(CONFIG_COLOR_BAT_30, &config_color_bat_30);
+    read_config_uint8_t(CONFIG_COLOR_BAT_20, &config_color_bat_20);
+    read_config_uint8_t(CONFIG_COLOR_BAT_10, &config_color_bat_10);
+    read_config_uint8_t(CONFIG_LOWBAT_COL, &config_lowbat_col);
     read_config_uint8_t(CONFIG_COMPLICATION_1, &config_complication_1);
     read_config_uint8_t(CONFIG_COMPLICATION_2, &config_complication_2);
     read_config_uint8_t(CONFIG_COMPLICATION_3, &config_complication_3);

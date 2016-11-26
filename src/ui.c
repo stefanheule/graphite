@@ -160,36 +160,38 @@ void background_update_proc(Layer *layer, GContext *ctx) {
     if (battery_state.is_charging || battery_state.is_plugged) {
         battery_state.charge_percent = 100;
     }
-    if (battery_state.charge_percent <= 10) {
+    if (config_lowbat_col) {
+        if (battery_state.charge_percent <= 10) {
 // -- autogen
 // -- ## for dep in simple_config_lookup["SIMPLECONFIG_COLOR_ACCENT"]["depends"]
-// --       {{ dep | lower }} = GColorFollyARGB8;
+// --           {{ dep | lower }} = config_color_bat_10;
 // -- ## endfor
-      config_color_topbar_bg = GColorFollyARGB8;
-      config_color_info_below = GColorFollyARGB8;
-      config_color_info_above = GColorFollyARGB8;
-      config_color_progress_bar = GColorFollyARGB8;
+          config_color_topbar_bg = config_color_bat_10;
+          config_color_info_below = config_color_bat_10;
+          config_color_info_above = config_color_bat_10;
+          config_color_progress_bar = config_color_bat_10;
 // -- end autogen
-    } else if (battery_state.charge_percent <= 20) {
+        } else if (battery_state.charge_percent <= 20) {
 // -- autogen
 // -- ## for dep in simple_config_lookup["SIMPLECONFIG_COLOR_ACCENT"]["depends"]
-// --       {{ dep | lower }} = GColorChromeYellowARGB8;
+// --           {{ dep | lower }} = config_color_bat_20;
 // -- ## endfor
-      config_color_topbar_bg = GColorChromeYellowARGB8;
-      config_color_info_below = GColorChromeYellowARGB8;
-      config_color_info_above = GColorChromeYellowARGB8;
-      config_color_progress_bar = GColorChromeYellowARGB8;
+          config_color_topbar_bg = config_color_bat_20;
+          config_color_info_below = config_color_bat_20;
+          config_color_info_above = config_color_bat_20;
+          config_color_progress_bar = config_color_bat_20;
 // -- end autogen
-    } else if (battery_state.charge_percent <= 30) {
+        } else if (battery_state.charge_percent <= 30) {
 // -- autogen
 // -- ## for dep in simple_config_lookup["SIMPLECONFIG_COLOR_ACCENT"]["depends"]
-// --       {{ dep | lower }} = GColorYellowARGB8;
+// --           {{ dep | lower }} = config_color_bat_30;
 // -- ## endfor
-      config_color_topbar_bg = GColorYellowARGB8;
-      config_color_info_below = GColorYellowARGB8;
-      config_color_info_above = GColorYellowARGB8;
-      config_color_progress_bar = GColorYellowARGB8;
+          config_color_topbar_bg = config_color_bat_30;
+          config_color_info_below = config_color_bat_30;
+          config_color_info_above = config_color_bat_30;
+          config_color_progress_bar = config_color_bat_30;
 // -- end autogen
+        }
     }
 
     // background

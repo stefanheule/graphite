@@ -52,6 +52,10 @@ var RedshiftPreview = (function () {
      var config_color_top_complications;
      var config_color_day;
      var config_color_night;
+     var config_color_bat_30;
+     var config_color_bat_20;
+     var config_color_bat_10;
+     var config_lowbat_col;
      var config_advanced_appearance_local;
      var config_complication_1;
      var config_complication_2;
@@ -222,6 +226,10 @@ var RedshiftPreview = (function () {
         config_color_top_complications = config["CONFIG_COLOR_TOP_COMPLICATIONS"];
         config_color_day = config["CONFIG_COLOR_DAY"];
         config_color_night = config["CONFIG_COLOR_NIGHT"];
+        config_color_bat_30 = config["CONFIG_COLOR_BAT_30"];
+        config_color_bat_20 = config["CONFIG_COLOR_BAT_20"];
+        config_color_bat_10 = config["CONFIG_COLOR_BAT_10"];
+        config_lowbat_col = config["CONFIG_LOWBAT_COL"];
         config_advanced_appearance_local = config["CONFIG_ADVANCED_APPEARANCE_LOCAL"];
         config_complication_1 = config["CONFIG_COMPLICATION_1"];
         config_complication_2 = config["CONFIG_COMPLICATION_2"];
@@ -433,21 +441,23 @@ function background_update_proc(layer, ctx) {
     if (battery_state.is_charging || battery_state.is_plugged) {
         battery_state.charge_percent = 100;
     }
-    if (battery_state.charge_percent <= 10) {
-      config_color_topbar_bg = GColor.Folly;
-      config_color_info_below = GColor.Folly;
-      config_color_info_above = GColor.Folly;
-      config_color_progress_bar = GColor.Folly;
-    } else if (battery_state.charge_percent <= 20) {
-      config_color_topbar_bg = GColor.ChromeYellow;
-      config_color_info_below = GColor.ChromeYellow;
-      config_color_info_above = GColor.ChromeYellow;
-      config_color_progress_bar = GColor.ChromeYellow;
-    } else if (battery_state.charge_percent <= 30) {
-      config_color_topbar_bg = GColor.Yellow;
-      config_color_info_below = GColor.Yellow;
-      config_color_info_above = GColor.Yellow;
-      config_color_progress_bar = GColor.Yellow;
+    if (config_lowbat_col) {
+        if (battery_state.charge_percent <= 10) {
+          config_color_topbar_bg = config_color_bat_10;
+          config_color_info_below = config_color_bat_10;
+          config_color_info_above = config_color_bat_10;
+          config_color_progress_bar = config_color_bat_10;
+        } else if (battery_state.charge_percent <= 20) {
+          config_color_topbar_bg = config_color_bat_20;
+          config_color_info_below = config_color_bat_20;
+          config_color_info_above = config_color_bat_20;
+          config_color_progress_bar = config_color_bat_20;
+        } else if (battery_state.charge_percent <= 30) {
+          config_color_topbar_bg = config_color_bat_30;
+          config_color_info_below = config_color_bat_30;
+          config_color_info_above = config_color_bat_30;
+          config_color_progress_bar = config_color_bat_30;
+        }
     }
     draw_rect(fctx, bounds_full, config_color_background);
     var fontsize_weather = fontsize_complications;
@@ -666,6 +676,10 @@ function background_update_proc(layer, ctx) {
             CONFIG_COLOR_TOP_COMPLICATIONS: +GColor.Black,
             CONFIG_COLOR_DAY: +GColor.LightGray,
             CONFIG_COLOR_NIGHT: +GColor.Black,
+            CONFIG_COLOR_BAT_30: +GColor.Yellow,
+            CONFIG_COLOR_BAT_20: +GColor.ChromeYellow,
+            CONFIG_COLOR_BAT_10: +GColor.Folly,
+            CONFIG_LOWBAT_COL: +false,
             CONFIG_ADVANCED_APPEARANCE_LOCAL: +false,
             CONFIG_COMPLICATION_1: +2,
             CONFIG_COMPLICATION_2: +1,

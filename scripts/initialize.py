@@ -127,6 +127,31 @@ configuration = [
     'show_only_if': 'readConfig("CONFIG_WEATHER_RAIN_LOCAL") == 1',
   },
   {
+    'key': 'CONFIG_COLOR_BAT_30',
+    'default': 'GColorYellowARGB8',
+    'desc': '',
+    'show_only_if': 'readConfig("CONFIG_LOWBAT_COL") != 0',
+    'dont_show_in_main_color_section': True,
+  },
+  {
+    'key': 'CONFIG_COLOR_BAT_20',
+    'default': 'GColorChromeYellowARGB8',
+    'desc': '',
+    'show_only_if': 'readConfig("CONFIG_LOWBAT_COL") != 0',
+    'dont_show_in_main_color_section': True,
+  },
+  {
+    'key': 'CONFIG_COLOR_BAT_10',
+    'default': 'GColorFollyARGB8',
+    'desc': '',
+    'show_only_if': 'readConfig("CONFIG_LOWBAT_COL") != 0',
+    'dont_show_in_main_color_section': True,
+  },
+  {
+    'key': 'CONFIG_LOWBAT_COL',
+    'default': 'false',
+  },
+  {
     'key': 'CONFIG_ADVANCED_APPEARANCE_LOCAL',
     'default': 'false',
   },

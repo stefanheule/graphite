@@ -58,20 +58,24 @@
 #define CONFIG_COLOR_TOP_COMPLICATIONS 21
 #define CONFIG_COLOR_DAY 22
 #define CONFIG_COLOR_NIGHT 23
-#define CONFIG_COMPLICATION_1 25
-#define CONFIG_COMPLICATION_2 26
-#define CONFIG_COMPLICATION_3 27
-#define CONFIG_COMPLICATION_4 28
-#define CONFIG_COMPLICATION_5 29
-#define CONFIG_COMPLICATION_6 30
-#define CONFIG_PROGRESS 31
-#define CONFIG_TIME_FORMAT 32
-#define CONFIG_INFO_BELOW 33
+#define CONFIG_COLOR_BAT_30 24
+#define CONFIG_COLOR_BAT_20 25
+#define CONFIG_COLOR_BAT_10 26
+#define CONFIG_LOWBAT_COL 27
+#define CONFIG_COMPLICATION_1 29
+#define CONFIG_COMPLICATION_2 30
+#define CONFIG_COMPLICATION_3 31
+#define CONFIG_COMPLICATION_4 32
+#define CONFIG_COMPLICATION_5 33
+#define CONFIG_COMPLICATION_6 34
+#define CONFIG_PROGRESS 35
+#define CONFIG_TIME_FORMAT 36
+#define CONFIG_INFO_BELOW 37
 // -- end autogen
 
 // -- autogen
 // -- #define REDSHIFT_N_CONFIG {{ num_config_items }}
-#define REDSHIFT_N_CONFIG 33
+#define REDSHIFT_N_CONFIG 37
 // -- end autogen
 
 // -- autogen
@@ -128,6 +132,10 @@ extern uint8_t config_color_background;
 extern uint8_t config_color_top_complications;
 extern uint8_t config_color_day;
 extern uint8_t config_color_night;
+extern uint8_t config_color_bat_30;
+extern uint8_t config_color_bat_20;
+extern uint8_t config_color_bat_10;
+extern uint8_t config_lowbat_col;
 extern uint8_t config_complication_1;
 extern uint8_t config_complication_2;
 extern uint8_t config_complication_3;
