@@ -69,6 +69,13 @@
       border-bottom: 1px solid rgb(222, 222, 222);
       padding: 5px 0;
     }
+    table.format tr td:nth-child(1) {
+      padding-right: 10px;
+      font-family: monospace;
+    }
+    .item-container-footer {
+      color: #555 !important;
+    }
     </style>
     <meta charset="utf-8"/>
   </head>
@@ -186,7 +193,24 @@
           </div>
         </label>
         <div class="item-container-footer">
-          Format info
+          Format string can include the following tokens:
+          <table class="format">
+            <tr><td>%H</td><td>Hour (24h clock)</td></tr>
+            <tr><td>%I</td><td>Hour (12h clock)</td></tr>
+            <tr><td>%M</td><td>Minute</td></tr>
+          </table>
+          Default is
+<!--
+// -- autogen
+// --          {{ configuration_lookup["CONFIG_TIME_FORMAT"]["default"] }}.
+-->
+         "%I:0%M".
+<!--
+// -- end autogen
+-->
+          Leading zeros are removed.  Use 0 in front of a token to keep one leading zero.
+          <br>
+          <a href="https://sourceware.org/newlib/libc.html#strftime">Full format information</a>.
         </div>
       </div>
 
@@ -198,7 +222,28 @@
           </div>
         </label>
         <div class="item-container-footer">
-          Format info
+          Format string can include the following tokens:
+          <table class="format">
+            <tr><td>%a</td><td>Abbreviated week day (Mon)</td></tr>
+            <tr><td>%A</td><td>Full week day (Monday)</td></tr>
+            <tr><td>%b</td><td>Abbreviated month (Jan)</td></tr>
+            <tr><td>%B</td><td>Full month (January)</td></tr>
+            <tr><td>%d</td><td>Day of the month (1-31)</td></tr>
+            <tr><td>%m</td><td>Month (1-12)</td></tr>
+            <tr><td>%Y</td><td>Year</td></tr>
+            <tr><td>%p</td><td>AM/PM</td></tr>
+            <tr><td>%P</td><td>am/pm</td></tr>
+          </table>
+          Default is
+<!--
+// -- autogen
+// --          {{ configuration_lookup["CONFIG_INFO_BELOW"]["default"] }}.
+-->
+         "%A, %m/%d".
+<!--
+// -- end autogen
+-->
+          Leading zeros are removed.  Use 0 in front of a token to keep one leading zero.
         </div>
       </div>
 
@@ -357,9 +402,6 @@
           Precipitation day time indicator color
           <input id='CONFIG_COLOR_DAY' type='text' class='item-color item-color-normal'>
         </label>
-        <div class="item-container-footer">
-          Precipitation is a 24h forecast from the current time.  This color indicates the time between 6am and 6pm to help orient what time each bar corresponds to.
-        </div>
       </div>
 <!--
 // -- end autogen
