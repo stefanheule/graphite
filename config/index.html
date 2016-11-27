@@ -170,6 +170,10 @@
         <p>am/pm</p>
         <canvas class="complication" id="complication-preview-17-canvas"></canvas>
       </div>
+      <div class="complication-preview" id="complication-preview-18">
+        <p>Seconds</p>
+        <canvas class="complication" id="complication-preview-18-canvas"></canvas>
+      </div>
 <!--
 // -- end autogen
 -->
@@ -1326,6 +1330,7 @@
       $("#complication-preview-15").on("click", function(){ pickComplication(15); });
       $("#complication-preview-16").on("click", function(){ pickComplication(16); });
       $("#complication-preview-17").on("click", function(){ pickComplication(17); });
+      $("#complication-preview-18").on("click", function(){ pickComplication(18); });
 // -- end autogen
   }
 
@@ -1459,6 +1464,7 @@
       RedshiftPreview.previewComplication(15, config, 'complication-preview-15-canvas', getPlatform());
       RedshiftPreview.previewComplication(16, config, 'complication-preview-16-canvas', getPlatform());
       RedshiftPreview.previewComplication(17, config, 'complication-preview-17-canvas', getPlatform());
+      RedshiftPreview.previewComplication(18, config, 'complication-preview-18-canvas', getPlatform());
 // -- end autogen
 
       for (var i = 1; i < 7; i++) {

@@ -315,6 +315,10 @@ complications = [
     'key': 'COMPLICATION_AMPM_LOWER',
     'desc': 'am/pm',
   },
+  {
+    'key': 'COMPLICATION_SECONDS',
+    'desc': 'Seconds',
+  },
 ]
   # {
   #   'key': 'COMPLICATION_DISTANCE_KM',

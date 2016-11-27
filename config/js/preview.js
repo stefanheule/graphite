@@ -303,6 +303,7 @@ var complications = [
     complication_steps_short, // id 15
     complication_ampm, // id 16
     complication_ampm_lower, // id 17
+    complication_seconds, // id 18
 ];
 function draw_icon_number_complication(fctx, draw, position, align, foreground_color, background_color, icon, text, show_icon) {
   var fontsize_icon = (fontsize_complications * 0.62);
@@ -427,6 +428,16 @@ function complication_ampm_lower(fctx, draw, position, align, foreground_color, 
     var t = localtime(now);
   setlocale(LC_ALL, "");
   buffer_1 = strftime("%P", new Date());
+  if (draw) draw_string(fctx, buffer_1, position, font_main, foreground_color, fontsize_complications, align);
+  return string_width(fctx, buffer_1, font_main, fontsize_complications);
+}
+function complication_seconds(fctx, draw, position, align, foreground_color, background_color) {
+  var now = time(NULL);
+    var t = localtime(now);
+  setlocale(LC_ALL, "");
+  buffer_1 = strftime("%S", new Date());
+  buffer_1 = 
+  remove_leading_zero(buffer_1, sizeof(buffer_1));
   if (draw) draw_string(fctx, buffer_1, position, font_main, foreground_color, fontsize_complications, align);
   return string_width(fctx, buffer_1, font_main, fontsize_complications);
 }
