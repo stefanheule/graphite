@@ -121,7 +121,10 @@ void background_update_proc(Layer *layer, GContext *ctx) {
     FRect bounds_full = g2frect(layer_get_bounds(layer_background));
     height_full = bounds_full.size.h;
     width_full = bounds_full.size.w;
+// -- autogen
+// --     fontsize_complications = REM({{ fontsize_complications }});
     fontsize_complications = REM(27);
+// -- end autogen
 
     // get current time
     time_t now = time(NULL);
@@ -237,7 +240,7 @@ void background_update_proc(Layer *layer, GContext *ctx) {
 // --     buffer_1 = 
 // -- end jsalternative
     remove_leading_zero(buffer_1, sizeof(buffer_1));
-    fixed_t fontsize_date = (fixed_t)(width / 8);
+    fixed_t fontsize_date = REM(28);
     draw_string(fctx, buffer_1, FPoint(width / 2, height_full / 2 + fontsize_time / 3 - time_y_offset), font_main, config_color_info_below, fontsize_date, GTextAlignmentCenter);
 
     // progress bar

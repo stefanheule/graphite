@@ -302,7 +302,16 @@ complications = [
     'icon': ['true', 'false'],
     'autogen': ['icon_text'],
   }
-)
+) + [
+  {
+    'key': 'COMPLICATION_AMPM',
+    'desc': 'AM/PM',
+  },
+  {
+    'key': 'COMPLICATION_AMPM_LOWER',
+    'desc': 'am/pm',
+  },
+]
   # {
   #   'key': 'COMPLICATION_DISTANCE_KM',
   #   'desc': 'Distance walked (km)',
@@ -403,6 +412,7 @@ def get_context():
       'num_config_items': len(config),
       'message_keys': add_key_id(msg_keys, 'MSG_KEY_', 100),
       'perc_max_len': perc_max_len,
+      'fontsize_complications': 27,
     }
   return _context
 

@@ -254,8 +254,10 @@ var RedshiftPreview = (function () {
         var h = 30;
         var sep = REM(5);
         var fctx;
-        // unfortunately this line is duplicated
+// -- autogen
+// --         fontsize_complications = REM({{ fontsize_complications }});
         fontsize_complications = REM(27);
+// -- end autogen
 
         canvas.height = h;
         canvas.width = w;
@@ -297,6 +299,8 @@ var complications = [
     complication_steps, // id 13
     complication_steps_short_icon, // id 14
     complication_steps_short, // id 15
+    complication_ampm, // id 16
+    complication_ampm_lower, // id 17
 ];
 function draw_icon_number_complication(fctx, draw, position, align, foreground_color, background_color, icon, text, show_icon) {
   var fontsize_icon = (fontsize_complications * 0.62);
@@ -389,13 +393,13 @@ function complication_bluetooth_yesno(fctx, draw, position, align, foreground_co
     icon = "BH";
   }
   if (draw) draw_string(fctx, icon, FPoint(position.x, position.y + REM(11)), font_icon, foreground_color, fontsize_bt_icon, align);
-  return string_width(fctx, icon, font_icon, fontsize_complications);
+  return string_width(fctx, icon, font_icon, fontsize_bt_icon);
 }
 function complication_quiet_offonly(fctx, draw, position, align, foreground_color, background_color) {
   if (quiet_time_is_active()) {
     var fontsize_bt_icon = REM(25);
     if (draw) draw_string(fctx, "F", FPoint(position.x, position.y + REM(11)), font_icon, foreground_color, fontsize_bt_icon, align);
-    return string_width(fctx, "F", font_icon, fontsize_complications);
+    return string_width(fctx, "F", font_icon, fontsize_bt_icon);
   }
   return 0;
 }
@@ -406,7 +410,23 @@ function complication_quiet(fctx, draw, position, align, foreground_color, backg
     icon = "F";
   }
   if (draw) draw_string(fctx, icon, FPoint(position.x, position.y + REM(11)), font_icon, foreground_color, fontsize_bt_icon, align);
-  return string_width(fctx, icon, font_icon, fontsize_complications);
+  return string_width(fctx, icon, font_icon, fontsize_bt_icon);
+}
+function complication_ampm(fctx, draw, position, align, foreground_color, background_color) {
+  var now = time(NULL);
+    var t = localtime(now);
+  setlocale(LC_ALL, "");
+  buffer_1 = strftime("%p", new Date());
+  if (draw) draw_string(fctx, buffer_1, position, font_main, foreground_color, fontsize_complications, align);
+  return string_width(fctx, buffer_1, font_main, fontsize_complications);
+}
+function complication_ampm_lower(fctx, draw, position, align, foreground_color, background_color) {
+  var now = time(NULL);
+    var t = localtime(now);
+  setlocale(LC_ALL, "");
+  buffer_1 = strftime("%P", new Date());
+  if (draw) draw_string(fctx, buffer_1, position, font_main, foreground_color, fontsize_complications, align);
+  return string_width(fctx, buffer_1, font_main, fontsize_complications);
 }
 function complication_weather_cur_temp_icon(fctx, draw, position, align, foreground_color, background_color) {
   if (show_weather()) {
@@ -621,7 +641,7 @@ function background_update_proc(layer, ctx) {
     buffer_1 = strftime(config_info_below, new Date());
     buffer_1 = 
     remove_leading_zero(buffer_1, sizeof(buffer_1));
-    var fontsize_date = (width / 8);
+    var fontsize_date = REM(28);
     draw_string(fctx, buffer_1, FPoint(width / 2, height_full / 2 + fontsize_time / 3 - time_y_offset), font_main, config_color_info_below, fontsize_date, GTextAlignmentCenter);
     var progress_cur = 0;
     var progress_max = 10000;

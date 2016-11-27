@@ -45,6 +45,8 @@ complication_render_t complications[] = {
     complication_steps, // id 13
     complication_steps_short_icon, // id 14
     complication_steps_short, // id 15
+    complication_ampm, // id 16
+    complication_ampm_lower, // id 17
 // -- end autogen
 
 // -- jsalternative
@@ -167,14 +169,14 @@ fixed_t complication_bluetooth_yesno(FContext* fctx, bool draw, FPoint position,
     icon = "BH";
   }
   if (draw) draw_string(fctx, icon, FPoint(position.x, position.y + REM(11)), font_icon, foreground_color, fontsize_bt_icon, align);
-  return string_width(fctx, icon, font_icon, fontsize_complications);
+  return string_width(fctx, icon, font_icon, fontsize_bt_icon);
 }
 
 fixed_t complication_quiet_offonly(FContext* fctx, bool draw, FPoint position, GTextAlignment align, uint8_t foreground_color, uint8_t background_color) {
   if (quiet_time_is_active()) {
     fixed_t fontsize_bt_icon = REM(25);
     if (draw) draw_string(fctx, "F", FPoint(position.x, position.y + REM(11)), font_icon, foreground_color, fontsize_bt_icon, align);
-    return string_width(fctx, "F", font_icon, fontsize_complications);
+    return string_width(fctx, "F", font_icon, fontsize_bt_icon);
   }
   return 0;
 }
@@ -186,7 +188,25 @@ fixed_t complication_quiet(FContext* fctx, bool draw, FPoint position, GTextAlig
     icon = "F";
   }
   if (draw) draw_string(fctx, icon, FPoint(position.x, position.y + REM(11)), font_icon, foreground_color, fontsize_bt_icon, align);
-  return string_width(fctx, icon, font_icon, fontsize_complications);
+  return string_width(fctx, icon, font_icon, fontsize_bt_icon);
+}
+
+fixed_t complication_ampm(FContext* fctx, bool draw, FPoint position, GTextAlignment align, uint8_t foreground_color, uint8_t background_color) {
+  time_t now = time(NULL);
+    struct tm *t = localtime(&now);
+  setlocale(LC_ALL, "");
+  strftime(buffer_1, sizeof(buffer_1), "%p", t);
+  if (draw) draw_string(fctx, buffer_1, position, font_main, foreground_color, fontsize_complications, align);
+  return string_width(fctx, buffer_1, font_main, fontsize_complications);
+}
+
+fixed_t complication_ampm_lower(FContext* fctx, bool draw, FPoint position, GTextAlignment align, uint8_t foreground_color, uint8_t background_color) {
+  time_t now = time(NULL);
+    struct tm *t = localtime(&now);
+  setlocale(LC_ALL, "");
+  strftime(buffer_1, sizeof(buffer_1), "%P", t);
+  if (draw) draw_string(fctx, buffer_1, position, font_main, foreground_color, fontsize_complications, align);
+  return string_width(fctx, buffer_1, font_main, fontsize_complications);
 }
 
 fixed_t complication_weather_cur_temp_icon(FContext* fctx, bool draw, FPoint position, GTextAlignment align, uint8_t foreground_color, uint8_t background_color) {

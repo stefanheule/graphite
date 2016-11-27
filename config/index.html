@@ -135,7 +135,7 @@
         <canvas class="complication" id="complication-preview-8-canvas"></canvas>
       </div>
       <div class="complication-preview" id="complication-preview-9">
-        <p>Quiet time indicator</p>
+        <p>Quiet time indicator (two icons for on/off)</p>
         <canvas class="complication" id="complication-preview-9-canvas"></canvas>
       </div>
       <div class="complication-preview" id="complication-preview-10">
@@ -161,6 +161,14 @@
       <div class="complication-preview" id="complication-preview-15">
         <p>Steps abbreviated (no icon)</p>
         <canvas class="complication" id="complication-preview-15-canvas"></canvas>
+      </div>
+      <div class="complication-preview" id="complication-preview-16">
+        <p>AM/PM</p>
+        <canvas class="complication" id="complication-preview-16-canvas"></canvas>
+      </div>
+      <div class="complication-preview" id="complication-preview-17">
+        <p>am/pm</p>
+        <canvas class="complication" id="complication-preview-17-canvas"></canvas>
       </div>
 <!--
 // -- end autogen
@@ -1304,6 +1312,8 @@
       $("#complication-preview-13").on("click", function(){ pickComplication(13); });
       $("#complication-preview-14").on("click", function(){ pickComplication(14); });
       $("#complication-preview-15").on("click", function(){ pickComplication(15); });
+      $("#complication-preview-16").on("click", function(){ pickComplication(16); });
+      $("#complication-preview-17").on("click", function(){ pickComplication(17); });
 // -- end autogen
   }
 
@@ -1435,6 +1445,8 @@
       RedshiftPreview.previewComplication(13, config, 'complication-preview-13-canvas', getPlatform());
       RedshiftPreview.previewComplication(14, config, 'complication-preview-14-canvas', getPlatform());
       RedshiftPreview.previewComplication(15, config, 'complication-preview-15-canvas', getPlatform());
+      RedshiftPreview.previewComplication(16, config, 'complication-preview-16-canvas', getPlatform());
+      RedshiftPreview.previewComplication(17, config, 'complication-preview-17-canvas', getPlatform());
 // -- end autogen
 
       for (var i = 1; i < 7; i++) {
