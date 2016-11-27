@@ -37,12 +37,14 @@ complication_render_t complications[] = {
     complication_bluetooth_disconly_alt, // id 5
     complication_bluetooth_yesno, // id 6
     complication_battery_icon, // id 7
-    complication_heartrate_cur_icon, // id 8
-    complication_heartrate_cur, // id 9
-    complication_steps_icon, // id 10
-    complication_steps, // id 11
-    complication_steps_short_icon, // id 12
-    complication_steps_short, // id 13
+    complication_quiet_offonly, // id 8
+    complication_quiet, // id 9
+    complication_heartrate_cur_icon, // id 10
+    complication_heartrate_cur, // id 11
+    complication_steps_icon, // id 12
+    complication_steps, // id 13
+    complication_steps_short_icon, // id 14
+    complication_steps_short, // id 15
 // -- end autogen
 
 // -- jsalternative
@@ -163,6 +165,25 @@ fixed_t complication_bluetooth_yesno(FContext* fctx, bool draw, FPoint position,
   char* icon = "DH";
   if (!bluetooth_connection_service_peek()) {
     icon = "BH";
+  }
+  if (draw) draw_string(fctx, icon, FPoint(position.x, position.y + REM(11)), font_icon, foreground_color, fontsize_bt_icon, align);
+  return string_width(fctx, icon, font_icon, fontsize_complications);
+}
+
+fixed_t complication_quiet_offonly(FContext* fctx, bool draw, FPoint position, GTextAlignment align, uint8_t foreground_color, uint8_t background_color) {
+  if (quiet_time_is_active()) {
+    fixed_t fontsize_bt_icon = REM(25);
+    if (draw) draw_string(fctx, "F", FPoint(position.x, position.y + REM(11)), font_icon, foreground_color, fontsize_bt_icon, align);
+    return string_width(fctx, "F", font_icon, fontsize_complications);
+  }
+  return 0;
+}
+
+fixed_t complication_quiet(FContext* fctx, bool draw, FPoint position, GTextAlignment align, uint8_t foreground_color, uint8_t background_color) {
+  fixed_t fontsize_bt_icon = REM(25);
+  char* icon = "G";
+  if (quiet_time_is_active()) {
+    icon = "F";
   }
   if (draw) draw_string(fctx, icon, FPoint(position.x, position.y + REM(11)), font_icon, foreground_color, fontsize_bt_icon, align);
   return string_width(fctx, icon, font_icon, fontsize_complications);

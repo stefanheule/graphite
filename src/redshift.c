@@ -54,7 +54,7 @@ uint8_t config_lowbat_col = false;
 uint8_t config_complication_1 = 2;
 uint8_t config_complication_2 = 1;
 uint8_t config_complication_3 = 3;
-uint8_t config_complication_4 = 8;
+uint8_t config_complication_4 = 10;
 uint8_t config_complication_5 = 4;
 uint8_t config_complication_6 = 7;
 uint8_t config_progress = 1;
@@ -137,12 +137,12 @@ void handle_bluetooth(bool connected) {
     }
 
     // vibrate
-    if (vibrate) {
+    if (vibrate && !quiet_time_is_active()) {
         vibes_double_pulse();
     }
 
     // turn light on
-    if (show_popup) {
+    if (show_popup && !quiet_time_is_active()) {
         light_enable_interaction();
     }
 

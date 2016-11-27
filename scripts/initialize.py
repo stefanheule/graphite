@@ -268,6 +268,14 @@ complications = [
     'key': 'COMPLICATION_BATTERY_ICON',
     'desc': 'Battery icon',
   },
+  {
+    'key': 'COMPLICATION_QUIET_OFFONLY',
+    'desc': 'Quiet time enabled (only when on)',
+  },
+  {
+    'key': 'COMPLICATION_QUIET',
+    'desc': 'Quiet time indicator',
+  },
 ] + enum_complication(
   [
     {

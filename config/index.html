@@ -131,28 +131,36 @@
         <canvas class="complication" id="complication-preview-7-canvas"></canvas>
       </div>
       <div class="complication-preview" id="complication-preview-8">
-        <p>Heart rate</p>
+        <p>Quiet time enabled (only when on)</p>
         <canvas class="complication" id="complication-preview-8-canvas"></canvas>
       </div>
       <div class="complication-preview" id="complication-preview-9">
-        <p>Heart rate (no icon)</p>
+        <p>Quiet time indicator</p>
         <canvas class="complication" id="complication-preview-9-canvas"></canvas>
       </div>
       <div class="complication-preview" id="complication-preview-10">
-        <p>Steps</p>
+        <p>Heart rate</p>
         <canvas class="complication" id="complication-preview-10-canvas"></canvas>
       </div>
       <div class="complication-preview" id="complication-preview-11">
-        <p>Steps (no icon)</p>
+        <p>Heart rate (no icon)</p>
         <canvas class="complication" id="complication-preview-11-canvas"></canvas>
       </div>
       <div class="complication-preview" id="complication-preview-12">
-        <p>Steps abbreviated</p>
+        <p>Steps</p>
         <canvas class="complication" id="complication-preview-12-canvas"></canvas>
       </div>
       <div class="complication-preview" id="complication-preview-13">
-        <p>Steps abbreviated (no icon)</p>
+        <p>Steps (no icon)</p>
         <canvas class="complication" id="complication-preview-13-canvas"></canvas>
+      </div>
+      <div class="complication-preview" id="complication-preview-14">
+        <p>Steps abbreviated</p>
+        <canvas class="complication" id="complication-preview-14-canvas"></canvas>
+      </div>
+      <div class="complication-preview" id="complication-preview-15">
+        <p>Steps abbreviated (no icon)</p>
+        <canvas class="complication" id="complication-preview-15-canvas"></canvas>
       </div>
 <!--
 // -- end autogen
@@ -169,113 +177,7 @@
     <input type="text" class="hidden item-input" id='CONFIG_COMPLICATION_5'>
     <input type="text" class="hidden item-input" id='CONFIG_COMPLICATION_6'>
 
-    <div class='item-container'>
-      <div class='item-container-header'>Complications</div>
-      <div class='item-container-content'>
-        <label class='item'>
-          Top
-          <span style="float:right;">
-            <canvas class="complication" id="complication1"></canvas>
-            <canvas class="complication" id="complication2"></canvas>
-            <canvas class="complication" id="complication3"></canvas>
-          </span>
-        </label>
-      </div>
-      <div class='item-container-content'>
-        <label class='item'>
-          Bottom
-          <span style="float:right;">
-            <canvas class="complication" id="complication4"></canvas>
-            <canvas class="complication" id="complication5"></canvas>
-            <canvas class="complication" id="complication6"></canvas>
-          </span>
-        </label>
-        <div class="item-container-footer">
-          You can also directly click on the complication slots in the live preview to change them.
-        </div>
-      </div>
 
-      <div class="item-container-content">
-        <label class="item">
-          Show 24h rain forecast
-          <input id='CONFIG_WEATHER_RAIN_LOCAL' type='checkbox' class='item-toggle'>
-        </label>
-      </div>
-
-      <div class="item-container-content">
-        <label class="item">
-          Progress bar
-          <select id='CONFIG_PROGRESS' dir='rtl' class="item-select">
-            <option class="item-select-option" value="0">None</option>
-            <option class="item-select-option" value="1">Steps</option>
-            <option class="item-select-option" value="2">Battery</option>
-          </select>
-        </label>
-      </div>
-
-      <div class="item-container-content">
-        <label class="item">
-          Time Format
-          <div class="item-input-wrapper">
-            <input type="text" class="item-input" id='CONFIG_TIME_FORMAT'>
-          </div>
-        </label>
-        <div class="item-container-footer">
-          Format string can include the following tokens:
-          <table class="format">
-            <tr><td>%H</td><td>Hour (24h clock)</td></tr>
-            <tr><td>%I</td><td>Hour (12h clock)</td></tr>
-            <tr><td>%M</td><td>Minute</td></tr>
-          </table>
-          Default is
-<!--
-// -- autogen
-// --          {{ configuration_lookup["CONFIG_TIME_FORMAT"]["default"] }}.
--->
-         "%I:0%M".
-<!--
-// -- end autogen
--->
-          Leading zeros are removed.  Use 0 in front of a token to keep one leading zero.
-          <br>
-          <a href="https://sourceware.org/newlib/libc.html#strftime">Full format information</a>.
-        </div>
-      </div>
-
-      <div class="item-container-content">
-        <label class="item">
-          Information Below Time
-          <div class="item-input-wrapper">
-            <input type="text" class="item-input" id='CONFIG_INFO_BELOW'>
-          </div>
-        </label>
-        <div class="item-container-footer">
-          Format string can include the following tokens:
-          <table class="format">
-            <tr><td>%a</td><td>Abbreviated week day (Mon)</td></tr>
-            <tr><td>%A</td><td>Full week day (Monday)</td></tr>
-            <tr><td>%b</td><td>Abbreviated month (Jan)</td></tr>
-            <tr><td>%B</td><td>Full month (January)</td></tr>
-            <tr><td>%d</td><td>Day of the month (1-31)</td></tr>
-            <tr><td>%m</td><td>Month (1-12)</td></tr>
-            <tr><td>%Y</td><td>Year</td></tr>
-            <tr><td>%p</td><td>AM/PM</td></tr>
-            <tr><td>%P</td><td>am/pm</td></tr>
-          </table>
-          Default is
-<!--
-// -- autogen
-// --          {{ configuration_lookup["CONFIG_INFO_BELOW"]["default"] }}.
--->
-         "%A, %m/%d".
-<!--
-// -- end autogen
--->
-          Leading zeros are removed.  Use 0 in front of a token to keep one leading zero.
-        </div>
-      </div>
-
-    </div>
 
     <div class='item-container'>
       <div class='item-container-header'>Appearance</div>
@@ -431,6 +333,118 @@
 
     </div>
 
+
+
+    <div class='item-container'>
+      <div class='item-container-header'>Complications</div>
+      <div class='item-container-content'>
+        <label class='item'>
+          Top
+          <span style="float:right;">
+            <canvas class="complication" id="complication1"></canvas>
+            <canvas class="complication" id="complication2"></canvas>
+            <canvas class="complication" id="complication3"></canvas>
+          </span>
+        </label>
+      </div>
+      <div class='item-container-content'>
+        <label class='item'>
+          Bottom
+          <span style="float:right;">
+            <canvas class="complication" id="complication4"></canvas>
+            <canvas class="complication" id="complication5"></canvas>
+            <canvas class="complication" id="complication6"></canvas>
+          </span>
+        </label>
+        <div class="item-container-footer">
+          You can also directly click on the complication slots in the live preview to change them.
+        </div>
+      </div>
+
+      <div class="item-container-content">
+        <label class="item">
+          Show 24h rain forecast
+          <input id='CONFIG_WEATHER_RAIN_LOCAL' type='checkbox' class='item-toggle'>
+        </label>
+      </div>
+
+      <div class="item-container-content">
+        <label class="item">
+          Progress bar
+          <select id='CONFIG_PROGRESS' dir='rtl' class="item-select">
+            <option class="item-select-option" value="0">None</option>
+            <option class="item-select-option" value="1">Steps</option>
+            <option class="item-select-option" value="2">Battery</option>
+          </select>
+        </label>
+      </div>
+
+      <div class="item-container-content">
+        <label class="item">
+          Time Format
+          <div class="item-input-wrapper">
+            <input type="text" class="item-input" id='CONFIG_TIME_FORMAT'>
+          </div>
+        </label>
+        <div class="item-container-footer">
+          Format string can include the following tokens:
+          <table class="format">
+            <tr><td>%H</td><td>Hour (24h clock)</td></tr>
+            <tr><td>%I</td><td>Hour (12h clock)</td></tr>
+            <tr><td>%M</td><td>Minute</td></tr>
+          </table>
+          Default is
+<!--
+// -- autogen
+// --          {{ configuration_lookup["CONFIG_TIME_FORMAT"]["default"] }}.
+-->
+         "%I:0%M".
+<!--
+// -- end autogen
+-->
+          Leading zeros are removed.  Use 0 in front of a token to keep one leading zero.
+          <br>
+          <a href="https://sourceware.org/newlib/libc.html#strftime">Full format information</a>.
+        </div>
+      </div>
+
+      <div class="item-container-content">
+        <label class="item">
+          Information Below Time
+          <div class="item-input-wrapper">
+            <input type="text" class="item-input" id='CONFIG_INFO_BELOW'>
+          </div>
+        </label>
+        <div class="item-container-footer">
+          Format string can include the following tokens:
+          <table class="format">
+            <tr><td>%a</td><td>Abbreviated week day (Mon)</td></tr>
+            <tr><td>%A</td><td>Full week day (Monday)</td></tr>
+            <tr><td>%b</td><td>Abbreviated month (Jan)</td></tr>
+            <tr><td>%B</td><td>Full month (January)</td></tr>
+            <tr><td>%d</td><td>Day of the month (1-31)</td></tr>
+            <tr><td>%m</td><td>Month (1-12)</td></tr>
+            <tr><td>%Y</td><td>Year</td></tr>
+            <tr><td>%p</td><td>AM/PM</td></tr>
+            <tr><td>%P</td><td>am/pm</td></tr>
+          </table>
+          Default is
+<!--
+// -- autogen
+// --          {{ configuration_lookup["CONFIG_INFO_BELOW"]["default"] }}.
+-->
+         "%A, %m/%d".
+<!--
+// -- end autogen
+-->
+          Leading zeros are removed.  Use 0 in front of a token to keep one leading zero.
+        </div>
+      </div>
+
+    </div>
+
+
+
     <div class='item-container' id="GROUP_WEATHER">
       <div class='item-container-header'>Weather</div>
 
@@ -519,6 +533,9 @@
           Vibrate on Disconnect
           <input id='CONFIG_VIBRATE_DISCONNECT' type='checkbox' class='item-toggle'>
         </label>
+        <div class="item-container-footer">
+          Respects quiet time and only vibrates when quiet time is not active.
+        </div>
       </div>
 
       <div class='item-container-content'>
@@ -526,6 +543,9 @@
           Vibrate on Re-connect
           <input id='CONFIG_VIBRATE_RECONNECT' type='checkbox' class='item-toggle'>
         </label>
+        <div class="item-container-footer">
+          Respects quiet time and only vibrates when quiet time is not active.
+        </div>
       </div>
 
       <div class='item-container-content'>
@@ -1282,6 +1302,8 @@
       $("#complication-preview-11").on("click", function(){ pickComplication(11); });
       $("#complication-preview-12").on("click", function(){ pickComplication(12); });
       $("#complication-preview-13").on("click", function(){ pickComplication(13); });
+      $("#complication-preview-14").on("click", function(){ pickComplication(14); });
+      $("#complication-preview-15").on("click", function(){ pickComplication(15); });
 // -- end autogen
   }
 
@@ -1363,8 +1385,8 @@
 // --       if (getPlatform() == "{{ platform }}") $("#complication-preview-{{ key["id"] }}").hide();
 // -- ##   endfor
 // -- ## endfor
-      if (getPlatform() == "basalt") $("#complication-preview-8").hide();
-      if (getPlatform() == "basalt") $("#complication-preview-9").hide();
+      if (getPlatform() == "basalt") $("#complication-preview-10").hide();
+      if (getPlatform() == "basalt") $("#complication-preview-11").hide();
 // -- end autogen
 
     // update version information
@@ -1411,6 +1433,8 @@
       RedshiftPreview.previewComplication(11, config, 'complication-preview-11-canvas', getPlatform());
       RedshiftPreview.previewComplication(12, config, 'complication-preview-12-canvas', getPlatform());
       RedshiftPreview.previewComplication(13, config, 'complication-preview-13-canvas', getPlatform());
+      RedshiftPreview.previewComplication(14, config, 'complication-preview-14-canvas', getPlatform());
+      RedshiftPreview.previewComplication(15, config, 'complication-preview-15-canvas', getPlatform());
 // -- end autogen
 
       for (var i = 1; i < 7; i++) {

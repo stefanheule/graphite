@@ -286,12 +286,14 @@ var complications = [
     complication_bluetooth_disconly_alt, // id 5
     complication_bluetooth_yesno, // id 6
     complication_battery_icon, // id 7
-    complication_heartrate_cur_icon, // id 8
-    complication_heartrate_cur, // id 9
-    complication_steps_icon, // id 10
-    complication_steps, // id 11
-    complication_steps_short_icon, // id 12
-    complication_steps_short, // id 13
+    complication_quiet_offonly, // id 8
+    complication_quiet, // id 9
+    complication_heartrate_cur_icon, // id 10
+    complication_heartrate_cur, // id 11
+    complication_steps_icon, // id 12
+    complication_steps, // id 13
+    complication_steps_short_icon, // id 14
+    complication_steps_short, // id 15
 ];
 function draw_icon_number_complication(fctx, draw, position, align, foreground_color, background_color, icon, text, show_icon) {
   var fontsize_icon = (fontsize_complications * 0.62);
@@ -382,6 +384,23 @@ function complication_bluetooth_yesno(fctx, draw, position, align, foreground_co
   var icon = "DH";
   if (!bluetooth_connection_service_peek()) {
     icon = "BH";
+  }
+  if (draw) draw_string(fctx, icon, FPoint(position.x, position.y + REM(11)), font_icon, foreground_color, fontsize_bt_icon, align);
+  return string_width(fctx, icon, font_icon, fontsize_complications);
+}
+function complication_quiet_offonly(fctx, draw, position, align, foreground_color, background_color) {
+  if (quiet_time_is_active()) {
+    var fontsize_bt_icon = REM(25);
+    if (draw) draw_string(fctx, "F", FPoint(position.x, position.y + REM(11)), font_icon, foreground_color, fontsize_bt_icon, align);
+    return string_width(fctx, "F", font_icon, fontsize_complications);
+  }
+  return 0;
+}
+function complication_quiet(fctx, draw, position, align, foreground_color, background_color) {
+  var fontsize_bt_icon = REM(25);
+  var icon = "G";
+  if (quiet_time_is_active()) {
+    icon = "F";
   }
   if (draw) draw_string(fctx, icon, FPoint(position.x, position.y + REM(11)), font_icon, foreground_color, fontsize_bt_icon, align);
   return string_width(fctx, icon, font_icon, fontsize_complications);
@@ -763,7 +782,7 @@ function background_update_proc(layer, ctx) {
             CONFIG_COMPLICATION_1: +2,
             CONFIG_COMPLICATION_2: +1,
             CONFIG_COMPLICATION_3: +3,
-            CONFIG_COMPLICATION_4: +8,
+            CONFIG_COMPLICATION_4: +10,
             CONFIG_COMPLICATION_5: +4,
             CONFIG_COMPLICATION_6: +7,
             CONFIG_PROGRESS: +1,
