@@ -60,6 +60,7 @@ uint8_t config_complication_6 = 7;
 uint8_t config_progress = 1;
 char config_time_format[REDSHIFT_STRINGCONFIG_MAXLEN+1] = "%I:0%M";
 char config_info_below[REDSHIFT_STRINGCONFIG_MAXLEN+1] = "%A, %m/%d";
+uint8_t config_update_second = false;
 // -- end autogen
 
 
@@ -194,6 +195,9 @@ void subscribe_tick(bool also_unsubscribe) {
         tick_timer_service_unsubscribe();
     }
     TimeUnits unit = MINUTE_UNIT;
+    if (config_update_second) {
+        unit = SECOND_UNIT;
+    }
     tick_timer_service_subscribe(unit, handle_second_tick);
 }
 

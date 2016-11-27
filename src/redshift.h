@@ -70,11 +70,12 @@
 #define CONFIG_PROGRESS 34
 #define CONFIG_TIME_FORMAT 35
 #define CONFIG_INFO_BELOW 36
+#define CONFIG_UPDATE_SECOND 37
 // -- end autogen
 
 // -- autogen
 // -- #define REDSHIFT_N_CONFIG {{ num_config_items }}
-#define REDSHIFT_N_CONFIG 36
+#define REDSHIFT_N_CONFIG 37
 // -- end autogen
 
 // -- autogen
@@ -143,6 +144,7 @@ extern uint8_t config_complication_6;
 extern uint8_t config_progress;
 extern char config_time_format[REDSHIFT_STRINGCONFIG_MAXLEN+1];
 extern char config_info_below[REDSHIFT_STRINGCONFIG_MAXLEN+1];
+extern uint8_t config_update_second;
 // -- end autogen
 
 

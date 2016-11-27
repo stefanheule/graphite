@@ -212,6 +212,10 @@ configuration = [
     'default': '"%A, %m/%d"',
     'type': 'string'
   },
+  {
+    'key': 'CONFIG_UPDATE_SECOND',
+    'default': 'false',
+  },
 ]
 
 simple_config = [

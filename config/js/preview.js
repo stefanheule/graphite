@@ -65,6 +65,7 @@ var RedshiftPreview = (function () {
      var config_progress;
      var config_time_format;
      var config_info_below;
+     var config_update_second;
 // -- end autogen
 
     function getWeather() {
@@ -238,6 +239,7 @@ var RedshiftPreview = (function () {
         config_progress = config["CONFIG_PROGRESS"];
         config_time_format = config["CONFIG_TIME_FORMAT"];
         config_info_below = config["CONFIG_INFO_BELOW"];
+        config_update_second = config["CONFIG_UPDATE_SECOND"];
 // -- end autogen
 
         weather = getWeather(platform);
@@ -811,6 +813,7 @@ function background_update_proc(layer, ctx) {
             CONFIG_PROGRESS: +1,
             CONFIG_TIME_FORMAT: "%I:0%M",
             CONFIG_INFO_BELOW: "%A, %m/%d",
+            CONFIG_UPDATE_SECOND: +false,
 // -- end autogen
         };
         return cloneConfig(defaults);
