@@ -5,7 +5,7 @@
     <meta name=viewport content="width=device-width, initial-scale=1" />
     <link rel='stylesheet' type='text/css' href='css/slate.min.css'>
     <link rel='stylesheet' type='text/css' href='css/fonts.css'>
-    <!-- <link href="https://fonts.googleapis.com/css?family=Open+Sans+Condensed:700" rel="stylesheet"> -->
+    <<link href="https://fonts.googleapis.com/css?family=Open+Sans+Condensed:700" rel="stylesheet">
     <script src='js/slate.js'></script>
     <script src='js/gcolor.js'></script>
     <script src='js/pebble.js'></script>
@@ -119,16 +119,24 @@
         <canvas class="complication" id="complication-preview-4-canvas"></canvas>
       </div>
       <div class="complication-preview" id="complication-preview-5">
-        <p>Heart rate</p>
+        <p>Battery icon</p>
         <canvas class="complication" id="complication-preview-5-canvas"></canvas>
       </div>
       <div class="complication-preview" id="complication-preview-6">
-        <p>Battery icon</p>
+        <p>Heart rate</p>
         <canvas class="complication" id="complication-preview-6-canvas"></canvas>
       </div>
       <div class="complication-preview" id="complication-preview-7">
-        <p>Steps</p>
+        <p>Heart rate(no icon)(no icon)</p>
         <canvas class="complication" id="complication-preview-7-canvas"></canvas>
+      </div>
+      <div class="complication-preview" id="complication-preview-8">
+        <p>Steps</p>
+        <canvas class="complication" id="complication-preview-8-canvas"></canvas>
+      </div>
+      <div class="complication-preview" id="complication-preview-9">
+        <p>Steps(no icon)(no icon)</p>
+        <canvas class="complication" id="complication-preview-9-canvas"></canvas>
       </div>
 <!--
 // -- end autogen
@@ -1252,6 +1260,8 @@
       $("#complication-preview-5").on("click", function(){ pickComplication(5); });
       $("#complication-preview-6").on("click", function(){ pickComplication(6); });
       $("#complication-preview-7").on("click", function(){ pickComplication(7); });
+      $("#complication-preview-8").on("click", function(){ pickComplication(8); });
+      $("#complication-preview-9").on("click", function(){ pickComplication(9); });
 // -- end autogen
   }
 
@@ -1333,7 +1343,8 @@
 // --       if (getPlatform() == "{{ platform }}") $("#complication-preview-{{ key["id"] }}").hide();
 // -- ##   endfor
 // -- ## endfor
-      if (getPlatform() == "basalt") $("#complication-preview-5").hide();
+      if (getPlatform() == "basalt") $("#complication-preview-6").hide();
+      if (getPlatform() == "basalt") $("#complication-preview-7").hide();
 // -- end autogen
 
     // update version information
@@ -1374,6 +1385,8 @@
       RedshiftPreview.previewComplication(5, config, 'complication-preview-5-canvas', getPlatform());
       RedshiftPreview.previewComplication(6, config, 'complication-preview-6-canvas', getPlatform());
       RedshiftPreview.previewComplication(7, config, 'complication-preview-7-canvas', getPlatform());
+      RedshiftPreview.previewComplication(8, config, 'complication-preview-8-canvas', getPlatform());
+      RedshiftPreview.previewComplication(9, config, 'complication-preview-9-canvas', getPlatform());
 // -- end autogen
 
       for (var i = 1; i < 7; i++) {

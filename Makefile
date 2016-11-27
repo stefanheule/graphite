@@ -20,7 +20,7 @@ deploy: install_deploy
 build: initialize
 	# copy fonts
 	cp resources/fonts/nupe2.ttf config/fonts/nupe2.ttf
-	cp resources/fonts/fontawesome-webfont.ttf config/fonts/FontAwesome.ttf
+	cp resources/fonts/fasubset.ttf config/fonts/fasubset.ttf
 	pebble build
 
 initialize:
@@ -84,9 +84,13 @@ clean_header:
 updated_config:
 	src/scripts/updated_config.sh
 
+font_dl:
+	./node_modules/fontello-cli/bin/fontello-cli install --config resources/fonts/fontello-config.json --font resources/fonts --css resources/fonts
+	rm -rf resources/fonts/animation.css resources/fonts/fasubset-codes.css resources/fonts/fasubset-embedded.css resources/fonts/fasubset-ie7-codes.css resources/fonts/fasubset-ie7.css resources/fonts/fasubset.css resources/fonts/fasubset.eot resources/fonts/fasubset.woff resources/fonts/fasubset.woff2
+
 font_build:
 	node_modules/pebble-fctx-compiler/fctx-compiler.js -r "[A-Ia-jz]" resources/fonts/nupe2.svg
-	node_modules/pebble-fctx-compiler/fctx-compiler.js -r "[0123]" resources/fonts/FontAwesome.svg
 	node_modules/pebble-fctx-compiler/fctx-compiler.js -r "[0-9a-zA-Z.:\-/° ,]" resources/fonts/OpenSans-CondensedBold.svg
+	node_modules/pebble-fctx-compiler/fctx-compiler.js -r "." resources/fonts/fasubset.svg
 
 .PHONY: all deploy build build_quiet config log resources install_emulator install_deploy menu_icon screenshots screenshot screenshot_config write_header clean clean_header

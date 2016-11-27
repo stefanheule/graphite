@@ -3,6 +3,6 @@
     src:url("../fonts/nupe2.ttf") format('truetype');
 }
 @font-face {
-    font-family: 'FontAwesome';
-    src:url("../fonts/FontAwesome.ttf") format('truetype');
+    font-family: 'fasubset';
+    src:url("../fonts/fasubset.ttf") format('truetype');
 }

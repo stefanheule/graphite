@@ -18,7 +18,7 @@ var RedshiftPreview = (function () {
     var buffer_1, buffer_2, buffer_3, buffer_4;
     var font_main = 'Open Sans Condensed';
     var font_weather = 'nupe2';
-    var font_icon = 'FontAwesome';
+    var font_icon = 'fasubset';
     var show_bluetooth_popup = false;
     var layer_background = 0;
     var fontsize_complications;
@@ -162,9 +162,6 @@ var RedshiftPreview = (function () {
             py -= size * 0.2;
         }
         if (font == font_icon) {
-            if (str == "1") str = "\uf004";
-            if (str == "2") str = "\uf293";
-            if (str == "3") str = "\uf294";
             py -= REM(9);
             size *= 0.8;
         }
@@ -286,13 +283,14 @@ var complications = [
     complication_weather_low_temp, // id 2
     complication_weather_high_temp, // id 3
     complication_bluetooth_disconly, // id 4
-    complication_heartrate_cur, // id 5
-    complication_battery_icon, // id 6
-    complication_steps, // id 7
+    complication_battery_icon, // id 5
+    complication_heartrate_cur_icon, // id 6
+    complication_heartrate_cur, // id 7
+    complication_steps_icon, // id 8
+    complication_steps, // id 9
 ];
-function draw_icon_number_complication(fctx, draw, position, align, foreground_color, background_color, icon, num, formater, show_icon, data) {
+function draw_icon_number_complication(fctx, draw, position, align, foreground_color, background_color, icon, text, show_icon) {
   var fontsize_icon = (fontsize_complications * 0.53);
-  var text = formater(num, data);
   var w1 = !show_icon ? 0 : string_width(fctx, icon, font_icon, fontsize_icon);
   var w2 = string_width(fctx, text, font_main, fontsize_complications);
   var sep = REM(2);
@@ -314,25 +312,11 @@ function draw_icon_number_complication(fctx, draw, position, align, foreground_c
   }
   return w;
 }
-function format_unitless(num, data) {
+function format_unitless(num) {
   buffer_1 = sprintf("%d", num);
   return buffer_1;
 }
-function complication_steps(fctx, draw, position, align, foreground_color, background_color) {
-  var num = 0;
-  var format = format_unitless;
-  var icon = "1";
-  var show_icon = true;
-  var data = 0;
-  return draw_icon_number_complication(fctx, draw, position, align, foreground_color, background_color, icon, num, format, show_icon, data);
-}
 function complication_empty(fctx, draw, position, align, foreground_color, background_color) {
-  return 0;
-}
-function complication_heartrate_cur(fctx, draw, position, align, foreground_color, background_color) {
-  var hr = health_service_peek_current_value(HealthMetricHeartRateBPM);
-  if (hr != 0) {
-  }
   return 0;
 }
 function complication_battery_icon(fctx, draw, position, align, foreground_color, background_color) {
@@ -359,8 +343,8 @@ function complication_battery_icon(fctx, draw, position, align, foreground_color
 function complication_bluetooth_disconly(fctx, draw, position, align, foreground_color, background_color) {
   if (!bluetooth_connection_service_peek()) {
     var fontsize_bt_icon = REM(23);
-    if (draw) draw_string(fctx, "2", FPoint(position.x, position.y + REM(11)), font_icon, foreground_color, fontsize_bt_icon, align);
-    return string_width(fctx, "2", font_icon, fontsize_complications);
+    if (draw) draw_string(fctx, "H", FPoint(position.x, position.y + REM(11)), font_icon, foreground_color, fontsize_bt_icon, align);
+    return string_width(fctx, "H", font_icon, fontsize_complications);
   }
   return 0;
 }
@@ -399,6 +383,18 @@ function complication_weather_high_temp(fctx, draw, position, align, foreground_
     return string_width(fctx, buffer_1, font_main, fontsize_complications);
   }
   return 0;
+}
+function complication_heartrate_cur_icon(fctx, draw, position, align, foreground_color, background_color) {
+  return draw_icon_number_complication(fctx, draw, position, align, foreground_color, background_color, "J", format_unitless(health_service_peek_current_value(HealthMetricHeartRateBPM)), true);
+}
+function complication_heartrate_cur(fctx, draw, position, align, foreground_color, background_color) {
+  return draw_icon_number_complication(fctx, draw, position, align, foreground_color, background_color, "J", format_unitless(health_service_peek_current_value(HealthMetricHeartRateBPM)), false);
+}
+function complication_steps_icon(fctx, draw, position, align, foreground_color, background_color) {
+  return draw_icon_number_complication(fctx, draw, position, align, foreground_color, background_color, "A", format_unitless(health_service_sum_today(HealthMetricStepCount)), true);
+}
+function complication_steps(fctx, draw, position, align, foreground_color, background_color) {
+  return draw_icon_number_complication(fctx, draw, position, align, foreground_color, background_color, "A", format_unitless(health_service_sum_today(HealthMetricStepCount)), false);
 }
 // -- end autogen
 
@@ -723,9 +719,9 @@ function background_update_proc(layer, ctx) {
             CONFIG_COMPLICATION_1: +2,
             CONFIG_COMPLICATION_2: +1,
             CONFIG_COMPLICATION_3: +3,
-            CONFIG_COMPLICATION_4: +5,
+            CONFIG_COMPLICATION_4: +7,
             CONFIG_COMPLICATION_5: +4,
-            CONFIG_COMPLICATION_6: +6,
+            CONFIG_COMPLICATION_6: +5,
             CONFIG_PROGRESS: +1,
             CONFIG_TIME_FORMAT: "%I:0%M",
             CONFIG_INFO_BELOW: "%A, %m/%d",

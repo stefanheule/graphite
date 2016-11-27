@@ -31,7 +31,7 @@
         {
           "type": "raw",
           "name": "ICON_FFONT",
-          "file": "FontAwesome.ffont"
+          "file": "fasubset.ffont"
         },
         {
           "type": "raw",
@@ -62,7 +62,8 @@
     }
   },
   "devDependencies": {
-    "pebble-fctx-compiler": "^1.2.1"
+    "pebble-fctx-compiler": "^1.2.1",
+    "fontello-cli": "^0.4.0"
   },
   "dependencies": {
     "pebble-fctx": "^1.6.2"

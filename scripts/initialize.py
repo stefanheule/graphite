@@ -5,6 +5,30 @@ from jinja2 import Environment, FileSystemLoader
 import sys
 import re
 import codecs
+import itertools
+import copy
+
+def flatten(l): return [x for y in l for x in y]
+
+def enum_complication(compl, m):
+  if isinstance(compl, list): return flatten(map(lambda x: enum_complication(x, m), compl))
+  res = []
+  for element in itertools.product(*[map(lambda v: (k, v), m[k]) for k in reversed(m.keys())]):
+    tmp = copy.copy(compl)
+    iden = compl["key"]
+    info = []
+    for (k, v) in element:
+      tmp[k] = v
+      if v in ["true", "false"]:
+        if v == "false":
+          info.append("no %s" % (k))
+        else:
+          iden += ("_%s" % (k)).upper()
+      tmp["key"] = iden
+      if len(info) > 0:
+        tmp["desc"] += "(%s)" % (", ".join(info))
+    res.append(tmp)
+  return res
 
 # ------------------------------------------------------------------------------
 # --- configuration
@@ -233,18 +257,30 @@ complications = [
     'desc': 'Bluetooth (on disconnect only)',
   },
   {
-    'key': 'COMPLICATION_HEARTRATE_CUR',
-    'desc': 'Heart rate',
-    'noton': ['basalt'],
-  },
-  {
     'key': 'COMPLICATION_BATTERY_ICON',
     'desc': 'Battery icon',
   },
+] + enum_complication(
+  [
+    {
+      'key': 'COMPLICATION_HEARTRATE_CUR',
+      'desc': 'Heart rate',
+      'noton': ['basalt'],
+      'icontext': 'J',
+      'text': 'format_unitless((int)health_service_peek_current_value(HealthMetricHeartRateBPM))',
+    },
+    {
+      'key': 'COMPLICATION_STEPS',
+      'desc': 'Steps',
+      'icontext': 'A',
+      'text': 'format_unitless(health_service_sum_today(HealthMetricStepCount))',
+    }
+  ],
   {
-    'key': 'COMPLICATION_STEPS',
-    'desc': 'Steps',
-  },
+    'icon': ['true', 'false'],
+    'autogen': ['icon_text'],
+  }
+)
   # {
   #   'key': 'COMPLICATION_DISTANCE_KM',
   #   'desc': 'Distance walked (km)',
@@ -277,7 +313,6 @@ complications = [
   #   'key': 'COMPLICATION_',
   #   'desc': 'Battery',
   # },
-]
 
 config_groups = [
   {

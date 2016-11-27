@@ -34,9 +34,11 @@ complication_render_t complications[] = {
     complication_weather_low_temp, // id 2
     complication_weather_high_temp, // id 3
     complication_bluetooth_disconly, // id 4
-    complication_heartrate_cur, // id 5
-    complication_battery_icon, // id 6
-    complication_steps, // id 7
+    complication_battery_icon, // id 5
+    complication_heartrate_cur_icon, // id 6
+    complication_heartrate_cur, // id 7
+    complication_steps_icon, // id 8
+    complication_steps, // id 9
 // -- end autogen
 
 // -- jsalternative
@@ -51,9 +53,8 @@ complication_render_t complications[] = {
 
 typedef char* (*num_formater_t)(int num, void* data);
 
-fixed_t draw_icon_number_complication(FContext* fctx, bool draw, FPoint position, GTextAlignment align, uint8_t foreground_color, uint8_t background_color, const char* icon, int num, num_formater_t formater, bool show_icon, void* data) {
+fixed_t draw_icon_number_complication(FContext* fctx, bool draw, FPoint position, GTextAlignment align, uint8_t foreground_color, uint8_t background_color, const char* icon, const char* text, bool show_icon) {
   fixed_t fontsize_icon = (fixed_t)(fontsize_complications * 0.53);
-  const char* text = formater(num, data);
   fixed_t w1 = !show_icon ? 0 : string_width(fctx, icon, font_icon, fontsize_icon);
   fixed_t w2 = string_width(fctx, text, font_main, fontsize_complications);
   fixed_t sep = REM(2);
@@ -78,34 +79,25 @@ fixed_t draw_icon_number_complication(FContext* fctx, bool draw, FPoint position
   return w;
 }
 
-char* format_unitless(int num, void* data) {
+char* format_unitless(int num) {
   snprintf(buffer_1, 10, "%d", num);
   return buffer_1;
-}
-
-fixed_t complication_steps(FContext* fctx, bool draw, FPoint position, GTextAlignment align, uint8_t foreground_color, uint8_t background_color) {
-  int num = 0;
-  num_formater_t format = format_unitless;
-  const char* icon = "1";
-  bool show_icon = true;
-  int data = 0;
-  return draw_icon_number_complication(fctx, draw, position, align, foreground_color, background_color, icon, num, format, show_icon, &data);
 }
 
 fixed_t complication_empty(FContext* fctx, bool draw, FPoint position, GTextAlignment align, uint8_t foreground_color, uint8_t background_color) {
   return 0;
 }
 
-fixed_t complication_heartrate_cur(FContext* fctx, bool draw, FPoint position, GTextAlignment align, uint8_t foreground_color, uint8_t background_color) {
-  HealthValue hr = health_service_peek_current_value(HealthMetricHeartRateBPM);
-  if (hr != 0) {
-  //    HealthValue resthr = health_service_peek_current_value(HealthMetricRestingHeartRateBPM);
-      // snprintf(buffer_1, 10, "%i", (int)hr);
-      // draw_string(fctx, "1", FPoint(complications_margin_leftright, height_full - REM(13)), font_icon, config_color_bottom_complications, REM(15), GTextAlignmentLeft);
-      // draw_string(fctx, buffer_1, FPoint(complications_margin_leftright + REM(16), height_full - REM(26)), font_main, config_color_bottom_complications, fontsize_complications, GTextAlignmentLeft);
-  }
-  return 0;
-}
+// fixed_t complication_heartrate_cur(FContext* fctx, bool draw, FPoint position, GTextAlignment align, uint8_t foreground_color, uint8_t background_color) {
+//   HealthValue hr = ;
+//   if (hr != 0) {
+//   //    HealthValue resthr = health_service_peek_current_value(HealthMetricRestingHeartRateBPM);
+//       // snprintf(buffer_1, 10, "%i", (int)hr);
+//       // draw_string(fctx, "1", FPoint(complications_margin_leftright, height_full - REM(13)), font_icon, config_color_bottom_complications, REM(15), GTextAlignmentLeft);
+//       // draw_string(fctx, buffer_1, FPoint(complications_margin_leftright + REM(16), height_full - REM(26)), font_main, config_color_bottom_complications, fontsize_complications, GTextAlignmentLeft);
+//   }
+//   return 0;
+// }
 
 fixed_t complication_battery_icon(FContext* fctx, bool draw, FPoint position, GTextAlignment align, uint8_t foreground_color, uint8_t background_color) {
 
@@ -140,8 +132,8 @@ fixed_t complication_battery_icon(FContext* fctx, bool draw, FPoint position, GT
 fixed_t complication_bluetooth_disconly(FContext* fctx, bool draw, FPoint position, GTextAlignment align, uint8_t foreground_color, uint8_t background_color) {
   if (!bluetooth_connection_service_peek()) {
     fixed_t fontsize_bt_icon = REM(23);
-    if (draw) draw_string(fctx, "2", FPoint(position.x, position.y + REM(11)), font_icon, foreground_color, fontsize_bt_icon, align);
-    return string_width(fctx, "2", font_icon, fontsize_complications);
+    if (draw) draw_string(fctx, "H", FPoint(position.x, position.y + REM(11)), font_icon, foreground_color, fontsize_bt_icon, align);
+    return string_width(fctx, "H", font_icon, fontsize_complications);
   }
   return 0;
 }
@@ -184,3 +176,30 @@ fixed_t complication_weather_high_temp(FContext* fctx, bool draw, FPoint positio
   }
   return 0;
 }
+
+
+
+
+// -- autogen
+// -- ## for key in complications
+// -- ## if key["autogen"] == "icon_text"
+// -- fixed_t {{ key["key"] | lower }}(FContext* fctx, bool draw, FPoint position, GTextAlignment align, uint8_t foreground_color, uint8_t background_color) {
+// --   return draw_icon_number_complication(fctx, draw, position, align, foreground_color, background_color, "{{ key["icontext"] }}", {{ key["text"] }}, {{ key["icon"] }});
+// -- }
+// -- ## endif
+// -- 
+// -- 
+// -- ## endfor
+fixed_t complication_heartrate_cur_icon(FContext* fctx, bool draw, FPoint position, GTextAlignment align, uint8_t foreground_color, uint8_t background_color) {
+  return draw_icon_number_complication(fctx, draw, position, align, foreground_color, background_color, "J", format_unitless((int)health_service_peek_current_value(HealthMetricHeartRateBPM)), true);
+}
+fixed_t complication_heartrate_cur(FContext* fctx, bool draw, FPoint position, GTextAlignment align, uint8_t foreground_color, uint8_t background_color) {
+  return draw_icon_number_complication(fctx, draw, position, align, foreground_color, background_color, "J", format_unitless((int)health_service_peek_current_value(HealthMetricHeartRateBPM)), false);
+}
+fixed_t complication_steps_icon(FContext* fctx, bool draw, FPoint position, GTextAlignment align, uint8_t foreground_color, uint8_t background_color) {
+  return draw_icon_number_complication(fctx, draw, position, align, foreground_color, background_color, "A", format_unitless(health_service_sum_today(HealthMetricStepCount)), true);
+}
+fixed_t complication_steps(FContext* fctx, bool draw, FPoint position, GTextAlignment align, uint8_t foreground_color, uint8_t background_color) {
+  return draw_icon_number_complication(fctx, draw, position, align, foreground_color, background_color, "A", format_unitless(health_service_sum_today(HealthMetricStepCount)), false);
+}
+// -- end autogen
