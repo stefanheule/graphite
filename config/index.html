@@ -119,24 +119,40 @@
         <canvas class="complication" id="complication-preview-4-canvas"></canvas>
       </div>
       <div class="complication-preview" id="complication-preview-5">
-        <p>Battery icon</p>
+        <p>Bluetooth (on disconnect only), alternative</p>
         <canvas class="complication" id="complication-preview-5-canvas"></canvas>
       </div>
       <div class="complication-preview" id="complication-preview-6">
-        <p>Heart rate</p>
+        <p>Bluetooth (yes/no)</p>
         <canvas class="complication" id="complication-preview-6-canvas"></canvas>
       </div>
       <div class="complication-preview" id="complication-preview-7">
-        <p>Heart rate (no icon)</p>
+        <p>Battery icon</p>
         <canvas class="complication" id="complication-preview-7-canvas"></canvas>
       </div>
       <div class="complication-preview" id="complication-preview-8">
-        <p>Steps</p>
+        <p>Heart rate</p>
         <canvas class="complication" id="complication-preview-8-canvas"></canvas>
       </div>
       <div class="complication-preview" id="complication-preview-9">
-        <p>Steps (no icon)</p>
+        <p>Heart rate (no icon)</p>
         <canvas class="complication" id="complication-preview-9-canvas"></canvas>
+      </div>
+      <div class="complication-preview" id="complication-preview-10">
+        <p>Steps</p>
+        <canvas class="complication" id="complication-preview-10-canvas"></canvas>
+      </div>
+      <div class="complication-preview" id="complication-preview-11">
+        <p>Steps (no icon)</p>
+        <canvas class="complication" id="complication-preview-11-canvas"></canvas>
+      </div>
+      <div class="complication-preview" id="complication-preview-12">
+        <p>Steps abbreviated</p>
+        <canvas class="complication" id="complication-preview-12-canvas"></canvas>
+      </div>
+      <div class="complication-preview" id="complication-preview-13">
+        <p>Steps abbreviated (no icon)</p>
+        <canvas class="complication" id="complication-preview-13-canvas"></canvas>
       </div>
 <!--
 // -- end autogen
@@ -1262,6 +1278,10 @@
       $("#complication-preview-7").on("click", function(){ pickComplication(7); });
       $("#complication-preview-8").on("click", function(){ pickComplication(8); });
       $("#complication-preview-9").on("click", function(){ pickComplication(9); });
+      $("#complication-preview-10").on("click", function(){ pickComplication(10); });
+      $("#complication-preview-11").on("click", function(){ pickComplication(11); });
+      $("#complication-preview-12").on("click", function(){ pickComplication(12); });
+      $("#complication-preview-13").on("click", function(){ pickComplication(13); });
 // -- end autogen
   }
 
@@ -1343,8 +1363,8 @@
 // --       if (getPlatform() == "{{ platform }}") $("#complication-preview-{{ key["id"] }}").hide();
 // -- ##   endfor
 // -- ## endfor
-      if (getPlatform() == "basalt") $("#complication-preview-6").hide();
-      if (getPlatform() == "basalt") $("#complication-preview-7").hide();
+      if (getPlatform() == "basalt") $("#complication-preview-8").hide();
+      if (getPlatform() == "basalt") $("#complication-preview-9").hide();
 // -- end autogen
 
     // update version information
@@ -1387,6 +1407,10 @@
       RedshiftPreview.previewComplication(7, config, 'complication-preview-7-canvas', getPlatform());
       RedshiftPreview.previewComplication(8, config, 'complication-preview-8-canvas', getPlatform());
       RedshiftPreview.previewComplication(9, config, 'complication-preview-9-canvas', getPlatform());
+      RedshiftPreview.previewComplication(10, config, 'complication-preview-10-canvas', getPlatform());
+      RedshiftPreview.previewComplication(11, config, 'complication-preview-11-canvas', getPlatform());
+      RedshiftPreview.previewComplication(12, config, 'complication-preview-12-canvas', getPlatform());
+      RedshiftPreview.previewComplication(13, config, 'complication-preview-13-canvas', getPlatform());
 // -- end autogen
 
       for (var i = 1; i < 7; i++) {

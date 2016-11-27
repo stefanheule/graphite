@@ -257,6 +257,14 @@ complications = [
     'desc': 'Bluetooth (on disconnect only)',
   },
   {
+    'key': 'COMPLICATION_BLUETOOTH_DISCONLY_ALT',
+    'desc': 'Bluetooth (on disconnect only), alternative',
+  },
+  {
+    'key': 'COMPLICATION_BLUETOOTH_YESNO',
+    'desc': 'Bluetooth (yes/no)',
+  },
+  {
     'key': 'COMPLICATION_BATTERY_ICON',
     'desc': 'Battery icon',
   },
@@ -274,7 +282,13 @@ complications = [
       'desc': 'Steps',
       'icontext': 'A',
       'text': 'format_unitless(health_service_sum_today(HealthMetricStepCount))',
-    }
+    },
+    {
+      'key': 'COMPLICATION_STEPS_SHORT',
+      'desc': 'Steps abbreviated',
+      'icontext': 'A',
+      'text': 'format_thousands(health_service_sum_today(HealthMetricStepCount))',
+    },
   ],
   {
     'icon': ['true', 'false'],
