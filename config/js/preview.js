@@ -290,7 +290,7 @@ var complications = [
     complication_steps, // id 9
 ];
 function draw_icon_number_complication(fctx, draw, position, align, foreground_color, background_color, icon, text, show_icon) {
-  var fontsize_icon = (fontsize_complications * 0.53);
+  var fontsize_icon = (fontsize_complications * 0.62);
   var w1 = !show_icon ? 0 : string_width(fctx, icon, font_icon, fontsize_icon);
   var w2 = string_width(fctx, text, font_main, fontsize_complications);
   var sep = REM(2);
@@ -298,7 +298,7 @@ function draw_icon_number_complication(fctx, draw, position, align, foreground_c
   var a = GTextAlignmentLeft;
   var color = foreground_color;
   if (draw) {
-      var icon_y = position.y + fontsize_icon/8;
+      var icon_y = position.y + fontsize_icon*0.8;
       if (align == GTextAlignmentCenter) {
           if (w1) draw_string(fctx, icon, FPoint(position.x - w/2, icon_y), font_icon, color, fontsize_icon, a);
           draw_string(fctx, text, FPoint(position.x - w/2 + w1 + sep, position.y), font_main, color, fontsize_complications, a);
@@ -719,7 +719,7 @@ function background_update_proc(layer, ctx) {
             CONFIG_COMPLICATION_1: +2,
             CONFIG_COMPLICATION_2: +1,
             CONFIG_COMPLICATION_3: +3,
-            CONFIG_COMPLICATION_4: +7,
+            CONFIG_COMPLICATION_4: +6,
             CONFIG_COMPLICATION_5: +4,
             CONFIG_COMPLICATION_6: +5,
             CONFIG_PROGRESS: +1,

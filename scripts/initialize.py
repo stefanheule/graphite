@@ -25,8 +25,8 @@ def enum_complication(compl, m):
         else:
           iden += ("_%s" % (k)).upper()
       tmp["key"] = iden
-      if len(info) > 0:
-        tmp["desc"] += "(%s)" % (", ".join(info))
+    if len(info) > 0:
+      tmp["desc"] += " (%s)" % (", ".join(info))
     res.append(tmp)
   return res
 
@@ -188,7 +188,7 @@ configuration = [
   },
   {
     'key': 'CONFIG_COMPLICATION_4',
-    'default': 'COMPLICATION_HEARTRATE_CUR',
+    'default': 'COMPLICATION_HEARTRATE_CUR_ICON',
   },
   {
     'key': 'CONFIG_COMPLICATION_5',

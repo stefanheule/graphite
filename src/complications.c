@@ -54,7 +54,7 @@ complication_render_t complications[] = {
 typedef char* (*num_formater_t)(int num, void* data);
 
 fixed_t draw_icon_number_complication(FContext* fctx, bool draw, FPoint position, GTextAlignment align, uint8_t foreground_color, uint8_t background_color, const char* icon, const char* text, bool show_icon) {
-  fixed_t fontsize_icon = (fixed_t)(fontsize_complications * 0.53);
+  fixed_t fontsize_icon = (fixed_t)(fontsize_complications * 0.62);
   fixed_t w1 = !show_icon ? 0 : string_width(fctx, icon, font_icon, fontsize_icon);
   fixed_t w2 = string_width(fctx, text, font_main, fontsize_complications);
   fixed_t sep = REM(2);
@@ -63,7 +63,7 @@ fixed_t draw_icon_number_complication(FContext* fctx, bool draw, FPoint position
   uint8_t color = foreground_color;
 
   if (draw) {
-      fixed_t icon_y = position.y + fontsize_icon/8;
+      fixed_t icon_y = position.y + fontsize_icon*0.8;
       if (align == GTextAlignmentCenter) {
           if (w1) draw_string(fctx, icon, FPoint(position.x - w/2, icon_y), font_icon, color, fontsize_icon, a);
           draw_string(fctx, text, FPoint(position.x - w/2 + w1 + sep, position.y), font_main, color, fontsize_complications, a);
