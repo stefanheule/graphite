@@ -135,6 +135,9 @@ var RedshiftPreview = (function () {
     function health_service_sum_today(what) {
         if (what == HealthMetricStepCount) return 7124;
     }
+    function quiet_time_is_active() {
+        return true;
+    }
     var HealthMetricHeartRateBPM = 0;
     function health_service_peek_current_value(what) {
         if (what == HealthMetricHeartRateBPM) {

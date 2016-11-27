@@ -274,7 +274,7 @@ complications = [
   },
   {
     'key': 'COMPLICATION_QUIET',
-    'desc': 'Quiet time indicator',
+    'desc': 'Quiet time indicator (two icons for on/off)',
   },
 ] + enum_complication(
   [
