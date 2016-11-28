@@ -417,6 +417,7 @@ def get_context():
       'simple_config_lookup': to_lookup(sc),
       'config_groups': config_groups,
       'complications': compls,
+      'complications_lookup': to_lookup(compls),
       'num_config_items': len(config),
       'message_keys': add_key_id(msg_keys, 'MSG_KEY_', 100),
       'perc_max_len': perc_max_len,

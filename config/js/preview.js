@@ -846,13 +846,8 @@ function background_update_proc(layer, ctx) {
         if (first) {
             // schedule updates to redraw the configuration in case the fonts aren't loaded yet
             var fontUpdate = function (f, i) {
-                var timeout = 1000;
-                if (i < 5) {
-                    timeout = 500;
-                } else if (i > 10) {
-                    timeout = 10000;
-                }
-                if (i > 15) return;
+                var timeout = 100;
+                if (i > 10) return;
                 setTimeout(function () {
                     f(canvasId);
                     fontUpdate(f, i + 1);

@@ -1148,6 +1148,27 @@
     var value = readOneConfig($(event.target));
     var options, allDepVals;
 
+    // check consistency of seconds complication
+    if (id == "CONFIG_UPDATE_SECOND") {
+// -- autogen
+// --       var compl_seconds = {{ complications_lookup["COMPLICATION_SECONDS"]["id"] }};
+// --       var compl_empty = {{ complications_lookup["COMPLICATION_EMPTY"]["id"] }};
+      var compl_seconds = 18;
+      var compl_empty = 0;
+// -- end autogen
+      if (value == 0 && has_complication([compl_seconds])) {
+        if (!window.confirm("Second complication is enabled and requires the watch face to update once a second.  Clear second complication?")) {
+          applyValue($("#CONFIG_UPDATE_SECOND"), 1);
+        } else {
+          for (var i = 1; i < 7; i++) {
+            if (readConfig("CONFIG_COMPLICATION_" + i) == compl_seconds) {
+              applyValue($("#CONFIG_COMPLICATION_" + i), compl_empty);
+            }
+          }
+        }
+      }
+    }
+
     // check consistency of simplified configuration
     if (id == "CONFIG_ADVANCED_APPEARANCE_LOCAL") {
 // -- autogen
@@ -1273,6 +1294,19 @@
 
   var _current_complication_slot_nr;
   function pickComplication(pickedComplicationNr) {
+// -- autogen
+// --     if (pickedComplicationNr == {{ complications_lookup["COMPLICATION_SECONDS"]["id"] }}) {
+    if (pickedComplicationNr == 18) {
+// -- end autogen
+      if (readConfig("CONFIG_UPDATE_SECOND") == 0) {
+        if (!window.confirm("The second complication only works if the watch face gets updated every second.  Enable updates once a second now (may negatively impact battery life)?")) {
+          return;
+        } else {
+          applyValue($("#CONFIG_UPDATE_SECOND"), 1);
+        }
+      }
+    }
+
     closeComplicationChooser();
     var forSlotNr = _current_complication_slot_nr;
     applyValue($("#CONFIG_COMPLICATION_" + forSlotNr), "" + pickedComplicationNr);
@@ -1422,6 +1456,15 @@
 
     // draw preview
     updateCanvas();
+    // schedule updates once a second
+    var canvasUpdateSchedule = function () {
+      var timeout = 1000;
+      setTimeout(function () {
+        updateCanvas();
+        canvasUpdateSchedule();
+      }, timeout);
+    };
+    canvasUpdateSchedule();
 
     // resize preview to not take up too much space
     var oldHeight = $("#preview").height();
