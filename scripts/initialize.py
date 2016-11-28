@@ -56,7 +56,7 @@ configuration = [
   },
   {
     'key': 'CONFIG_WEATHER_UNIT_LOCAL',
-    'default': '1',
+    'default': '2',
   },
   {
     'key': 'CONFIG_WEATHER_RAIN_LOCAL',

@@ -151,7 +151,7 @@ function readConfig(key) {
 // -- ##   endif
 // -- ## endfor
         } else if (key == "CONFIG_WEATHER_UNIT_LOCAL") {
-            return 1;
+            return 2;
         } else if (key == "CONFIG_WEATHER_RAIN_LOCAL") {
             return true;
         } else if (key == "CONFIG_WEATHER_SOURCE_LOCAL") {

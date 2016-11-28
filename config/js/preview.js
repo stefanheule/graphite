@@ -792,7 +792,7 @@ function background_update_proc(layer, ctx) {
             CONFIG_VIBRATE_RECONNECT: +true,
             CONFIG_MESSAGE_DISCONNECT: +true,
             CONFIG_MESSAGE_RECONNECT: +true,
-            CONFIG_WEATHER_UNIT_LOCAL: +1,
+            CONFIG_WEATHER_UNIT_LOCAL: +2,
             CONFIG_WEATHER_RAIN_LOCAL: +true,
             CONFIG_WEATHER_SOURCE_LOCAL: +1,
             CONFIG_WEATHER_APIKEY_LOCAL: "",
