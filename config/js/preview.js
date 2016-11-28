@@ -553,11 +553,27 @@ function draw_weather(fctx, draw, icon, temp, position, color, fontsize, align) 
 }
 /** Should the weather information be shown (based on whether it's enabled, available and up-to-date). */
 function show_weather() {
-  var weather_is_on = config_weather_refresh > 0;
-  var weather_is_available = weather.timestamp > 0;
-  var weather_is_outdated = (time(NULL) - weather.timestamp) > (config_weather_expiration * 60);
-  var show_weather = weather_is_on && weather_is_available && !weather_is_outdated;
-  return show_weather;
+    var weather_is_on = config_weather_refresh > 0;
+    var weather_is_available = weather.timestamp > 0;
+    var weather_is_outdated = (time(NULL) - weather.timestamp) > (config_weather_expiration * 60);
+    var show_weather = weather_is_on && weather_is_available && !weather_is_outdated;
+    return show_weather;
+}
+function find_fontsize(fctx, target, min, str) {
+    var l = min;
+    var h = target;
+    if (string_width(fctx, str, font_main, target) <= width) {
+        return target;
+    }
+    while (l != h) {
+        var m = Math.floor((l + h) / 2);
+        if (string_width(fctx, str, font_main, m) > width - REM(10)) {
+            h = m;
+        } else {
+            l = m + 1;
+        }
+    }
+    return l;
 }
 /**
  * Draw the watch face.
@@ -650,12 +666,14 @@ function background_update_proc(layer, ctx) {
     buffer_1 = 
     remove_leading_zero(buffer_1, sizeof(buffer_1));
     var fontsize_time = (width / 2.2);
-    draw_string(fctx, buffer_1, FPoint(width / 2, height_full / 2 - fontsize_time / 2 - time_y_offset), font_main, config_color_time, fontsize_time, GTextAlignmentCenter);
+    var fontsize_time_real = find_fontsize(fctx, fontsize_time, REM(15), buffer_1);
+    draw_string(fctx, buffer_1, FPoint(width / 2, height_full / 2 - fontsize_time_real / 2 - time_y_offset), font_main, config_color_time, fontsize_time_real, GTextAlignmentCenter);
     buffer_1 = strftime(config_info_below, new Date());
     buffer_1 = 
     remove_leading_zero(buffer_1, sizeof(buffer_1));
     var fontsize_date = REM(28);
-    draw_string(fctx, buffer_1, FPoint(width / 2, height_full / 2 + fontsize_time / 3 - time_y_offset), font_main, config_color_info_below, fontsize_date, GTextAlignmentCenter);
+    var fontsize_date_real = find_fontsize(fctx, fontsize_date, REM(15), buffer_1);
+    draw_string(fctx, buffer_1, FPoint(width / 2, height_full / 2 + fontsize_time / 3 - time_y_offset), font_main, config_color_info_below, fontsize_date_real, GTextAlignmentCenter);
     var progress_cur = 0;
     var progress_max = 10000;
     var progress_no = config_progress == 0;

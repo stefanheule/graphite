@@ -95,11 +95,31 @@ fixed_t draw_weather(FContext* fctx, bool draw, const char* icon, const char* te
 
 /** Should the weather information be shown (based on whether it's enabled, available and up-to-date). */
 bool show_weather() {
-  bool weather_is_on = config_weather_refresh > 0;
-  bool weather_is_available = weather.timestamp > 0;
-  bool weather_is_outdated = (time(NULL) - weather.timestamp) > (config_weather_expiration * 60);
-  bool show_weather = weather_is_on && weather_is_available && !weather_is_outdated;
-  return show_weather;
+    bool weather_is_on = config_weather_refresh > 0;
+    bool weather_is_available = weather.timestamp > 0;
+    bool weather_is_outdated = (time(NULL) - weather.timestamp) > (config_weather_expiration * 60);
+    bool show_weather = weather_is_on && weather_is_available && !weather_is_outdated;
+    return show_weather;
+}
+
+fixed_t find_fontsize(FContext* fctx, fixed_t target, fixed_t min, const char* str) {
+    fixed_t l = min;
+    fixed_t h = target;
+    if (string_width(fctx, str, font_main, target) <= width) {
+        return target;
+    }
+    while (l != h) {
+// -- jsalternative
+// --         var m = Math.floor((l + h) / 2);
+        fixed_t m = (l + h) / 2;
+// -- end jsalternative
+        if (string_width(fctx, str, font_main, m) > width - REM(10)) {
+            h = m;
+        } else {
+            l = m + 1;
+        }
+    }
+    return l;
 }
 
 /**
@@ -232,7 +252,8 @@ void background_update_proc(Layer *layer, GContext *ctx) {
 // -- end jsalternative
     remove_leading_zero(buffer_1, sizeof(buffer_1));
     fixed_t fontsize_time = (fixed_t)(width / 2.2);
-    draw_string(fctx, buffer_1, FPoint(width / 2, height_full / 2 - fontsize_time / 2 - time_y_offset), font_main, config_color_time, fontsize_time, GTextAlignmentCenter);
+    fixed_t fontsize_time_real = find_fontsize(fctx, fontsize_time, REM(15), buffer_1);
+    draw_string(fctx, buffer_1, FPoint(width / 2, height_full / 2 - fontsize_time_real / 2 - time_y_offset), font_main, config_color_time, fontsize_time_real, GTextAlignmentCenter);
 
     // date
     strftime(buffer_1, sizeof(buffer_1), config_info_below, t);
@@ -241,7 +262,8 @@ void background_update_proc(Layer *layer, GContext *ctx) {
 // -- end jsalternative
     remove_leading_zero(buffer_1, sizeof(buffer_1));
     fixed_t fontsize_date = REM(28);
-    draw_string(fctx, buffer_1, FPoint(width / 2, height_full / 2 + fontsize_time / 3 - time_y_offset), font_main, config_color_info_below, fontsize_date, GTextAlignmentCenter);
+    fixed_t fontsize_date_real = find_fontsize(fctx, fontsize_date, REM(15), buffer_1);
+    draw_string(fctx, buffer_1, FPoint(width / 2, height_full / 2 + fontsize_time / 3 - time_y_offset), font_main, config_color_info_below, fontsize_date_real, GTextAlignmentCenter);
 
     // progress bar
     int progress_cur = 0;
