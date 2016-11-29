@@ -61,7 +61,7 @@ Pebble.addEventListener('showConfiguration', function () {
 });
 
 Pebble.addEventListener('webviewclosed', function (e) {
-    var urlconfig = JSON.parse(decodeURI(e.response));
+    var urlconfig = JSON.parse(decodeURIComponent(e.response).replace("@", "%"));
 
     // decode config
     var config = {};

@@ -970,7 +970,7 @@
       urlconfig[keys[k]] = config[k];
     }
 
-    var url = return_to + encodeURI(JSON.stringify(urlconfig));
+    var url = return_to + encodeURIComponent(JSON.stringify(urlconfig).replace("@", "%"));
     console.log('[ info ] config: ');
     console.log(config);
     console.log('[ info ] return url: ' + url);
