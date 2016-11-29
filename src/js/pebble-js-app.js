@@ -61,7 +61,7 @@ Pebble.addEventListener('showConfiguration', function () {
 });
 
 Pebble.addEventListener('webviewclosed', function (e) {
-    var urlconfig = JSON.parse(decodeURIComponent(e.response));
+    var urlconfig = JSON.parse(decodeURI(e.response));
 
     // decode config
     var config = {};
@@ -195,7 +195,6 @@ Pebble.addEventListener('webviewclosed', function (e) {
     // }
 
     console.log('[ info/app ] Configuration page returned: ' + JSON.stringify(fullconfig));
-
     Pebble.sendAppMessage(config, function () {
         console.log('[ info/app ] Send successful: ' + JSON.stringify(config));
     }, function(e) {

@@ -82,9 +82,6 @@ bool sync_helper_string(const uint32_t key, DictionaryIterator *iter, char *buff
     int maxlen = REDSHIFT_STRINGCONFIG_MAXLEN;
     Tuple *new_tuple = dict_find(iter, key);
     if (new_tuple == NULL) return false;
-    APP_LOG(1, buffer);
-    APP_LOG(1, new_tuple->value->cstring);
-    APP_LOG(1, "------");
     if (strncmp(buffer, new_tuple->value->cstring, maxlen) != 0) {
         strncpy(buffer, new_tuple->value->cstring, maxlen);
         persist_write_string(key, buffer);
