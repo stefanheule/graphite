@@ -8,6 +8,8 @@ endif
 REDSHIFT_CONFIG=""
 REDSHIFT_FILE="out"
 
+REDSHIFT_PHONE_IP="192.168.1.6"
+
 # platform
 P=$(DEFAULT_PLATFORM)
 
@@ -42,7 +44,10 @@ install_emulator:
 	pebble install --emulator $(P)
 
 install_deploy: build
-	pebble install --phone 192.168.1.6
+	pebble install --phone $(REDSHIFT_PHONE_IP)
+
+phone_log:
+	pebble logs --phone $(REDSHIFT_PHONE_IP)
 
 menu_icon:
 	$(MAKE) write_header REDSHIFT_CONFIG="SCREENSHOT_MENU_ICON"
