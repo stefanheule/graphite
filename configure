@@ -1,7 +1,7 @@
 #!/bin/bash
 
 function show_help {
-  echo "$0 [--default-platform <platform>] [--supported-platforms <platforms (space separated list as a string)>]"
+  echo "$0 [--debug/-d] [--default-platform <platform>] [--supported-platforms <platforms (space separated list as a string)>]"
   echo ""
 }
 
@@ -17,12 +17,17 @@ function error {
 
 DEFAULT_PLATFORM="emery"
 SUPPORTED_PLATFORMS="basalt emery"
+CONFIGURATION="release"
 
 while :; do
   case $1 in
     -h|--help)
       show_help
       exit
+      ;;
+    -d|--debug)
+      CONFIGURATION="debug"
+      shift
       ;;
     --default-platform)
       shift
@@ -46,12 +51,14 @@ done
 
 echo ""
 echo "The default platform is $DEFAULT_PLATFORM and builds for '$SUPPORTED_PLATFORMS' are supported."
+echo "This is a $CONFIGURATION build."
 
 rm -f .redshift_config
 
 ## Write options to config file
 echo "DEFAULT_PLATFORM=\"$DEFAULT_PLATFORM\"" >> .redshift_config
 echo "SUPPORTED_PLATFORMS=\"$SUPPORTED_PLATFORMS\"" >> .redshift_config
+echo "CONFIGURATION=\"$CONFIGURATION\"" >> .redshift_config
 
 ## All done!
 
