@@ -21,5 +21,6 @@ void bluetooth_popup(FContext* fctx, GContext *ctx, bool connected);
 void background_update_proc(Layer *layer, GContext *ctx);
 bool show_weather();
 fixed_t draw_weather(FContext* fctx, bool draw, const char* icon, const char* temp, FPoint position, uint8_t color, fixed_t fontsize, GTextAlignment align);
+void remove_leading_zero(char *buffer, size_t length);
 
 #endif //REDSHIFT_DRAWING_H

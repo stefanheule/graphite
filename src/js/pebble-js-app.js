@@ -64,60 +64,127 @@ Pebble.addEventListener('webviewclosed', function (e) {
     var urlconfig = JSON.parse(decodeURIComponent(e.response));
 
     // decode config
-    var keys = {
-// -- autogen
-// -- ## for key in configuration
-// --         "{{ key["key"] }}": {{ key["id"] }},
-// -- ## endfor
-        "CONFIG_VIBRATE_DISCONNECT": 1,
-        "CONFIG_VIBRATE_RECONNECT": 2,
-        "CONFIG_MESSAGE_DISCONNECT": 3,
-        "CONFIG_MESSAGE_RECONNECT": 4,
-        "CONFIG_WEATHER_UNIT_LOCAL": 5,
-        "CONFIG_WEATHER_RAIN_LOCAL": 6,
-        "CONFIG_WEATHER_SOURCE_LOCAL": 7,
-        "CONFIG_WEATHER_APIKEY_LOCAL": 8,
-        "CONFIG_WEATHER_LOCATION_LOCAL": 9,
-        "CONFIG_WEATHER_REFRESH": 10,
-        "CONFIG_WEATHER_EXPIRATION": 11,
-        "CONFIG_COLOR_TOPBAR_BG": 12,
-        "CONFIG_COLOR_INFO_BELOW": 13,
-        "CONFIG_COLOR_PROGRESS_BAR": 14,
-        "CONFIG_COLOR_PROGRESS_BAR2": 15,
-        "CONFIG_COLOR_TIME": 16,
-        "CONFIG_COLOR_PERC": 17,
-        "CONFIG_COLOR_BOTTOM_COMPLICATIONS": 18,
-        "CONFIG_COLOR_BACKGROUND": 19,
-        "CONFIG_COLOR_TOP_COMPLICATIONS": 20,
-        "CONFIG_COLOR_DAY": 21,
-        "CONFIG_COLOR_NIGHT": 22,
-        "CONFIG_COLOR_BAT_30": 23,
-        "CONFIG_COLOR_BAT_20": 24,
-        "CONFIG_COLOR_BAT_10": 25,
-        "CONFIG_LOWBAT_COL": 26,
-        "CONFIG_ADVANCED_APPEARANCE_LOCAL": 27,
-        "CONFIG_COMPLICATION_1": 28,
-        "CONFIG_COMPLICATION_2": 29,
-        "CONFIG_COMPLICATION_3": 30,
-        "CONFIG_COMPLICATION_4": 31,
-        "CONFIG_COMPLICATION_5": 32,
-        "CONFIG_COMPLICATION_6": 33,
-        "CONFIG_PROGRESS": 34,
-        "CONFIG_TIME_FORMAT": 35,
-        "CONFIG_INFO_BELOW": 36,
-        "CONFIG_UPDATE_SECOND": 37,
-// -- end autogen
-    };
     var config = {};
     var fullconfig = {};
-    for (var k in keys) {
-        fullconfig[k] = urlconfig[keys[k]];
-        if (k.indexOf("_LOCAL") == -1) {
-            // we can only deal with integers, but let's make sure they are all ints
-            config[k] = +urlconfig[keys[k]];
-        }
-        localStorage.setItem(k, urlconfig[keys[k]]);
-    }
+// -- autogen
+// -- ## for key in configuration
+// --     fullconfig["{{ key["key"] }}"] = urlconfig[{{ key["id"] }}];
+// -- ## if not key["local"]
+// --   ## if key["type"] == "string"
+// --     config["{{ key["key"] }}"] = +urlconfig[{{ key["id"] }}];
+// --   ## else
+// --     config["{{ key["key"] }}"] = urlconfig[{{ key["id"] }}];
+// --   ## endif
+// -- ## endif
+// --     localStorage.setItem("{{ key["key"] }}", urlconfig[{{ key["id"] }}]);
+// -- ## endfor
+    fullconfig["CONFIG_VIBRATE_DISCONNECT"] = urlconfig[1];
+    config["CONFIG_VIBRATE_DISCONNECT"] = urlconfig[1];
+    localStorage.setItem("CONFIG_VIBRATE_DISCONNECT", urlconfig[1]);
+    fullconfig["CONFIG_VIBRATE_RECONNECT"] = urlconfig[2];
+    config["CONFIG_VIBRATE_RECONNECT"] = urlconfig[2];
+    localStorage.setItem("CONFIG_VIBRATE_RECONNECT", urlconfig[2]);
+    fullconfig["CONFIG_MESSAGE_DISCONNECT"] = urlconfig[3];
+    config["CONFIG_MESSAGE_DISCONNECT"] = urlconfig[3];
+    localStorage.setItem("CONFIG_MESSAGE_DISCONNECT", urlconfig[3]);
+    fullconfig["CONFIG_MESSAGE_RECONNECT"] = urlconfig[4];
+    config["CONFIG_MESSAGE_RECONNECT"] = urlconfig[4];
+    localStorage.setItem("CONFIG_MESSAGE_RECONNECT", urlconfig[4]);
+    fullconfig["CONFIG_WEATHER_UNIT_LOCAL"] = urlconfig[5];
+    localStorage.setItem("CONFIG_WEATHER_UNIT_LOCAL", urlconfig[5]);
+    fullconfig["CONFIG_WEATHER_RAIN_LOCAL"] = urlconfig[6];
+    localStorage.setItem("CONFIG_WEATHER_RAIN_LOCAL", urlconfig[6]);
+    fullconfig["CONFIG_WEATHER_SOURCE_LOCAL"] = urlconfig[7];
+    localStorage.setItem("CONFIG_WEATHER_SOURCE_LOCAL", urlconfig[7]);
+    fullconfig["CONFIG_WEATHER_APIKEY_LOCAL"] = urlconfig[8];
+    localStorage.setItem("CONFIG_WEATHER_APIKEY_LOCAL", urlconfig[8]);
+    fullconfig["CONFIG_WEATHER_LOCATION_LOCAL"] = urlconfig[9];
+    localStorage.setItem("CONFIG_WEATHER_LOCATION_LOCAL", urlconfig[9]);
+    fullconfig["CONFIG_WEATHER_REFRESH"] = urlconfig[10];
+    config["CONFIG_WEATHER_REFRESH"] = urlconfig[10];
+    localStorage.setItem("CONFIG_WEATHER_REFRESH", urlconfig[10]);
+    fullconfig["CONFIG_WEATHER_EXPIRATION"] = urlconfig[11];
+    config["CONFIG_WEATHER_EXPIRATION"] = urlconfig[11];
+    localStorage.setItem("CONFIG_WEATHER_EXPIRATION", urlconfig[11]);
+    fullconfig["CONFIG_COLOR_TOPBAR_BG"] = urlconfig[12];
+    config["CONFIG_COLOR_TOPBAR_BG"] = urlconfig[12];
+    localStorage.setItem("CONFIG_COLOR_TOPBAR_BG", urlconfig[12]);
+    fullconfig["CONFIG_COLOR_INFO_BELOW"] = urlconfig[13];
+    config["CONFIG_COLOR_INFO_BELOW"] = urlconfig[13];
+    localStorage.setItem("CONFIG_COLOR_INFO_BELOW", urlconfig[13]);
+    fullconfig["CONFIG_COLOR_PROGRESS_BAR"] = urlconfig[14];
+    config["CONFIG_COLOR_PROGRESS_BAR"] = urlconfig[14];
+    localStorage.setItem("CONFIG_COLOR_PROGRESS_BAR", urlconfig[14]);
+    fullconfig["CONFIG_COLOR_PROGRESS_BAR2"] = urlconfig[15];
+    config["CONFIG_COLOR_PROGRESS_BAR2"] = urlconfig[15];
+    localStorage.setItem("CONFIG_COLOR_PROGRESS_BAR2", urlconfig[15]);
+    fullconfig["CONFIG_COLOR_TIME"] = urlconfig[16];
+    config["CONFIG_COLOR_TIME"] = urlconfig[16];
+    localStorage.setItem("CONFIG_COLOR_TIME", urlconfig[16]);
+    fullconfig["CONFIG_COLOR_PERC"] = urlconfig[17];
+    config["CONFIG_COLOR_PERC"] = urlconfig[17];
+    localStorage.setItem("CONFIG_COLOR_PERC", urlconfig[17]);
+    fullconfig["CONFIG_COLOR_BOTTOM_COMPLICATIONS"] = urlconfig[18];
+    config["CONFIG_COLOR_BOTTOM_COMPLICATIONS"] = urlconfig[18];
+    localStorage.setItem("CONFIG_COLOR_BOTTOM_COMPLICATIONS", urlconfig[18]);
+    fullconfig["CONFIG_COLOR_BACKGROUND"] = urlconfig[19];
+    config["CONFIG_COLOR_BACKGROUND"] = urlconfig[19];
+    localStorage.setItem("CONFIG_COLOR_BACKGROUND", urlconfig[19]);
+    fullconfig["CONFIG_COLOR_TOP_COMPLICATIONS"] = urlconfig[20];
+    config["CONFIG_COLOR_TOP_COMPLICATIONS"] = urlconfig[20];
+    localStorage.setItem("CONFIG_COLOR_TOP_COMPLICATIONS", urlconfig[20]);
+    fullconfig["CONFIG_COLOR_DAY"] = urlconfig[21];
+    config["CONFIG_COLOR_DAY"] = urlconfig[21];
+    localStorage.setItem("CONFIG_COLOR_DAY", urlconfig[21]);
+    fullconfig["CONFIG_COLOR_NIGHT"] = urlconfig[22];
+    config["CONFIG_COLOR_NIGHT"] = urlconfig[22];
+    localStorage.setItem("CONFIG_COLOR_NIGHT", urlconfig[22]);
+    fullconfig["CONFIG_COLOR_BAT_30"] = urlconfig[23];
+    config["CONFIG_COLOR_BAT_30"] = urlconfig[23];
+    localStorage.setItem("CONFIG_COLOR_BAT_30", urlconfig[23]);
+    fullconfig["CONFIG_COLOR_BAT_20"] = urlconfig[24];
+    config["CONFIG_COLOR_BAT_20"] = urlconfig[24];
+    localStorage.setItem("CONFIG_COLOR_BAT_20", urlconfig[24]);
+    fullconfig["CONFIG_COLOR_BAT_10"] = urlconfig[25];
+    config["CONFIG_COLOR_BAT_10"] = urlconfig[25];
+    localStorage.setItem("CONFIG_COLOR_BAT_10", urlconfig[25]);
+    fullconfig["CONFIG_LOWBAT_COL"] = urlconfig[26];
+    config["CONFIG_LOWBAT_COL"] = urlconfig[26];
+    localStorage.setItem("CONFIG_LOWBAT_COL", urlconfig[26]);
+    fullconfig["CONFIG_ADVANCED_APPEARANCE_LOCAL"] = urlconfig[27];
+    localStorage.setItem("CONFIG_ADVANCED_APPEARANCE_LOCAL", urlconfig[27]);
+    fullconfig["CONFIG_COMPLICATION_1"] = urlconfig[28];
+    config["CONFIG_COMPLICATION_1"] = urlconfig[28];
+    localStorage.setItem("CONFIG_COMPLICATION_1", urlconfig[28]);
+    fullconfig["CONFIG_COMPLICATION_2"] = urlconfig[29];
+    config["CONFIG_COMPLICATION_2"] = urlconfig[29];
+    localStorage.setItem("CONFIG_COMPLICATION_2", urlconfig[29]);
+    fullconfig["CONFIG_COMPLICATION_3"] = urlconfig[30];
+    config["CONFIG_COMPLICATION_3"] = urlconfig[30];
+    localStorage.setItem("CONFIG_COMPLICATION_3", urlconfig[30]);
+    fullconfig["CONFIG_COMPLICATION_4"] = urlconfig[31];
+    config["CONFIG_COMPLICATION_4"] = urlconfig[31];
+    localStorage.setItem("CONFIG_COMPLICATION_4", urlconfig[31]);
+    fullconfig["CONFIG_COMPLICATION_5"] = urlconfig[32];
+    config["CONFIG_COMPLICATION_5"] = urlconfig[32];
+    localStorage.setItem("CONFIG_COMPLICATION_5", urlconfig[32]);
+    fullconfig["CONFIG_COMPLICATION_6"] = urlconfig[33];
+    config["CONFIG_COMPLICATION_6"] = urlconfig[33];
+    localStorage.setItem("CONFIG_COMPLICATION_6", urlconfig[33]);
+    fullconfig["CONFIG_PROGRESS"] = urlconfig[34];
+    config["CONFIG_PROGRESS"] = urlconfig[34];
+    localStorage.setItem("CONFIG_PROGRESS", urlconfig[34]);
+    fullconfig["CONFIG_TIME_FORMAT"] = urlconfig[35];
+    config["CONFIG_TIME_FORMAT"] = +urlconfig[35];
+    localStorage.setItem("CONFIG_TIME_FORMAT", urlconfig[35]);
+    fullconfig["CONFIG_INFO_BELOW"] = urlconfig[36];
+    config["CONFIG_INFO_BELOW"] = +urlconfig[36];
+    localStorage.setItem("CONFIG_INFO_BELOW", urlconfig[36]);
+    fullconfig["CONFIG_UPDATE_SECOND"] = urlconfig[37];
+    config["CONFIG_UPDATE_SECOND"] = urlconfig[37];
+    localStorage.setItem("CONFIG_UPDATE_SECOND", urlconfig[37]);
+// -- end autogen
+
     // don't allow really small values for refresh rate
     if (config["CONFIG_WEATHER_REFRESH"] < 10) {
         config["CONFIG_WEATHER_REFRESH"] = 10;
