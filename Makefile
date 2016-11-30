@@ -36,6 +36,7 @@ release:
 	@cp build/2016-redshift.pbw releases/redshift-$(VERSION).pbw
 	@echo "git-version: $(shell git rev-parse HEAD)" >> releases/redshift-$(VERSION).meta.txt
 	@echo "date: $(shell date +%Y-%m-%d) $(shell date +%H:%M:%S)" >> releases/redshift-$(VERSION).meta.txt
+	@echo "Done, releases/redshift-$(VERSION).pbw is ready for upload."
 
 build: initialize
 	# copy fonts
