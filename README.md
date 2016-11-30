@@ -2,11 +2,11 @@
 
 Available in the Pebble App Store:
 
-[![Available on the Pebble App Store](http://pblweb.com/badge/55ee57da2b0b31132c00008b/black/small)](https://apps.getpebble.com/applications/55ee57da2b0b31132c00008b)
+[![Available on the Pebble App Store](http://pblweb.com/badge/xxxxx/black/small)](https://apps.getpebble.com/applications/xxxxx)
 
 ## Overview
 
-## Screenshots (Pebble Time and Pebble Time Steel)
+## Screenshots
 
 ## FAQ
 
@@ -14,15 +14,14 @@ Available in the Pebble App Store:
 
 There are many possible causes:
 
-- Make sure weather is turned on in the settings.
 - Ensure that your phone is connected to the internet.
-- Make sure the color for the weather information is different from the background color.
 - If you use darksky.net or wunderground.com as a weather source, make sure the API key is correct.
 - If you use a custom location, make sure it is a valid location.
+- Make sure the color for the complication is different from the background color.
 
 **What does it mean when the degree sign is missing for the weather?**
 
-In this case, the last attempt to update the weather failed.  This can be for any number of reasons (see above).  Obsidian will keep displaying the previous weather information until it expires.
+In this case, the last attempt to update the weather failed.  This can be for any number of reasons (see above).  Redshift will keep displaying the previous weather information until it expires.
 
 ## Changelog
 
@@ -32,7 +31,15 @@ In this case, the last attempt to update the weather failed.  This can be for an
 
 ## Building from Source
 
-The project can be build using the command `make build`.  The `Makefile` also includes various other targets, such as ones to install the watchface in an emulator or on the Pebble watch.  There are also targets to automatically take the screenshots that are part of this distribution.
+To build the project in a release configuration, run
+
+    ./configure
+    make release
+
+For development, you can build a debug build by running
+
+    ./configure
+    make build
 
 ### Versioning
 
