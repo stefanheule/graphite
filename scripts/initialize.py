@@ -170,6 +170,7 @@ configuration = [
   {
     'key': 'CONFIG_LOWBAT_COL',
     'default': 'false',
+    'mydefault': 'true',
   },
   {
     'key': 'CONFIG_ADVANCED_APPEARANCE_LOCAL',

@@ -885,7 +885,7 @@ function background_update_proc(layer, ctx) {
             CONFIG_COLOR_BAT_30: +GColor.Yellow,
             CONFIG_COLOR_BAT_20: +GColor.ChromeYellow,
             CONFIG_COLOR_BAT_10: +GColor.Folly,
-            CONFIG_LOWBAT_COL: +false,
+            CONFIG_LOWBAT_COL: +true,
             CONFIG_ADVANCED_APPEARANCE_LOCAL: +false,
             CONFIG_COMPLICATION_1: +2,
             CONFIG_COMPLICATION_2: +1,
