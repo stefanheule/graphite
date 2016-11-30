@@ -13,11 +13,29 @@ REDSHIFT_PHONE_IP="192.168.1.6"
 # platform
 P=$(DEFAULT_PLATFORM)
 
-VERSION=$(shell cat package.json | grep version | grep -o "[0-9]*\.[0-9]*")
+VERSION=$(shell cat package.json | grep version | grep -o "[0-9][0-9]*\.[0-9][0-9]*")
 
 all: build install_emulator
 
 deploy: install_deploy
+
+release:
+	@status=$$(git status --porcelain -uno); \
+	if test "x$${status}" = x; then \
+		echo "Building version $(VERSION) in release mode."; \
+	else \
+		echo Working directory is dirty!  Commit all changes first; \
+		exit 1; \
+	fi
+	@./configure --release > /dev/null
+	@$(MAKE) clean > /dev/null
+	@$(MAKE) build_quiet > /dev/null
+	@./configure > /dev/null
+	@mkdir -p releases
+	@rm -rf releases/redshift-$(VERSION).pbw releases/redshift-$(VERSION).meta.txt
+	@cp build/2016-redshift.pbw releases/redshift-$(VERSION).pbw
+	@echo "git-version: $(shell git rev-parse HEAD)" >> releases/redshift-$(VERSION).meta.txt
+	@echo "date: $(shell date +%Y-%m-%d) $(shell date +%H:%M:%S)" >> releases/redshift-$(VERSION).meta.txt
 
 build: initialize
 	# copy fonts
@@ -81,7 +99,7 @@ write_header:
 	@echo "#define $(REDSHIFT_CONFIG)" > src/config.h
 
 clean: clean_header
-	pebble clean
+	pebble clean 2> /dev/null
 
 clean_header:
 	echo "" > src/config.h

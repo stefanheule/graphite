@@ -701,6 +701,11 @@ def c_to_js(f):
 
 
 def main():
+  if len(sys.argv) == 3 and sys.argv[1] == "inline":
+    env = Environment()
+    template = env.from_string(sys.argv[2])
+    print template.render(get_context()).strip("\n")
+    return
   for f in files_to_render:
     render(f)
   for f in files_to_inline_render:
