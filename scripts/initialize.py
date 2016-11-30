@@ -424,6 +424,7 @@ def get_context():
       'message_keys': add_key_id(msg_keys, 'MSG_KEY_', 100),
       'perc_max_len': perc_max_len,
       'fontsize_complications': 27,
+      'build': read_configure('BUILD'),
     }
   return _context
 
@@ -562,14 +563,25 @@ def inline_render(file):
   laststart = 0
   tpl = []
   mode = 'init'
+  typ = '' # is this a build or autogen block?
+  should_render_template = True
   for line in contents.split("\n"):
     linenr += 1
     isstart = re.search(r"^ *(// --) autogen", line)
-    isend = re.search(r"^ *(// --) end autogen", line)
+    isstart2 = re.search(r"^ *(// --) build=(.*)", line)
+    isend = re.search(r"^ *(// --) end (build|autogen)", line)
     istpl = re.search(r"^ *(// --) (.*)", line)
     ishtmlcomment = re.search(r"^<!--", line)
     if mode == 'init':
       if isstart is not None:
+        typ = "autogen"
+        should_render_template = True
+        newcontents.append(line)
+        laststart = linenr
+        mode = 'template'
+      elif isstart2 is not None:
+        typ = "build"
+        should_render_template = isstart2.group(2) == get_context()['build']
         newcontents.append(line)
         laststart = linenr
         mode = 'template'
@@ -581,6 +593,7 @@ def inline_render(file):
           ishtml = False
     elif mode == 'ignore':
       if isend is not None:
+        if isend.group(2) != typ: error("Started a '%s' block, but ended with '%s'" % (typ, isend.group(2)))
         newcontents.append(line)
         mode = 'init'
     elif mode == 'template':
@@ -592,13 +605,15 @@ def inline_render(file):
         if starts_with(tpl, "c_to_js"):
           newcontents.append(c_to_js(tpl[8:]))
         else:
-          template = env.from_string(tpl)
-          if ishtml: newcontents.append('-->')
-          newcontents.append(template.render(get_context()).strip("\n"))
-          if ishtml: newcontents.append('<!--')
+          if should_render_template:
+            template = env.from_string(tpl)
+            if ishtml: newcontents.append('-->')
+            newcontents.append(template.render(get_context()).strip("\n"))
+            if ishtml: newcontents.append('<!--')
         tpl = []
         mode = 'ignore'
         if isend is not None:
+          if isend.group(2) != typ: error("Started a '%s' block, but ended with '%s'" % (typ, isend.group(2)))
           newcontents.append(line)
           mode = 'init'
 

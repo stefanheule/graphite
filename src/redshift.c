@@ -120,13 +120,11 @@ void timer_callback_bluetooth_popup(void *data) {
     show_bluetooth_popup = false;
     timer_bluetooth_popup = NULL;
     layer_mark_dirty(layer_background);
-    APP_LOG(APP_LOG_LEVEL_DEBUG, "bluetooth change callback");
 }
 
 void handle_bluetooth(bool connected) {
     // redraw background (to turn on/off the logo)
     layer_mark_dirty(layer_background);
-    APP_LOG(APP_LOG_LEVEL_DEBUG, "bluetooth change");
 
     bool show_popup = false;
     bool vibrate = false;

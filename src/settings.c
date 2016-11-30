@@ -45,7 +45,10 @@ void update_weather() {
     app_message_outbox_begin(&iter);
     dict_write_uint8(iter, MSG_KEY_FETCH_WEATHER, 1);
     app_message_outbox_send();
+// -- build=debug
+// --     APP_LOG(APP_LOG_LEVEL_INFO, "requesting weather update");
     APP_LOG(APP_LOG_LEVEL_INFO, "requesting weather update");
+// -- end build
 }
 
 /**
@@ -91,7 +94,11 @@ bool sync_helper_string(const uint32_t key, DictionaryIterator *iter, char *buff
 }
 
 void inbox_received_handler(DictionaryIterator *iter, void *context) {
+// -- build=debug
+// --     APP_LOG(APP_LOG_LEVEL_DEBUG, "received message");
     APP_LOG(APP_LOG_LEVEL_DEBUG, "received message");
+// -- end build
+
     bool dirty = false;
 // -- autogen
 // -- ## for key in configuration
