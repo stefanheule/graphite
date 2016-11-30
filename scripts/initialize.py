@@ -57,6 +57,7 @@ configuration = [
   {
     'key': 'CONFIG_WEATHER_UNIT_LOCAL',
     'default': '2',
+    'mydefault': '1',
   },
   {
     'key': 'CONFIG_WEATHER_RAIN_LOCAL',
@@ -440,6 +441,10 @@ def pre_process(config, simple_config, compls, groups):
       i = clc[k['default']]['id']
       k['default'] = i
       k['jsdefault'] = "+%d" % (i)
+    if "COMPLICATION_" in k['mydefault']:
+      i = clc[k['mydefault']]['id']
+      k['mydefault'] = i
+      k['jsmydefault'] = "+%d" % (i)
 
   # prepare complication groups
   for k in compls:
@@ -461,6 +466,14 @@ def to_lookup(ls):
     res[l['key']] = l
   return res;
 
+def to_js_default(val, type):
+  jsdefault = val
+  if 'int' in type:
+    jsdefault = "+%s" % (jsdefault)
+  if "GColor" in jsdefault:
+    jsdefault = re.sub(r"GColor(.*)ARGB8", "GColor.\\1", jsdefault)
+  return jsdefault
+
 def add_additional_info(keys):
   res = []
   for k in keys:
@@ -471,12 +484,13 @@ def add_additional_info(keys):
       k['type'] = 'uint8_t'
 
     if 'default' in k:
-      jsdefault = k['default']
-      if 'int' in k['type']:
-        jsdefault = "+%s" % (jsdefault)
-      if "GColor" in jsdefault:
-        jsdefault = re.sub(r"GColor(.*)ARGB8", "GColor.\\1", jsdefault)
-      k['jsdefault'] = jsdefault
+      k['jsdefault'] = to_js_default(k['default'], k['type'])
+      if 'mydefault' in k:
+        k['jsmydefault'] = to_js_default(k['mydefault'], k['type'])
+      else:
+        k['mydefault'] = k['default']
+        k['jsmydefault'] = k['jsdefault']
+
 
     k['iscolor'] = "_COLOR_" in name
     k['belongs_to_simple'] = False

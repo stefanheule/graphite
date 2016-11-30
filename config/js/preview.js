@@ -848,6 +848,56 @@ function background_update_proc(layer, ctx) {
         return cloneConfig(defaults);
     }
 
+    function myDefaultConfig(platform) {
+        var COLOR_FALLBACK = PebbleHelper.COLOR_FALLBACK(platform);
+        var PBL_IF_ROUND_ELSE = PebbleHelper.PBL_IF_ROUND_ELSE(platform);
+        var defaults = {
+// -- autogen
+// -- ## for key in configuration
+// --             {{ key["key"] }}: {{ key["jsmydefault"] }},
+// -- ## endfor
+            CONFIG_VIBRATE_DISCONNECT: +true,
+            CONFIG_VIBRATE_RECONNECT: +true,
+            CONFIG_MESSAGE_DISCONNECT: +true,
+            CONFIG_MESSAGE_RECONNECT: +true,
+            CONFIG_WEATHER_UNIT_LOCAL: +1,
+            CONFIG_WEATHER_RAIN_LOCAL: +true,
+            CONFIG_WEATHER_SOURCE_LOCAL: +1,
+            CONFIG_WEATHER_APIKEY_LOCAL: "",
+            CONFIG_WEATHER_LOCATION_LOCAL: "",
+            CONFIG_WEATHER_REFRESH: +30,
+            CONFIG_WEATHER_EXPIRATION: +3*60,
+            CONFIG_COLOR_TOPBAR_BG: +GColor.VividCerulean,
+            CONFIG_COLOR_INFO_BELOW: +GColor.VividCerulean,
+            CONFIG_COLOR_PROGRESS_BAR: +GColor.VividCerulean,
+            CONFIG_COLOR_PROGRESS_BAR2: +GColor.White,
+            CONFIG_COLOR_TIME: +GColor.White,
+            CONFIG_COLOR_PERC: +GColor.White,
+            CONFIG_COLOR_BOTTOM_COMPLICATIONS: +GColor.White,
+            CONFIG_COLOR_BACKGROUND: +GColor.Black,
+            CONFIG_COLOR_TOP_COMPLICATIONS: +GColor.Black,
+            CONFIG_COLOR_DAY: +GColor.LightGray,
+            CONFIG_COLOR_NIGHT: +GColor.Black,
+            CONFIG_COLOR_BAT_30: +GColor.Yellow,
+            CONFIG_COLOR_BAT_20: +GColor.ChromeYellow,
+            CONFIG_COLOR_BAT_10: +GColor.Folly,
+            CONFIG_LOWBAT_COL: +false,
+            CONFIG_ADVANCED_APPEARANCE_LOCAL: +false,
+            CONFIG_COMPLICATION_1: +2,
+            CONFIG_COMPLICATION_2: +1,
+            CONFIG_COMPLICATION_3: +3,
+            CONFIG_COMPLICATION_4: +10,
+            CONFIG_COMPLICATION_5: +4,
+            CONFIG_COMPLICATION_6: +7,
+            CONFIG_PROGRESS: +1,
+            CONFIG_TIME_FORMAT: "%I:0%M",
+            CONFIG_INFO_BELOW: "%A, %m/%d",
+            CONFIG_UPDATE_SECOND: +false,
+// -- end autogen
+        };
+        return cloneConfig(defaults);
+    }
+
     function cloneConfig(config) {
         var res = {};
         for (var k in config) {
@@ -882,6 +932,7 @@ function background_update_proc(layer, ctx) {
         isDefaultLook: isDefaultLook,
         lookSignature: lookSignature,
         defaultConfig: defaultConfig,
+        myDefaultConfig: myDefaultConfig,
         drawPreview: function (config, canvasId, platform) {
             drawHelper(drawConfig, config, canvasId, platform, null);
         },

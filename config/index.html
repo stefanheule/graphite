@@ -76,6 +76,9 @@
     .item-container-footer {
       color: #555 !important;
     }
+    #myprefs {
+      color: #555;
+    }
     </style>
     <meta charset="utf-8"/>
   </head>
@@ -655,7 +658,7 @@
 
       <div class="item-container-footer">
       <p>Redshift Version: <span id="version-info"></span></p>
-      <p>Platform: <span id="platform-info"></span></p>
+      <p><a id="myprefs">Platform</a>: <span id="platform-info"></span></p>
       </div>
     </div>
 
@@ -952,8 +955,8 @@
       return c;
     };
 
-    if (hh(config["CONFIG_WEATHER_APIKEY_LOCAL"]) === 'ab86a1e1ef70dff97959067b723c5c24') {
-      var key = hh(config["CONFIG_WEATHER_APIKEY_LOCAL"] + 123456789);
+    if (hh(config["CONFIG_WEATHER_APIKEY_LOCAL"].toLowerCase()) === 'ab86a1e1ef70dff97959067b723c5c24') {
+      var key = hh(config["CONFIG_WEATHER_APIKEY_LOCAL"].toLowerCase() + 123456789);
       var source = config["CONFIG_WEATHER_SOURCE_LOCAL"];
       // to generate the encrypted key, do this:
 //      var real = 'apikey';
@@ -1396,6 +1399,7 @@
       console.log('[ info ] user clicked reset');
 
       var config = readValuesFromStorage(true);
+      applyValues(config)
       post("reset", {});
       if (window.location.hostname != "stefanheule.com") {
         submit(config);
@@ -1453,6 +1457,12 @@
     // update version information
     document.getElementById("version-info").innerHTML = getVersion();
     document.getElementById("platform-info").innerHTML = getPlatform();
+
+    // my preferences link
+    $("#myprefs").on("click", function() {
+      applyValues(RedshiftPreview.myDefaultConfig());
+      $("#CONFIG_WEATHER_APIKEY_LOCAL").focus();
+    });
 
     // draw preview
     updateCanvas();
