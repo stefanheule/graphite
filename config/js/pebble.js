@@ -21,6 +21,12 @@ var PebbleHelper = (function () {
             if (platform == "chalk") return 144;
             if (platform == "emery") return 228;
             return 168;
+        },
+        IF_HR: function (platform) {
+            return function(hr, other) {
+                if (platform === "diorite" || platform == "emery") return hr;
+                return other;
+            };
         }
     }
 

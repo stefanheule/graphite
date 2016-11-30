@@ -92,6 +92,7 @@ var RedshiftPreview = (function () {
     var PBL_IF_ROUND_ELSE;
     var PBL_DISPLAY_WIDTH;
     var PBL_DISPLAY_HEIGHT;
+    var IF_HR;
 
     // graphics functions and constants
     function GPoint(x, y) { return {x: x, y: y}; }
@@ -198,6 +199,7 @@ var RedshiftPreview = (function () {
         PBL_IF_ROUND_ELSE = PebbleHelper.PBL_IF_ROUND_ELSE(platform);
         PBL_DISPLAY_WIDTH = PebbleHelper.PBL_DISPLAY_WIDTH(platform);
         PBL_DISPLAY_HEIGHT = PebbleHelper.PBL_DISPLAY_HEIGHT(platform);
+        IF_HR = PebbleHelper.IF_HR(platform);
 
 // -- autogen
 // -- ## for key in configuration
@@ -801,6 +803,7 @@ function background_update_proc(layer, ctx) {
     function defaultConfig(platform) {
         var COLOR_FALLBACK = PebbleHelper.COLOR_FALLBACK(platform);
         var PBL_IF_ROUND_ELSE = PebbleHelper.PBL_IF_ROUND_ELSE(platform);
+        var IF_HR = PebbleHelper.IF_HR(platform);
         var defaults = {
 // -- autogen
 // -- ## for key in configuration
@@ -836,7 +839,7 @@ function background_update_proc(layer, ctx) {
             CONFIG_COMPLICATION_1: +2,
             CONFIG_COMPLICATION_2: +1,
             CONFIG_COMPLICATION_3: +3,
-            CONFIG_COMPLICATION_4: +10,
+            CONFIG_COMPLICATION_4: +IF_HR(10, 0),
             CONFIG_COMPLICATION_5: +4,
             CONFIG_COMPLICATION_6: +7,
             CONFIG_PROGRESS: +1,
@@ -851,6 +854,7 @@ function background_update_proc(layer, ctx) {
     function myDefaultConfig(platform) {
         var COLOR_FALLBACK = PebbleHelper.COLOR_FALLBACK(platform);
         var PBL_IF_ROUND_ELSE = PebbleHelper.PBL_IF_ROUND_ELSE(platform);
+        var IF_HR = PebbleHelper.IF_HR(platform);
         var defaults = {
 // -- autogen
 // -- ## for key in configuration
@@ -886,7 +890,7 @@ function background_update_proc(layer, ctx) {
             CONFIG_COMPLICATION_1: +2,
             CONFIG_COMPLICATION_2: +1,
             CONFIG_COMPLICATION_3: +3,
-            CONFIG_COMPLICATION_4: +10,
+            CONFIG_COMPLICATION_4: +IF_HR(10, 0),
             CONFIG_COMPLICATION_5: +4,
             CONFIG_COMPLICATION_6: +7,
             CONFIG_PROGRESS: +1,

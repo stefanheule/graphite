@@ -189,7 +189,7 @@ configuration = [
   },
   {
     'key': 'CONFIG_COMPLICATION_4',
-    'default': 'COMPLICATION_HEARTRATE_CUR_ICON',
+    'default': 'IF_HR(COMPLICATION_HEARTRATE_CUR_ICON, COMPLICATION_EMPTY)',
   },
   {
     'key': 'CONFIG_COMPLICATION_5',
@@ -433,18 +433,20 @@ def pre_process(config, simple_config, compls, groups):
     for i in k['depends']:
       lc[i]['belongs_to_simple'] = True
 
+  def resolve_complications(x):
+    # sort to avoid problems with keys that are substrings of other keys
+    for k in sorted(clc.keys(), key=lambda x: -len(x)):
+      x = x.replace(k, str(clc[k]["id"]))
+    return x
+
   # resolve complication defaults
   clc = to_lookup(compls)
   group_ids = {}
   for k in config:
-    if "COMPLICATION_" in k['default']:
-      i = clc[k['default']]['id']
-      k['default'] = i
-      k['jsdefault'] = "+%d" % (i)
-    if "COMPLICATION_" in k['mydefault']:
-      i = clc[k['mydefault']]['id']
-      k['mydefault'] = i
-      k['jsmydefault'] = "+%d" % (i)
+    k['default'] = resolve_complications(k['default'])
+    k['jsdefault'] = resolve_complications(k['jsdefault'])
+    k['mydefault'] = resolve_complications(k['mydefault'])
+    k['jsmydefault'] = resolve_complications(k['jsmydefault'])
 
   # prepare complication groups
   for k in compls:

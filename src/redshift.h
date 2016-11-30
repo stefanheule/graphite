@@ -224,6 +224,11 @@ extern AppTimer * weather_request_timer;
 // round to a nearest pixel (from fixed to fixed)
 #define FIXED_ROUND(x) ((x) % FIXED_POINT_SCALE < FIXED_POINT_SCALE/2 ? (x) - ((x) % FIXED_POINT_SCALE) : (x) + FIXED_POINT_SCALE - ((x) % FIXED_POINT_SCALE))
 
+#if defined(PBL_PLATFORM_EMERY) || defined(PBL_PLATFORM_DIORITE)
+#define IF_HR(a, b) (a)
+#else
+#define IF_HR(a, b) (b)
+#endif
 
 ////////////////////////////////////////////
 //// screenshot configurations
