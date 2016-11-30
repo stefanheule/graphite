@@ -31,12 +31,12 @@ release:
 	@$(MAKE) clean > /dev/null
 	@$(MAKE) build_quiet > /dev/null
 	@./configure > /dev/null
-	@mkdir -p releases
-	@rm -rf releases/redshift-$(VERSION).pbw releases/redshift-$(VERSION).meta.txt
+	@mkdir -p releases/$(VERSION)
+	@rm -rf releases/$(VERSION)
 	@cp build/2016-redshift.pbw releases/redshift-$(VERSION).pbw
-	@echo "git-version: $(shell git rev-parse HEAD)" >> releases/redshift-$(VERSION).meta.txt
-	@echo "date: $(shell date +%Y-%m-%d) $(shell date +%H:%M:%S)" >> releases/redshift-$(VERSION).meta.txt
-	@echo "Done, releases/redshift-$(VERSION).pbw is ready for upload."
+	@echo "git-version: $(shell git rev-parse HEAD)" >> releases/$(VERSION)/redshift-$(VERSION).meta.txt
+	@echo "date: $(shell date +%Y-%m-%d) $(shell date +%H:%M:%S)" >> releases/$(VERSION)/redshift-$(VERSION).meta.txt
+	@echo "Done, releases/$(VERSION)/redshift-$(VERSION).pbw is ready for upload."
 
 build: initialize
 	# copy fonts
