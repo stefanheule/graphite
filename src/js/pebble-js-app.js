@@ -33,7 +33,10 @@ function getUToken() {
 }
 
 Pebble.addEventListener('ready', function () {
+// -- build=debug
+// --     console.log('[ info/app ] PebbleKit JS ready!');
     console.log('[ info/app ] PebbleKit JS ready!');
+// -- end build
     var data = {
         "MSG_KEY_JS_READY": 1
     };
@@ -56,13 +59,14 @@ Pebble.addEventListener('showConfiguration', function () {
     url += '&version=1.0';
 // -- end autogen
 
+// -- build=debug
+// --     console.log('[ info/app ] Showing configuration page: ' + url);
     console.log('[ info/app ] Showing configuration page: ' + url);
+// -- end build
     Pebble.openURL(url);
 });
 
 Pebble.addEventListener('webviewclosed', function (e) {
-    console.log(e.response)
-    console.log(decodeURIComponent(e.response).replace(/@/g, "%"))
     var urlconfig = JSON.parse(decodeURIComponent(e.response).replace(/@/g, "%"));
 
     // decode config
@@ -196,12 +200,22 @@ Pebble.addEventListener('webviewclosed', function (e) {
     //     config["CONFIG_WEATHER_REFRESH"] = 0;
     // }
 
+// -- build=debug
+// --     console.log('[ info/app ] Configuration page returned: ' + JSON.stringify(fullconfig));
     console.log('[ info/app ] Configuration page returned: ' + JSON.stringify(fullconfig));
+// -- end build
     Pebble.sendAppMessage(config, function () {
+// -- build=debug
+// --         console.log('[ info/app ] Send successful: ' + JSON.stringify(config));
         console.log('[ info/app ] Send successful: ' + JSON.stringify(config));
+// -- end build
     }, function(e) {
+// -- build=debug
+// --         console.log(JSON.stringify(config));
+// --         console.log('Message failed: ' + JSON.stringify(e));
         console.log(JSON.stringify(config));
         console.log('Message failed: ' + JSON.stringify(e));
+// -- end build
     });
 });
 
@@ -319,7 +333,10 @@ function sameDate(a, b) {
 
 /** Callback if determining weather conditions failed. */
 function failedWeatherCheck(err) {
+// -- build=debug
+// --     console.log('[ info/app ] weather request failed: ' + err);
     console.log('[ info/app ] weather request failed: ' + err);
+// -- end build
     var data = {
         "MSG_KEY_WEATHER_FAILED": 1
     };
@@ -369,7 +386,10 @@ function fetchWeather(latitude, longitude) {
             data["MSG_KEY_WEATHER_PERC_DATA_LEN"] = raindata.length;
             data["MSG_KEY_WEATHER_PERC_DATA_TS"] = ts;
         }
+// -- build=debug
+// --         console.log('[ info/app ] weather send: temp=' + low + "/" + cur + "/" + high + ", icon=" + String.fromCharCode(icon) + ".");
         console.log('[ info/app ] weather send: temp=' + low + "/" + cur + "/" + high + ", icon=" + String.fromCharCode(icon) + ".");
+// -- end build
         Pebble.sendAppMessage(data);
     };
 
@@ -396,14 +416,20 @@ function fetchWeather(latitude, longitude) {
                 }
             }
         };
+// -- build=debug
+// --         console.log("[ info/app ] loading from " + url);
         console.log("[ info/app ] loading from " + url);
+// -- end build
         req.send(null);
     };
 
     var source = +readConfig("CONFIG_WEATHER_SOURCE_LOCAL");
     var apikey = readConfig("CONFIG_WEATHER_APIKEY_LOCAL");
     var load_rain = readConfig("CONFIG_WEATHER_RAIN_LOCAL");
+// -- build=debug
+// --     console.log('[ info/app ] requesting weather information (' + (daily ? "daily" : "currently") + ')...');
     console.log('[ info/app ] requesting weather information (' + (daily ? "daily" : "currently") + ')...');
+// -- end build
     if (source == 1) {
         var query = "lat=" + latitude + "&lon=" + longitude;
         query += "&cnt=1&appid=fa5280deac4b98572739388b55cd7591";
@@ -412,7 +438,10 @@ function fetchWeather(latitude, longitude) {
             var temp = response.main.temp - 273.15;
             if (daily) temp = response.main.temp_max - 273.15;
             var icon = parseIconOpenWeatherMap(response.weather[0].icon);
+// -- build=debug
+// --             console.log('[ info/app ] weather information: ' + JSON.stringify(response));
             console.log('[ info/app ] weather information: ' + JSON.stringify(response));
+// -- end build
             success(temp, icon);
         });
     } else if (source == 3) {
@@ -421,13 +450,15 @@ function fetchWeather(latitude, longitude) {
         var url = "http://api.wunderground.com/api/" + apikey + "/" + q + "/q/" + latitude + "," + longitude + ".json";
         runRequest(url, function (response) {
             var temp, icon;
+// -- build=debug
+// --             console.log('[ info/app ] weather information: ' + JSON.stringify(response));
             console.log('[ info/app ] weather information: ' + JSON.stringify(response));
+// -- end build
             if (daily) {
                 for (var i in response.forecast.simpleforecast.forecastday) {
                     var data = response.forecast.simpleforecast.forecastday[i];
                     var date = new Date(data.date.epoch*1000);
                     if (sameDate(now, date)) {
-                        console.log('[ info/app ] using this information: ' + JSON.stringify(data));
                         temp = +data.high.celsius;
                         icon = parseIconWU(data.icon);
                         break;
@@ -447,17 +478,18 @@ function fetchWeather(latitude, longitude) {
             exclude += ",hourly"
         }
         runRequest(baseurl + exclude, function(response) {
+// -- build=debug
+// --             console.log('[ info/app ] weather information: ' + JSON.stringify(response));
             console.log('[ info/app ] weather information: ' + JSON.stringify(response));
+// -- end build
             var low, high, cur, icon;
             for (var i in response.daily.data) {
                 var data = response.daily.data[i];
                 var date = new Date(data.time*1000);
                 if (sameDate(now, date)) {
-                    console.log(data);
                     low = data. temperatureMin;
                     high = data. temperatureMax;
                     //icon = data.icon;
-                    console.log('[ info/app ] using this information: ' + JSON.stringify(data));
                     break;
                 }
             }
@@ -482,7 +514,10 @@ function fetchWeather(latitude, longitude) {
 
 Pebble.addEventListener('appmessage',
     function (e) {
+// -- build=debug
+// --         console.log('[ info/app ] app message received: ' + JSON.stringify(e));
         console.log('[ info/app ] app message received: ' + JSON.stringify(e));
+// -- end build
         var dict = e.payload;
         if (dict["MSG_KEY_FETCH_WEATHER"]) {
             var location = readConfig("CONFIG_WEATHER_LOCATION_LOCAL");
