@@ -342,18 +342,6 @@ complications = [
   #   'key': 'COMPLICATION_CALORIES_FULL',
   #   'desc': 'Calories burned (active + resting)',
   # },
-  # {
-  #   'key': 'COMPLICATION_AMPM',
-  #   'desc': 'AM/PM (uppercase)',
-  # },
-  # {
-  #   'key': 'COMPLICATION_AMPM_LOWER',
-  #   'desc': 'am/pm (lowercase)',
-  # },
-  # {
-  #   'key': 'COMPLICATION_',
-  #   'desc': 'Battery',
-  # },
 
 config_groups = [
   {
