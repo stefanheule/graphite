@@ -189,6 +189,12 @@ Pebble.addEventListener('webviewclosed', function (e) {
     fullconfig["CONFIG_UPDATE_SECOND"] = urlconfig[37];
     config["CONFIG_UPDATE_SECOND"] = +urlconfig[37];
     localStorage.setItem("CONFIG_UPDATE_SECOND", urlconfig[37]);
+    fullconfig["CONFIG_ADVANCED_FORMAT_LOCAL"] = urlconfig[38];
+    localStorage.setItem("CONFIG_ADVANCED_FORMAT_LOCAL", urlconfig[38]);
+    fullconfig["CONFIG_TIME_FORMAT_LOCAL"] = urlconfig[39];
+    localStorage.setItem("CONFIG_TIME_FORMAT_LOCAL", urlconfig[39]);
+    fullconfig["CONFIG_INFO_BELOW_LOCAL"] = urlconfig[40];
+    localStorage.setItem("CONFIG_INFO_BELOW_LOCAL", urlconfig[40]);
 // -- end autogen
 
     // don't allow really small values for refresh rate
@@ -244,6 +250,12 @@ function readConfig(key) {
             return "";
         } else if (key == "CONFIG_ADVANCED_APPEARANCE_LOCAL") {
             return false;
+        } else if (key == "CONFIG_ADVANCED_FORMAT_LOCAL") {
+            return false;
+        } else if (key == "CONFIG_TIME_FORMAT_LOCAL") {
+            return 0;
+        } else if (key == "CONFIG_INFO_BELOW_LOCAL") {
+            return 0;
 // -- end autogen
         }
     }

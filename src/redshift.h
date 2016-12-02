@@ -75,7 +75,7 @@
 
 // -- autogen
 // -- #define REDSHIFT_N_CONFIG {{ num_config_items }}
-#define REDSHIFT_N_CONFIG 37
+#define REDSHIFT_N_CONFIG 40
 // -- end autogen
 
 // -- autogen

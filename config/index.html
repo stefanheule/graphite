@@ -197,16 +197,6 @@
     <div class='item-container'>
       <div class='item-container-header'>Appearance</div>
 
-      <div class='item-container-content'>
-        <label class='item'>
-          Show advanced appearance configuration
-          <input id='CONFIG_ADVANCED_APPEARANCE_LOCAL' type='checkbox' class='item-toggle'>
-        </label>
-        <div class="item-container-footer">
-          Allows you to change the color of every element individually.
-        </div>
-      </div>
-
       <div id="appearance-simple">
 <!--
 // -- autogen
@@ -346,6 +336,16 @@
 // -- end autogen
 -->
 
+      <div class='item-container-content'>
+        <label class='item'>
+          Show advanced appearance configuration
+          <input id='CONFIG_ADVANCED_APPEARANCE_LOCAL' type='checkbox' class='item-toggle'>
+        </label>
+        <div class="item-container-footer">
+          Allows you to change the color of every element individually.
+        </div>
+      </div>
+
     </div>
 
 
@@ -390,6 +390,54 @@
             <option class="item-select-option" value="0">None</option>
             <option class="item-select-option" value="1">Steps</option>
             <option class="item-select-option" value="2">Battery</option>
+          </select>
+        </label>
+      </div>
+
+      <div class="item-container-content">
+        <label class="item">
+          Show advanced format configuration
+          <input id='CONFIG_ADVANCED_FORMAT_LOCAL' type='checkbox' class='item-toggle'>
+        </label>
+      </div>
+
+      <div class="item-container-content">
+        <label class="item">
+          Time Format
+          <select id='CONFIG_TIME_FORMAT_LOCAL' dir='rtl' class="item-select">
+<!--
+// -- autogen
+// -- ## for key in configuration_lookup["CONFIG_TIME_FORMAT_LOCAL"]["options"]
+// --             <option class="item-select-option" value="{{ key["id"] }}">{{ key["desc"] }}</option>
+// -- ## endfor
+-->
+            <option class="item-select-option" value="0">5:44</option>
+            <option class="item-select-option" value="1">05:44</option>
+            <option class="item-select-option" value="2">17:44</option>
+            <option class="item-select-option" value="3">17:44</option>
+<!--
+// -- end autogen
+-->
+          </select>
+        </label>
+      </div>
+
+      <div class="item-container-content">
+        <label class="item">
+          Information Below Time
+          <select id='CONFIG_INFO_BELOW_LOCAL' class="item-select">
+<!--
+// -- autogen
+// -- ## for key in configuration_lookup["CONFIG_INFO_BELOW_LOCAL"]["options"]
+// --             <option class="item-select-option" value="{{ key["id"] }}">{{ key["desc"] }}</option>
+// -- ## endfor
+-->
+            <option class="item-select-option" value="0">Sunday, 11/27</option>
+            <option class="item-select-option" value="1">Sunday, 27.11.</option>
+            <option class="item-select-option" value="2">2016-11-27</option>
+<!--
+// -- end autogen
+-->
           </select>
         </label>
       </div>
@@ -679,6 +727,28 @@
   var isChalk = function() { return getPlatform() == "chalk"; };
   var isBasalt = function() { return getPlatform() == "basalt"; };
 
+  var timeFormats = [
+// -- autogen
+// -- ## for key in configuration_lookup["CONFIG_TIME_FORMAT_LOCAL"]["options"]
+// --     {{ key["format"] }},
+// -- ## endfor
+    "%I:0%M",
+    "0%I:0%M",
+    "%H:0%M",
+    "0%H:0%M",
+// -- end autogen
+  ];
+  var infoFormats = [
+// -- autogen
+// -- ## for key in configuration_lookup["CONFIG_INFO_BELOW_LOCAL"]["options"]
+// --     {{ key["format"] }},
+// -- ## endfor
+    "%A, %m/%d",
+    "%A, %d.%m.",
+    "%Y-%0m-%0d",
+// -- end autogen
+  ];
+
   function getAllConfigHtmlNodes() {
     return $('[id]').filter(function () {
       return /^CONFIG_.*$/.test(this.id);
@@ -941,6 +1011,9 @@
         "CONFIG_TIME_FORMAT": 35,
         "CONFIG_INFO_BELOW": 36,
         "CONFIG_UPDATE_SECOND": 37,
+        "CONFIG_ADVANCED_FORMAT_LOCAL": 38,
+        "CONFIG_TIME_FORMAT_LOCAL": 39,
+        "CONFIG_INFO_BELOW_LOCAL": 40,
 // -- end autogen
     };
 
@@ -1067,6 +1140,12 @@
         $("#appearance-full").show();
       }
     }
+    if (id == "CONFIG_ADVANCED_FORMAT_LOCAL") {
+      showHideOption("CONFIG_TIME_FORMAT_LOCAL", !value);
+      showHideOption("CONFIG_TIME_FORMAT", value);
+      showHideOption("CONFIG_INFO_BELOW_LOCAL", !value);
+      showHideOption("CONFIG_INFO_BELOW", value);
+    }
   }
   /** Some rules are run every time */
   function updateShowHideStatus() {
@@ -1150,6 +1229,13 @@
     }
     var value = readOneConfig($(event.target));
     var options, allDepVals;
+
+    if (id == "CONFIG_TIME_FORMAT_LOCAL") {
+      applyValue($("#CONFIG_TIME_FORMAT"), timeFormats[value]);
+    }
+    if (id == "CONFIG_INFO_BELOW_LOCAL") {
+      applyValue($("#CONFIG_INFO_BELOW"), infoFormats[value]);
+    }
 
     // check consistency of seconds complication
     if (id == "CONFIG_UPDATE_SECOND") {

@@ -66,6 +66,9 @@ var RedshiftPreview = (function () {
      var config_time_format;
      var config_info_below;
      var config_update_second;
+     var config_advanced_format_local;
+     var config_time_format_local;
+     var config_info_below_local;
 // -- end autogen
 
     function getWeather() {
@@ -242,6 +245,9 @@ var RedshiftPreview = (function () {
         config_time_format = config["CONFIG_TIME_FORMAT"];
         config_info_below = config["CONFIG_INFO_BELOW"];
         config_update_second = config["CONFIG_UPDATE_SECOND"];
+        config_advanced_format_local = config["CONFIG_ADVANCED_FORMAT_LOCAL"];
+        config_time_format_local = config["CONFIG_TIME_FORMAT_LOCAL"];
+        config_info_below_local = config["CONFIG_INFO_BELOW_LOCAL"];
 // -- end autogen
 
         weather = getWeather(platform);
@@ -564,12 +570,13 @@ function show_weather() {
 function find_fontsize(fctx, target, min, str) {
     var l = min;
     var h = target;
-    if (string_width(fctx, str, font_main, target) <= width) {
+    var border = REM(20);
+    if (string_width(fctx, str, font_main, target) <= width - border) {
         return target;
     }
     while (l != h) {
         var m = Math.floor((l + h) / 2);
-        if (string_width(fctx, str, font_main, m) > width - REM(10)) {
+        if (string_width(fctx, str, font_main, m) > width - border) {
             h = m;
         } else {
             l = m + 1;
@@ -846,6 +853,9 @@ function background_update_proc(layer, ctx) {
             CONFIG_TIME_FORMAT: "%I:0%M",
             CONFIG_INFO_BELOW: "%A, %m/%d",
             CONFIG_UPDATE_SECOND: +false,
+            CONFIG_ADVANCED_FORMAT_LOCAL: +false,
+            CONFIG_TIME_FORMAT_LOCAL: +0,
+            CONFIG_INFO_BELOW_LOCAL: +0,
 // -- end autogen
         };
         return cloneConfig(defaults);
@@ -897,6 +907,9 @@ function background_update_proc(layer, ctx) {
             CONFIG_TIME_FORMAT: "%I:0%M",
             CONFIG_INFO_BELOW: "%A, %m/%d",
             CONFIG_UPDATE_SECOND: +false,
+            CONFIG_ADVANCED_FORMAT_LOCAL: +false,
+            CONFIG_TIME_FORMAT_LOCAL: +0,
+            CONFIG_INFO_BELOW_LOCAL: +0,
 // -- end autogen
         };
         return cloneConfig(defaults);

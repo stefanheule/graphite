@@ -105,7 +105,8 @@ bool show_weather() {
 fixed_t find_fontsize(FContext* fctx, fixed_t target, fixed_t min, const char* str) {
     fixed_t l = min;
     fixed_t h = target;
-    if (string_width(fctx, str, font_main, target) <= width) {
+    fixed_t border = REM(20);
+    if (string_width(fctx, str, font_main, target) <= width - border) {
         return target;
     }
     while (l != h) {
@@ -113,7 +114,7 @@ fixed_t find_fontsize(FContext* fctx, fixed_t target, fixed_t min, const char* s
 // --         var m = Math.floor((l + h) / 2);
         fixed_t m = (l + h) / 2;
 // -- end jsalternative
-        if (string_width(fctx, str, font_main, m) > width - REM(10)) {
+        if (string_width(fctx, str, font_main, m) > width - border) {
             h = m;
         } else {
             l = m + 1;

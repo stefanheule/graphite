@@ -6,7 +6,9 @@ import sys
 import re
 import codecs
 import itertools
+import time
 import copy
+import datetime
 
 def flatten(l): return [x for y in l for x in y]
 
@@ -207,16 +209,39 @@ configuration = [
   {
     'key': 'CONFIG_TIME_FORMAT',
     'default': '"%I:0%M"',
-    'type': 'string'
+    'type': 'string',
   },
   {
     'key': 'CONFIG_INFO_BELOW',
     'default': '"%A, %m/%d"',
-    'type': 'string'
+    'type': 'string',
   },
   {
     'key': 'CONFIG_UPDATE_SECOND',
     'default': 'false',
+  },
+  {
+    'key': 'CONFIG_ADVANCED_FORMAT_LOCAL',
+    'default': 'false',
+  },
+  {
+    'key': 'CONFIG_TIME_FORMAT_LOCAL',
+    'default': '0',
+    'options': [
+      '"%I:0%M"',
+      '"0%I:0%M"',
+      '"%H:0%M"',
+      '"0%H:0%M"',
+    ],
+  },
+  {
+    'key': 'CONFIG_INFO_BELOW_LOCAL',
+    'default': '0',
+    'options': [
+      '"%A, %m/%d"',
+      '"%A, %d.%m."',
+      '"%Y-%m-%d"',
+    ],
   },
 ]
 
@@ -380,6 +405,8 @@ files_to_inline_render = [
   "config/js/preview.js",
 ]
 
+now = datetime.datetime(2016, 11, 27, 17, 44, 57, 0)
+nowt = now.timetuple()
 
 # ------------------------------------------------------------------------------
 # --- end configuration
@@ -429,6 +456,12 @@ def pre_process(config, simple_config, compls, groups):
       x = x.replace(k, str(clc[k]["id"]))
     return x
 
+  def format_time(format):
+    res = time.strftime(format, nowt).strip('"')
+    if (res[0] == "0"): res = res[1:]
+    res = re.sub("([^0-9])0", "\\1", res)
+    return res
+
   # resolve complication defaults
   clc = to_lookup(compls)
   group_ids = {}
@@ -437,6 +470,8 @@ def pre_process(config, simple_config, compls, groups):
     k['jsdefault'] = resolve_complications(k['jsdefault'])
     k['mydefault'] = resolve_complications(k['mydefault'])
     k['jsmydefault'] = resolve_complications(k['jsmydefault'])
+    if 'options' in k:
+      k['options'] = map(lambda x: {'desc': format_time(x[1]), 'id': x[0], 'format': x[1]}, enumerate(k['options']))
 
   # prepare complication groups
   for k in compls:
