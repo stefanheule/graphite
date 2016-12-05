@@ -220,7 +220,7 @@ void background_update_proc(Layer *layer, GContext *ctx) {
             }
         }
         if (first_perc_index != -1 && !all_zero) {
-            fixed_t perc_ti_h = FIXED_ROUND(REM(3));
+            fixed_t perc_ti_h = config_show_daynight ? FIXED_ROUND(REM(3)) : 0;
             fixed_t perc_sep = REM(2); // space between two bars
             fixed_t perc_bar = (width - (nHours + 1) * perc_sep) / nHours; // width of a single bar (without space)
             fixed_t perc_w = perc_sep + perc_bar; // total width occupied by a single hour
@@ -236,10 +236,12 @@ void background_update_proc(Layer *layer, GContext *ctx) {
                 draw_rect(fctx, FRect(point, size), config_color_perc);
             }
             // rain preview time indicator
-            draw_rect(fctx, FRect(FPoint(0, topbar_height), FSize(width, perc_ti_h)), config_color_day);
-            for (int i = -1; i < 2; i++) {
-                FPoint point = FPoint(perc_minoffset + (24*i + 18 - t->tm_hour) * perc_w, topbar_height);
-                draw_rect(fctx, FRect(point, FSize(12 * perc_w, perc_ti_h)), config_color_night);
+            if (config_show_daynight) {
+                draw_rect(fctx, FRect(FPoint(0, topbar_height), FSize(width, perc_ti_h)), config_color_day);
+                for (int i = -1; i < 2; i++) {
+                    FPoint point = FPoint(perc_minoffset + (24*i + 18 - t->tm_hour) * perc_w, topbar_height);
+                    draw_rect(fctx, FRect(point, FSize(12 * perc_w, perc_ti_h)), config_color_night);
+                }
             }
         }
     }

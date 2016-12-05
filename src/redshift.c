@@ -61,6 +61,7 @@ uint8_t config_progress = 1;
 char config_time_format[REDSHIFT_STRINGCONFIG_MAXLEN+1] = "%I:0%M";
 char config_info_below[REDSHIFT_STRINGCONFIG_MAXLEN+1] = "%A, %m/%d";
 uint8_t config_update_second = false;
+uint8_t config_show_daynight = true;
 // -- end autogen
 
 

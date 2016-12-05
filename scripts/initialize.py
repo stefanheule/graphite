@@ -140,13 +140,13 @@ configuration = [
     'key': 'CONFIG_COLOR_DAY',
     'default': 'GColorLightGrayARGB8',
     'desc': 'Precipitation day time indicator color',
-    'show_only_if': 'readConfig("CONFIG_WEATHER_RAIN_LOCAL") == 1',
+    'show_only_if': 'readConfig("CONFIG_WEATHER_RAIN_LOCAL") == 1 && readConfig("CONFIG_SHOW_DAYNIGHT") == 1',
   },
   {
     'key': 'CONFIG_COLOR_NIGHT',
     'default': 'GColorBlackARGB8',
     'desc': 'Precipitation night time indicator color',
-    'show_only_if': 'readConfig("CONFIG_WEATHER_RAIN_LOCAL") == 1',
+    'show_only_if': 'readConfig("CONFIG_WEATHER_RAIN_LOCAL") == 1 && readConfig("CONFIG_SHOW_DAYNIGHT") == 1',
   },
   {
     'key': 'CONFIG_COLOR_BAT_30',
@@ -246,6 +246,11 @@ configuration = [
       '"%p"',
       '"%P"',
     ],
+  },
+  {
+    'key': 'CONFIG_SHOW_DAYNIGHT',
+    'default': 'true',
+    'show_only_if': 'readConfig("CONFIG_WEATHER_RAIN_LOCAL") == 1',
   },
 ]
 

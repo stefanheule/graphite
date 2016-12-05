@@ -69,6 +69,7 @@ var RedshiftPreview = (function () {
      var config_advanced_format_local;
      var config_time_format_local;
      var config_info_below_local;
+     var config_show_daynight;
 // -- end autogen
 
     function getWeather() {
@@ -248,6 +249,7 @@ var RedshiftPreview = (function () {
         config_advanced_format_local = config["CONFIG_ADVANCED_FORMAT_LOCAL"];
         config_time_format_local = config["CONFIG_TIME_FORMAT_LOCAL"];
         config_info_below_local = config["CONFIG_INFO_BELOW_LOCAL"];
+        config_show_daynight = config["CONFIG_SHOW_DAYNIGHT"];
 // -- end autogen
 
         weather = getWeather(platform);
@@ -647,7 +649,7 @@ function background_update_proc(layer, ctx) {
             }
         }
         if (first_perc_index != -1 && !all_zero) {
-            var perc_ti_h = FIXED_ROUND(REM(3));
+            var perc_ti_h = config_show_daynight ? FIXED_ROUND(REM(3)) : 0;
             var perc_sep = REM(2); // space between two bars
             var perc_bar = (width - (nHours + 1) * perc_sep) / nHours; // width of a single bar (without space)
             var perc_w = perc_sep + perc_bar; // total width occupied by a single hour
@@ -662,10 +664,12 @@ function background_update_proc(layer, ctx) {
                 var size = FSize(perc_bar, perc_maxheight * i_percip_prob / 100);
                 draw_rect(fctx, FRect(point, size), config_color_perc);
             }
-            draw_rect(fctx, FRect(FPoint(0, topbar_height), FSize(width, perc_ti_h)), config_color_day);
-            for(var i = -1; i < 2; i++) {
-                var point = FPoint(perc_minoffset + (24*i + 18 - t.tm_hour) * perc_w, topbar_height);
-                draw_rect(fctx, FRect(point, FSize(12 * perc_w, perc_ti_h)), config_color_night);
+            if (config_show_daynight) {
+                draw_rect(fctx, FRect(FPoint(0, topbar_height), FSize(width, perc_ti_h)), config_color_day);
+                for(var i = -1; i < 2; i++) {
+                    var point = FPoint(perc_minoffset + (24*i + 18 - t.tm_hour) * perc_w, topbar_height);
+                    draw_rect(fctx, FRect(point, FSize(12 * perc_w, perc_ti_h)), config_color_night);
+                }
             }
         }
     }
@@ -856,6 +860,7 @@ function background_update_proc(layer, ctx) {
             CONFIG_ADVANCED_FORMAT_LOCAL: +false,
             CONFIG_TIME_FORMAT_LOCAL: +0,
             CONFIG_INFO_BELOW_LOCAL: +0,
+            CONFIG_SHOW_DAYNIGHT: +true,
 // -- end autogen
         };
         return cloneConfig(defaults);
@@ -910,6 +915,7 @@ function background_update_proc(layer, ctx) {
             CONFIG_ADVANCED_FORMAT_LOCAL: +false,
             CONFIG_TIME_FORMAT_LOCAL: +0,
             CONFIG_INFO_BELOW_LOCAL: +0,
+            CONFIG_SHOW_DAYNIGHT: +true,
 // -- end autogen
         };
         return cloneConfig(defaults);

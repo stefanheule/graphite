@@ -385,6 +385,13 @@
 
       <div class="item-container-content">
         <label class="item">
+          Show day/night indicator over rain forecast.
+          <input id='CONFIG_SHOW_DAYNIGHT' type='checkbox' class='item-toggle'>
+        </label>
+      </div>
+
+      <div class="item-container-content">
+        <label class="item">
           Progress bar
           <select id='CONFIG_PROGRESS' dir='rtl' class="item-select">
             <option class="item-select-option" value="0">None</option>
@@ -1022,6 +1029,7 @@
         "CONFIG_ADVANCED_FORMAT_LOCAL": 38,
         "CONFIG_TIME_FORMAT_LOCAL": 39,
         "CONFIG_INFO_BELOW_LOCAL": 40,
+        "CONFIG_SHOW_DAYNIGHT": 41,
 // -- end autogen
     };
 
@@ -1165,11 +1173,12 @@
 // -- ## endfor
     showHideOption("CONFIG_COLOR_PROGRESS_BAR", +readConfig("CONFIG_PROGRESS") != 0);
     showHideOption("CONFIG_COLOR_PROGRESS_BAR2", +readConfig("CONFIG_PROGRESS") != 0);
-    showHideOption("CONFIG_COLOR_DAY", readConfig("CONFIG_WEATHER_RAIN_LOCAL") == 1);
-    showHideOption("CONFIG_COLOR_NIGHT", readConfig("CONFIG_WEATHER_RAIN_LOCAL") == 1);
+    showHideOption("CONFIG_COLOR_DAY", readConfig("CONFIG_WEATHER_RAIN_LOCAL") == 1 && readConfig("CONFIG_SHOW_DAYNIGHT") == 1);
+    showHideOption("CONFIG_COLOR_NIGHT", readConfig("CONFIG_WEATHER_RAIN_LOCAL") == 1 && readConfig("CONFIG_SHOW_DAYNIGHT") == 1);
     showHideOption("CONFIG_COLOR_BAT_30", readConfig("CONFIG_LOWBAT_COL") != 0);
     showHideOption("CONFIG_COLOR_BAT_20", readConfig("CONFIG_LOWBAT_COL") != 0);
     showHideOption("CONFIG_COLOR_BAT_10", readConfig("CONFIG_LOWBAT_COL") != 0);
+    showHideOption("CONFIG_SHOW_DAYNIGHT", readConfig("CONFIG_WEATHER_RAIN_LOCAL") == 1);
 // -- end autogen
 
 // -- autogen
