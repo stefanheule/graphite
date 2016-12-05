@@ -462,6 +462,7 @@ def pre_process(config, simple_config, compls, groups):
 
   def format_time(format):
     res = time.strftime(format, nowt).strip('"')
+    if res[0] == "0": res = res[1:]
     res = re.sub("([^0-9])0", "\\1", res)
     return res
 
