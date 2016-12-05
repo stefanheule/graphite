@@ -198,7 +198,7 @@ configuration = [
   },
   {
     'key': 'CONFIG_COMPLICATION_4',
-    'default': 'IF_HR(COMPLICATION_HEARTRATE_CUR_ICON, COMPLICATION_STEPS_SHORT)',
+    'default': 'IF_HR(COMPLICATION_HEARTRATE_CUR_ICON, COMPLICATION_STEPS_SHORT_ICON)',
   },
   {
     'key': 'CONFIG_COMPLICATION_5',
@@ -360,6 +360,30 @@ complications = [
       'desc': 'Calories burned, active',
       'icontext': 'K',
       'text': 'format_unitless(health_service_sum_today(HealthMetricActiveKCalories))',
+    },
+    {
+      'key': 'COMPLICATION_CALORIES_ALL',
+      'desc': 'Calories burned, resting + active',
+      'icontext': 'K',
+      'text': 'format_unitless(health_service_sum_today(HealthMetricRestingKCalories)+health_service_sum_today(HealthMetricActiveKCalories))',
+    },
+    {
+      'key': 'COMPLICATION_CALORIES_RESTING_SHORT',
+      'desc': 'Calories burned, resting, abbreviated',
+      'icontext': 'K',
+      'text': 'format_thousands(health_service_sum_today(HealthMetricRestingKCalories))',
+    },
+    {
+      'key': 'COMPLICATION_CALORIES_ACTIVE_SHORT',
+      'desc': 'Calories burned, active, abbreviated',
+      'icontext': 'K',
+      'text': 'format_thousands(health_service_sum_today(HealthMetricActiveKCalories))',
+    },
+    {
+      'key': 'COMPLICATION_CALORIES_ALL_SHORT',
+      'desc': 'Calories burned, resting + active, abbreviated',
+      'icontext': 'K',
+      'text': 'format_thousands(health_service_sum_today(HealthMetricRestingKCalories)+health_service_sum_today(HealthMetricActiveKCalories))',
     },
   ],
   {

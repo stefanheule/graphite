@@ -182,20 +182,52 @@
         <canvas class="complication" id="complication-preview-19-canvas"></canvas>
       </div>
       <div class="complication-preview" id="complication-preview-20">
-        <p>AM/PM</p>
+        <p>Calories burned, resting + active</p>
         <canvas class="complication" id="complication-preview-20-canvas"></canvas>
       </div>
       <div class="complication-preview" id="complication-preview-21">
-        <p>am/pm</p>
+        <p>Calories burned, resting + active (no icon)</p>
         <canvas class="complication" id="complication-preview-21-canvas"></canvas>
       </div>
       <div class="complication-preview" id="complication-preview-22">
-        <p>Seconds</p>
+        <p>Calories burned, resting, abbreviated</p>
         <canvas class="complication" id="complication-preview-22-canvas"></canvas>
       </div>
       <div class="complication-preview" id="complication-preview-23">
-        <p>Day of week</p>
+        <p>Calories burned, resting, abbreviated (no icon)</p>
         <canvas class="complication" id="complication-preview-23-canvas"></canvas>
+      </div>
+      <div class="complication-preview" id="complication-preview-24">
+        <p>Calories burned, active, abbreviated</p>
+        <canvas class="complication" id="complication-preview-24-canvas"></canvas>
+      </div>
+      <div class="complication-preview" id="complication-preview-25">
+        <p>Calories burned, active, abbreviated (no icon)</p>
+        <canvas class="complication" id="complication-preview-25-canvas"></canvas>
+      </div>
+      <div class="complication-preview" id="complication-preview-26">
+        <p>Calories burned, resting + active, abbreviated</p>
+        <canvas class="complication" id="complication-preview-26-canvas"></canvas>
+      </div>
+      <div class="complication-preview" id="complication-preview-27">
+        <p>Calories burned, resting + active, abbreviated (no icon)</p>
+        <canvas class="complication" id="complication-preview-27-canvas"></canvas>
+      </div>
+      <div class="complication-preview" id="complication-preview-28">
+        <p>AM/PM</p>
+        <canvas class="complication" id="complication-preview-28-canvas"></canvas>
+      </div>
+      <div class="complication-preview" id="complication-preview-29">
+        <p>am/pm</p>
+        <canvas class="complication" id="complication-preview-29-canvas"></canvas>
+      </div>
+      <div class="complication-preview" id="complication-preview-30">
+        <p>Seconds</p>
+        <canvas class="complication" id="complication-preview-30-canvas"></canvas>
+      </div>
+      <div class="complication-preview" id="complication-preview-31">
+        <p>Day of week</p>
+        <canvas class="complication" id="complication-preview-31-canvas"></canvas>
       </div>
 <!--
 // -- end autogen
@@ -1339,7 +1371,7 @@
 // -- autogen
 // --       var compl_seconds = {{ complications_lookup["COMPLICATION_SECONDS"]["id"] }};
 // --       var compl_empty = {{ complications_lookup["COMPLICATION_EMPTY"]["id"] }};
-      var compl_seconds = 22;
+      var compl_seconds = 30;
       var compl_empty = 0;
 // -- end autogen
       if (value == 0 && has_complication([compl_seconds])) {
@@ -1482,7 +1514,7 @@
   function pickComplication(pickedComplicationNr) {
 // -- autogen
 // --     if (pickedComplicationNr == {{ complications_lookup["COMPLICATION_SECONDS"]["id"] }}) {
-    if (pickedComplicationNr == 22) {
+    if (pickedComplicationNr == 30) {
 // -- end autogen
       if (readConfig("CONFIG_UPDATE_SECOND") == 0) {
         if (!window.confirm("The second complication only works if the watch face gets updated more than once a minute.  Enable updates once a second now (may negatively impact battery life)?")) {
@@ -1556,6 +1588,14 @@
       $("#complication-preview-21").on("click", function(){ pickComplication(21); });
       $("#complication-preview-22").on("click", function(){ pickComplication(22); });
       $("#complication-preview-23").on("click", function(){ pickComplication(23); });
+      $("#complication-preview-24").on("click", function(){ pickComplication(24); });
+      $("#complication-preview-25").on("click", function(){ pickComplication(25); });
+      $("#complication-preview-26").on("click", function(){ pickComplication(26); });
+      $("#complication-preview-27").on("click", function(){ pickComplication(27); });
+      $("#complication-preview-28").on("click", function(){ pickComplication(28); });
+      $("#complication-preview-29").on("click", function(){ pickComplication(29); });
+      $("#complication-preview-30").on("click", function(){ pickComplication(30); });
+      $("#complication-preview-31").on("click", function(){ pickComplication(31); });
 // -- end autogen
   }
 
@@ -1711,6 +1751,14 @@
       RedshiftPreview.previewComplication(21, config, 'complication-preview-21-canvas', getPlatform());
       RedshiftPreview.previewComplication(22, config, 'complication-preview-22-canvas', getPlatform());
       RedshiftPreview.previewComplication(23, config, 'complication-preview-23-canvas', getPlatform());
+      RedshiftPreview.previewComplication(24, config, 'complication-preview-24-canvas', getPlatform());
+      RedshiftPreview.previewComplication(25, config, 'complication-preview-25-canvas', getPlatform());
+      RedshiftPreview.previewComplication(26, config, 'complication-preview-26-canvas', getPlatform());
+      RedshiftPreview.previewComplication(27, config, 'complication-preview-27-canvas', getPlatform());
+      RedshiftPreview.previewComplication(28, config, 'complication-preview-28-canvas', getPlatform());
+      RedshiftPreview.previewComplication(29, config, 'complication-preview-29-canvas', getPlatform());
+      RedshiftPreview.previewComplication(30, config, 'complication-preview-30-canvas', getPlatform());
+      RedshiftPreview.previewComplication(31, config, 'complication-preview-31-canvas', getPlatform());
 // -- end autogen
 
       for (var i = 1; i < 7; i++) {

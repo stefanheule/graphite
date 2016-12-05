@@ -154,8 +154,8 @@ var RedshiftPreview = (function () {
         if (what == HealthMetricWalkedDistanceMeters) return 4752;
         if (what == HealthMetricSleepSeconds) return 6*60*60+20*60+31;
         if (what == HealthMetricSleepRestfulSeconds) return 1*60*60+58*60+2;
-        if (what == HealthMetricRestingKCalories) return 1;
-        if (what == HealthMetricActiveKCalories) return 1;
+        if (what == HealthMetricRestingKCalories) return 1350;
+        if (what == HealthMetricActiveKCalories) return 3891;
         console.log("ERROR: unknown argument: " + what)
     }
     var HealthServiceTimeScopeDailyWeekdayOrWeekend = 100;
@@ -343,10 +343,18 @@ var complications = [
     complication_calories_resting, // id 17
     complication_calories_active_icon, // id 18
     complication_calories_active, // id 19
-    complication_ampm, // id 20
-    complication_ampm_lower, // id 21
-    complication_seconds, // id 22
-    complication_day_of_week, // id 23
+    complication_calories_all_icon, // id 20
+    complication_calories_all, // id 21
+    complication_calories_resting_short_icon, // id 22
+    complication_calories_resting_short, // id 23
+    complication_calories_active_short_icon, // id 24
+    complication_calories_active_short, // id 25
+    complication_calories_all_short_icon, // id 26
+    complication_calories_all_short, // id 27
+    complication_ampm, // id 28
+    complication_ampm_lower, // id 29
+    complication_seconds, // id 30
+    complication_day_of_week, // id 31
 ];
 function draw_icon_number_complication(fctx, draw, position, align, foreground_color, background_color, icon, text, show_icon) {
   var fontsize_icon = (fontsize_complications * 0.62);
@@ -557,6 +565,30 @@ function complication_calories_active_icon(fctx, draw, position, align, foregrou
 }
 function complication_calories_active(fctx, draw, position, align, foreground_color, background_color) {
   return draw_icon_number_complication(fctx, draw, position, align, foreground_color, background_color, "K", format_unitless(health_service_sum_today(HealthMetricActiveKCalories)), false);
+}
+function complication_calories_all_icon(fctx, draw, position, align, foreground_color, background_color) {
+  return draw_icon_number_complication(fctx, draw, position, align, foreground_color, background_color, "K", format_unitless(health_service_sum_today(HealthMetricRestingKCalories)+health_service_sum_today(HealthMetricActiveKCalories)), true);
+}
+function complication_calories_all(fctx, draw, position, align, foreground_color, background_color) {
+  return draw_icon_number_complication(fctx, draw, position, align, foreground_color, background_color, "K", format_unitless(health_service_sum_today(HealthMetricRestingKCalories)+health_service_sum_today(HealthMetricActiveKCalories)), false);
+}
+function complication_calories_resting_short_icon(fctx, draw, position, align, foreground_color, background_color) {
+  return draw_icon_number_complication(fctx, draw, position, align, foreground_color, background_color, "K", format_thousands(health_service_sum_today(HealthMetricRestingKCalories)), true);
+}
+function complication_calories_resting_short(fctx, draw, position, align, foreground_color, background_color) {
+  return draw_icon_number_complication(fctx, draw, position, align, foreground_color, background_color, "K", format_thousands(health_service_sum_today(HealthMetricRestingKCalories)), false);
+}
+function complication_calories_active_short_icon(fctx, draw, position, align, foreground_color, background_color) {
+  return draw_icon_number_complication(fctx, draw, position, align, foreground_color, background_color, "K", format_thousands(health_service_sum_today(HealthMetricActiveKCalories)), true);
+}
+function complication_calories_active_short(fctx, draw, position, align, foreground_color, background_color) {
+  return draw_icon_number_complication(fctx, draw, position, align, foreground_color, background_color, "K", format_thousands(health_service_sum_today(HealthMetricActiveKCalories)), false);
+}
+function complication_calories_all_short_icon(fctx, draw, position, align, foreground_color, background_color) {
+  return draw_icon_number_complication(fctx, draw, position, align, foreground_color, background_color, "K", format_thousands(health_service_sum_today(HealthMetricRestingKCalories)+health_service_sum_today(HealthMetricActiveKCalories)), true);
+}
+function complication_calories_all_short(fctx, draw, position, align, foreground_color, background_color) {
+  return draw_icon_number_complication(fctx, draw, position, align, foreground_color, background_color, "K", format_thousands(health_service_sum_today(HealthMetricRestingKCalories)+health_service_sum_today(HealthMetricActiveKCalories)), false);
 }
 // -- end autogen
 
@@ -904,7 +936,7 @@ function background_update_proc(layer, ctx) {
             CONFIG_COMPLICATION_1: +2,
             CONFIG_COMPLICATION_2: +1,
             CONFIG_COMPLICATION_3: +3,
-            CONFIG_COMPLICATION_4: +IF_HR(10, 15),
+            CONFIG_COMPLICATION_4: +IF_HR(10, 14),
             CONFIG_COMPLICATION_5: +4,
             CONFIG_COMPLICATION_6: +7,
             CONFIG_PROGRESS: +1,
@@ -961,7 +993,7 @@ function background_update_proc(layer, ctx) {
             CONFIG_COMPLICATION_1: +2,
             CONFIG_COMPLICATION_2: +1,
             CONFIG_COMPLICATION_3: +3,
-            CONFIG_COMPLICATION_4: +IF_HR(10, 15),
+            CONFIG_COMPLICATION_4: +IF_HR(10, 14),
             CONFIG_COMPLICATION_5: +4,
             CONFIG_COMPLICATION_6: +7,
             CONFIG_PROGRESS: +1,
