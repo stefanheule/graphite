@@ -411,10 +411,10 @@
 // --             <option class="item-select-option" value="{{ key["id"] }}">{{ key["desc"] }}</option>
 // -- ## endfor
 -->
-            <option class="item-select-option" value="0">5:44</option>
-            <option class="item-select-option" value="1">05:44</option>
+            <option class="item-select-option" value="0">05:44</option>
+            <option class="item-select-option" value="1">005:44</option>
             <option class="item-select-option" value="2">17:44</option>
-            <option class="item-select-option" value="3">17:44</option>
+            <option class="item-select-option" value="3">017:44</option>
 <!--
 // -- end autogen
 -->
@@ -435,6 +435,10 @@
             <option class="item-select-option" value="0">Sunday, 11/27</option>
             <option class="item-select-option" value="1">Sunday, 27.11.</option>
             <option class="item-select-option" value="2">2016-11-27</option>
+            <option class="item-select-option" value="3">November 27</option>
+            <option class="item-select-option" value="4">27. November</option>
+            <option class="item-select-option" value="5">PM</option>
+            <option class="item-select-option" value="6">pm</option>
 <!--
 // -- end autogen
 -->
@@ -745,7 +749,11 @@
 // -- ## endfor
     "%A, %m/%d",
     "%A, %d.%m.",
-    "%Y-%0m-%0d",
+    "%Y-0%m-0%d",
+    "%B %d",
+    "%d. %B",
+    "%p",
+    "%P",
 // -- end autogen
   ];
 
