@@ -260,6 +260,7 @@ configuration = [
   {
     'key': 'CONFIG_STEP_GOAL',
     'default': '10000',
+    'type': 'uint16_t',
     'show_only_if': 'readConfig("CONFIG_PROGRESS") == 1',
   },
 ]

@@ -140,11 +140,19 @@ var RedshiftPreview = (function () {
     }
     function sizeof() { return 0; }
     var HealthMetricStepCount = 0;
+    var HealthServiceTimeScopeDailyWeekdayOrWeekend = 0;
     function health_service_sum_today(what) {
         if (what == HealthMetricStepCount) return 7124;
     }
+    function health_service_sum_averaged(what) {
+        if (what == HealthMetricStepCount) return 8564;
+    }
     function quiet_time_is_active() {
         return true;
+    }
+    var SECONDS_PER_DAY = 60*60*24;
+    function time_start_of_today() {
+        return 0;
     }
     var HealthMetricHeartRateBPM = 0;
     function health_service_peek_current_value(what) {
@@ -705,7 +713,7 @@ function background_update_proc(layer, ctx) {
     var progress_no = config_progress == 0;
     if (config_progress == 1) {
         progress_cur = health_service_sum_today(HealthMetricStepCount);
-        progress_max = config_step_goal == 0 ? health_service_sum_averaged(HealthMetric metric, time_start_of_today(), time_start_of_today() + SECONDS_PER_DAY, HealthServiceTimeScopeDailyWeekdayOrWeekend) : config_step_goal;
+        progress_max = config_step_goal == 0 ? health_service_sum_averaged(HealthMetricStepCount, time_start_of_today(), time_start_of_today() + SECONDS_PER_DAY, HealthServiceTimeScopeDailyWeekdayOrWeekend) : config_step_goal;
     } else if (config_progress == 2) {
         progress_cur = battery_state.charge_percent;
         progress_max = 100;

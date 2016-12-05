@@ -150,7 +150,7 @@ extern char config_time_format[REDSHIFT_STRINGCONFIG_MAXLEN+1];
 extern char config_info_below[REDSHIFT_STRINGCONFIG_MAXLEN+1];
 extern uint8_t config_update_second;
 extern uint8_t config_show_daynight;
-extern uint8_t config_step_goal;
+extern uint16_t config_step_goal;
 // -- end autogen
 
 
