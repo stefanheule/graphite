@@ -1245,6 +1245,30 @@
       applyValue($("#CONFIG_INFO_BELOW"), infoFormats[value]);
     }
 
+    // check consistency of time format
+    if (id == "CONFIG_ADVANCED_FORMAT_LOCAL" && !value) {
+      var updateOther = false;
+      var idx1 = timeFormats.indexOf(readConfig("CONFIG_TIME_FORMAT"));
+      var idx2 = infoFormats.indexOf(readConfig("CONFIG_INFO_BELOW"));
+      if (idx1 == -1 || idx2 == -1) {
+        if (!window.confirm("Turning off advanced format options will overwrite your custom choice.  Proceed?")) {
+          applyValue($("#CONFIG_ADVANCED_FORMAT_LOCAL"), 1);
+        } else {
+          if (idx1 < 0) idx1 = 0;
+          if (idx2 < 0) idx2 = 0;
+          updateOther = true;
+        }
+      } else {
+        updateOther = true;
+      }
+      if (updateOther) {
+        applyValue($("#CONFIG_TIME_FORMAT_LOCAL"), idx1);
+        applyValue($("#CONFIG_INFO_BELOW_LOCAL"), idx2);
+        applyValue($("#CONFIG_TIME_FORMAT"), timeFormats[idx1]);
+        applyValue($("#CONFIG_INFO_BELOW"), infoFormats[idx2]);
+      }
+    }
+
     // check consistency of seconds complication
     if (id == "CONFIG_UPDATE_SECOND") {
 // -- autogen
