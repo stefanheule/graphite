@@ -45,10 +45,14 @@ complication_render_t complications[] = {
     complication_steps, // id 13
     complication_steps_short_icon, // id 14
     complication_steps_short, // id 15
-    complication_ampm, // id 16
-    complication_ampm_lower, // id 17
-    complication_seconds, // id 18
-    complication_day_of_week, // id 19
+    complication_calories_resting_icon, // id 16
+    complication_calories_resting, // id 17
+    complication_calories_active_icon, // id 18
+    complication_calories_active, // id 19
+    complication_ampm, // id 20
+    complication_ampm_lower, // id 21
+    complication_seconds, // id 22
+    complication_day_of_week, // id 23
 // -- end autogen
 
 // -- jsalternative
@@ -302,5 +306,17 @@ fixed_t complication_steps_short_icon(FContext* fctx, bool draw, FPoint position
 }
 fixed_t complication_steps_short(FContext* fctx, bool draw, FPoint position, GTextAlignment align, uint8_t foreground_color, uint8_t background_color) {
   return draw_icon_number_complication(fctx, draw, position, align, foreground_color, background_color, "A", format_thousands(health_service_sum_today(HealthMetricStepCount)), false);
+}
+fixed_t complication_calories_resting_icon(FContext* fctx, bool draw, FPoint position, GTextAlignment align, uint8_t foreground_color, uint8_t background_color) {
+  return draw_icon_number_complication(fctx, draw, position, align, foreground_color, background_color, "K", format_unitless(health_service_sum_today(HealthMetricRestingKCalories)), true);
+}
+fixed_t complication_calories_resting(FContext* fctx, bool draw, FPoint position, GTextAlignment align, uint8_t foreground_color, uint8_t background_color) {
+  return draw_icon_number_complication(fctx, draw, position, align, foreground_color, background_color, "K", format_unitless(health_service_sum_today(HealthMetricRestingKCalories)), false);
+}
+fixed_t complication_calories_active_icon(FContext* fctx, bool draw, FPoint position, GTextAlignment align, uint8_t foreground_color, uint8_t background_color) {
+  return draw_icon_number_complication(fctx, draw, position, align, foreground_color, background_color, "K", format_unitless(health_service_sum_today(HealthMetricActiveKCalories)), true);
+}
+fixed_t complication_calories_active(FContext* fctx, bool draw, FPoint position, GTextAlignment align, uint8_t foreground_color, uint8_t background_color) {
+  return draw_icon_number_complication(fctx, draw, position, align, foreground_color, background_color, "K", format_unitless(health_service_sum_today(HealthMetricActiveKCalories)), false);
 }
 // -- end autogen

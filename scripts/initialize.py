@@ -68,6 +68,7 @@ configuration = [
   {
     'key': 'CONFIG_WEATHER_SOURCE_LOCAL',
     'default': '1',
+    'mydefault': '2',
   },
   {
     'key': 'CONFIG_WEATHER_APIKEY_LOCAL',
@@ -197,7 +198,7 @@ configuration = [
   },
   {
     'key': 'CONFIG_COMPLICATION_4',
-    'default': 'IF_HR(COMPLICATION_HEARTRATE_CUR_ICON, COMPLICATION_EMPTY)',
+    'default': 'IF_HR(COMPLICATION_HEARTRATE_CUR_ICON, COMPLICATION_STEPS_SHORT)',
   },
   {
     'key': 'CONFIG_COMPLICATION_5',
@@ -347,6 +348,18 @@ complications = [
       'desc': 'Steps abbreviated',
       'icontext': 'A',
       'text': 'format_thousands(health_service_sum_today(HealthMetricStepCount))',
+    },
+    {
+      'key': 'COMPLICATION_CALORIES_RESTING',
+      'desc': 'Calories burned, resting',
+      'icontext': 'K',
+      'text': 'format_unitless(health_service_sum_today(HealthMetricRestingKCalories))',
+    },
+    {
+      'key': 'COMPLICATION_CALORIES_ACTIVE',
+      'desc': 'Calories burned, active',
+      'icontext': 'K',
+      'text': 'format_unitless(health_service_sum_today(HealthMetricActiveKCalories))',
     },
   ],
   {
