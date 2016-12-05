@@ -73,11 +73,12 @@
 #define CONFIG_INFO_BELOW 37
 #define CONFIG_UPDATE_SECOND 38
 #define CONFIG_SHOW_DAYNIGHT 42
+#define CONFIG_STEP_GOAL 43
 // -- end autogen
 
 // -- autogen
 // -- #define REDSHIFT_N_CONFIG {{ num_config_items }}
-#define REDSHIFT_N_CONFIG 42
+#define REDSHIFT_N_CONFIG 43
 // -- end autogen
 
 // -- autogen
@@ -149,6 +150,7 @@ extern char config_time_format[REDSHIFT_STRINGCONFIG_MAXLEN+1];
 extern char config_info_below[REDSHIFT_STRINGCONFIG_MAXLEN+1];
 extern uint8_t config_update_second;
 extern uint8_t config_show_daynight;
+extern uint8_t config_step_goal;
 // -- end autogen
 
 

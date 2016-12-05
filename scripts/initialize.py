@@ -257,6 +257,11 @@ configuration = [
     'default': 'true',
     'show_only_if': 'readConfig("CONFIG_WEATHER_RAIN_LOCAL") == 1',
   },
+  {
+    'key': 'CONFIG_STEP_GOAL',
+    'default': '10000',
+    'show_only_if': 'readConfig("CONFIG_PROGRESS") == 1',
+  },
 ]
 
 simple_config = [

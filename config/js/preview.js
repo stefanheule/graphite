@@ -71,6 +71,7 @@ var RedshiftPreview = (function () {
      var config_time_format_local;
      var config_info_below_local;
      var config_show_daynight;
+     var config_step_goal;
 // -- end autogen
 
     function getWeather() {
@@ -252,6 +253,7 @@ var RedshiftPreview = (function () {
         config_time_format_local = config["CONFIG_TIME_FORMAT_LOCAL"];
         config_info_below_local = config["CONFIG_INFO_BELOW_LOCAL"];
         config_show_daynight = config["CONFIG_SHOW_DAYNIGHT"];
+        config_step_goal = config["CONFIG_STEP_GOAL"];
 // -- end autogen
 
         weather = getWeather(platform);
@@ -699,11 +701,11 @@ function background_update_proc(layer, ctx) {
     var fontsize_date_real = find_fontsize(fctx, fontsize_date, REM(15), buffer_1);
     draw_string(fctx, buffer_1, FPoint(width / 2, height_full / 2 + fontsize_time / 3 - time_y_offset), font_main, config_color_info_below, fontsize_date_real, GTextAlignmentCenter);
     var progress_cur = 0;
-    var progress_max = 10000;
+    var progress_max = 0;
     var progress_no = config_progress == 0;
     if (config_progress == 1) {
         progress_cur = health_service_sum_today(HealthMetricStepCount);
-        progress_max = 10000;
+        progress_max = config_step_goal == 0 ? health_service_sum_averaged(HealthMetric metric, time_start_of_today(), time_start_of_today() + SECONDS_PER_DAY, HealthServiceTimeScopeDailyWeekdayOrWeekend) : config_step_goal;
     } else if (config_progress == 2) {
         progress_cur = battery_state.charge_percent;
         progress_max = 100;
@@ -868,11 +870,12 @@ function background_update_proc(layer, ctx) {
             CONFIG_PROGRESS: +1,
             CONFIG_TIME_FORMAT: "%I:0%M",
             CONFIG_INFO_BELOW: "%A, %m/%d",
-            CONFIG_UPDATE_SECOND: +false,
+            CONFIG_UPDATE_SECOND: +0,
             CONFIG_ADVANCED_FORMAT_LOCAL: +false,
             CONFIG_TIME_FORMAT_LOCAL: +0,
             CONFIG_INFO_BELOW_LOCAL: +0,
             CONFIG_SHOW_DAYNIGHT: +true,
+            CONFIG_STEP_GOAL: +10000,
 // -- end autogen
         };
         return cloneConfig(defaults);
@@ -924,11 +927,12 @@ function background_update_proc(layer, ctx) {
             CONFIG_PROGRESS: +1,
             CONFIG_TIME_FORMAT: "%I:0%M",
             CONFIG_INFO_BELOW: "%A, %m/%d",
-            CONFIG_UPDATE_SECOND: +false,
+            CONFIG_UPDATE_SECOND: +0,
             CONFIG_ADVANCED_FORMAT_LOCAL: +false,
             CONFIG_TIME_FORMAT_LOCAL: +0,
             CONFIG_INFO_BELOW_LOCAL: +0,
             CONFIG_SHOW_DAYNIGHT: +true,
+            CONFIG_STEP_GOAL: +10000,
 // -- end autogen
         };
         return cloneConfig(defaults);

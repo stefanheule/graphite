@@ -270,11 +270,11 @@ void background_update_proc(Layer *layer, GContext *ctx) {
 
     // progress bar
     int progress_cur = 0;
-    int progress_max = 10000;
+    int progress_max = 0;
     bool progress_no = config_progress == 0;
     if (config_progress == 1) {
         progress_cur = health_service_sum_today(HealthMetricStepCount);
-        progress_max = 10000;
+        progress_max = config_step_goal == 0 ? health_service_sum_averaged(HealthMetric metric, time_start_of_today(), time_start_of_today() + SECONDS_PER_DAY, HealthServiceTimeScopeDailyWeekdayOrWeekend) : config_step_goal;
     } else if (config_progress == 2) {
         progress_cur = battery_state.charge_percent;
         progress_max = 100;

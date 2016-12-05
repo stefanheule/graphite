@@ -201,6 +201,9 @@ Pebble.addEventListener('webviewclosed', function (e) {
     fullconfig["CONFIG_SHOW_DAYNIGHT"] = urlconfig[42];
     config["CONFIG_SHOW_DAYNIGHT"] = +urlconfig[42];
     localStorage.setItem("CONFIG_SHOW_DAYNIGHT", urlconfig[42]);
+    fullconfig["CONFIG_STEP_GOAL"] = urlconfig[43];
+    config["CONFIG_STEP_GOAL"] = +urlconfig[43];
+    localStorage.setItem("CONFIG_STEP_GOAL", urlconfig[43]);
 // -- end autogen
 
     // don't allow really small values for refresh rate

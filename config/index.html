@@ -407,6 +407,18 @@
 
       <div class="item-container-content">
         <label class="item">
+          Step progress bar goal
+          <div class="item-input-wrapper">
+            <input type="text" class="item-input" id='CONFIG_STEP_GOAL'>
+          </div>
+        </label>
+        <div class="item-container-footer">
+          Enter 0 for daily average.
+        </div>
+      </div>
+
+      <div class="item-container-content">
+        <label class="item">
           Show advanced format configuration
           <input id='CONFIG_ADVANCED_FORMAT_LOCAL' type='checkbox' class='item-toggle'>
         </label>
@@ -1056,6 +1068,7 @@
         "CONFIG_TIME_FORMAT_LOCAL": 40,
         "CONFIG_INFO_BELOW_LOCAL": 41,
         "CONFIG_SHOW_DAYNIGHT": 42,
+        "CONFIG_STEP_GOAL": 43,
 // -- end autogen
     };
 
@@ -1205,6 +1218,7 @@
     showHideOption("CONFIG_COLOR_BAT_20", readConfig("CONFIG_LOWBAT_COL") != 0);
     showHideOption("CONFIG_COLOR_BAT_10", readConfig("CONFIG_LOWBAT_COL") != 0);
     showHideOption("CONFIG_SHOW_DAYNIGHT", readConfig("CONFIG_WEATHER_RAIN_LOCAL") == 1);
+    showHideOption("CONFIG_STEP_GOAL", readConfig("CONFIG_PROGRESS") == 1);
 // -- end autogen
 
 // -- autogen
