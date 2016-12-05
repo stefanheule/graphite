@@ -112,6 +112,7 @@ void inbox_received_handler(DictionaryIterator *iter, void *context) {
     dirty |= sync_helper_uint8_t(CONFIG_MESSAGE_RECONNECT, iter, &config_message_reconnect);
     dirty |= sync_helper_uint16_t(CONFIG_WEATHER_REFRESH, iter, &config_weather_refresh);
     dirty |= sync_helper_uint16_t(CONFIG_WEATHER_EXPIRATION, iter, &config_weather_expiration);
+    dirty |= sync_helper_uint16_t(CONFIG_WEATHER_REFRESH_FAILED, iter, &config_weather_refresh_failed);
     dirty |= sync_helper_uint8_t(CONFIG_COLOR_TOPBAR_BG, iter, &config_color_topbar_bg);
     dirty |= sync_helper_uint8_t(CONFIG_COLOR_INFO_BELOW, iter, &config_color_info_below);
     dirty |= sync_helper_uint8_t(CONFIG_COLOR_PROGRESS_BAR, iter, &config_color_progress_bar);
@@ -175,7 +176,7 @@ void inbox_received_handler(DictionaryIterator *iter, void *context) {
     }
     if (dict_find(iter, MSG_KEY_WEATHER_FAILED)) {
         // retry early when weather update failed
-        set_weather_timer(10);
+        set_weather_timer(config_weather_refresh_failed);
         ask_for_weather_update = false;
         weather.failed = true;
     }
@@ -236,6 +237,7 @@ void read_config_all() {
     read_config_uint8_t(CONFIG_MESSAGE_RECONNECT, &config_message_reconnect);
     read_config_uint16_t(CONFIG_WEATHER_REFRESH, &config_weather_refresh);
     read_config_uint16_t(CONFIG_WEATHER_EXPIRATION, &config_weather_expiration);
+    read_config_uint16_t(CONFIG_WEATHER_REFRESH_FAILED, &config_weather_refresh_failed);
     read_config_uint8_t(CONFIG_COLOR_TOPBAR_BG, &config_color_topbar_bg);
     read_config_uint8_t(CONFIG_COLOR_INFO_BELOW, &config_color_info_below);
     read_config_uint8_t(CONFIG_COLOR_PROGRESS_BAR, &config_color_progress_bar);

@@ -40,6 +40,7 @@ var RedshiftPreview = (function () {
      var config_weather_location_local;
      var config_weather_refresh;
      var config_weather_expiration;
+     var config_weather_refresh_failed;
      var config_color_topbar_bg;
      var config_color_info_below;
      var config_color_progress_bar;
@@ -220,6 +221,7 @@ var RedshiftPreview = (function () {
         config_weather_location_local = config["CONFIG_WEATHER_LOCATION_LOCAL"];
         config_weather_refresh = config["CONFIG_WEATHER_REFRESH"];
         config_weather_expiration = config["CONFIG_WEATHER_EXPIRATION"];
+        config_weather_refresh_failed = config["CONFIG_WEATHER_REFRESH_FAILED"];
         config_color_topbar_bg = config["CONFIG_COLOR_TOPBAR_BG"];
         config_color_info_below = config["CONFIG_COLOR_INFO_BELOW"];
         config_color_progress_bar = config["CONFIG_COLOR_PROGRESS_BAR"];
@@ -838,8 +840,9 @@ function background_update_proc(layer, ctx) {
             CONFIG_WEATHER_SOURCE_LOCAL: +1,
             CONFIG_WEATHER_APIKEY_LOCAL: "",
             CONFIG_WEATHER_LOCATION_LOCAL: "",
-            CONFIG_WEATHER_REFRESH: +30,
+            CONFIG_WEATHER_REFRESH: +60,
             CONFIG_WEATHER_EXPIRATION: +3*60,
+            CONFIG_WEATHER_REFRESH_FAILED: +30,
             CONFIG_COLOR_TOPBAR_BG: +GColor.VividCerulean,
             CONFIG_COLOR_INFO_BELOW: +GColor.VividCerulean,
             CONFIG_COLOR_PROGRESS_BAR: +GColor.VividCerulean,
@@ -893,8 +896,9 @@ function background_update_proc(layer, ctx) {
             CONFIG_WEATHER_SOURCE_LOCAL: +1,
             CONFIG_WEATHER_APIKEY_LOCAL: "",
             CONFIG_WEATHER_LOCATION_LOCAL: "",
-            CONFIG_WEATHER_REFRESH: +30,
+            CONFIG_WEATHER_REFRESH: +60,
             CONFIG_WEATHER_EXPIRATION: +3*60,
+            CONFIG_WEATHER_REFRESH_FAILED: +30,
             CONFIG_COLOR_TOPBAR_BG: +GColor.VividCerulean,
             CONFIG_COLOR_INFO_BELOW: +GColor.VividCerulean,
             CONFIG_COLOR_PROGRESS_BAR: +GColor.VividCerulean,

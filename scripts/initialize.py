@@ -81,12 +81,17 @@ configuration = [
   },
   {
     'key': 'CONFIG_WEATHER_REFRESH',
-    'default': '30',
+    'default': '60',
     'type': 'uint16_t',
   },
   {
     'key': 'CONFIG_WEATHER_EXPIRATION',
     'default': '3*60',
+    'type': 'uint16_t',
+  },
+  {
+    'key': 'CONFIG_WEATHER_REFRESH_FAILED',
+    'default': '30',
     'type': 'uint16_t',
   },
   {
