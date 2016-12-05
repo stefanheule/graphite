@@ -355,6 +355,10 @@ complications = [
     'key': 'COMPLICATION_SECONDS',
     'desc': 'Seconds',
   },
+  {
+    'key': 'COMPLICATION_DAY_OF_WEEK',
+    'desc': 'Day of week',
+  },
 ]
   # {
   #   'key': 'COMPLICATION_DISTANCE_KM',

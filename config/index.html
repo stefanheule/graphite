@@ -177,6 +177,10 @@
         <p>Seconds</p>
         <canvas class="complication" id="complication-preview-18-canvas"></canvas>
       </div>
+      <div class="complication-preview" id="complication-preview-19">
+        <p>Day of week</p>
+        <canvas class="complication" id="complication-preview-19-canvas"></canvas>
+      </div>
 <!--
 // -- end autogen
 -->
@@ -1495,6 +1499,7 @@
       $("#complication-preview-16").on("click", function(){ pickComplication(16); });
       $("#complication-preview-17").on("click", function(){ pickComplication(17); });
       $("#complication-preview-18").on("click", function(){ pickComplication(18); });
+      $("#complication-preview-19").on("click", function(){ pickComplication(19); });
 // -- end autogen
   }
 
@@ -1645,6 +1650,7 @@
       RedshiftPreview.previewComplication(16, config, 'complication-preview-16-canvas', getPlatform());
       RedshiftPreview.previewComplication(17, config, 'complication-preview-17-canvas', getPlatform());
       RedshiftPreview.previewComplication(18, config, 'complication-preview-18-canvas', getPlatform());
+      RedshiftPreview.previewComplication(19, config, 'complication-preview-19-canvas', getPlatform());
 // -- end autogen
 
       for (var i = 1; i < 7; i++) {

@@ -40,6 +40,7 @@ fixed_t complication_steps_short(FContext* fctx, bool draw, FPoint position, GTe
 fixed_t complication_ampm(FContext* fctx, bool draw, FPoint position, GTextAlignment align, uint8_t foreground_color, uint8_t background_color);
 fixed_t complication_ampm_lower(FContext* fctx, bool draw, FPoint position, GTextAlignment align, uint8_t foreground_color, uint8_t background_color);
 fixed_t complication_seconds(FContext* fctx, bool draw, FPoint position, GTextAlignment align, uint8_t foreground_color, uint8_t background_color);
+fixed_t complication_day_of_week(FContext* fctx, bool draw, FPoint position, GTextAlignment align, uint8_t foreground_color, uint8_t background_color);
 // -- end autogen
 
 

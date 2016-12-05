@@ -48,6 +48,7 @@ complication_render_t complications[] = {
     complication_ampm, // id 16
     complication_ampm_lower, // id 17
     complication_seconds, // id 18
+    complication_day_of_week, // id 19
 // -- end autogen
 
 // -- jsalternative
@@ -219,6 +220,15 @@ fixed_t complication_seconds(FContext* fctx, bool draw, FPoint position, GTextAl
 // --   buffer_1 = 
 // -- end jsalternative
   remove_leading_zero(buffer_1, sizeof(buffer_1));
+  if (draw) draw_string(fctx, buffer_1, position, font_main, foreground_color, fontsize_complications, align);
+  return string_width(fctx, buffer_1, font_main, fontsize_complications);
+}
+
+fixed_t complication_day_of_week(FContext* fctx, bool draw, FPoint position, GTextAlignment align, uint8_t foreground_color, uint8_t background_color) {
+  time_t now = time(NULL);
+    struct tm *t = localtime(&now);
+  setlocale(LC_ALL, "");
+  strftime(buffer_1, sizeof(buffer_1), "%a", t);
   if (draw) draw_string(fctx, buffer_1, position, font_main, foreground_color, fontsize_complications, align);
   return string_width(fctx, buffer_1, font_main, fontsize_complications);
 }
