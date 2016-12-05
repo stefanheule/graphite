@@ -521,12 +521,20 @@
 
       <div class="item-container-content">
         <label class="item">
-          Update watchface every second
-          <input id='CONFIG_UPDATE_SECOND' type='checkbox' class='item-toggle'>
+          Watchface update frequency
+          <select id='CONFIG_WEATHER_SOURCE_LOCAL' dir='rtl' class="item-select">
+            <option class="item-select-option" value="0">Once a minute</option>
+            <option class="item-select-option" value="30">Every 30 seconds</option>
+            <option class="item-select-option" value="20">Every 20 seconds</option>
+            <option class="item-select-option" value="10">Every 10 seconds</option>
+            <option class="item-select-option" value="5">Every 5 seconds</option>
+            <option class="item-select-option" value="1">Every second</option>
+          </select>
         </label>
         <div class="item-container-footer">
           Useful if you use the seconds complication, or want the heart rate
-          complication to update every second.
+          complication to update more frequently.  Higher update frequency may
+          negatively impact battery life.
         </div>
       </div>
 
@@ -1305,7 +1313,7 @@
       var compl_empty = 0;
 // -- end autogen
       if (value == 0 && has_complication([compl_seconds])) {
-        if (!window.confirm("Second complication is enabled and requires the watch face to update once a second.  Clear second complication?")) {
+        if (!window.confirm("Second complication is enabled and requires the watch face to update more often than once a minute.  Clear second complication?")) {
           applyValue($("#CONFIG_UPDATE_SECOND"), 1);
         } else {
           for (var i = 1; i < 7; i++) {
@@ -1447,7 +1455,7 @@
     if (pickedComplicationNr == 18) {
 // -- end autogen
       if (readConfig("CONFIG_UPDATE_SECOND") == 0) {
-        if (!window.confirm("The second complication only works if the watch face gets updated every second.  Enable updates once a second now (may negatively impact battery life)?")) {
+        if (!window.confirm("The second complication only works if the watch face gets updated more than once a minute.  Enable updates once a second now (may negatively impact battery life)?")) {
           return;
         } else {
           applyValue($("#CONFIG_UPDATE_SECOND"), 1);

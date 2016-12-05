@@ -223,7 +223,7 @@ configuration = [
   },
   {
     'key': 'CONFIG_UPDATE_SECOND',
-    'default': 'false',
+    'default': '0',
   },
   {
     'key': 'CONFIG_ADVANCED_FORMAT_LOCAL',

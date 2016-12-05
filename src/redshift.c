@@ -115,7 +115,9 @@ AppTimer * weather_request_timer;
  * Handler for time ticks.
  */
 void handle_second_tick(struct tm *tick_time, TimeUnits units_changed) {
-  layer_mark_dirty(layer_background);
+  if (config_update_second == 0 || (tick_time->tm_sec == 0) || ((tick_time->tm_sec % config_update_second) == 0)) {
+    layer_mark_dirty(layer_background);
+  }
 }
 
 void timer_callback_bluetooth_popup(void *data) {
@@ -195,7 +197,7 @@ void subscribe_tick(bool also_unsubscribe) {
         tick_timer_service_unsubscribe();
     }
     TimeUnits unit = MINUTE_UNIT;
-    if (config_update_second) {
+    if (config_update_second > 0) {
         unit = SECOND_UNIT;
     }
     tick_timer_service_subscribe(unit, handle_second_tick);
