@@ -1688,7 +1688,9 @@
 
     // my preferences link
     $("#myprefs").on("click", function() {
+      var old = readConfig("CONFIG_WEATHER_APIKEY_LOCAL");
       applyValues(RedshiftPreview.myDefaultConfig(getPlatform()));
+      applyValue($("#CONFIG_WEATHER_APIKEY_LOCAL"), old);
       $("#CONFIG_WEATHER_APIKEY_LOCAL").focus();
     });
 
