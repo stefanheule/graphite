@@ -609,13 +609,15 @@ function is_obstructed() {
 function bluetooth_popup(fctx, ctx, connected) {
     if (!show_bluetooth_popup) return;
     var h = FIXED_ROUND(REM(60));
+    var rh_size = REM(40);
     draw_rect(fctx, FRect(FPoint(0, 0), FSize(width, h + PIX(2))), GColor.Black);
     draw_rect(fctx, FRect(FPoint(0, 0), FSize(width, h)), GColor.White);
-    var fs = REM(24);
-    var rh_size = REM(40);
+    draw_rect(fctx, FRect(FPoint(width-rh_size, 0), FSize(rh_size, h)), GColor.VividCerulean);
+    var fs = REM(23);
     var str2 = connected ? "Connected" : "Disconnected";
     draw_string(fctx, "Bluetooth", FPoint((width - rh_size)/2, REM(7)), font_main, GColor.Black, fs, GTextAlignmentCenter);
     draw_string(fctx, str2, FPoint((width - rh_size)/2, REM(35)), font_main, GColor.Black, fs, GTextAlignmentCenter);
+    draw_string(fctx, connected ? "D" : "B", FPoint(width - REM(20), REM(30)), font_icon, GColor.Black, REM(30), GTextAlignmentCenter);
 }
 /**
  * Remove all leading zeros in a string.

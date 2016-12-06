@@ -37,14 +37,16 @@ void bluetooth_popup(FContext* fctx, GContext *ctx, bool connected) {
 #endif
 
     fixed_t h = FIXED_ROUND(REM(60));
+    fixed_t rh_size = REM(40);
     draw_rect(fctx, FRect(FPoint(0, 0), FSize(width, h + PIX(2))), GColorBlackARGB8);
     draw_rect(fctx, FRect(FPoint(0, 0), FSize(width, h)), GColorWhiteARGB8);
+    draw_rect(fctx, FRect(FPoint(width-rh_size, 0), FSize(rh_size, h)), GColorVividCeruleanARGB8);
 
-    fixed_t fs = REM(24);
-    fixed_t rh_size = REM(40);
+    fixed_t fs = REM(23);
     char *str2 = connected ? "Connected" : "Disconnected";
     draw_string(fctx, "Bluetooth", FPoint((width - rh_size)/2, REM(7)), font_main, GColorBlackARGB8, fs, GTextAlignmentCenter);
     draw_string(fctx, str2, FPoint((width - rh_size)/2, REM(35)), font_main, GColorBlackARGB8, fs, GTextAlignmentCenter);
+    draw_string(fctx, connected ? "D" : "B", FPoint(width - REM(20), REM(30)), font_icon, GColorBlackARGB8, REM(30), GTextAlignmentCenter);
 }
 
 /**
