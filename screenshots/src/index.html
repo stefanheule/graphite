@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  <title>Redshift Configuration</title>
+    <meta name=viewport content="width=device-width, initial-scale=1" />
+    <link rel='stylesheet' type='text/css' href='../../config/css/slate.min.css'>
+    <link rel='stylesheet' type='text/css' href='../../config/css/fonts.css'>
+    <<link href="https://fonts.googleapis.com/css?family=Open+Sans+Condensed:700" rel="stylesheet">
+    <script src='../../config/js/slate.js'></script>
+    <script src='../../config/js/gcolor.js'></script>
+    <script src='../../config/js/pebble.js'></script>
+    <script src='../../config/js/preview.js'></script>
+    <script src='../../config/js/strftime.js'></script>
+    <script src='../../config/js/sprintf.min.js'></script>
+    <script src="../../config/js/spark-md5.min.js"></script>
+    <style>
+    canvas#preview {
+      margin: 10px auto 5px;
+      display: block;
+    }
+    </style>
+    <meta charset="utf-8"/>
+  </head>
+
+  <body>
+    
+    <canvas id="preview"></canvas>
+
+    <div id="data">
+    </div>
+
+  <script>
+  $(document).ready(function() {
+    var config = RedshiftPreview.defaultConfig();
+    RedshiftPreview.drawPreview(config, 'preview', "emery");
+
+    // schedule capturing the preview
+    var capture = function () {
+      var canvas = $("#preview");
+      var img    = canvas.get(0).toDataURL("image/png");
+      $("#data").html(img);
+
+      var timeout = 500;
+      setTimeout(function () {
+        capture();
+      }, timeout);
+    };
+    capture();
+  });
+  </script>
+  </body>
+</html>
