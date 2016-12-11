@@ -2,12 +2,8 @@
 
 var RedshiftPreview = (function () {
 
-    /** Map from canvasIDs to configurations. */
-    var configurations = {};
-    /** Map from canvasIDs to extra data. */
+    /** Map from canvasIDs to configurations, platform and other info. */
     var datas = {};
-    /** Map from canvasIDs to platforms. */
-    var platforms = {};
 
     // global variables
     var ctx;
@@ -220,8 +216,8 @@ var RedshiftPreview = (function () {
     }
 
     function initializeDrawingState(canvasId) {
-        var config = configurations[canvasId];
-        platform = platforms[canvasId];
+        var config = datas[canvasId].config;
+        platform = datas[canvasId].platform;
 
         canvas = document.getElementById(canvasId);
         ctx = canvas.getContext('2d');
@@ -288,7 +284,7 @@ var RedshiftPreview = (function () {
         rem_is_pix = true;
 
         initializeDrawingState(canvasId);
-        var data = datas[canvasId];
+        var complication_id = datas[canvasId].extra;
 
         var w = 100;
         var h = 30;
@@ -306,7 +302,7 @@ var RedshiftPreview = (function () {
         var foreground_color = GColor.Black;
         var background_color = GColor.White;
         draw_rect(fctx, FRect(FPoint(0, 0), FSize(REM(w), REM(h))), background_color);
-        complications[data](fctx, true, pos, GTextAlignmentCenter, foreground_color, background_color);
+        complications[complication_id](fctx, true, pos, GTextAlignmentCenter, foreground_color, background_color);
 
         rem_is_pix = backup;
     }
@@ -1020,11 +1016,14 @@ function background_update_proc(layer, ctx) {
         return res;
     }
 
-    function drawHelper(f, config, canvasId, platform, data) {
-        var first = !(canvasId in configurations);
-        platforms[canvasId] = platform;
-        configurations[canvasId] = config;
-        datas[canvasId] = data;
+    function drawHelper(f, config, canvasId, platform, extra, state) {
+        var first = !(canvasId in datas);
+        datas[canvasId] = {
+          config: config,
+          platform: platform,
+          extra: extra,
+          state: state,
+        };
         if (first) {
             // schedule updates to redraw the configuration in case the fonts aren't loaded yet
             var fontUpdate = function (f, i) {
@@ -1048,11 +1047,11 @@ function background_update_proc(layer, ctx) {
         lookSignature: lookSignature,
         defaultConfig: defaultConfig,
         myDefaultConfig: myDefaultConfig,
-        drawPreview: function (config, canvasId, platform) {
-            drawHelper(drawConfig, config, canvasId, platform, null);
+        drawPreview: function (config, canvasId, platform, state) {
+            drawHelper(drawConfig, config, canvasId, platform, null, state);
         },
-        previewComplication: function (complication, config, canvasId, platform) {
-            drawHelper(drawComplication, config, canvasId, platform, complication);
+        previewComplication: function (complication, config, canvasId, platform, state) {
+            drawHelper(drawComplication, config, canvasId, platform, complication, state);
         },
     }
 
