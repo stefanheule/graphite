@@ -22,13 +22,13 @@ def main():
   target = "%s/index.html" % (tmp)
   screenshotdir = "%s/screenshots/basalt" % (base)
   
-  # if os.path.exists(tmp):
-  #   error("tmp folder exists")
+  if os.path.exists(tmp):
+    error("tmp folder exists")
 
-  # os.mkdir(tmp)
+  os.mkdir(tmp)
 
-  # cmd = "screenshots/automate-save-page-as/save_page_as \"file:///home/stefan/dev/projects/all/2016-redshift/screenshots/src/index.html\" -d \"%s\" -b chromium-browser" % (target)
-  # execute_ok(cmd)
+  cmd = "screenshots/automate-save-page-as/save_page_as \"file:///home/stefan/dev/projects/all/2016-redshift/screenshots/src/index.html\" -d \"%s\" -b chromium-browser" % (target)
+  execute_ok(cmd)
 
   shutil.rmtree(screenshotdir)
   os.mkdir(screenshotdir)
@@ -43,7 +43,7 @@ def main():
     execute_ok("pngcrush -q -rem time \"%s\" tmp.png" % (f))
     os.rename("tmp.png", f)
 
-  # shutil.rmtree(tmp)
+  shutil.rmtree(tmp)
 
 def write_file(f, contents):
   f = open(f,'w')

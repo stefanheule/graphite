@@ -34,19 +34,56 @@
   <script>
   $(document).ready(function() {
     var config = RedshiftPreview.defaultConfig();
+    var time = Math.round(new Date(2016, 5, 21, 22, 21, 54) / 1000);
     var screenshots = [
       {
         id: "redshift-1",
+        state: {
+          time: time,
+          bluetooth: true,
+        },
       },
       {
         id: "redshift-2",
+        state: {
+          time: time,
+          weather: {
+            low: -10,
+            now: -2,
+            high: 2,
+            icon: "h",
+          },
+          bluetooth: true,
+        },
+        config: {
+          'SIMPLECONFIG_COLOR_ACCENT': GColor.Rajah,
+          'CONFIG_WEATHER_UNIT_LOCAL': 1,
+        }
+      },
+      {
+        id: "redshift-3",
+        state: {
+          time: time,
+          weather: {
+            low: 5,
+            now: 10,
+            high: 17,
+            icon: "f",
+          },
+          bluetooth: true,
+        },
+        config: {
+          'SIMPLECONFIG_COLOR_MAIN': GColor.Black,
+          'SIMPLECONFIG_COLOR_ACCENT': GColor.DarkCandyAppleRed,
+          'SIMPLECONFIG_COLOR_BACKGROUND': GColor.White,
+        }
       },
     ];
 
     for (var i in screenshots) {
       var key = "preview-" + screenshots[i].id;
       $("#previews").append("<canvas class='preview' id=\"" + key + "\"></canvas>");
-      RedshiftPreview.drawPreview(config, key, "basalt");
+      RedshiftPreview.drawPreview(RedshiftPreview.overrideConfig(screenshots[i].config, config), key, "basalt", RedshiftPreview.override(screenshots[i].state, RedshiftPreview.defaultState()));
     }
 
     // schedule capturing the preview

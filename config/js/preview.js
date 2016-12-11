@@ -5,9 +5,28 @@ var RedshiftPreview = (function () {
     /** Map from canvasIDs to configurations, platform and other info. */
     var datas = {};
 
+    var default_state = {
+      weather: {
+        low: 11,
+        now: 21,
+        high: 26,
+        icon: "a",
+      },
+      rain: [50, 40, 30, 0, 0, 0, 0, 0, 10, 12, 10, 20, 40, 45, 60, 100, 100, 20, 0, 0, 0, 0, 0, 0, 0, 0],
+      time: function() {
+        return Math.round((new Date()) / 1000);
+      },
+      bluetooth: false,
+      battery: 70,
+      quiet_time: true,
+      steps: 7123,
+      steps_daily: 8546,
+    };
+
     // global variables
     var ctx;
     var canvas;
+    var state;
     var platform;
     var tnow = time(NULL);
     var weather;
@@ -70,8 +89,16 @@ var RedshiftPreview = (function () {
      var config_step_goal;
 // -- end autogen
 
+    function get(k) {
+      var statel = state;
+      if (typeof state == 'undefined') statel = default_state;
+      var x = statel[k];
+      if (typeof x == 'function') return x.call();
+      return x;
+    }
+
     function getWeather() {
-        var d = [0.5, 0.4, 0.3, 0, 0, 0, 0, 0, 0.1, 0.12, 0.1, 0.2,0.4,0.45,0.6,1,1,0.2,0,0,0,0,0,0,0,0].map(function(x){return x*100});
+        var d = get('rain');
         var temp = function (t) {
             return config_weather_unit_local == 1 ? t : 9/5 * t + 32;
         }
@@ -79,10 +106,10 @@ var RedshiftPreview = (function () {
         return {
             version: 0,
             timestamp: time(NULL),
-            icon: "a".charCodeAt(0),
-            temp_cur: temp(14),
-            temp_low: temp(5),
-            temp_high: temp(28),
+            icon: get('weather').icon.charCodeAt(0),
+            temp_cur: temp(get('weather').now),
+            temp_low: temp(get('weather').low),
+            temp_high: temp(get('weather').high),
             perc_data: d,
             perc_data_len: d.length,
             perc_data_ts: tnow - (tnow % (60*60)),
@@ -116,11 +143,14 @@ var RedshiftPreview = (function () {
     function fctx_deinit_context() {}
     function layer_get_unobstructed_bounds() { return layer_get_bounds(); }
     function layer_get_bounds() { return GRect(0, 0, PBL_DISPLAY_WIDTH, PBL_DISPLAY_HEIGHT); }
-    function time() { return Math.round((new Date()) / 1000); }
+    function time() {
+      return get('time')
+    }
     function localtime() {
+        var d = new Date(get('time')*1000);
         return {
-            tm_min: (new Date()).getMinutes(),
-            tm_hour: (new Date()).getHours()
+            tm_min: d.getMinutes(),
+            tm_hour: d.getHours()
         }
     }
     function setlocale() {}
@@ -129,7 +159,7 @@ var RedshiftPreview = (function () {
     function to_html_color(x) { return '#' + GColor.toHex(x); }
     function battery_state_service_peek() {
         return {
-            charge_percent: 70,
+            charge_percent: get('battery'),
             is_charging: false,
             is_plugged: false
         }
@@ -145,9 +175,9 @@ var RedshiftPreview = (function () {
     var HealthMetricHeartRateBPM = 7;
     var HealthMetricRestingHeartRateBPM = 8;
     function health_service_sum_today(what) {
-        if (what == HealthMetricStepCount) return 7124;
+        if (what == HealthMetricStepCount) return get('steps');
         if (what == HealthMetricActiveSeconds) return 2*60*60+683;
-        if (what == HealthMetricWalkedDistanceMeters) return 4752;
+        if (what == HealthMetricWalkedDistanceMeters) return get('steps')*0.7;
         if (what == HealthMetricSleepSeconds) return 6*60*60+20*60+31;
         if (what == HealthMetricSleepRestfulSeconds) return 1*60*60+58*60+2;
         if (what == HealthMetricRestingKCalories) return 1350;
@@ -156,11 +186,11 @@ var RedshiftPreview = (function () {
     }
     var HealthServiceTimeScopeDailyWeekdayOrWeekend = 100;
     function health_service_sum_averaged(what) {
-        if (what == HealthMetricStepCount) return 8564;
+        if (what == HealthMetricStepCount) return get('steps_daily');
         console.log("ERROR: unknown argument: " + what)
     }
     function quiet_time_is_active() {
-        return true;
+        return get('quiet_time');
     }
     var SECONDS_PER_DAY = 60*60*24;
     function time_start_of_today() {
@@ -173,7 +203,7 @@ var RedshiftPreview = (function () {
         }
         console.log("ERROR: unknown argument: " + what)
     }
-    function bluetooth_connection_service_peek() { return false; }
+    function bluetooth_connection_service_peek() { return get('bluetooth'); }
     var GTextAlignmentLeft = "left";
     var GTextAlignmentCenter = "center";
     var GTextAlignmentRight = "right";
@@ -218,6 +248,7 @@ var RedshiftPreview = (function () {
     function initializeDrawingState(canvasId) {
         var config = datas[canvasId].config;
         platform = datas[canvasId].platform;
+        state = datas[canvasId].state;
 
         canvas = document.getElementById(canvasId);
         ctx = canvas.getContext('2d');
@@ -466,7 +497,7 @@ function complication_ampm(fctx, draw, position, align, foreground_color, backgr
   var now = time(NULL);
     var t = localtime(now);
   setlocale(LC_ALL, "");
-  buffer_1 = strftime("%p", new Date());
+  buffer_1 = strftime("%p", new Date(now * 1000));
   if (draw) draw_string(fctx, buffer_1, position, font_main, foreground_color, fontsize_complications, align);
   return string_width(fctx, buffer_1, font_main, fontsize_complications);
 }
@@ -474,7 +505,7 @@ function complication_ampm_lower(fctx, draw, position, align, foreground_color, 
   var now = time(NULL);
     var t = localtime(now);
   setlocale(LC_ALL, "");
-  buffer_1 = strftime("%P", new Date());
+  buffer_1 = strftime("%P", new Date(now * 1000));
   if (draw) draw_string(fctx, buffer_1, position, font_main, foreground_color, fontsize_complications, align);
   return string_width(fctx, buffer_1, font_main, fontsize_complications);
 }
@@ -482,7 +513,7 @@ function complication_seconds(fctx, draw, position, align, foreground_color, bac
   var now = time(NULL);
     var t = localtime(now);
   setlocale(LC_ALL, "");
-  buffer_1 = strftime("%S", new Date());
+  buffer_1 = strftime("%S", new Date(now * 1000));
   buffer_1 = 
   remove_leading_zero(buffer_1, sizeof(buffer_1));
   if (draw) draw_string(fctx, buffer_1, position, font_main, foreground_color, fontsize_complications, align);
@@ -492,7 +523,7 @@ function complication_day_of_week(fctx, draw, position, align, foreground_color,
   var now = time(NULL);
     var t = localtime(now);
   setlocale(LC_ALL, "");
-  buffer_1 = strftime("%a", new Date());
+  buffer_1 = strftime("%a", new Date(now * 1000));
   if (draw) draw_string(fctx, buffer_1, position, font_main, foreground_color, fontsize_complications, align);
   return string_width(fctx, buffer_1, font_main, fontsize_complications);
 }
@@ -758,13 +789,13 @@ function background_update_proc(layer, ctx) {
     }
     var time_y_offset = PBL_DISPLAY_WIDTH != 144 ? 0 : (height_full-height) / 8;
     setlocale(LC_ALL, "");
-    buffer_1 = strftime(config_time_format, new Date());
+    buffer_1 = strftime(config_time_format, new Date(now * 1000));
     buffer_1 = 
     remove_leading_zero(buffer_1, sizeof(buffer_1));
     var fontsize_time = (width / 2.2);
     var fontsize_time_real = find_fontsize(fctx, fontsize_time, REM(15), buffer_1);
     draw_string(fctx, buffer_1, FPoint(width / 2, height_full / 2 - fontsize_time_real / 2 - time_y_offset), font_main, config_color_time, fontsize_time_real, GTextAlignmentCenter);
-    buffer_1 = strftime(config_info_below, new Date());
+    buffer_1 = strftime(config_info_below, new Date(now * 1000));
     buffer_1 = 
     remove_leading_zero(buffer_1, sizeof(buffer_1));
     var fontsize_date = REM(28);
@@ -1040,18 +1071,60 @@ function background_update_proc(layer, ctx) {
         f(canvasId);
     }
 
+    function override(new_vals, backup_vals) {
+      if (typeof new_vals == 'undefined') return backup_vals;
+      var res = cloneConfig(backup_vals);
+      for (var k in backup_vals) {
+        if (k in new_vals) res[k] = new_vals[k];
+        else res[k] = backup_vals[k];
+      }
+      return res;
+    }
+
     return {
         filterLook: filterLook,
         sameLook: sameLook,
         isDefaultLook: isDefaultLook,
         lookSignature: lookSignature,
         defaultConfig: defaultConfig,
+        defaultState: function () { return default_state; },
         myDefaultConfig: myDefaultConfig,
         drawPreview: function (config, canvasId, platform, state) {
             drawHelper(drawConfig, config, canvasId, platform, null, state);
         },
         previewComplication: function (complication, config, canvasId, platform, state) {
             drawHelper(drawComplication, config, canvasId, platform, complication, state);
+        },
+        override: override,
+        overrideConfig: function (new_vals, backup_vals) {
+          if (typeof new_vals == 'undefined') return backup_vals;
+          var res = cloneConfig(backup_vals);
+// -- autogen
+// -- ## for key in simple_config
+// --           if ("{{ key["key"] }}" in new_vals) {
+// -- ## for dep in key["depends"]
+// --             res["{{ dep }}"] = new_vals["{{ key["key"] }}"];
+// -- ## endfor
+// --           }
+// -- ## endfor
+          if ("SIMPLECONFIG_COLOR_MAIN" in new_vals) {
+            res["CONFIG_COLOR_TIME"] = new_vals["SIMPLECONFIG_COLOR_MAIN"];
+            res["CONFIG_COLOR_PERC"] = new_vals["SIMPLECONFIG_COLOR_MAIN"];
+            res["CONFIG_COLOR_BOTTOM_COMPLICATIONS"] = new_vals["SIMPLECONFIG_COLOR_MAIN"];
+            res["CONFIG_COLOR_PROGRESS_BAR2"] = new_vals["SIMPLECONFIG_COLOR_MAIN"];
+          }
+          if ("SIMPLECONFIG_COLOR_ACCENT" in new_vals) {
+            res["CONFIG_COLOR_TOPBAR_BG"] = new_vals["SIMPLECONFIG_COLOR_ACCENT"];
+            res["CONFIG_COLOR_INFO_BELOW"] = new_vals["SIMPLECONFIG_COLOR_ACCENT"];
+            res["CONFIG_COLOR_PROGRESS_BAR"] = new_vals["SIMPLECONFIG_COLOR_ACCENT"];
+          }
+          if ("SIMPLECONFIG_COLOR_BACKGROUND" in new_vals) {
+            res["CONFIG_COLOR_BACKGROUND"] = new_vals["SIMPLECONFIG_COLOR_BACKGROUND"];
+            res["CONFIG_COLOR_TOP_COMPLICATIONS"] = new_vals["SIMPLECONFIG_COLOR_BACKGROUND"];
+            res["CONFIG_COLOR_NIGHT"] = new_vals["SIMPLECONFIG_COLOR_BACKGROUND"];
+          }
+// -- end autogen
+          return override(new_vals, res);
         },
     }
 
