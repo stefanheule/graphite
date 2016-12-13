@@ -27,7 +27,7 @@ def main():
 
   os.mkdir(tmp)
 
-  cmd = "screenshots/automate-save-page-as/save_page_as \"file:///home/stefan/dev/projects/all/2016-redshift/screenshots/src/index.html\" -d \"%s\" -b chromium-browser" % (target)
+  cmd = "screenshots/automate-save-page-as/save_page_as --save-wait-time 1 --load-wait-time 2 \"file:///home/stefan/dev/projects/all/2016-redshift/screenshots/src/index.html\" -d \"%s\" -b chromium-browser" % (target)
   execute_ok(cmd)
 
   shutil.rmtree(screenshotdir)
@@ -37,6 +37,7 @@ def main():
   for s in sshots:
     name = s[0]
     f = "%s/%s.png" % (screenshotdir, name)
+    if s[0] == "": print s[1]
     img = base64.b64decode(s[1])
     write_file(f, img)
 

@@ -32,9 +32,42 @@
     </div>
 
   <script>
+
+  var time = Math.round(new Date(2016, 5, 21, 22, 21, 54) / 1000);
+
+  function colored(id, color) {
+    return {
+      id: id,
+      state: {
+        time: time,
+      },
+      config: {
+        'SIMPLECONFIG_COLOR_ACCENT': color,
+      }
+    };
+  }
+
   $(document).ready(function() {
     var config = RedshiftPreview.defaultConfig();
-    var time = Math.round(new Date(2016, 5, 21, 22, 21, 54) / 1000);
+    var color_screenshots = [];
+    var colors = [
+      GColor.VividCerulean,
+      GColor.BabyBlueEyes,
+      GColor.LavenderIndigo,
+      GColor.RichBrilliantLavender,
+      GColor.Melon,
+      GColor.Rajah,
+      GColor.PastelYellow,
+      GColor.Inchworm,
+      GColor.MintGreen,
+      GColor.MediumAquamarine,
+      GColor.Celeste,
+    ];
+    var ncols = colors.length;
+    for (var i = 0; i < ncols; i += 1) {
+      var idx = (6 + i) % ncols;
+      color_screenshots.push(colored('redshift-color-' + (i+1), colors[idx]))
+    }
     var screenshots = [
       {
         id: "redshift-1",
@@ -78,7 +111,7 @@
           'SIMPLECONFIG_COLOR_BACKGROUND': GColor.White,
         }
       },
-    ];
+    ].concat(color_screenshots);
 
     for (var i in screenshots) {
       var key = "preview-" + screenshots[i].id;
@@ -94,7 +127,7 @@
         var id = screenshots[i].id;
         var key = "preview-" + id;
         var img    = $("#" + key).get(0).toDataURL("image/png");
-        s += id + "::::" + img.substr(22) + "\n";
+        s += id + "::" + "::" + img.substr(22) + "\n";
       }
 
       $("#data").html(s);

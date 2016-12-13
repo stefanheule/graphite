@@ -75,14 +75,10 @@ menu_icon:
 	$(MAKE) clean_header
 
 resources:
-	scripts/assemble_resources.sh
+	SUPPORTED_PLATFORMS=$(SUPPORTED_PLATFORMS) scripts/assemble_screenshots.sh
 
-screenshots: config_screenshots
-	pebble kill
-	$(MAKE) single_screenshot REDSHIFT_CONFIG="SCREENSHOT_MAIN" REDSHIFT_FILE="main"
-	scripts/assemble_screenshots.sh
-	scripts/assemble_resources.sh
-	pebble kill
+screenshots:
+	scripts/screenshot_from_config.py
 
 config_screenshots:
 	rm -f screenshots/aplite/config.png
