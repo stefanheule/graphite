@@ -27,6 +27,7 @@ var RedshiftPreview = (function () {
     var ctx;
     var canvas;
     var state;
+    var scale;
     var platform;
     var tnow = time(NULL);
     var weather;
@@ -135,8 +136,8 @@ var RedshiftPreview = (function () {
     var FIXED_POINT_SCALE = 16;
     var NULL = 0;
     function INT_TO_FIXED(x) { return x*FIXED_POINT_SCALE; }
-    function REM(x) { return rem_is_pix ? INT_TO_FIXED(x) : INT_TO_FIXED(x) * PBL_DISPLAY_WIDTH / 200; }
-    function PIX(x) { return INT_TO_FIXED(x); }
+    function REM(x) { return scale*(rem_is_pix ? INT_TO_FIXED(x) : INT_TO_FIXED(x) * PBL_DISPLAY_WIDTH / 200); }
+    function PIX(x) { return scale*INT_TO_FIXED(x); }
     function FIXED_TO_INT(x) { return Math.floor(x/FIXED_POINT_SCALE); }
     function FIXED_ROUND(x) { return ((x) % FIXED_POINT_SCALE < FIXED_POINT_SCALE/2 ? (x) - ((x) % FIXED_POINT_SCALE) : (x) + FIXED_POINT_SCALE - ((x) % FIXED_POINT_SCALE)) }
     function fctx_init_context() {}
@@ -249,13 +250,14 @@ var RedshiftPreview = (function () {
         var config = datas[canvasId].config;
         platform = datas[canvasId].platform;
         state = datas[canvasId].state;
+        scale = datas[canvasId].scale;
 
         canvas = document.getElementById(canvasId);
         ctx = canvas.getContext('2d');
 
         PBL_IF_ROUND_ELSE = PebbleHelper.PBL_IF_ROUND_ELSE(platform);
-        PBL_DISPLAY_WIDTH = PebbleHelper.PBL_DISPLAY_WIDTH(platform);
-        PBL_DISPLAY_HEIGHT = PebbleHelper.PBL_DISPLAY_HEIGHT(platform);
+        PBL_DISPLAY_WIDTH = PebbleHelper.PBL_DISPLAY_WIDTH(platform)*scale;
+        PBL_DISPLAY_HEIGHT = PebbleHelper.PBL_DISPLAY_HEIGHT(platform)*scale;
         IF_HR = PebbleHelper.IF_HR(platform);
 
 // -- autogen
@@ -1047,13 +1049,14 @@ function background_update_proc(layer, ctx) {
         return res;
     }
 
-    function drawHelper(f, config, canvasId, platform, extra, state) {
+    function drawHelper(f, config, canvasId, platform, extra, state, scale) {
         var first = !(canvasId in datas);
         datas[canvasId] = {
           config: config,
           platform: platform,
           extra: extra,
           state: state,
+          scale: scale || 1.0,
         };
         if (first) {
             // schedule updates to redraw the configuration in case the fonts aren't loaded yet
@@ -1089,11 +1092,11 @@ function background_update_proc(layer, ctx) {
         defaultConfig: defaultConfig,
         defaultState: function () { return default_state; },
         myDefaultConfig: myDefaultConfig,
-        drawPreview: function (config, canvasId, platform, state) {
-            drawHelper(drawConfig, config, canvasId, platform, null, state);
+        drawPreview: function (config, canvasId, platform, state, scale) {
+            drawHelper(drawConfig, config, canvasId, platform, null, state, scale);
         },
-        previewComplication: function (complication, config, canvasId, platform, state) {
-            drawHelper(drawComplication, config, canvasId, platform, complication, state);
+        previewComplication: function (complication, config, canvasId, platform, state, scale) {
+            drawHelper(drawComplication, config, canvasId, platform, complication, state, scale);
         },
         override: override,
         overrideConfig: function (new_vals, backup_vals) {

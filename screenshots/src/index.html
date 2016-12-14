@@ -111,12 +111,20 @@
           'SIMPLECONFIG_COLOR_BACKGROUND': GColor.White,
         }
       },
+      {
+        id: "redshift-high",
+        state: {
+          time: time,
+          bluetooth: true,
+        },
+        scale: 3,
+      },
     ].concat(color_screenshots);
 
     for (var i in screenshots) {
       var key = "preview-" + screenshots[i].id;
       $("#previews").append("<canvas class='preview' id=\"" + key + "\"></canvas>");
-      RedshiftPreview.drawPreview(RedshiftPreview.overrideConfig(screenshots[i].config, config), key, "basalt", RedshiftPreview.override(screenshots[i].state, RedshiftPreview.defaultState()));
+      RedshiftPreview.drawPreview(RedshiftPreview.overrideConfig(screenshots[i].config, config), key, "basalt", RedshiftPreview.override(screenshots[i].state, RedshiftPreview.defaultState()), screenshots[i].scale);
     }
 
     // schedule capturing the preview
