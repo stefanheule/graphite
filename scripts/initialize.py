@@ -464,6 +464,7 @@ files_to_inline_render = [
   "src/js/pebble-js-app.js",
   "config/index.html",
   "config/js/preview.js",
+  "screenshots/src/index.html"
 ]
 
 now = datetime.datetime(2016, 11, 27, 17, 44, 57, 0)

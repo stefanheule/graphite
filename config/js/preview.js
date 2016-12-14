@@ -136,8 +136,8 @@ var RedshiftPreview = (function () {
     var FIXED_POINT_SCALE = 16;
     var NULL = 0;
     function INT_TO_FIXED(x) { return x*FIXED_POINT_SCALE; }
-    function REM(x) { return scale*(rem_is_pix ? INT_TO_FIXED(x) : INT_TO_FIXED(x) * PBL_DISPLAY_WIDTH / 200); }
-    function PIX(x) { return scale*INT_TO_FIXED(x); }
+    function REM(x) { return (rem_is_pix ? INT_TO_FIXED(x) : INT_TO_FIXED(x) * PBL_DISPLAY_WIDTH / 200); }
+    function PIX(x) { return INT_TO_FIXED(x); }
     function FIXED_TO_INT(x) { return Math.floor(x/FIXED_POINT_SCALE); }
     function FIXED_ROUND(x) { return ((x) % FIXED_POINT_SCALE < FIXED_POINT_SCALE/2 ? (x) - ((x) % FIXED_POINT_SCALE) : (x) + FIXED_POINT_SCALE - ((x) % FIXED_POINT_SCALE)) }
     function fctx_init_context() {}
@@ -251,13 +251,14 @@ var RedshiftPreview = (function () {
         platform = datas[canvasId].platform;
         state = datas[canvasId].state;
         scale = datas[canvasId].scale;
+        scale = 2;
 
         canvas = document.getElementById(canvasId);
         ctx = canvas.getContext('2d');
 
         PBL_IF_ROUND_ELSE = PebbleHelper.PBL_IF_ROUND_ELSE(platform);
-        PBL_DISPLAY_WIDTH = PebbleHelper.PBL_DISPLAY_WIDTH(platform)*scale;
-        PBL_DISPLAY_HEIGHT = PebbleHelper.PBL_DISPLAY_HEIGHT(platform)*scale;
+        PBL_DISPLAY_WIDTH = PebbleHelper.PBL_DISPLAY_WIDTH(platform);
+        PBL_DISPLAY_HEIGHT = PebbleHelper.PBL_DISPLAY_HEIGHT(platform);
         IF_HR = PebbleHelper.IF_HR(platform);
 
 // -- autogen
