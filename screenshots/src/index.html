@@ -26,7 +26,17 @@
 
   <body>
     
-  <div id="previews"></div>
+    <div id="previews"></div>
+
+<!--
+// -- autogen
+// -- ## for key in complications
+// --     <canvas class="complication" id="complication-{{ key["id"] }}"></canvas>
+// -- ## endfor
+-->
+<!--
+// -- end autogen
+-->
 
     <div id="data">
     </div>
@@ -127,11 +137,22 @@
       RedshiftPreview.drawPreview(RedshiftPreview.overrideConfig(screenshots[i].config, config), key, "basalt", RedshiftPreview.override(screenshots[i].state, RedshiftPreview.defaultState()), screenshots[i].scale);
     }
 
+    var complications = [];
+// -- autogen
+// --     var n_complications = {{ complications.length }};
+// -- end autogen
+    for (i = 0; i < n_complications; i++) {
+      var id = "complication-"+i;
+      complications.push({ id: id, });
+      RedshiftPreview.previewComplication(i, config, id, "basalt");
+    }
+
+
     // schedule capturing the preview
     var capture = function () {
 
       var s = ""
-      for (var i in screenshots) {
+      for (var i in screenshots.concat(complications)) {
         var id = screenshots[i].id;
         var key = "preview-" + id;
         var img    = $("#" + key).get(0).toDataURL("image/png");
