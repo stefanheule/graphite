@@ -27,7 +27,6 @@ var RedshiftPreview = (function () {
     var ctx;
     var canvas;
     var state;
-    var scale;
     var platform;
     var tnow = time(NULL);
     var weather;
@@ -250,8 +249,6 @@ var RedshiftPreview = (function () {
         var config = datas[canvasId].config;
         platform = datas[canvasId].platform;
         state = datas[canvasId].state;
-        scale = datas[canvasId].scale;
-        scale = 2;
 
         canvas = document.getElementById(canvasId);
         ctx = canvas.getContext('2d');
@@ -1050,14 +1047,13 @@ function background_update_proc(layer, ctx) {
         return res;
     }
 
-    function drawHelper(f, config, canvasId, platform, extra, state, scale) {
+    function drawHelper(f, config, canvasId, platform, extra, state) {
         var first = !(canvasId in datas);
         datas[canvasId] = {
           config: config,
           platform: platform,
           extra: extra,
           state: state,
-          scale: scale || 1.0,
         };
         if (first) {
             // schedule updates to redraw the configuration in case the fonts aren't loaded yet
@@ -1093,11 +1089,11 @@ function background_update_proc(layer, ctx) {
         defaultConfig: defaultConfig,
         defaultState: function () { return default_state; },
         myDefaultConfig: myDefaultConfig,
-        drawPreview: function (config, canvasId, platform, state, scale) {
-            drawHelper(drawConfig, config, canvasId, platform, null, state, scale);
+        drawPreview: function (config, canvasId, platform, state) {
+            drawHelper(drawConfig, config, canvasId, platform, null, state);
         },
-        previewComplication: function (complication, config, canvasId, platform, state, scale) {
-            drawHelper(drawComplication, config, canvasId, platform, complication, state, scale);
+        previewComplication: function (complication, config, canvasId, platform, state) {
+            drawHelper(drawComplication, config, canvasId, platform, complication, state);
         },
         override: override,
         overrideConfig: function (new_vals, backup_vals) {
