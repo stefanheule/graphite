@@ -2,15 +2,17 @@
 <module type="CPP_MODULE" version="4">
   <component name="NewModuleRootManager">
     <content url="file://$MODULE_DIR$">
+      <sourceFolder url="file://$MODULE_DIR$/src/complications.c" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/complications.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src/redshift.c" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/src/ui.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/ui-util.c" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src/ui-util.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src/settings.h" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/src/ui-util.c" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/ui.c" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src/settings.c" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src/config.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src/redshift.h" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/src/ui.c" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/ui.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/CMakeLists.txt" isTestSource="false" />
     </content>
     <orderEntry type="sourceFolder" forTests="false" />
