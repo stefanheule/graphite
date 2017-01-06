@@ -349,7 +349,7 @@ function parseIconForecastIO(icon) {
 
 /** Returns true iff a and b represent the same day (ignoring time). */
 function sameDate(a, b) {
-    return a.getDay() == b.getDay() && a.getFullYear() == b.getFullYear() && a.getMonth() && b.getMonth();
+    return a.getDay() == b.getDay() && a.getFullYear() == b.getFullYear() && a.getMonth() == b.getMonth();
 }
 
 /** Callback if determining weather conditions failed. */
@@ -503,32 +503,36 @@ function fetchWeather(latitude, longitude) {
 // --             console.log('[ info/app ] weather information: ' + JSON.stringify(response));
             console.log('[ info/app ] weather information: ' + JSON.stringify(response));
 // -- end build
-            var low, high, cur, icon;
+            var low = undefined, high, cur, icon;
             for (var i in response.daily.data) {
                 var data = response.daily.data[i];
                 var date = new Date(data.time*1000);
                 if (sameDate(now, date)) {
-                    low = data. temperatureMin;
-                    high = data. temperatureMax;
+                    low = data.temperatureMin;
+                    high = data.temperatureMax;
                     //icon = data.icon;
                     break;
                 }
             }
-            cur = response.currently.temperature;
-            icon = response.currently.icon;
-            icon = parseIconForecastIO(icon);
-            // collect perc data
-            var perc_data = [];
-            var ts = 0;
-            if (load_rain) {
-                for (var i in response.hourly.data) {
-                    var elem = response.hourly.data[i];
-                    if (ts == 0) ts = elem.time;
-                    if (!elem.hasOwnProperty('precipProbability')) break;
-                    perc_data.push(Math.round(elem.precipProbability * 100));
+            if (low === undefined) {
+                failedWeatherCheck("could not find current date");
+            } else {
+                cur = response.currently.temperature;
+                icon = response.currently.icon;
+                icon = parseIconForecastIO(icon);
+                // collect perc data
+                var perc_data = [];
+                var ts = 0;
+                if (load_rain) {
+                    for (var i in response.hourly.data) {
+                        var elem = response.hourly.data[i];
+                        if (ts == 0) ts = elem.time;
+                        if (!elem.hasOwnProperty('precipProbability')) break;
+                        perc_data.push(Math.round(elem.precipProbability * 100));
+                    }
                 }
+                success(low, high, cur, icon, perc_data, ts);
             }
-            success(low, high, cur, icon, perc_data, ts);
         });
     }
 }
