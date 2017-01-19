@@ -460,8 +460,8 @@ function fetchWeather(latitude, longitude) {
             if (daily) temp = response.main.temp_max - 273.15;
             var icon = parseIconOpenWeatherMap(response.weather[0].icon);
 // -- build=debug
-// --             console.log('[ info/app ] weather information: ' + JSON.stringify(response));
-            console.log('[ info/app ] weather information: ' + JSON.stringify(response));
+// --             //console.log('[ info/app ] weather information: ' + JSON.stringify(response));
+            //console.log('[ info/app ] weather information: ' + JSON.stringify(response));
 // -- end build
             success(temp, icon);
         });
@@ -472,8 +472,8 @@ function fetchWeather(latitude, longitude) {
         runRequest(url, function (response) {
             var temp, icon;
 // -- build=debug
-// --             console.log('[ info/app ] weather information: ' + JSON.stringify(response));
-            console.log('[ info/app ] weather information: ' + JSON.stringify(response));
+// --             //console.log('[ info/app ] weather information: ' + JSON.stringify(response));
+            //console.log('[ info/app ] weather information: ' + JSON.stringify(response));
 // -- end build
             if (daily) {
                 for (var i in response.forecast.simpleforecast.forecastday) {
@@ -500,8 +500,8 @@ function fetchWeather(latitude, longitude) {
         }
         runRequest(baseurl + exclude, function(response) {
 // -- build=debug
-// --             console.log('[ info/app ] weather information: ' + JSON.stringify(response));
-            console.log('[ info/app ] weather information: ' + JSON.stringify(response));
+// --             //console.log('[ info/app ] weather information: ' + JSON.stringify(response));
+            //console.log('[ info/app ] weather information: ' + JSON.stringify(response));
 // -- end build
             var low = undefined, high, cur, icon;
             for (var i in response.daily.data) {
