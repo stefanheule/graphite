@@ -37,8 +37,18 @@ void update_weather() {
     // return if we don't want weather information
     if (config_weather_refresh == 0) return;
 
-    const uint32_t timeout_min = config_weather_refresh;
+    bool need_weather = false;
+    uint32_t timeout_min = config_weather_refresh;
+    if (weather.timestamp == 0) {
+        need_weather = true;
+    } else {
+        need_weather = (time(NULL) - weather.timestamp) > (config_weather_refresh * 60);
+        if (!need_weather) {
+            timeout_min = (time(NULL) - weather.timestamp) / 60;
+        }
+    }
     set_weather_timer(timeout_min);
+    if (!need_weather) return;
 
     // actually update the weather by sending a request
     DictionaryIterator *iter;
