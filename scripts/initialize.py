@@ -234,23 +234,23 @@ configuration = [
     'key': 'CONFIG_TIME_FORMAT_LOCAL',
     'default': '0',
     'options': [
-      '"%I:0%M"',
-      '"0%I:0%M"',
-      '"%H:0%M"',
-      '"0%H:0%M"',
+      ('"%I:0%M"', "12h"),
+      ('"0%I:0%M"', "12h leading zero"),
+      ('"%H:0%M"', "24h"),
+      ('"0%H:0%M"', "24h leading zero"),
     ],
   },
   {
     'key': 'CONFIG_INFO_BELOW_LOCAL',
     'default': '0',
     'options': [
-      '"%A, %m/%d"',
-      '"%A, %d.%m."',
-      '"%Y-0%m-0%d"',
-      '"%B %d"',
-      '"%d. %B"',
-      '"%p"',
-      '"%P"',
+      ('"%A, %m/%d"', ""),
+      ('"%A, %d.%m."', ""),
+      ('"%Y-0%m-0%d"', ""),
+      ('"%B %d"', ""),
+      ('"%d. %B"', ""),
+      ('"%p"', ""),
+      ('"%P"', ""),
     ],
   },
   {
@@ -533,7 +533,7 @@ def pre_process(config, simple_config, compls, groups):
     k['mydefault'] = resolve_complications(k['mydefault'])
     k['jsmydefault'] = resolve_complications(k['jsmydefault'])
     if 'options' in k:
-      k['options'] = map(lambda x: {'desc': format_time(x[1]), 'id': x[0], 'format': x[1]}, enumerate(k['options']))
+      k['options'] = map(lambda x: {'desc': (format_time(x[1][0]) + ("" if x[1][1]=="" else (" (%s)" % x[1][1]))).strip(), 'id': x[0], 'format': x[1]}, enumerate(k['options']))
 
   # prepare complication groups
   for k in compls:
