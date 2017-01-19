@@ -204,6 +204,10 @@ void subscribe_tick(bool also_unsubscribe) {
     tick_timer_service_subscribe(unit, handle_second_tick);
 }
 
+void handle_battery(BatteryChargeState new_state) {
+    layer_mark_dirty(layer_background);
+}
+
 /**
  * Initialization.
  */
@@ -219,6 +223,7 @@ void init() {
 
     subscribe_tick(false);
     bluetooth_connection_service_subscribe(handle_bluetooth);
+    battery_state_service_subscribe(handle_battery);
 
     app_message_open(REDSHIFT_INBOX_SIZE, REDSHIFT_OUTBOX_SIZE);
     app_message_register_inbox_received(inbox_received_handler);
