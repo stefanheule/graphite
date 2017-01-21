@@ -529,6 +529,7 @@ function complication_day_of_week(fctx, draw, position, align, foreground_color,
 }
 function complication_weather_cur_temp_icon(fctx, draw, position, align, foreground_color, background_color) {
   if (show_weather()) {
+    if (weather.temp_cur == REDSHIFT_UNKNOWN_WEATHER) return 0;
     buffer_1 = sprintf("%c", weather.icon);
     if (weather.failed) {
         buffer_2 = sprintf("%d", weather.temp_cur);
@@ -541,6 +542,7 @@ function complication_weather_cur_temp_icon(fctx, draw, position, align, foregro
 }
 function complication_weather_low_temp(fctx, draw, position, align, foreground_color, background_color) {
   if (show_weather()) {
+    if (weather.temp_low == REDSHIFT_UNKNOWN_WEATHER) return 0;
     if (weather.failed) {
         buffer_1 = sprintf("%d", weather.temp_low);
     } else {
@@ -553,6 +555,7 @@ function complication_weather_low_temp(fctx, draw, position, align, foreground_c
 }
 function complication_weather_high_temp(fctx, draw, position, align, foreground_color, background_color) {
   if (show_weather()) {
+    if (weather.temp_high == REDSHIFT_UNKNOWN_WEATHER) return 0;
     if (weather.failed) {
         buffer_1 = sprintf("%d", weather.temp_high);
     } else {

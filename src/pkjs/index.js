@@ -378,22 +378,14 @@ function fetchWeather(latitude, longitude) {
 
     var now = new Date();
 
-    var daily;
-    var mode = +readConfig("CONFIG_WEATHER_MODE_LOCAL");
-    mode = 3; // TODO
-    if (mode == 3) {
-        // use current weather information after 2pm, until 4am
-        daily = !(now.getHours() >= 14 || now.getHours() <= 3);
-    } else {
-        daily = mode == 2; // daily mode
-    }
-
     /** Callback on successful determination of weather conditions. */
     var success = function(low, high, cur, curicon, raindata, ts) {
         //TODO
-        // if (+readConfig("CONFIG_WEATHER_UNIT_LOCAL") == 2) {
-        //     temp = temp * 9.0/5.0 + 32.0;
-        // }
+        if (+readConfig("CONFIG_WEATHER_UNIT_LOCAL") == 2) {
+            if (low != temp_unknown) low = low * 9.0/5.0 + 32.0;
+            if (high != temp_unknown) high = high * 9.0/5.0 + 32.0;
+            if (cur != temp_unknown) cur = cur * 9.0/5.0 + 32.0;
+        }
         low = Math.round(low);
         high = Math.round(high);
         cur = Math.round(cur);
@@ -454,26 +446,25 @@ function fetchWeather(latitude, longitude) {
         req.send(null);
     };
 
+    var temp_unknown = 32767;
+
     var source = +readConfig("CONFIG_WEATHER_SOURCE_LOCAL");
     var apikey = readConfig("CONFIG_WEATHER_APIKEY_LOCAL");
     var load_rain = readConfig("CONFIG_WEATHER_RAIN_LOCAL");
-// -- build=debug
-// --     console.log('[ info/app ] requesting weather information (' + (daily ? "daily" : "currently") + ')...');
-    console.log('[ info/app ] requesting weather information (' + (daily ? "daily" : "currently") + ')...');
-// -- end build
     if (source == 1) {
         var query = "lat=" + latitude + "&lon=" + longitude;
         query += "&cnt=1&appid=fa5280deac4b98572739388b55cd7591";
         query = "http://api.openweathermap.org/data/2.5/weather?" + query;
         runRequest(query, function (response) {
-            var temp = response.main.temp - 273.15;
-            if (daily) temp = response.main.temp_max - 273.15;
+            var cur = response.main.temp - 273.15;
+            var low = temp_unknown;
+            var high = temp_unknown;
             var icon = parseIconOpenWeatherMap(response.weather[0].icon);
 // -- build=debug
 // --             //console.log('[ info/app ] weather information: ' + JSON.stringify(response));
             //console.log('[ info/app ] weather information: ' + JSON.stringify(response));
 // -- end build
-            success(temp, icon);
+            success(low, high, cur, icon, [], 0);
         });
     } else if (source == 3) {
         var q = "conditions";

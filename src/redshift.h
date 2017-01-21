@@ -192,13 +192,14 @@ extern AppTimer *timer_bluetooth_popup;
 // -- #define REDSHIFT_WEATHER_PERC_MAX_LEN {{ perc_max_len }}
 #define REDSHIFT_WEATHER_PERC_MAX_LEN 30
 // -- end autogen
+#define REDSHIFT_UNKNOWN_WEATHER 32767
 typedef struct {
     uint8_t version;
     time_t timestamp;
     int8_t icon;
-    int8_t temp_cur;
-    int8_t temp_low;
-    int8_t temp_high;
+    int16_t temp_cur;
+    int16_t temp_low;
+    int16_t temp_high;
     uint8_t perc_data[REDSHIFT_WEATHER_PERC_MAX_LEN];
     uint8_t perc_data_len; // maybe not all perc data items are valid
     time_t perc_data_ts;

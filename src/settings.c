@@ -165,9 +165,9 @@ void inbox_received_handler(DictionaryIterator *iter, void *context) {
         weather.version = REDSHIFT_WEATHER_VERSION;
         weather.timestamp = time(NULL);
         weather.icon = icon_tuple->value->int8;
-        weather.temp_cur = tempcur_tuple->value->int8;
-        weather.temp_low = templow_tuple->value->int8;
-        weather.temp_high = temphigh_tuple->value->int8;
+        weather.temp_cur = tempcur_tuple->value->int16;
+        weather.temp_low = templow_tuple->value->int16;
+        weather.temp_high = temphigh_tuple->value->int16;
 
         if (perc_data_tuple && perc_data_ts_tuple && perc_data_len_tuple) {
             weather.perc_data_len = perc_data_len_tuple->value->uint8;
