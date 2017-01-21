@@ -113,4 +113,8 @@ font_build:
 	node_modules/pebble-fctx-compiler/fctx-compiler.js -r "[0-9a-zA-Z.:\-/° ,]" resources/fonts/OpenSans-CondensedBold.svg
 	node_modules/pebble-fctx-compiler/fctx-compiler.js -r "." resources/fonts/fasubset.svg
 
+library_dl:
+	wget http://momentjs.com/downloads/moment.min.js -O src/pkjs/moment.js
+	wget http://momentjs.com/downloads/moment-timezone-with-data-2010-2020.min.js -O src/pkjs/moment-timezone.js
+
 .PHONY: all deploy build build_quiet config log resources install_emulator install_deploy menu_icon screenshots screenshot screenshot_config write_header clean clean_header

@@ -32,6 +32,16 @@ function getUToken() {
     }
 }
 
+// var moment = require('./moment-timezone');
+// console.log("------------------------")
+// console.log("------------------------")
+
+// console.log(moment.tz.zone('America/Los_Angeles').untils)
+// console.log(moment.tz.zone('America/Los_Angeles').offsets)
+
+// console.log("------------------------")
+// console.log("------------------------")
+
 Pebble.addEventListener('ready', function () {
 // -- build=debug
 // --     console.log('[ info/app ] PebbleKit JS ready!');
