@@ -461,7 +461,7 @@ files_to_inline_render = [
   "src/complications.c",
   "src/complications.h",
   "src/ui.c",
-  "src/js/pebble-js-app.js",
+  "src/pkjs/index.js",
   "config/index.html",
   "config/js/preview.js",
   "screenshots/src/index.html"

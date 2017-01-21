@@ -54,7 +54,7 @@
       {{ messageKeysComma() }} "{{ key["key"] }}": {{ key["id"] }}
     ## endfor
     },
-    "enableMultiJS": false,
+    "enableMultiJS": true,
     "watchapp": {
       "onlyShownOnCommunication": false,
       "hiddenApp": false,
