@@ -33,7 +33,7 @@ void set_weather_timer(int timeout_min) {
 /**
  * Update the weather information (and schedule a periodic timer to update again)
  */
-void update_weather() {
+void update_weather(bool force) {
     // return if we don't want weather information
     if (config_weather_refresh == 0) return;
 
@@ -48,7 +48,7 @@ void update_weather() {
         }
     }
     set_weather_timer(timeout_min);
-    if (!need_weather) return;
+    if (!need_weather && !force) return;
 
     // actually update the weather by sending a request
     DictionaryIterator *iter;
@@ -65,7 +65,8 @@ void update_weather() {
  * Utility function.
  */
 static void update_weather_helper(void *unused) {
-    update_weather();
+    weather_request_timer = NULL;
+    update_weather(false);
 }
 
 /**
@@ -153,6 +154,7 @@ void inbox_received_handler(DictionaryIterator *iter, void *context) {
 // -- end autogen
 
     bool ask_for_weather_update = true;
+    bool force_weather_update = true;
 
     Tuple *icon_tuple = dict_find(iter, MSG_KEY_WEATHER_ICON_CUR);
     Tuple *tempcur_tuple = dict_find(iter, MSG_KEY_WEATHER_TEMP_CUR);
@@ -194,11 +196,7 @@ void inbox_received_handler(DictionaryIterator *iter, void *context) {
 
     if (dict_find(iter, MSG_KEY_JS_READY)) {
         js_ready = true;
-        DictionaryIterator *iter;
-        app_message_outbox_begin(&iter);
-        dict_write_uint8(iter, MSG_KEY_FETCH_WEATHER, 1);
-        app_message_outbox_send();
-        ask_for_weather_update = false;
+        force_weather_update = false;
     }
     if (dirty) {
         // make sure we update tick frequency if necessary
@@ -206,7 +204,7 @@ void inbox_received_handler(DictionaryIterator *iter, void *context) {
         layer_mark_dirty(layer_background);
     }
     if (ask_for_weather_update) {
-        update_weather();
+        update_weather(force_weather_update);
     }
 }
 

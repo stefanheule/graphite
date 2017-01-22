@@ -17,7 +17,7 @@
 
 #include "redshift.h"
 
-void update_weather();
+void update_weather(bool force);
 void inbox_received_handler(DictionaryIterator *iter, void *context);
 void read_config_all();
 void subscribe_tick(bool also_unsubscribe);
