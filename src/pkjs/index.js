@@ -374,6 +374,63 @@ function failedWeatherCheck(err) {
     Pebble.sendAppMessage(data);
 }
 
+function concurrentRequests(urls, succ) {
+    var i = 0;
+    var n = urls.length;
+    var ids = urls.map(function() { i = i+1; return i-1; });
+    var done = ids.map(function() { return false });
+    var doneCount = 0;
+    var answers = ids.map(function() { return false });
+    var reqs;
+    var quit = function() {
+        for (var i = 0; i < n; i++) {
+            if (!done[i]) reqs[i].abort();
+        }
+    }
+    reqs = ids.map(function(i){
+        var url = urls[i];
+        if (url === undefined) {
+            done[i] = true;
+            doneCount += 1;
+            return 0;
+        }
+// -- build=debug
+// --         console.log("[ info/app ] loading from " + url);
+        console.log("[ info/app ] loading from " + url);
+// -- end build
+        var req = new XMLHttpRequest();
+        req.open("GET", url, true);
+        req.onload = function () {
+            if (req.readyState === 4) {
+                if (req.status === 200) {
+                    answers[i] = JSON.parse(req.responseText);
+                    done[i] = true;
+                    doneCount += 1;
+                    if (doneCount == n) {
+                        try {
+                            succ(answers);
+                        } catch (e) {
+                            failedWeatherCheck("exception: " + e)
+                        }
+                        clearTimeout(myTimeout);
+                    }
+                } else {
+                    quit();
+                    failedWeatherCheck("non-200 status: " + req.status + " / " + req.statusText)
+                }
+            }
+        };
+        req.send(null);
+        return req;
+    });
+
+    // try for 30 seconds to get weather, then time out
+    var myTimeout = setTimeout(function(){
+        failedWeatherCheck("timeout");
+        quit();
+    }, 30000);
+}
+
 function fetchWeather(latitude, longitude) {
 
     var now = new Date();
@@ -410,40 +467,14 @@ function fetchWeather(latitude, longitude) {
             data["MSG_KEY_WEATHER_PERC_DATA_TS"] = ts;
         }
 // -- build=debug
-// --         console.log('[ info/app ] weather send: temp=' + low + "/" + cur + "/" + high + ", icon=" + String.fromCharCode(icon) + ".");
-        console.log('[ info/app ] weather send: temp=' + low + "/" + cur + "/" + high + ", icon=" + String.fromCharCode(icon) + ".");
+// --         console.log('[ info/app ] weather send: temp=' + low + "/" + cur + "/" + high + ", icon=" + String.fromCharCode(icon) + ", len(rain)=" + raindata.length + ", ts=" + ts + ".");
+        console.log('[ info/app ] weather send: temp=' + low + "/" + cur + "/" + high + ", icon=" + String.fromCharCode(icon) + ", len(rain)=" + raindata.length + ", ts=" + ts + ".");
 // -- end build
         Pebble.sendAppMessage(data);
     };
 
     var runRequest = function (url, parse) {
-        var req = new XMLHttpRequest();
-        // try for 30 seconds to get weather, then time out
-        var myTimeout = setTimeout(function(){
-            failedWeatherCheck("timeout");
-            req.abort();
-        }, 30000);
-        req.open("GET", url, true);
-        req.onload = function () {
-            if (req.readyState === 4) {
-                clearTimeout(myTimeout);
-                if (req.status === 200) {
-                    var response = JSON.parse(req.responseText);
-                    try {
-                        parse(response);
-                    } catch (e) {
-                        failedWeatherCheck("exception: " + e)
-                    }
-                } else {
-                    failedWeatherCheck("non-200 status: " + req.status + " / " + req.statusText)
-                }
-            }
-        };
-// -- build=debug
-// --         console.log("[ info/app ] loading from " + url);
-        console.log("[ info/app ] loading from " + url);
-// -- end build
-        req.send(null);
+        concurrentRequests([url], function(res) { parse(res[0]); });
     };
 
     var temp_unknown = 32767;
@@ -451,89 +482,103 @@ function fetchWeather(latitude, longitude) {
     var source = +readConfig("CONFIG_WEATHER_SOURCE_LOCAL");
     var apikey = readConfig("CONFIG_WEATHER_APIKEY_LOCAL");
     var load_rain = readConfig("CONFIG_WEATHER_RAIN_LOCAL");
+    var load_cur = true;
+    var load_lowhigh = true;
+    var low = temp_unknown;
+    var high = temp_unknown;
+    var cur = temp_unknown;
+    var icon = '';
+    var raindata = [];
+    var raints = 0;
     if (source == 1) {
         var query = "lat=" + latitude + "&lon=" + longitude;
         query += "&cnt=1&appid=fa5280deac4b98572739388b55cd7591";
         query = "http://api.openweathermap.org/data/2.5/weather?" + query;
         runRequest(query, function (response) {
-            var cur = response.main.temp - 273.15;
-            var low = temp_unknown;
-            var high = temp_unknown;
-            var icon = parseIconOpenWeatherMap(response.weather[0].icon);
-// -- build=debug
-// --             //console.log('[ info/app ] weather information: ' + JSON.stringify(response));
-            //console.log('[ info/app ] weather information: ' + JSON.stringify(response));
-// -- end build
-            success(low, high, cur, icon, [], 0);
+            cur = response.main.temp - 273.15;
+            low = temp_unknown;
+            high = temp_unknown;
+            icon = parseIconOpenWeatherMap(response.weather[0].icon);
+            success(low, high, cur, icon, raindata, raints);
         });
     } else if (source == 3) {
-        var q = "conditions";
-        if (daily) q = "forecast";
-        var url = "http://api.wunderground.com/api/" + apikey + "/" + q + "/q/" + latitude + "," + longitude + ".json";
-        runRequest(url, function (response) {
-            var temp, icon;
+        var url1 = !load_cur ? undefined : "http://api.wunderground.com/api/" + apikey + "/conditions/q/" + latitude + "," + longitude + ".json";
+        var url2 = !load_lowhigh ? undefined : "http://api.wunderground.com/api/" + apikey + "/forecast/q/" + latitude + "," + longitude + ".json";
+        var url3 = !load_rain ? undefined : "http://api.wunderground.com/api/" + apikey + "/hourly/q/" + latitude + "," + longitude + ".json";
+        concurrentRequests([url1,url2,url3], function (responses) {
 // -- build=debug
 // --             //console.log('[ info/app ] weather information: ' + JSON.stringify(response));
             //console.log('[ info/app ] weather information: ' + JSON.stringify(response));
 // -- end build
-            if (daily) {
-                for (var i in response.forecast.simpleforecast.forecastday) {
-                    var data = response.forecast.simpleforecast.forecastday[i];
+            if (load_lowhigh) {
+                for (var i in responses[1].forecast.simpleforecast.forecastday) {
+                    var data = responses[1].forecast.simpleforecast.forecastday[i];
                     var date = new Date(data.date.epoch*1000);
                     if (sameDate(now, date)) {
-                        temp = +data.high.celsius;
-                        icon = parseIconWU(data.icon);
+                        high = +data.high.celsius;
+                        low = +data.low.celsius;
                         break;
                     }
                 }
-            } else {
-                temp = response.current_observation.temp_c;
-                icon = parseIconWU(response.current_observation.icon);
             }
-            success(temp, icon);
+            if (load_cur) {
+                cur = responses[0].current_observation.temp_c;
+                icon = parseIconWU(responses[0].current_observation.icon);
+            }
+            if (load_rain) {
+                for (var i in responses[2].hourly_forecast) {
+                    var elem = responses[2].hourly_forecast[i];
+                    if (raints == 0) {
+                        // we don't get any data for the current hour from wunderground (why???)
+                        // so we just pretend the current hour is the same as the next hour
+                        raints = elem.FCTTIME.epoch - 3600;
+                        raindata.push(Math.round(elem.pop));
+                    }
+                    raindata.push(Math.round(elem.pop));
+                }
+            }
+            success(low, high, cur, icon, raindata, raints);
         });
     } else {
         // source == 2
         var baseurl = "https://api.darksky.net/forecast/" + apikey + "/" + latitude + "," + longitude + "?units=si&";
         var exclude = "exclude=minutely,alerts,flags";
-        if (!load_rain) {
-            exclude += ",hourly"
-        }
+        if (!load_rain) exclude += ",hourly"
+        if (!load_lowhigh) exclude += ",daily"
+        if (!load_cur) exclude += ",currently"
         runRequest(baseurl + exclude, function(response) {
 // -- build=debug
 // --             //console.log('[ info/app ] weather information: ' + JSON.stringify(response));
             //console.log('[ info/app ] weather information: ' + JSON.stringify(response));
 // -- end build
-            var low = undefined, high, cur, icon;
-            for (var i in response.daily.data) {
-                var data = response.daily.data[i];
-                var date = new Date(data.time*1000);
-                if (sameDate(now, date)) {
-                    low = data.temperatureMin;
-                    high = data.temperatureMax;
-                    //icon = data.icon;
-                    break;
-                }
-            }
-            if (low === undefined) {
-                failedWeatherCheck("could not find current date");
-            } else {
-                cur = response.currently.temperature;
-                icon = response.currently.icon;
-                icon = parseIconForecastIO(icon);
-                // collect perc data
-                var perc_data = [];
-                var ts = 0;
-                if (load_rain) {
-                    for (var i in response.hourly.data) {
-                        var elem = response.hourly.data[i];
-                        if (ts == 0) ts = elem.time;
-                        if (!elem.hasOwnProperty('precipProbability')) break;
-                        perc_data.push(Math.round(elem.precipProbability * 100));
+            if (load_lowhigh) {
+                for (var i in response.daily.data) {
+                    var data = response.daily.data[i];
+                    var date = new Date(data.time*1000);
+                    if (sameDate(now, date)) {
+                        low = data.temperatureMin;
+                        high = data.temperatureMax;
+                        break;
                     }
                 }
-                success(low, high, cur, icon, perc_data, ts);
+                if (low === temp_unknown) {
+                    failedWeatherCheck("could not find current date");
+                    return;
+                }
             }
+            if (load_cur) {
+                cur = response.currently.temperature;
+                icon = parseIconForecastIO(response.currently.icon);
+            }
+            if (load_rain) {
+                for (var i in response.hourly.data) {
+                    var elem = response.hourly.data[i];
+                    if (raints == 0) raints = elem.time;
+                    if (!elem.hasOwnProperty('precipProbability')) break;
+                    raindata.push(Math.round(elem.precipProbability * 100));
+                }
+            }
+            success(low, high, cur, icon, raindata, raints);
         });
     }
 }

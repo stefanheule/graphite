@@ -194,6 +194,11 @@ void inbox_received_handler(DictionaryIterator *iter, void *context) {
 
     if (dict_find(iter, MSG_KEY_JS_READY)) {
         js_ready = true;
+        DictionaryIterator *iter;
+        app_message_outbox_begin(&iter);
+        dict_write_uint8(iter, MSG_KEY_FETCH_WEATHER, 1);
+        app_message_outbox_send();
+        ask_for_weather_update = false;
     }
     if (dirty) {
         // make sure we update tick frequency if necessary
