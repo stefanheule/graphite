@@ -292,17 +292,17 @@ complications = [
   {
     'key': 'COMPLICATION_WEATHER_CUR_TEMP_ICON',
     'desc': 'Weather: Current temperature and icon',
-    'group': 'WEATHER',
+    'group': ['WEATHER', 'WEATHERCUR'],
   },
   {
     'key': 'COMPLICATION_WEATHER_LOW_TEMP',
     'desc': 'Weather: Today\'s low',
-    'group': 'WEATHER',
+    'group': ['WEATHER', 'WEATHERLOWHIGH'],
   },
   {
     'key': 'COMPLICATION_WEATHER_HIGH_TEMP',
     'desc': 'Weather: Today\'s high',
-    'group': 'WEATHER',
+    'group': ['WEATHER', 'WEATHERLOWHIGH'],
   },
   {
     'key': 'COMPLICATION_BLUETOOTH_DISCONLY',
@@ -434,6 +434,14 @@ config_groups = [
     'name': 'WEATHER',
     'show_only_if': 'has_complication(ALL_WEATHER_COMPLICATION_IDS)',
   },
+  {
+    'name': 'WEATHERLOWHIGH',
+    'selector': 'has_complication(ALL_WEATHERLOWHIGH_COMPLICATION_IDS)',
+  },
+  {
+    'name': 'WEATHERCUR',
+    'selector': 'has_complication(ALL_WEATHERCUR_COMPLICATION_IDS)',
+  },
 ]
 
 msg_keys = [
@@ -495,6 +503,7 @@ def get_context():
       'simple_config': sc,
       'simple_config_lookup': to_lookup(sc),
       'config_groups': config_groups,
+      'config_groups_lookup': to_lookup(config_groups),
       'complications': compls,
       'complications_lookup': to_lookup(compls),
       'num_config_items': len(config),
@@ -538,9 +547,10 @@ def pre_process(config, simple_config, compls, groups):
   # prepare complication groups
   for k in compls:
     if 'group' in k:
-      if k['group'] not in group_ids:
-        group_ids[k['group']] = []
-      group_ids[k['group']].append(k['id'])
+      for gid in k['group']:
+        if gid not in group_ids:
+          group_ids[gid] = []
+        group_ids[gid].append(k['id'])
   for k in groups:
     name = k['name']
     k['key'] = "GROUP_%s" % (name)

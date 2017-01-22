@@ -122,6 +122,7 @@ var RedshiftPreview = (function () {
     var PBL_DISPLAY_WIDTH;
     var PBL_DISPLAY_HEIGHT;
     var IF_HR;
+    var REDSHIFT_UNKNOWN_WEATHER = 32767;
 
     // graphics functions and constants
     function GPoint(x, y) { return {x: x, y: y}; }

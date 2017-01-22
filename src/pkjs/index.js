@@ -57,7 +57,7 @@ Pebble.addEventListener('showConfiguration', function () {
     var url = 'https://stefanheule.com/redshift/config/10/index.html';
     url = 'https://rawgit.com/stefanheule/redshift/master/config/';
 
-    //url = 'https://local.com/redshift/config/0/index.html';
+    url = 'https://local.com/redshift/config/0/index.html';
 
     url += '?platform=' + encodeURIComponent(getPlatform());
     url += '&watch=' + encodeURIComponent(getDetails());
@@ -431,9 +431,19 @@ function concurrentRequests(urls, succ) {
     }, 30000);
 }
 
+function has_complication(ids) {
+    for (var i = 1; i < 7; i++) {
+        var id = +readConfig("CONFIG_COMPLICATION_" + i);
+        if (ids.indexOf(id) !== -1) return true;
+    }
+    return false;
+}
+
 function fetchWeather(latitude, longitude) {
 
     var now = new Date();
+
+    var load_rain = +readConfig("CONFIG_WEATHER_RAIN_LOCAL");
 
     /** Callback on successful determination of weather conditions. */
     var success = function(low, high, cur, curicon, raindata, ts) {
@@ -461,7 +471,7 @@ function fetchWeather(latitude, longitude) {
             "MSG_KEY_WEATHER_TEMP_LOW": low,
             "MSG_KEY_WEATHER_TEMP_HIGH": high
         };
-        if (readConfig("CONFIG_WEATHER_RAIN_LOCAL")) {
+        if (load_rain) {
             data["MSG_KEY_WEATHER_PERC_DATA"] = raindata;
             data["MSG_KEY_WEATHER_PERC_DATA_LEN"] = raindata.length;
             data["MSG_KEY_WEATHER_PERC_DATA_TS"] = ts;
@@ -481,9 +491,12 @@ function fetchWeather(latitude, longitude) {
 
     var source = +readConfig("CONFIG_WEATHER_SOURCE_LOCAL");
     var apikey = readConfig("CONFIG_WEATHER_APIKEY_LOCAL");
-    var load_rain = readConfig("CONFIG_WEATHER_RAIN_LOCAL");
-    var load_cur = true;
-    var load_lowhigh = true;
+// -- autogen
+// --     var load_lowhigh = {{ config_groups_lookup["GROUP_WEATHERLOWHIGH"]["selector"] }};
+// --     var load_cur = {{ config_groups_lookup["GROUP_WEATHERCUR"]["selector"] }};
+    var load_lowhigh = has_complication([2, 3]);
+    var load_cur = has_complication([1]);
+// -- end autogen
     var low = temp_unknown;
     var high = temp_unknown;
     var cur = temp_unknown;
@@ -502,10 +515,10 @@ function fetchWeather(latitude, longitude) {
             success(low, high, cur, icon, raindata, raints);
         });
     } else if (source == 3) {
-        var url1 = !load_cur ? undefined : "http://api.wunderground.com/api/" + apikey + "/conditions/q/" + latitude + "," + longitude + ".json";
-        var url2 = !load_lowhigh ? undefined : "http://api.wunderground.com/api/" + apikey + "/forecast/q/" + latitude + "," + longitude + ".json";
-        var url3 = !load_rain ? undefined : "http://api.wunderground.com/api/" + apikey + "/hourly/q/" + latitude + "," + longitude + ".json";
-        concurrentRequests([url1,url2,url3], function (responses) {
+        var url0 = !load_cur ? undefined : "http://api.wunderground.com/api/" + apikey + "/conditions/q/" + latitude + "," + longitude + ".json";
+        var url1 = !load_lowhigh ? undefined : "http://api.wunderground.com/api/" + apikey + "/forecast/q/" + latitude + "," + longitude + ".json";
+        var url2 = !load_rain ? undefined : "http://api.wunderground.com/api/" + apikey + "/hourly/q/" + latitude + "," + longitude + ".json";
+        concurrentRequests([url0,url1,url2], function (responses) {
 // -- build=debug
 // --             //console.log('[ info/app ] weather information: ' + JSON.stringify(response));
             //console.log('[ info/app ] weather information: ' + JSON.stringify(response));
