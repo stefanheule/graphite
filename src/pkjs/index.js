@@ -461,7 +461,6 @@ function fetchWeather(latitude, longitude) {
 
     /** Callback on successful determination of weather conditions. */
     var success = function(low, high, cur, curicon, raindata, ts) {
-        //TODO
         if (+readConfig("CONFIG_WEATHER_UNIT_LOCAL") == 2) {
             if (low != temp_unknown) low = low * 9.0/5.0 + 32.0;
             if (high != temp_unknown) high = high * 9.0/5.0 + 32.0;
