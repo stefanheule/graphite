@@ -220,10 +220,10 @@ Pebble.addEventListener('webviewclosed', function (e) {
     if (config["CONFIG_WEATHER_REFRESH"] < 10) {
         config["CONFIG_WEATHER_REFRESH"] = 10;
     }
-    // // set refresh to 0 to indicate that weather information is off
-    // if (fullconfig["CONFIG_WEATHER_LOCAL"] == false) {
-    //     config["CONFIG_WEATHER_REFRESH"] = 0;
-    // }
+    // set refresh to 0 to indicate that weather information is off
+    if (!need_weather()[0]) {
+        config["CONFIG_WEATHER_REFRESH"] = 0;
+    }
 
 // -- build=debug
 // --     console.log('[ info/app ] Configuration page returned: ' + JSON.stringify(fullconfig));
@@ -439,11 +439,25 @@ function has_complication(ids) {
     return false;
 }
 
+function need_weather() {
+    var load_rain = +readConfig("CONFIG_WEATHER_RAIN_LOCAL");
+// -- autogen
+// --     var load_lowhigh = {{ config_groups_lookup["GROUP_WEATHERLOWHIGH"]["selector"] }};
+// --     var load_cur = {{ config_groups_lookup["GROUP_WEATHERCUR"]["selector"] }};
+    var load_lowhigh = has_complication([2, 3]);
+    var load_cur = has_complication([1]);
+// -- end autogen
+    return [load_rain || load_lowhigh || load_cur, load_rain, load_lowhigh, load_cur];
+}
+
 function fetchWeather(latitude, longitude) {
 
     var now = new Date();
 
-    var load_rain = +readConfig("CONFIG_WEATHER_RAIN_LOCAL");
+    var nw = need_weather();
+    var load_rain = nw[1];
+    var load_lowhigh = nw[2];
+    var load_cur = nw[3];
 
     /** Callback on successful determination of weather conditions. */
     var success = function(low, high, cur, curicon, raindata, ts) {
@@ -491,12 +505,6 @@ function fetchWeather(latitude, longitude) {
 
     var source = +readConfig("CONFIG_WEATHER_SOURCE_LOCAL");
     var apikey = readConfig("CONFIG_WEATHER_APIKEY_LOCAL");
-// -- autogen
-// --     var load_lowhigh = {{ config_groups_lookup["GROUP_WEATHERLOWHIGH"]["selector"] }};
-// --     var load_cur = {{ config_groups_lookup["GROUP_WEATHERCUR"]["selector"] }};
-    var load_lowhigh = has_complication([2, 3]);
-    var load_cur = has_complication([1]);
-// -- end autogen
     var low = temp_unknown;
     var high = temp_unknown;
     var cur = temp_unknown;
