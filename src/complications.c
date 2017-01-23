@@ -39,28 +39,26 @@ complication_render_t complications[] = {
     complication_battery_icon, // id 7
     complication_quiet_offonly, // id 8
     complication_quiet, // id 9
-    complication_heartrate_cur_icon, // id 10
-    complication_heartrate_cur, // id 11
-    complication_steps_icon, // id 12
-    complication_steps, // id 13
-    complication_steps_short_icon, // id 14
-    complication_steps_short, // id 15
-    complication_calories_resting_icon, // id 16
-    complication_calories_resting, // id 17
-    complication_calories_active_icon, // id 18
-    complication_calories_active, // id 19
-    complication_calories_all_icon, // id 20
-    complication_calories_all, // id 21
-    complication_calories_resting_short_icon, // id 22
-    complication_calories_resting_short, // id 23
-    complication_calories_active_short_icon, // id 24
-    complication_calories_active_short, // id 25
-    complication_calories_all_short_icon, // id 26
-    complication_calories_all_short, // id 27
-    complication_ampm, // id 28
-    complication_ampm_lower, // id 29
-    complication_seconds, // id 30
-    complication_day_of_week, // id 31
+    complication_steps_icon, // id 10
+    complication_steps, // id 11
+    complication_steps_short_icon, // id 12
+    complication_steps_short, // id 13
+    complication_calories_resting_icon, // id 14
+    complication_calories_resting, // id 15
+    complication_calories_active_icon, // id 16
+    complication_calories_active, // id 17
+    complication_calories_all_icon, // id 18
+    complication_calories_all, // id 19
+    complication_calories_resting_short_icon, // id 20
+    complication_calories_resting_short, // id 21
+    complication_calories_active_short_icon, // id 22
+    complication_calories_active_short, // id 23
+    complication_calories_all_short_icon, // id 24
+    complication_calories_all_short, // id 25
+    complication_ampm, // id 26
+    complication_ampm_lower, // id 27
+    complication_seconds, // id 28
+    complication_day_of_week, // id 29
 // -- end autogen
 
 // -- jsalternative
@@ -300,12 +298,6 @@ fixed_t complication_weather_high_temp(FContext* fctx, bool draw, FPoint positio
 // -- 
 // -- 
 // -- ## endfor
-fixed_t complication_heartrate_cur_icon(FContext* fctx, bool draw, FPoint position, GTextAlignment align, uint8_t foreground_color, uint8_t background_color) {
-  return draw_icon_number_complication(fctx, draw, position, align, foreground_color, background_color, "J", format_unitless((int)health_service_peek_current_value(HealthMetricHeartRateBPM)), true);
-}
-fixed_t complication_heartrate_cur(FContext* fctx, bool draw, FPoint position, GTextAlignment align, uint8_t foreground_color, uint8_t background_color) {
-  return draw_icon_number_complication(fctx, draw, position, align, foreground_color, background_color, "J", format_unitless((int)health_service_peek_current_value(HealthMetricHeartRateBPM)), false);
-}
 fixed_t complication_steps_icon(FContext* fctx, bool draw, FPoint position, GTextAlignment align, uint8_t foreground_color, uint8_t background_color) {
   return draw_icon_number_complication(fctx, draw, position, align, foreground_color, background_color, "A", format_unitless(health_service_sum_today(HealthMetricStepCount)), true);
 }

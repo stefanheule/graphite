@@ -198,7 +198,7 @@ configuration = [
   },
   {
     'key': 'CONFIG_COMPLICATION_4',
-    'default': 'IF_HR(COMPLICATION_HEARTRATE_CUR_ICON, COMPLICATION_STEPS_SHORT_ICON)',
+    'default': 'COMPLICATION_STEPS_SHORT_ICON',
   },
   {
     'key': 'CONFIG_COMPLICATION_5',
@@ -330,13 +330,13 @@ complications = [
   },
 ] + enum_complication(
   [
-    {
-      'key': 'COMPLICATION_HEARTRATE_CUR',
-      'desc': 'Heart rate',
-      'noton': ['basalt'],
-      'icontext': 'J',
-      'text': 'format_unitless((int)health_service_peek_current_value(HealthMetricHeartRateBPM))',
-    },
+    # {
+    #   'key': 'COMPLICATION_HEARTRATE_CUR',
+    #   'desc': 'Heart rate',
+    #   'noton': ['basalt'],
+    #   'icontext': 'J',
+    #   'text': 'format_unitless((int)health_service_peek_current_value(HealthMetricHeartRateBPM))',
+    # },
     {
       'key': 'COMPLICATION_STEPS',
       'desc': 'Steps',

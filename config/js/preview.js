@@ -361,28 +361,26 @@ var complications = [
     complication_battery_icon, // id 7
     complication_quiet_offonly, // id 8
     complication_quiet, // id 9
-    complication_heartrate_cur_icon, // id 10
-    complication_heartrate_cur, // id 11
-    complication_steps_icon, // id 12
-    complication_steps, // id 13
-    complication_steps_short_icon, // id 14
-    complication_steps_short, // id 15
-    complication_calories_resting_icon, // id 16
-    complication_calories_resting, // id 17
-    complication_calories_active_icon, // id 18
-    complication_calories_active, // id 19
-    complication_calories_all_icon, // id 20
-    complication_calories_all, // id 21
-    complication_calories_resting_short_icon, // id 22
-    complication_calories_resting_short, // id 23
-    complication_calories_active_short_icon, // id 24
-    complication_calories_active_short, // id 25
-    complication_calories_all_short_icon, // id 26
-    complication_calories_all_short, // id 27
-    complication_ampm, // id 28
-    complication_ampm_lower, // id 29
-    complication_seconds, // id 30
-    complication_day_of_week, // id 31
+    complication_steps_icon, // id 10
+    complication_steps, // id 11
+    complication_steps_short_icon, // id 12
+    complication_steps_short, // id 13
+    complication_calories_resting_icon, // id 14
+    complication_calories_resting, // id 15
+    complication_calories_active_icon, // id 16
+    complication_calories_active, // id 17
+    complication_calories_all_icon, // id 18
+    complication_calories_all, // id 19
+    complication_calories_resting_short_icon, // id 20
+    complication_calories_resting_short, // id 21
+    complication_calories_active_short_icon, // id 22
+    complication_calories_active_short, // id 23
+    complication_calories_all_short_icon, // id 24
+    complication_calories_all_short, // id 25
+    complication_ampm, // id 26
+    complication_ampm_lower, // id 27
+    complication_seconds, // id 28
+    complication_day_of_week, // id 29
 ];
 function draw_icon_number_complication(fctx, draw, position, align, foreground_color, background_color, icon, text, show_icon) {
   var fontsize_icon = (fontsize_complications * 0.62);
@@ -566,12 +564,6 @@ function complication_weather_high_temp(fctx, draw, position, align, foreground_
     return string_width(fctx, buffer_1, font_main, fontsize_complications);
   }
   return 0;
-}
-function complication_heartrate_cur_icon(fctx, draw, position, align, foreground_color, background_color) {
-  return draw_icon_number_complication(fctx, draw, position, align, foreground_color, background_color, "J", format_unitless(health_service_peek_current_value(HealthMetricHeartRateBPM)), true);
-}
-function complication_heartrate_cur(fctx, draw, position, align, foreground_color, background_color) {
-  return draw_icon_number_complication(fctx, draw, position, align, foreground_color, background_color, "J", format_unitless(health_service_peek_current_value(HealthMetricHeartRateBPM)), false);
 }
 function complication_steps_icon(fctx, draw, position, align, foreground_color, background_color) {
   return draw_icon_number_complication(fctx, draw, position, align, foreground_color, background_color, "A", format_unitless(health_service_sum_today(HealthMetricStepCount)), true);
@@ -969,7 +961,7 @@ function background_update_proc(layer, ctx) {
             CONFIG_COMPLICATION_1: +2,
             CONFIG_COMPLICATION_2: +1,
             CONFIG_COMPLICATION_3: +3,
-            CONFIG_COMPLICATION_4: +IF_HR(10, 14),
+            CONFIG_COMPLICATION_4: +12,
             CONFIG_COMPLICATION_5: +4,
             CONFIG_COMPLICATION_6: +7,
             CONFIG_PROGRESS: +1,
@@ -1026,7 +1018,7 @@ function background_update_proc(layer, ctx) {
             CONFIG_COMPLICATION_1: +2,
             CONFIG_COMPLICATION_2: +1,
             CONFIG_COMPLICATION_3: +3,
-            CONFIG_COMPLICATION_4: +IF_HR(10, 14),
+            CONFIG_COMPLICATION_4: +12,
             CONFIG_COMPLICATION_5: +4,
             CONFIG_COMPLICATION_6: +7,
             CONFIG_PROGRESS: +1,
