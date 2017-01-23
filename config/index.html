@@ -79,6 +79,12 @@
     #myprefs {
       color: #555;
     }
+    #weather-warning {
+      padding: 10px;
+      border-top: 1px solid #F77;
+      border-bottom: 1px solid #F77;
+      background: #FDD;
+    }
     </style>
     <meta charset="utf-8"/>
   </head>
@@ -90,6 +96,13 @@
     </div>
 
     <div id="body-container">
+
+    <div id="weather-warning">
+      <p>Warning: OpenWeatherMap does not provide hourly rain forecasts or low/high
+      temperature information, so these will not work with OpenWeatherMap as the
+      weather provider.  You can use darksky.net or Weather Underground instead
+      by changing the setting below (requires a free API key).</p>
+    </div>
 
     <div id="complications-preview">
 <!--
@@ -1242,6 +1255,18 @@
       showHideOption("CONFIG_INFO_BELOW", value);
     }
   }
+
+  function need_weather() {
+    var load_rain = +readConfig("CONFIG_WEATHER_RAIN_LOCAL");
+// -- autogen
+// --     var load_lowhigh = {{ config_groups_lookup["GROUP_WEATHERLOWHIGH"]["selector"] }};
+// --     var load_cur = {{ config_groups_lookup["GROUP_WEATHERCUR"]["selector"] }};
+    var load_lowhigh = has_complication([2, 3]);
+    var load_cur = has_complication([1]);
+// -- end autogen
+    return [load_rain || load_lowhigh || load_cur, load_rain, load_lowhigh, load_cur];
+  }
+
   /** Some rules are run every time */
   function updateShowHideStatus() {
 // -- autogen
@@ -1269,6 +1294,9 @@
 // -- ## endfor
     showHideEl("#GROUP_WEATHER", has_complication([1, 2, 3]));
 // -- end autogen
+
+    
+    showHideEl("#weather-warning", need_weather()[0] && +readConfig("CONFIG_WEATHER_SOURCE_LOCAL") == 1);
   }
 
   function allSame(array) {
