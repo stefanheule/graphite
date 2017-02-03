@@ -101,7 +101,7 @@ var RedshiftPreview = (function () {
         var d = get('rain');
         var temp = function (t) {
             return config_weather_unit_local == 1 ? t : 9/5 * t + 32;
-        }
+        };
         if (!config_weather_rain_local) d = [];
         return {
             version: 0,
@@ -758,6 +758,7 @@ function background_update_proc(layer, ctx) {
                 break;
             }
         }
+    first_perc_index = 0;
         if (first_perc_index != -1 && !all_zero) {
             var perc_ti_h = config_show_daynight ? FIXED_ROUND(REM(3)) : 0;
             var perc_sep = REM(2); // space between two bars

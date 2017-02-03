@@ -31,39 +31,39 @@
 <!--
 // -- autogen
 // -- ## for key in complications
-// --     <canvas class="complication" id="complication-{{ key["id"] }}"></canvas>
+// --     <canvas class="complication" id="canvas-complication-{{ key["id"] }}"></canvas>
 // -- ## endfor
 -->
-    <canvas class="complication" id="complication-0"></canvas>
-    <canvas class="complication" id="complication-1"></canvas>
-    <canvas class="complication" id="complication-2"></canvas>
-    <canvas class="complication" id="complication-3"></canvas>
-    <canvas class="complication" id="complication-4"></canvas>
-    <canvas class="complication" id="complication-5"></canvas>
-    <canvas class="complication" id="complication-6"></canvas>
-    <canvas class="complication" id="complication-7"></canvas>
-    <canvas class="complication" id="complication-8"></canvas>
-    <canvas class="complication" id="complication-9"></canvas>
-    <canvas class="complication" id="complication-10"></canvas>
-    <canvas class="complication" id="complication-11"></canvas>
-    <canvas class="complication" id="complication-12"></canvas>
-    <canvas class="complication" id="complication-13"></canvas>
-    <canvas class="complication" id="complication-14"></canvas>
-    <canvas class="complication" id="complication-15"></canvas>
-    <canvas class="complication" id="complication-16"></canvas>
-    <canvas class="complication" id="complication-17"></canvas>
-    <canvas class="complication" id="complication-18"></canvas>
-    <canvas class="complication" id="complication-19"></canvas>
-    <canvas class="complication" id="complication-20"></canvas>
-    <canvas class="complication" id="complication-21"></canvas>
-    <canvas class="complication" id="complication-22"></canvas>
-    <canvas class="complication" id="complication-23"></canvas>
-    <canvas class="complication" id="complication-24"></canvas>
-    <canvas class="complication" id="complication-25"></canvas>
-    <canvas class="complication" id="complication-26"></canvas>
-    <canvas class="complication" id="complication-27"></canvas>
-    <canvas class="complication" id="complication-28"></canvas>
-    <canvas class="complication" id="complication-29"></canvas>
+    <canvas class="complication" id="canvas-complication-0"></canvas>
+    <canvas class="complication" id="canvas-complication-1"></canvas>
+    <canvas class="complication" id="canvas-complication-2"></canvas>
+    <canvas class="complication" id="canvas-complication-3"></canvas>
+    <canvas class="complication" id="canvas-complication-4"></canvas>
+    <canvas class="complication" id="canvas-complication-5"></canvas>
+    <canvas class="complication" id="canvas-complication-6"></canvas>
+    <canvas class="complication" id="canvas-complication-7"></canvas>
+    <canvas class="complication" id="canvas-complication-8"></canvas>
+    <canvas class="complication" id="canvas-complication-9"></canvas>
+    <canvas class="complication" id="canvas-complication-10"></canvas>
+    <canvas class="complication" id="canvas-complication-11"></canvas>
+    <canvas class="complication" id="canvas-complication-12"></canvas>
+    <canvas class="complication" id="canvas-complication-13"></canvas>
+    <canvas class="complication" id="canvas-complication-14"></canvas>
+    <canvas class="complication" id="canvas-complication-15"></canvas>
+    <canvas class="complication" id="canvas-complication-16"></canvas>
+    <canvas class="complication" id="canvas-complication-17"></canvas>
+    <canvas class="complication" id="canvas-complication-18"></canvas>
+    <canvas class="complication" id="canvas-complication-19"></canvas>
+    <canvas class="complication" id="canvas-complication-20"></canvas>
+    <canvas class="complication" id="canvas-complication-21"></canvas>
+    <canvas class="complication" id="canvas-complication-22"></canvas>
+    <canvas class="complication" id="canvas-complication-23"></canvas>
+    <canvas class="complication" id="canvas-complication-24"></canvas>
+    <canvas class="complication" id="canvas-complication-25"></canvas>
+    <canvas class="complication" id="canvas-complication-26"></canvas>
+    <canvas class="complication" id="canvas-complication-27"></canvas>
+    <canvas class="complication" id="canvas-complication-28"></canvas>
+    <canvas class="complication" id="canvas-complication-29"></canvas>
 <!--
 // -- end autogen
 -->
@@ -154,9 +154,9 @@
     ].concat(color_screenshots);
 
     for (var i in screenshots) {
-      var key = "preview-" + screenshots[i].id;
+      var key = "canvas-" + screenshots[i].id;
       $("#previews").append("<canvas class='preview' id=\"" + key + "\"></canvas>");
-      RedshiftPreview.drawPreview(RedshiftPreview.overrideConfig(screenshots[i].config, config), key, "basalt", RedshiftPreview.override(screenshots[i].state, RedshiftPreview.defaultState()), screenshots[i].scale);
+      RedshiftPreview.drawPreview(RedshiftPreview.overrideConfig(screenshots[i].config, config), key, "basalt", RedshiftPreview.override(screenshots[i].state, RedshiftPreview.defaultState()));
     }
 
     var complications = [];
@@ -167,16 +167,17 @@
     for (i = 0; i < n_complications; i++) {
       var id = "complication-"+i;
       complications.push({ id: id, });
-      RedshiftPreview.previewComplication(i, config, id, "basalt");
+      RedshiftPreview.previewComplication(i, config, 'canvas-' + id, "basalt");
     }
 
     // schedule capturing the preview
     var capture = function () {
 
-      var s = ""
-      for (var i in screenshots.concat(complications)) {
-        var id = screenshots[i].id;
-        var key = "preview-" + id;
+      var s = "";
+      var all = screenshots.concat(complications);
+      for (var i in all) {
+        var id = all[i].id;
+        var key = "canvas-" + id;
         var img    = $("#" + key).get(0).toDataURL("image/png");
         s += id + "::" + "::" + img.substr(22) + "\n";
       }

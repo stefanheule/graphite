@@ -221,6 +221,9 @@ void background_update_proc(Layer *layer, GContext *ctx) {
                 break;
             }
         }
+// -- jsalternative
+// --     first_perc_index = 0;
+// -- end jsalternative
         if (first_perc_index != -1 && !all_zero) {
             fixed_t perc_ti_h = config_show_daynight ? FIXED_ROUND(REM(3)) : 0;
             fixed_t perc_sep = REM(2); // space between two bars
