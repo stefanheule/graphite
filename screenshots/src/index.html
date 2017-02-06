@@ -30,40 +30,40 @@
 
 <!--
 // -- autogen
-// -- ## for key in complications
-// --     <canvas class="complication" id="canvas-complication-{{ key["id"] }}"></canvas>
+// -- ## for key in widgets
+// --     <canvas class="widget" id="canvas-widget-{{ key["id"] }}"></canvas>
 // -- ## endfor
 -->
-    <canvas class="complication" id="canvas-complication-0"></canvas>
-    <canvas class="complication" id="canvas-complication-1"></canvas>
-    <canvas class="complication" id="canvas-complication-2"></canvas>
-    <canvas class="complication" id="canvas-complication-3"></canvas>
-    <canvas class="complication" id="canvas-complication-4"></canvas>
-    <canvas class="complication" id="canvas-complication-5"></canvas>
-    <canvas class="complication" id="canvas-complication-6"></canvas>
-    <canvas class="complication" id="canvas-complication-7"></canvas>
-    <canvas class="complication" id="canvas-complication-8"></canvas>
-    <canvas class="complication" id="canvas-complication-9"></canvas>
-    <canvas class="complication" id="canvas-complication-10"></canvas>
-    <canvas class="complication" id="canvas-complication-11"></canvas>
-    <canvas class="complication" id="canvas-complication-12"></canvas>
-    <canvas class="complication" id="canvas-complication-13"></canvas>
-    <canvas class="complication" id="canvas-complication-14"></canvas>
-    <canvas class="complication" id="canvas-complication-15"></canvas>
-    <canvas class="complication" id="canvas-complication-16"></canvas>
-    <canvas class="complication" id="canvas-complication-17"></canvas>
-    <canvas class="complication" id="canvas-complication-18"></canvas>
-    <canvas class="complication" id="canvas-complication-19"></canvas>
-    <canvas class="complication" id="canvas-complication-20"></canvas>
-    <canvas class="complication" id="canvas-complication-21"></canvas>
-    <canvas class="complication" id="canvas-complication-22"></canvas>
-    <canvas class="complication" id="canvas-complication-23"></canvas>
-    <canvas class="complication" id="canvas-complication-24"></canvas>
-    <canvas class="complication" id="canvas-complication-25"></canvas>
-    <canvas class="complication" id="canvas-complication-26"></canvas>
-    <canvas class="complication" id="canvas-complication-27"></canvas>
-    <canvas class="complication" id="canvas-complication-28"></canvas>
-    <canvas class="complication" id="canvas-complication-29"></canvas>
+    <canvas class="widget" id="canvas-widget-0"></canvas>
+    <canvas class="widget" id="canvas-widget-1"></canvas>
+    <canvas class="widget" id="canvas-widget-2"></canvas>
+    <canvas class="widget" id="canvas-widget-3"></canvas>
+    <canvas class="widget" id="canvas-widget-4"></canvas>
+    <canvas class="widget" id="canvas-widget-5"></canvas>
+    <canvas class="widget" id="canvas-widget-6"></canvas>
+    <canvas class="widget" id="canvas-widget-7"></canvas>
+    <canvas class="widget" id="canvas-widget-8"></canvas>
+    <canvas class="widget" id="canvas-widget-9"></canvas>
+    <canvas class="widget" id="canvas-widget-10"></canvas>
+    <canvas class="widget" id="canvas-widget-11"></canvas>
+    <canvas class="widget" id="canvas-widget-12"></canvas>
+    <canvas class="widget" id="canvas-widget-13"></canvas>
+    <canvas class="widget" id="canvas-widget-14"></canvas>
+    <canvas class="widget" id="canvas-widget-15"></canvas>
+    <canvas class="widget" id="canvas-widget-16"></canvas>
+    <canvas class="widget" id="canvas-widget-17"></canvas>
+    <canvas class="widget" id="canvas-widget-18"></canvas>
+    <canvas class="widget" id="canvas-widget-19"></canvas>
+    <canvas class="widget" id="canvas-widget-20"></canvas>
+    <canvas class="widget" id="canvas-widget-21"></canvas>
+    <canvas class="widget" id="canvas-widget-22"></canvas>
+    <canvas class="widget" id="canvas-widget-23"></canvas>
+    <canvas class="widget" id="canvas-widget-24"></canvas>
+    <canvas class="widget" id="canvas-widget-25"></canvas>
+    <canvas class="widget" id="canvas-widget-26"></canvas>
+    <canvas class="widget" id="canvas-widget-27"></canvas>
+    <canvas class="widget" id="canvas-widget-28"></canvas>
+    <canvas class="widget" id="canvas-widget-29"></canvas>
 <!--
 // -- end autogen
 -->
@@ -159,14 +159,14 @@
       RedshiftPreview.drawPreview(RedshiftPreview.overrideConfig(screenshots[i].config, config), key, "basalt", RedshiftPreview.override(screenshots[i].state, RedshiftPreview.defaultState()));
     }
 
-    var complications = [];
+    var widgets = [];
 // -- autogen
-// --     var n_complications = {{ complications | length }};
-    var n_complications = 30;
+// --     var n_widgets = {{ widgets | length }};
+    var n_widgets = 30;
 // -- end autogen
-    for (i = 0; i < n_complications; i++) {
-      var id = "complication-"+i;
-      complications.push({ id: id, });
+    for (i = 0; i < n_widgets; i++) {
+      var id = "widget-"+i;
+      widgets.push({ id: id, });
       RedshiftPreview.previewComplication(i, config, 'canvas-' + id, "basalt");
     }
 
@@ -174,7 +174,7 @@
     var capture = function () {
 
       var s = "";
-      var all = screenshots.concat(complications);
+      var all = screenshots.concat(widgets);
       for (var i in all) {
         var id = all[i].id;
         var key = "canvas-" + id;
