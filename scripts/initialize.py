@@ -9,6 +9,7 @@ import itertools
 import time
 import copy
 import datetime
+import os
 
 def flatten(l): return [x for y in l for x in y]
 
@@ -474,6 +475,9 @@ files_to_inline_render = [
   "config/js/preview.js",
   "screenshots/src/index.html"
 ]
+files_to_maybe_inline_render = [
+  "/home/stefan/dev/web/www/inc/php/tpl/blueshift.tpl.php"
+]
 
 now = datetime.datetime(2016, 11, 27, 17, 44, 57, 0)
 nowt = now.timetuple()
@@ -837,6 +841,9 @@ def main():
     render(f)
   for f in files_to_inline_render:
     inline_render(f)
+  for f in files_to_maybe_inline_render:
+    if os.path.exists(f):
+      inline_render(f)
 
 if __name__ == "__main__":
   main()
