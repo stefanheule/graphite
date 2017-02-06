@@ -17,7 +17,7 @@ There are many possible causes:
 - Ensure that your phone is connected to the internet.
 - If you use darksky.net or wunderground.com as a weather source, make sure the API key is correct.
 - If you use a custom location, make sure it is a valid location.
-- Make sure the color for the complication is different from the background color.
+- Make sure the color for the widget is different from the background color.
 
 **What does it mean when the degree sign is missing for the weather?**
 

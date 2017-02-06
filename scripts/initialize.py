@@ -13,8 +13,8 @@ import os
 
 def flatten(l): return [x for y in l for x in y]
 
-def enum_complication(compl, m):
-  if isinstance(compl, list): return flatten(map(lambda x: enum_complication(x, m), compl))
+def enum_widget(compl, m):
+  if isinstance(compl, list): return flatten(map(lambda x: enum_widget(x, m), compl))
   res = []
   for element in itertools.product(*[map(lambda v: (k, v), m[k]) for k in reversed(m.keys())]):
     tmp = copy.copy(compl)
@@ -129,9 +129,9 @@ configuration = [
     'desc': 'Precipitation bars color',
   },
   {
-    'key': 'CONFIG_COLOR_BOTTOM_COMPLICATIONS',
+    'key': 'CONFIG_COLOR_BOTTOM_WIDGETS',
     'default': 'GColorWhiteARGB8',
-    'desc': 'Bottom complications color',
+    'desc': 'Bottom widgets color',
   },
   {
     'key': 'CONFIG_COLOR_BACKGROUND',
@@ -139,9 +139,9 @@ configuration = [
     'desc': 'Background color',
   },
   {
-    'key': 'CONFIG_COLOR_TOP_COMPLICATIONS',
+    'key': 'CONFIG_COLOR_TOP_WIDGETS',
     'default': 'GColorBlackARGB8',
-    'desc': 'Top complications color',
+    'desc': 'Top widgets color',
   },
   {
     'key': 'CONFIG_COLOR_DAY',
@@ -186,28 +186,28 @@ configuration = [
     'default': 'false',
   },
   {
-    'key': 'CONFIG_COMPLICATION_1',
-    'default': 'COMPLICATION_WEATHER_LOW_TEMP',
+    'key': 'CONFIG_WIDGET_1',
+    'default': 'WIDGET_WEATHER_LOW_TEMP',
   },
   {
-    'key': 'CONFIG_COMPLICATION_2',
-    'default': 'COMPLICATION_WEATHER_CUR_TEMP_ICON',
+    'key': 'CONFIG_WIDGET_2',
+    'default': 'WIDGET_WEATHER_CUR_TEMP_ICON',
   },
   {
-    'key': 'CONFIG_COMPLICATION_3',
-    'default': 'COMPLICATION_WEATHER_HIGH_TEMP',
+    'key': 'CONFIG_WIDGET_3',
+    'default': 'WIDGET_WEATHER_HIGH_TEMP',
   },
   {
-    'key': 'CONFIG_COMPLICATION_4',
-    'default': 'COMPLICATION_STEPS_SHORT_ICON',
+    'key': 'CONFIG_WIDGET_4',
+    'default': 'WIDGET_STEPS_SHORT_ICON',
   },
   {
-    'key': 'CONFIG_COMPLICATION_5',
-    'default': 'COMPLICATION_BLUETOOTH_DISCONLY',
+    'key': 'CONFIG_WIDGET_5',
+    'default': 'WIDGET_BLUETOOTH_DISCONLY',
   },
   {
-    'key': 'CONFIG_COMPLICATION_6',
-    'default': 'COMPLICATION_BATTERY_ICON',
+    'key': 'CONFIG_WIDGET_6',
+    'default': 'WIDGET_BATTERY_ICON',
   },
   {
     'key': 'CONFIG_PROGRESS',
@@ -271,7 +271,7 @@ simple_config = [
   {
     'key': 'SIMPLECONFIG_COLOR_MAIN',
     'desc': 'Main color',
-    'depends': ['CONFIG_COLOR_TIME', 'CONFIG_COLOR_PERC', 'CONFIG_COLOR_BOTTOM_COMPLICATIONS', 'CONFIG_COLOR_PROGRESS_BAR2'],
+    'depends': ['CONFIG_COLOR_TIME', 'CONFIG_COLOR_PERC', 'CONFIG_COLOR_BOTTOM_WIDGETS', 'CONFIG_COLOR_PROGRESS_BAR2'],
   },
   {
     'key': 'SIMPLECONFIG_COLOR_ACCENT',
@@ -281,107 +281,107 @@ simple_config = [
   {
     'key': 'SIMPLECONFIG_COLOR_BACKGROUND',
     'desc': 'Background color',
-    'depends': ['CONFIG_COLOR_BACKGROUND', 'CONFIG_COLOR_TOP_COMPLICATIONS', 'CONFIG_COLOR_NIGHT'],
+    'depends': ['CONFIG_COLOR_BACKGROUND', 'CONFIG_COLOR_TOP_WIDGETS', 'CONFIG_COLOR_NIGHT'],
   },
 ]
 
-complications = [
+widgets = [
   {
-    'key': 'COMPLICATION_EMPTY',
+    'key': 'WIDGET_EMPTY',
     'desc': 'Empty',
   },
   {
-    'key': 'COMPLICATION_WEATHER_CUR_TEMP_ICON',
+    'key': 'WIDGET_WEATHER_CUR_TEMP_ICON',
     'desc': 'Weather: Current temperature and icon',
     'group': ['WEATHER', 'WEATHERCUR'],
   },
   {
-    'key': 'COMPLICATION_WEATHER_LOW_TEMP',
+    'key': 'WIDGET_WEATHER_LOW_TEMP',
     'desc': 'Weather: Today\'s low',
     'group': ['WEATHER', 'WEATHERLOWHIGH'],
   },
   {
-    'key': 'COMPLICATION_WEATHER_HIGH_TEMP',
+    'key': 'WIDGET_WEATHER_HIGH_TEMP',
     'desc': 'Weather: Today\'s high',
     'group': ['WEATHER', 'WEATHERLOWHIGH'],
   },
   {
-    'key': 'COMPLICATION_BLUETOOTH_DISCONLY',
+    'key': 'WIDGET_BLUETOOTH_DISCONLY',
     'desc': 'Bluetooth (on disconnect only)',
   },
   {
-    'key': 'COMPLICATION_BLUETOOTH_DISCONLY_ALT',
+    'key': 'WIDGET_BLUETOOTH_DISCONLY_ALT',
     'desc': 'Bluetooth (on disconnect only), alternative',
   },
   {
-    'key': 'COMPLICATION_BLUETOOTH_YESNO',
+    'key': 'WIDGET_BLUETOOTH_YESNO',
     'desc': 'Bluetooth (yes/no)',
   },
   {
-    'key': 'COMPLICATION_BATTERY_ICON',
+    'key': 'WIDGET_BATTERY_ICON',
     'desc': 'Battery icon',
   },
   {
-    'key': 'COMPLICATION_QUIET_OFFONLY',
+    'key': 'WIDGET_QUIET_OFFONLY',
     'desc': 'Quiet time enabled (only when on)',
   },
   {
-    'key': 'COMPLICATION_QUIET',
+    'key': 'WIDGET_QUIET',
     'desc': 'Quiet time indicator (two icons for on/off)',
   },
-] + enum_complication(
+] + enum_widget(
   [
     # {
-    #   'key': 'COMPLICATION_HEARTRATE_CUR',
+    #   'key': 'WIDGET_HEARTRATE_CUR',
     #   'desc': 'Heart rate',
     #   'noton': ['basalt'],
     #   'icontext': 'J',
     #   'text': 'format_unitless((int)health_service_peek_current_value(HealthMetricHeartRateBPM))',
     # },
     {
-      'key': 'COMPLICATION_STEPS',
+      'key': 'WIDGET_STEPS',
       'desc': 'Steps',
       'icontext': 'A',
       'text': 'format_unitless(health_service_sum_today(HealthMetricStepCount))',
     },
     {
-      'key': 'COMPLICATION_STEPS_SHORT',
+      'key': 'WIDGET_STEPS_SHORT',
       'desc': 'Steps abbreviated',
       'icontext': 'A',
       'text': 'format_thousands(health_service_sum_today(HealthMetricStepCount))',
     },
     {
-      'key': 'COMPLICATION_CALORIES_RESTING',
+      'key': 'WIDGET_CALORIES_RESTING',
       'desc': 'Calories burned, resting',
       'icontext': 'K',
       'text': 'format_unitless(health_service_sum_today(HealthMetricRestingKCalories))',
     },
     {
-      'key': 'COMPLICATION_CALORIES_ACTIVE',
+      'key': 'WIDGET_CALORIES_ACTIVE',
       'desc': 'Calories burned, active',
       'icontext': 'K',
       'text': 'format_unitless(health_service_sum_today(HealthMetricActiveKCalories))',
     },
     {
-      'key': 'COMPLICATION_CALORIES_ALL',
+      'key': 'WIDGET_CALORIES_ALL',
       'desc': 'Calories burned, resting + active',
       'icontext': 'K',
       'text': 'format_unitless(health_service_sum_today(HealthMetricRestingKCalories)+health_service_sum_today(HealthMetricActiveKCalories))',
     },
     {
-      'key': 'COMPLICATION_CALORIES_RESTING_SHORT',
+      'key': 'WIDGET_CALORIES_RESTING_SHORT',
       'desc': 'Calories burned, resting, abbreviated',
       'icontext': 'K',
       'text': 'format_thousands(health_service_sum_today(HealthMetricRestingKCalories))',
     },
     {
-      'key': 'COMPLICATION_CALORIES_ACTIVE_SHORT',
+      'key': 'WIDGET_CALORIES_ACTIVE_SHORT',
       'desc': 'Calories burned, active, abbreviated',
       'icontext': 'K',
       'text': 'format_thousands(health_service_sum_today(HealthMetricActiveKCalories))',
     },
     {
-      'key': 'COMPLICATION_CALORIES_ALL_SHORT',
+      'key': 'WIDGET_CALORIES_ALL_SHORT',
       'desc': 'Calories burned, resting + active, abbreviated',
       'icontext': 'K',
       'text': 'format_thousands(health_service_sum_today(HealthMetricRestingKCalories)+health_service_sum_today(HealthMetricActiveKCalories))',
@@ -393,55 +393,55 @@ complications = [
   }
 ) + [
   {
-    'key': 'COMPLICATION_AMPM',
+    'key': 'WIDGET_AMPM',
     'desc': 'AM/PM',
   },
   {
-    'key': 'COMPLICATION_AMPM_LOWER',
+    'key': 'WIDGET_AMPM_LOWER',
     'desc': 'am/pm',
   },
   {
-    'key': 'COMPLICATION_SECONDS',
+    'key': 'WIDGET_SECONDS',
     'desc': 'Seconds',
   },
   {
-    'key': 'COMPLICATION_DAY_OF_WEEK',
+    'key': 'WIDGET_DAY_OF_WEEK',
     'desc': 'Day of week',
   },
 ]
   # {
-  #   'key': 'COMPLICATION_DISTANCE_KM',
+  #   'key': 'WIDGET_DISTANCE_KM',
   #   'desc': 'Distance walked (km)',
   # },
   # {
-  #   'key': 'COMPLICATION_DISTANCE_MI',
+  #   'key': 'WIDGET_DISTANCE_MI',
   #   'desc': 'Distance walked (miles)',
   # },
   # {
-  #   'key': 'COMPLICATION_ACTIVE_TIME',
+  #   'key': 'WIDGET_ACTIVE_TIME',
   #   'desc': 'Minutes spent active',
   # },
   # {
-  #   'key': 'COMPLICATION_CALORIES',
+  #   'key': 'WIDGET_CALORIES',
   #   'desc': 'Calories burned (active)',
   # },
   # {
-  #   'key': 'COMPLICATION_CALORIES_FULL',
+  #   'key': 'WIDGET_CALORIES_FULL',
   #   'desc': 'Calories burned (active + resting)',
   # },
 
 config_groups = [
   {
     'name': 'WEATHER',
-    'show_only_if': 'has_complication(ALL_WEATHER_COMPLICATION_IDS)',
+    'show_only_if': 'has_widget(ALL_WEATHER_WIDGET_IDS)',
   },
   {
     'name': 'WEATHERLOWHIGH',
-    'selector': 'has_complication(ALL_WEATHERLOWHIGH_COMPLICATION_IDS)',
+    'selector': 'has_widget(ALL_WEATHERLOWHIGH_WIDGET_IDS)',
   },
   {
     'name': 'WEATHERCUR',
-    'selector': 'has_complication(ALL_WEATHERCUR_COMPLICATION_IDS)',
+    'selector': 'has_widget(ALL_WEATHERCUR_WIDGET_IDS)',
   },
 ]
 
@@ -467,8 +467,8 @@ files_to_inline_render = [
   "src/redshift.h",
   "src/redshift.c",
   "src/settings.c",
-  "src/complications.c",
-  "src/complications.h",
+  "src/widgets.c",
+  "src/widgets.h",
   "src/ui.c",
   "src/pkjs/index.js",
   "config/index.html",
@@ -496,7 +496,7 @@ def get_context():
   if _context is None:
     config = add_key_id(configuration, '', 1)
     sc = add_additional_info(simple_config)
-    compls = add_key_id(complications, '', 0)
+    compls = add_key_id(widgets, '', 0)
     pre_process(config, simple_config, compls, config_groups)
     _context =  {
       'version': version,
@@ -508,12 +508,12 @@ def get_context():
       'simple_config_lookup': to_lookup(sc),
       'config_groups': config_groups,
       'config_groups_lookup': to_lookup(config_groups),
-      'complications': compls,
-      'complications_lookup': to_lookup(compls),
+      'widgets': compls,
+      'widgets_lookup': to_lookup(compls),
       'num_config_items': len(config),
       'message_keys': add_key_id(msg_keys, 'MSG_KEY_', 100),
       'perc_max_len': perc_max_len,
-      'fontsize_complications': 27,
+      'fontsize_widgets': 27,
       'build': read_configure('BUILD'),
     }
   return _context
@@ -525,7 +525,7 @@ def pre_process(config, simple_config, compls, groups):
     for i in k['depends']:
       lc[i]['belongs_to_simple'] = True
 
-  def resolve_complications(x):
+  def resolve_widgets(x):
     # sort to avoid problems with keys that are substrings of other keys
     for k in sorted(clc.keys(), key=lambda x: -len(x)):
       x = x.replace(k, str(clc[k]["id"]))
@@ -537,18 +537,18 @@ def pre_process(config, simple_config, compls, groups):
     res = re.sub("([^0-9])0", "\\1", res)
     return res
 
-  # resolve complication defaults
+  # resolve widget defaults
   clc = to_lookup(compls)
   group_ids = {}
   for k in config:
-    k['default'] = resolve_complications(k['default'])
-    k['jsdefault'] = resolve_complications(k['jsdefault'])
-    k['mydefault'] = resolve_complications(k['mydefault'])
-    k['jsmydefault'] = resolve_complications(k['jsmydefault'])
+    k['default'] = resolve_widgets(k['default'])
+    k['jsdefault'] = resolve_widgets(k['jsdefault'])
+    k['mydefault'] = resolve_widgets(k['mydefault'])
+    k['jsmydefault'] = resolve_widgets(k['jsmydefault'])
     if 'options' in k:
       k['options'] = map(lambda x: {'desc': (format_time(x[1][0]) + ("" if x[1][1]=="" else (" (%s)" % x[1][1]))).strip(), 'id': x[0], 'format': x[1]}, enumerate(k['options']))
 
-  # prepare complication groups
+  # prepare widget groups
   for k in compls:
     if 'group' in k:
       for gid in k['group']:
@@ -561,7 +561,7 @@ def pre_process(config, simple_config, compls, groups):
     ids = map(lambda x: str(x), group_ids[name])
     resolved = "[%s]" % (", ".join(ids))
     for kk in k:
-      k[kk] = k[kk].replace("ALL_%s_COMPLICATION_IDS" % (name), resolved)
+      k[kk] = k[kk].replace("ALL_%s_WIDGET_IDS" % (name), resolved)
 
 def to_lookup(ls):
   res = {}

@@ -7,8 +7,8 @@ set(SOURCE_FILES
         src/redshift.c
         src/redshift.h
         src/config.h
-        src/complications.c
-        src/complications.h
+        src/widgets.c
+        src/widgets.h
         src/settings.c
         src/settings.h
         src/ui-util.c

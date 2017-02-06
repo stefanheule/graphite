@@ -36,7 +36,7 @@ var RedshiftPreview = (function () {
     var font_icon = 'fasubset';
     var show_bluetooth_popup = false;
     var layer_background = 0;
-    var fontsize_complications;
+    var fontsize_widgets;
     var height, width, height_full, width_full;
     var rem_is_pix = false;
 
@@ -62,9 +62,9 @@ var RedshiftPreview = (function () {
      var config_color_progress_bar2;
      var config_color_time;
      var config_color_perc;
-     var config_color_bottom_complications;
+     var config_color_bottom_widgets;
      var config_color_background;
-     var config_color_top_complications;
+     var config_color_top_widgets;
      var config_color_day;
      var config_color_night;
      var config_color_bat_30;
@@ -72,12 +72,12 @@ var RedshiftPreview = (function () {
      var config_color_bat_10;
      var config_lowbat_col;
      var config_advanced_appearance_local;
-     var config_complication_1;
-     var config_complication_2;
-     var config_complication_3;
-     var config_complication_4;
-     var config_complication_5;
-     var config_complication_6;
+     var config_widget_1;
+     var config_widget_2;
+     var config_widget_3;
+     var config_widget_4;
+     var config_widget_5;
+     var config_widget_6;
      var config_progress;
      var config_time_format;
      var config_info_below;
@@ -281,9 +281,9 @@ var RedshiftPreview = (function () {
         config_color_progress_bar2 = config["CONFIG_COLOR_PROGRESS_BAR2"];
         config_color_time = config["CONFIG_COLOR_TIME"];
         config_color_perc = config["CONFIG_COLOR_PERC"];
-        config_color_bottom_complications = config["CONFIG_COLOR_BOTTOM_COMPLICATIONS"];
+        config_color_bottom_widgets = config["CONFIG_COLOR_BOTTOM_WIDGETS"];
         config_color_background = config["CONFIG_COLOR_BACKGROUND"];
-        config_color_top_complications = config["CONFIG_COLOR_TOP_COMPLICATIONS"];
+        config_color_top_widgets = config["CONFIG_COLOR_TOP_WIDGETS"];
         config_color_day = config["CONFIG_COLOR_DAY"];
         config_color_night = config["CONFIG_COLOR_NIGHT"];
         config_color_bat_30 = config["CONFIG_COLOR_BAT_30"];
@@ -291,12 +291,12 @@ var RedshiftPreview = (function () {
         config_color_bat_10 = config["CONFIG_COLOR_BAT_10"];
         config_lowbat_col = config["CONFIG_LOWBAT_COL"];
         config_advanced_appearance_local = config["CONFIG_ADVANCED_APPEARANCE_LOCAL"];
-        config_complication_1 = config["CONFIG_COMPLICATION_1"];
-        config_complication_2 = config["CONFIG_COMPLICATION_2"];
-        config_complication_3 = config["CONFIG_COMPLICATION_3"];
-        config_complication_4 = config["CONFIG_COMPLICATION_4"];
-        config_complication_5 = config["CONFIG_COMPLICATION_5"];
-        config_complication_6 = config["CONFIG_COMPLICATION_6"];
+        config_widget_1 = config["CONFIG_WIDGET_1"];
+        config_widget_2 = config["CONFIG_WIDGET_2"];
+        config_widget_3 = config["CONFIG_WIDGET_3"];
+        config_widget_4 = config["CONFIG_WIDGET_4"];
+        config_widget_5 = config["CONFIG_WIDGET_5"];
+        config_widget_6 = config["CONFIG_WIDGET_6"];
         config_progress = config["CONFIG_PROGRESS"];
         config_time_format = config["CONFIG_TIME_FORMAT"];
         config_info_below = config["CONFIG_INFO_BELOW"];
@@ -316,15 +316,15 @@ var RedshiftPreview = (function () {
         rem_is_pix = true;
 
         initializeDrawingState(canvasId);
-        var complication_id = datas[canvasId].extra;
+        var widget_id = datas[canvasId].extra;
 
         var w = 100;
         var h = 30;
         var sep = REM(5);
         var fctx;
 // -- autogen
-// --         fontsize_complications = REM({{ fontsize_complications }});
-        fontsize_complications = REM(27);
+// --         fontsize_widgets = REM({{ fontsize_widgets }});
+        fontsize_widgets = REM(27);
 // -- end autogen
 
         canvas.height = h;
@@ -334,7 +334,7 @@ var RedshiftPreview = (function () {
         var foreground_color = GColor.Black;
         var background_color = GColor.White;
         draw_rect(fctx, FRect(FPoint(0, 0), FSize(REM(w), REM(h))), background_color);
-        complications[complication_id](fctx, true, pos, GTextAlignmentCenter, foreground_color, background_color);
+        widgets[widget_id](fctx, true, pos, GTextAlignmentCenter, foreground_color, background_color);
 
         rem_is_pix = backup;
     }
@@ -349,43 +349,43 @@ var RedshiftPreview = (function () {
     }
 
 // -- autogen
-// -- c_to_js src/complications.c
-var complications = [
-    complication_empty, // id 0
-    complication_weather_cur_temp_icon, // id 1
-    complication_weather_low_temp, // id 2
-    complication_weather_high_temp, // id 3
-    complication_bluetooth_disconly, // id 4
-    complication_bluetooth_disconly_alt, // id 5
-    complication_bluetooth_yesno, // id 6
-    complication_battery_icon, // id 7
-    complication_quiet_offonly, // id 8
-    complication_quiet, // id 9
-    complication_steps_icon, // id 10
-    complication_steps, // id 11
-    complication_steps_short_icon, // id 12
-    complication_steps_short, // id 13
-    complication_calories_resting_icon, // id 14
-    complication_calories_resting, // id 15
-    complication_calories_active_icon, // id 16
-    complication_calories_active, // id 17
-    complication_calories_all_icon, // id 18
-    complication_calories_all, // id 19
-    complication_calories_resting_short_icon, // id 20
-    complication_calories_resting_short, // id 21
-    complication_calories_active_short_icon, // id 22
-    complication_calories_active_short, // id 23
-    complication_calories_all_short_icon, // id 24
-    complication_calories_all_short, // id 25
-    complication_ampm, // id 26
-    complication_ampm_lower, // id 27
-    complication_seconds, // id 28
-    complication_day_of_week, // id 29
+// -- c_to_js src/widgets.c
+var widgets = [
+    widget_empty, // id 0
+    widget_weather_cur_temp_icon, // id 1
+    widget_weather_low_temp, // id 2
+    widget_weather_high_temp, // id 3
+    widget_bluetooth_disconly, // id 4
+    widget_bluetooth_disconly_alt, // id 5
+    widget_bluetooth_yesno, // id 6
+    widget_battery_icon, // id 7
+    widget_quiet_offonly, // id 8
+    widget_quiet, // id 9
+    widget_steps_icon, // id 10
+    widget_steps, // id 11
+    widget_steps_short_icon, // id 12
+    widget_steps_short, // id 13
+    widget_calories_resting_icon, // id 14
+    widget_calories_resting, // id 15
+    widget_calories_active_icon, // id 16
+    widget_calories_active, // id 17
+    widget_calories_all_icon, // id 18
+    widget_calories_all, // id 19
+    widget_calories_resting_short_icon, // id 20
+    widget_calories_resting_short, // id 21
+    widget_calories_active_short_icon, // id 22
+    widget_calories_active_short, // id 23
+    widget_calories_all_short_icon, // id 24
+    widget_calories_all_short, // id 25
+    widget_ampm, // id 26
+    widget_ampm_lower, // id 27
+    widget_seconds, // id 28
+    widget_day_of_week, // id 29
 ];
-function draw_icon_number_complication(fctx, draw, position, align, foreground_color, background_color, icon, text, show_icon) {
-  var fontsize_icon = (fontsize_complications * 0.62);
+function draw_icon_number_widget(fctx, draw, position, align, foreground_color, background_color, icon, text, show_icon) {
+  var fontsize_icon = (fontsize_widgets * 0.62);
   var w1 = !show_icon ? 0 : string_width(fctx, icon, font_icon, fontsize_icon);
-  var w2 = string_width(fctx, text, font_main, fontsize_complications);
+  var w2 = string_width(fctx, text, font_main, fontsize_widgets);
   var sep = REM(2);
   var w = w1 + w2 + sep;
   var a = GTextAlignmentLeft;
@@ -394,13 +394,13 @@ function draw_icon_number_complication(fctx, draw, position, align, foreground_c
       var icon_y = position.y + fontsize_icon*0.8;
       if (align == GTextAlignmentCenter) {
           if (w1) draw_string(fctx, icon, FPoint(position.x - w/2, icon_y), font_icon, color, fontsize_icon, a);
-          draw_string(fctx, text, FPoint(position.x - w/2 + w1 + sep, position.y), font_main, color, fontsize_complications, a);
+          draw_string(fctx, text, FPoint(position.x - w/2 + w1 + sep, position.y), font_main, color, fontsize_widgets, a);
       } else if (align == GTextAlignmentLeft) {
           if (w1) draw_string(fctx, icon, FPoint(position.x, icon_y), font_icon, color, fontsize_icon, a);
-          draw_string(fctx, text, FPoint(position.x + w1 + sep, position.y), font_main, color, fontsize_complications, a);
+          draw_string(fctx, text, FPoint(position.x + w1 + sep, position.y), font_main, color, fontsize_widgets, a);
       } else {
           if (w1) draw_string(fctx, icon, FPoint(position.x - w, icon_y), font_icon, color, fontsize_icon, a);
-          draw_string(fctx, text, FPoint(position.x - w + w1 + sep, position.y), font_main, color, fontsize_complications, a);
+          draw_string(fctx, text, FPoint(position.x - w + w1 + sep, position.y), font_main, color, fontsize_widgets, a);
       }
   }
   return w;
@@ -426,10 +426,10 @@ function format_thousands(num) {
   }
   return buffer_1;
 }
-function complication_empty(fctx, draw, position, align, foreground_color, background_color) {
+function widget_empty(fctx, draw, position, align, foreground_color, background_color) {
   return 0;
 }
-function complication_battery_icon(fctx, draw, position, align, foreground_color, background_color) {
+function widget_battery_icon(fctx, draw, position, align, foreground_color, background_color) {
   var bat_thickness = PIX(1);
   var bat_gap_thickness = PIX(1);
   var bat_height = PIX(15);
@@ -450,23 +450,23 @@ function complication_battery_icon(fctx, draw, position, align, foreground_color
   draw_rect(fctx, FRect(FPoint(bat_origin.x + bat_thickness + bat_gap_thickness, bat_origin.y - bat_top), FSize(bat_inner_width, bat_top)), foreground_color);
   return bat_width;
 }
-function complication_bluetooth_disconly(fctx, draw, position, align, foreground_color, background_color) {
+function widget_bluetooth_disconly(fctx, draw, position, align, foreground_color, background_color) {
   if (!bluetooth_connection_service_peek()) {
     var fontsize_bt_icon = REM(25);
     if (draw) draw_string(fctx, "H", FPoint(position.x, position.y + REM(11)), font_icon, foreground_color, fontsize_bt_icon, align);
-    return string_width(fctx, "H", font_icon, fontsize_complications);
+    return string_width(fctx, "H", font_icon, fontsize_widgets);
   }
   return 0;
 }
-function complication_bluetooth_disconly_alt(fctx, draw, position, align, foreground_color, background_color) {
+function widget_bluetooth_disconly_alt(fctx, draw, position, align, foreground_color, background_color) {
   if (!bluetooth_connection_service_peek()) {
     var fontsize_bt_icon = REM(25);
     if (draw) draw_string(fctx, "I", FPoint(position.x, position.y + REM(11)), font_icon, foreground_color, fontsize_bt_icon, align);
-    return string_width(fctx, "I", font_icon, fontsize_complications);
+    return string_width(fctx, "I", font_icon, fontsize_widgets);
   }
   return 0;
 }
-function complication_bluetooth_yesno(fctx, draw, position, align, foreground_color, background_color) {
+function widget_bluetooth_yesno(fctx, draw, position, align, foreground_color, background_color) {
   var fontsize_bt_icon = REM(25);
   var icon = "DH";
   if (!bluetooth_connection_service_peek()) {
@@ -475,7 +475,7 @@ function complication_bluetooth_yesno(fctx, draw, position, align, foreground_co
   if (draw) draw_string(fctx, icon, FPoint(position.x, position.y + REM(11)), font_icon, foreground_color, fontsize_bt_icon, align);
   return string_width(fctx, icon, font_icon, fontsize_bt_icon);
 }
-function complication_quiet_offonly(fctx, draw, position, align, foreground_color, background_color) {
+function widget_quiet_offonly(fctx, draw, position, align, foreground_color, background_color) {
   if (quiet_time_is_active()) {
     var fontsize_bt_icon = REM(25);
     if (draw) draw_string(fctx, "F", FPoint(position.x, position.y + REM(11)), font_icon, foreground_color, fontsize_bt_icon, align);
@@ -483,7 +483,7 @@ function complication_quiet_offonly(fctx, draw, position, align, foreground_colo
   }
   return 0;
 }
-function complication_quiet(fctx, draw, position, align, foreground_color, background_color) {
+function widget_quiet(fctx, draw, position, align, foreground_color, background_color) {
   var fontsize_bt_icon = REM(25);
   var icon = "G";
   if (quiet_time_is_active()) {
@@ -492,41 +492,41 @@ function complication_quiet(fctx, draw, position, align, foreground_color, backg
   if (draw) draw_string(fctx, icon, FPoint(position.x, position.y + REM(11)), font_icon, foreground_color, fontsize_bt_icon, align);
   return string_width(fctx, icon, font_icon, fontsize_bt_icon);
 }
-function complication_ampm(fctx, draw, position, align, foreground_color, background_color) {
+function widget_ampm(fctx, draw, position, align, foreground_color, background_color) {
   var now = time(NULL);
     var t = localtime(now);
   setlocale(LC_ALL, "");
   buffer_1 = strftime("%p", new Date(now * 1000));
-  if (draw) draw_string(fctx, buffer_1, position, font_main, foreground_color, fontsize_complications, align);
-  return string_width(fctx, buffer_1, font_main, fontsize_complications);
+  if (draw) draw_string(fctx, buffer_1, position, font_main, foreground_color, fontsize_widgets, align);
+  return string_width(fctx, buffer_1, font_main, fontsize_widgets);
 }
-function complication_ampm_lower(fctx, draw, position, align, foreground_color, background_color) {
+function widget_ampm_lower(fctx, draw, position, align, foreground_color, background_color) {
   var now = time(NULL);
     var t = localtime(now);
   setlocale(LC_ALL, "");
   buffer_1 = strftime("%P", new Date(now * 1000));
-  if (draw) draw_string(fctx, buffer_1, position, font_main, foreground_color, fontsize_complications, align);
-  return string_width(fctx, buffer_1, font_main, fontsize_complications);
+  if (draw) draw_string(fctx, buffer_1, position, font_main, foreground_color, fontsize_widgets, align);
+  return string_width(fctx, buffer_1, font_main, fontsize_widgets);
 }
-function complication_seconds(fctx, draw, position, align, foreground_color, background_color) {
+function widget_seconds(fctx, draw, position, align, foreground_color, background_color) {
   var now = time(NULL);
     var t = localtime(now);
   setlocale(LC_ALL, "");
   buffer_1 = strftime("%S", new Date(now * 1000));
   buffer_1 = 
   remove_leading_zero(buffer_1, sizeof(buffer_1));
-  if (draw) draw_string(fctx, buffer_1, position, font_main, foreground_color, fontsize_complications, align);
-  return string_width(fctx, buffer_1, font_main, fontsize_complications);
+  if (draw) draw_string(fctx, buffer_1, position, font_main, foreground_color, fontsize_widgets, align);
+  return string_width(fctx, buffer_1, font_main, fontsize_widgets);
 }
-function complication_day_of_week(fctx, draw, position, align, foreground_color, background_color) {
+function widget_day_of_week(fctx, draw, position, align, foreground_color, background_color) {
   var now = time(NULL);
     var t = localtime(now);
   setlocale(LC_ALL, "");
   buffer_1 = strftime("%a", new Date(now * 1000));
-  if (draw) draw_string(fctx, buffer_1, position, font_main, foreground_color, fontsize_complications, align);
-  return string_width(fctx, buffer_1, font_main, fontsize_complications);
+  if (draw) draw_string(fctx, buffer_1, position, font_main, foreground_color, fontsize_widgets, align);
+  return string_width(fctx, buffer_1, font_main, fontsize_widgets);
 }
-function complication_weather_cur_temp_icon(fctx, draw, position, align, foreground_color, background_color) {
+function widget_weather_cur_temp_icon(fctx, draw, position, align, foreground_color, background_color) {
   if (show_weather()) {
     if (weather.temp_cur == REDSHIFT_UNKNOWN_WEATHER) return 0;
     buffer_1 = sprintf("%c", weather.icon);
@@ -535,11 +535,11 @@ function complication_weather_cur_temp_icon(fctx, draw, position, align, foregro
     } else {
         buffer_2 = sprintf("%d°", weather.temp_cur);
     }
-    return draw_weather(fctx, draw, buffer_1, buffer_2, position, foreground_color, fontsize_complications, align);
+    return draw_weather(fctx, draw, buffer_1, buffer_2, position, foreground_color, fontsize_widgets, align);
   }
   return 0;
 }
-function complication_weather_low_temp(fctx, draw, position, align, foreground_color, background_color) {
+function widget_weather_low_temp(fctx, draw, position, align, foreground_color, background_color) {
   if (show_weather()) {
     if (weather.temp_low == REDSHIFT_UNKNOWN_WEATHER) return 0;
     if (weather.failed) {
@@ -547,12 +547,12 @@ function complication_weather_low_temp(fctx, draw, position, align, foreground_c
     } else {
         buffer_1 = sprintf("%d°", weather.temp_low);
     }
-    if (draw) draw_string(fctx, buffer_1, position, font_main, foreground_color, fontsize_complications, align);
-    return string_width(fctx, buffer_1, font_main, fontsize_complications);
+    if (draw) draw_string(fctx, buffer_1, position, font_main, foreground_color, fontsize_widgets, align);
+    return string_width(fctx, buffer_1, font_main, fontsize_widgets);
   }
   return 0;
 }
-function complication_weather_high_temp(fctx, draw, position, align, foreground_color, background_color) {
+function widget_weather_high_temp(fctx, draw, position, align, foreground_color, background_color) {
   if (show_weather()) {
     if (weather.temp_high == REDSHIFT_UNKNOWN_WEATHER) return 0;
     if (weather.failed) {
@@ -560,58 +560,58 @@ function complication_weather_high_temp(fctx, draw, position, align, foreground_
     } else {
         buffer_1 = sprintf("%d°", weather.temp_high);
     }
-    if (draw) draw_string(fctx, buffer_1, position, font_main, foreground_color, fontsize_complications, align);
-    return string_width(fctx, buffer_1, font_main, fontsize_complications);
+    if (draw) draw_string(fctx, buffer_1, position, font_main, foreground_color, fontsize_widgets, align);
+    return string_width(fctx, buffer_1, font_main, fontsize_widgets);
   }
   return 0;
 }
-function complication_steps_icon(fctx, draw, position, align, foreground_color, background_color) {
-  return draw_icon_number_complication(fctx, draw, position, align, foreground_color, background_color, "A", format_unitless(health_service_sum_today(HealthMetricStepCount)), true);
+function widget_steps_icon(fctx, draw, position, align, foreground_color, background_color) {
+  return draw_icon_number_widget(fctx, draw, position, align, foreground_color, background_color, "A", format_unitless(health_service_sum_today(HealthMetricStepCount)), true);
 }
-function complication_steps(fctx, draw, position, align, foreground_color, background_color) {
-  return draw_icon_number_complication(fctx, draw, position, align, foreground_color, background_color, "A", format_unitless(health_service_sum_today(HealthMetricStepCount)), false);
+function widget_steps(fctx, draw, position, align, foreground_color, background_color) {
+  return draw_icon_number_widget(fctx, draw, position, align, foreground_color, background_color, "A", format_unitless(health_service_sum_today(HealthMetricStepCount)), false);
 }
-function complication_steps_short_icon(fctx, draw, position, align, foreground_color, background_color) {
-  return draw_icon_number_complication(fctx, draw, position, align, foreground_color, background_color, "A", format_thousands(health_service_sum_today(HealthMetricStepCount)), true);
+function widget_steps_short_icon(fctx, draw, position, align, foreground_color, background_color) {
+  return draw_icon_number_widget(fctx, draw, position, align, foreground_color, background_color, "A", format_thousands(health_service_sum_today(HealthMetricStepCount)), true);
 }
-function complication_steps_short(fctx, draw, position, align, foreground_color, background_color) {
-  return draw_icon_number_complication(fctx, draw, position, align, foreground_color, background_color, "A", format_thousands(health_service_sum_today(HealthMetricStepCount)), false);
+function widget_steps_short(fctx, draw, position, align, foreground_color, background_color) {
+  return draw_icon_number_widget(fctx, draw, position, align, foreground_color, background_color, "A", format_thousands(health_service_sum_today(HealthMetricStepCount)), false);
 }
-function complication_calories_resting_icon(fctx, draw, position, align, foreground_color, background_color) {
-  return draw_icon_number_complication(fctx, draw, position, align, foreground_color, background_color, "K", format_unitless(health_service_sum_today(HealthMetricRestingKCalories)), true);
+function widget_calories_resting_icon(fctx, draw, position, align, foreground_color, background_color) {
+  return draw_icon_number_widget(fctx, draw, position, align, foreground_color, background_color, "K", format_unitless(health_service_sum_today(HealthMetricRestingKCalories)), true);
 }
-function complication_calories_resting(fctx, draw, position, align, foreground_color, background_color) {
-  return draw_icon_number_complication(fctx, draw, position, align, foreground_color, background_color, "K", format_unitless(health_service_sum_today(HealthMetricRestingKCalories)), false);
+function widget_calories_resting(fctx, draw, position, align, foreground_color, background_color) {
+  return draw_icon_number_widget(fctx, draw, position, align, foreground_color, background_color, "K", format_unitless(health_service_sum_today(HealthMetricRestingKCalories)), false);
 }
-function complication_calories_active_icon(fctx, draw, position, align, foreground_color, background_color) {
-  return draw_icon_number_complication(fctx, draw, position, align, foreground_color, background_color, "K", format_unitless(health_service_sum_today(HealthMetricActiveKCalories)), true);
+function widget_calories_active_icon(fctx, draw, position, align, foreground_color, background_color) {
+  return draw_icon_number_widget(fctx, draw, position, align, foreground_color, background_color, "K", format_unitless(health_service_sum_today(HealthMetricActiveKCalories)), true);
 }
-function complication_calories_active(fctx, draw, position, align, foreground_color, background_color) {
-  return draw_icon_number_complication(fctx, draw, position, align, foreground_color, background_color, "K", format_unitless(health_service_sum_today(HealthMetricActiveKCalories)), false);
+function widget_calories_active(fctx, draw, position, align, foreground_color, background_color) {
+  return draw_icon_number_widget(fctx, draw, position, align, foreground_color, background_color, "K", format_unitless(health_service_sum_today(HealthMetricActiveKCalories)), false);
 }
-function complication_calories_all_icon(fctx, draw, position, align, foreground_color, background_color) {
-  return draw_icon_number_complication(fctx, draw, position, align, foreground_color, background_color, "K", format_unitless(health_service_sum_today(HealthMetricRestingKCalories)+health_service_sum_today(HealthMetricActiveKCalories)), true);
+function widget_calories_all_icon(fctx, draw, position, align, foreground_color, background_color) {
+  return draw_icon_number_widget(fctx, draw, position, align, foreground_color, background_color, "K", format_unitless(health_service_sum_today(HealthMetricRestingKCalories)+health_service_sum_today(HealthMetricActiveKCalories)), true);
 }
-function complication_calories_all(fctx, draw, position, align, foreground_color, background_color) {
-  return draw_icon_number_complication(fctx, draw, position, align, foreground_color, background_color, "K", format_unitless(health_service_sum_today(HealthMetricRestingKCalories)+health_service_sum_today(HealthMetricActiveKCalories)), false);
+function widget_calories_all(fctx, draw, position, align, foreground_color, background_color) {
+  return draw_icon_number_widget(fctx, draw, position, align, foreground_color, background_color, "K", format_unitless(health_service_sum_today(HealthMetricRestingKCalories)+health_service_sum_today(HealthMetricActiveKCalories)), false);
 }
-function complication_calories_resting_short_icon(fctx, draw, position, align, foreground_color, background_color) {
-  return draw_icon_number_complication(fctx, draw, position, align, foreground_color, background_color, "K", format_thousands(health_service_sum_today(HealthMetricRestingKCalories)), true);
+function widget_calories_resting_short_icon(fctx, draw, position, align, foreground_color, background_color) {
+  return draw_icon_number_widget(fctx, draw, position, align, foreground_color, background_color, "K", format_thousands(health_service_sum_today(HealthMetricRestingKCalories)), true);
 }
-function complication_calories_resting_short(fctx, draw, position, align, foreground_color, background_color) {
-  return draw_icon_number_complication(fctx, draw, position, align, foreground_color, background_color, "K", format_thousands(health_service_sum_today(HealthMetricRestingKCalories)), false);
+function widget_calories_resting_short(fctx, draw, position, align, foreground_color, background_color) {
+  return draw_icon_number_widget(fctx, draw, position, align, foreground_color, background_color, "K", format_thousands(health_service_sum_today(HealthMetricRestingKCalories)), false);
 }
-function complication_calories_active_short_icon(fctx, draw, position, align, foreground_color, background_color) {
-  return draw_icon_number_complication(fctx, draw, position, align, foreground_color, background_color, "K", format_thousands(health_service_sum_today(HealthMetricActiveKCalories)), true);
+function widget_calories_active_short_icon(fctx, draw, position, align, foreground_color, background_color) {
+  return draw_icon_number_widget(fctx, draw, position, align, foreground_color, background_color, "K", format_thousands(health_service_sum_today(HealthMetricActiveKCalories)), true);
 }
-function complication_calories_active_short(fctx, draw, position, align, foreground_color, background_color) {
-  return draw_icon_number_complication(fctx, draw, position, align, foreground_color, background_color, "K", format_thousands(health_service_sum_today(HealthMetricActiveKCalories)), false);
+function widget_calories_active_short(fctx, draw, position, align, foreground_color, background_color) {
+  return draw_icon_number_widget(fctx, draw, position, align, foreground_color, background_color, "K", format_thousands(health_service_sum_today(HealthMetricActiveKCalories)), false);
 }
-function complication_calories_all_short_icon(fctx, draw, position, align, foreground_color, background_color) {
-  return draw_icon_number_complication(fctx, draw, position, align, foreground_color, background_color, "K", format_thousands(health_service_sum_today(HealthMetricRestingKCalories)+health_service_sum_today(HealthMetricActiveKCalories)), true);
+function widget_calories_all_short_icon(fctx, draw, position, align, foreground_color, background_color) {
+  return draw_icon_number_widget(fctx, draw, position, align, foreground_color, background_color, "K", format_thousands(health_service_sum_today(HealthMetricRestingKCalories)+health_service_sum_today(HealthMetricActiveKCalories)), true);
 }
-function complication_calories_all_short(fctx, draw, position, align, foreground_color, background_color) {
-  return draw_icon_number_complication(fctx, draw, position, align, foreground_color, background_color, "K", format_thousands(health_service_sum_today(HealthMetricRestingKCalories)+health_service_sum_today(HealthMetricActiveKCalories)), false);
+function widget_calories_all_short(fctx, draw, position, align, foreground_color, background_color) {
+  return draw_icon_number_widget(fctx, draw, position, align, foreground_color, background_color, "K", format_thousands(health_service_sum_today(HealthMetricRestingKCalories)+health_service_sum_today(HealthMetricActiveKCalories)), false);
 }
 // -- end autogen
 
@@ -709,7 +709,7 @@ function background_update_proc(layer, ctx) {
     var bounds_full = g2frect(layer_get_bounds(layer_background));
     height_full = bounds_full.size.h;
     width_full = bounds_full.size.w;
-    fontsize_complications = REM(27);
+    fontsize_widgets = REM(27);
     var now = time(NULL);
     var t = localtime(now);
     var battery_state = battery_state_service_peek();
@@ -732,7 +732,7 @@ function background_update_proc(layer, ctx) {
         }
     }
     draw_rect(fctx, bounds_full, config_color_background);
-    var fontsize_weather = fontsize_complications;
+    var fontsize_weather = fontsize_widgets;
     var topbar_height = FIXED_ROUND(fontsize_weather + REM(4));
     draw_rect(fctx, FRect(bounds.origin, FSize(width, topbar_height)), config_color_topbar_bg);
     if (show_weather()) {
@@ -819,22 +819,22 @@ function background_update_proc(layer, ctx) {
             draw_circle(fctx, FPoint(progress_endx2, height_full), progress_height, config_color_progress_bar2);
         }
     }
-    var complications_margin_topbottom = REM(6); // gap between watch bounds and complications
-    var complications_margin_leftright = REM(8);
-    complications[config_complication_1](fctx, true, FPoint(complications_margin_leftright, complications_margin_topbottom), GTextAlignmentLeft, config_color_top_complications, config_color_topbar_bg);
-    complications[config_complication_2](fctx, true, FPoint(width/2, complications_margin_topbottom), GTextAlignmentCenter, config_color_top_complications, config_color_topbar_bg);
-    complications[config_complication_3](fctx, true, FPoint(width - complications_margin_leftright, complications_margin_topbottom), GTextAlignmentRight, config_color_top_complications, config_color_topbar_bg);
-    var compl_y = height_full - fontsize_complications;
+    var widgets_margin_topbottom = REM(6); // gap between watch bounds and widgets
+    var widgets_margin_leftright = REM(8);
+    widgets[config_widget_1](fctx, true, FPoint(widgets_margin_leftright, widgets_margin_topbottom), GTextAlignmentLeft, config_color_top_widgets, config_color_topbar_bg);
+    widgets[config_widget_2](fctx, true, FPoint(width/2, widgets_margin_topbottom), GTextAlignmentCenter, config_color_top_widgets, config_color_topbar_bg);
+    widgets[config_widget_3](fctx, true, FPoint(width - widgets_margin_leftright, widgets_margin_topbottom), GTextAlignmentRight, config_color_top_widgets, config_color_topbar_bg);
+    var compl_y = height_full - fontsize_widgets;
     var compl_y2 = compl_y - progress_height;
     var compl_w;
     var avoid_progress;
-    complications[config_complication_4](fctx, true, FPoint(complications_margin_leftright, progress_no ? compl_y : compl_y2), GTextAlignmentLeft, config_color_bottom_complications, config_color_background);
-    compl_w = complications[config_complication_5](fctx, false, FPoint(0,0), GTextAlignmentLeft, config_color_bottom_complications, config_color_background);
+    widgets[config_widget_4](fctx, true, FPoint(widgets_margin_leftright, progress_no ? compl_y : compl_y2), GTextAlignmentLeft, config_color_bottom_widgets, config_color_background);
+    compl_w = widgets[config_widget_5](fctx, false, FPoint(0,0), GTextAlignmentLeft, config_color_bottom_widgets, config_color_background);
     avoid_progress = width/2 - compl_w/2 < progress_endx + REM(5);
-    complications[config_complication_5](fctx, true, FPoint(width/2, avoid_progress ? compl_y2 : compl_y), GTextAlignmentCenter, config_color_bottom_complications, config_color_background);
-    compl_w = complications[config_complication_6](fctx, false, FPoint(0,0), GTextAlignmentLeft, config_color_bottom_complications, config_color_background);
-    avoid_progress = width - complications_margin_leftright - compl_w < progress_endx + REM(5);
-    complications[config_complication_6](fctx, true, FPoint(width - complications_margin_leftright, avoid_progress ? compl_y2 : compl_y), GTextAlignmentRight, config_color_bottom_complications, config_color_background);
+    widgets[config_widget_5](fctx, true, FPoint(width/2, avoid_progress ? compl_y2 : compl_y), GTextAlignmentCenter, config_color_bottom_widgets, config_color_background);
+    compl_w = widgets[config_widget_6](fctx, false, FPoint(0,0), GTextAlignmentLeft, config_color_bottom_widgets, config_color_background);
+    avoid_progress = width - widgets_margin_leftright - compl_w < progress_endx + REM(5);
+    widgets[config_widget_6](fctx, true, FPoint(width - widgets_margin_leftright, avoid_progress ? compl_y2 : compl_y), GTextAlignmentRight, config_color_bottom_widgets, config_color_background);
     var bluetooth = bluetooth_connection_service_peek();
     bluetooth_popup(fctx, ctx, bluetooth);
     fctx_deinit_context(fctx);
@@ -949,9 +949,9 @@ function background_update_proc(layer, ctx) {
             CONFIG_COLOR_PROGRESS_BAR2: +GColor.White,
             CONFIG_COLOR_TIME: +GColor.White,
             CONFIG_COLOR_PERC: +GColor.White,
-            CONFIG_COLOR_BOTTOM_COMPLICATIONS: +GColor.White,
+            CONFIG_COLOR_BOTTOM_WIDGETS: +GColor.White,
             CONFIG_COLOR_BACKGROUND: +GColor.Black,
-            CONFIG_COLOR_TOP_COMPLICATIONS: +GColor.Black,
+            CONFIG_COLOR_TOP_WIDGETS: +GColor.Black,
             CONFIG_COLOR_DAY: +GColor.LightGray,
             CONFIG_COLOR_NIGHT: +GColor.Black,
             CONFIG_COLOR_BAT_30: +GColor.Yellow,
@@ -959,12 +959,12 @@ function background_update_proc(layer, ctx) {
             CONFIG_COLOR_BAT_10: +GColor.Folly,
             CONFIG_LOWBAT_COL: +false,
             CONFIG_ADVANCED_APPEARANCE_LOCAL: +false,
-            CONFIG_COMPLICATION_1: +2,
-            CONFIG_COMPLICATION_2: +1,
-            CONFIG_COMPLICATION_3: +3,
-            CONFIG_COMPLICATION_4: +12,
-            CONFIG_COMPLICATION_5: +4,
-            CONFIG_COMPLICATION_6: +7,
+            CONFIG_WIDGET_1: +2,
+            CONFIG_WIDGET_2: +1,
+            CONFIG_WIDGET_3: +3,
+            CONFIG_WIDGET_4: +12,
+            CONFIG_WIDGET_5: +4,
+            CONFIG_WIDGET_6: +7,
             CONFIG_PROGRESS: +1,
             CONFIG_TIME_FORMAT: "%I:0%M",
             CONFIG_INFO_BELOW: "%A, %m/%d",
@@ -1006,9 +1006,9 @@ function background_update_proc(layer, ctx) {
             CONFIG_COLOR_PROGRESS_BAR2: +GColor.White,
             CONFIG_COLOR_TIME: +GColor.White,
             CONFIG_COLOR_PERC: +GColor.White,
-            CONFIG_COLOR_BOTTOM_COMPLICATIONS: +GColor.White,
+            CONFIG_COLOR_BOTTOM_WIDGETS: +GColor.White,
             CONFIG_COLOR_BACKGROUND: +GColor.Black,
-            CONFIG_COLOR_TOP_COMPLICATIONS: +GColor.Black,
+            CONFIG_COLOR_TOP_WIDGETS: +GColor.Black,
             CONFIG_COLOR_DAY: +GColor.LightGray,
             CONFIG_COLOR_NIGHT: +GColor.Black,
             CONFIG_COLOR_BAT_30: +GColor.Yellow,
@@ -1016,12 +1016,12 @@ function background_update_proc(layer, ctx) {
             CONFIG_COLOR_BAT_10: +GColor.Folly,
             CONFIG_LOWBAT_COL: +true,
             CONFIG_ADVANCED_APPEARANCE_LOCAL: +false,
-            CONFIG_COMPLICATION_1: +2,
-            CONFIG_COMPLICATION_2: +1,
-            CONFIG_COMPLICATION_3: +3,
-            CONFIG_COMPLICATION_4: +12,
-            CONFIG_COMPLICATION_5: +4,
-            CONFIG_COMPLICATION_6: +7,
+            CONFIG_WIDGET_1: +2,
+            CONFIG_WIDGET_2: +1,
+            CONFIG_WIDGET_3: +3,
+            CONFIG_WIDGET_4: +12,
+            CONFIG_WIDGET_5: +4,
+            CONFIG_WIDGET_6: +7,
             CONFIG_PROGRESS: +1,
             CONFIG_TIME_FORMAT: "%I:0%M",
             CONFIG_INFO_BELOW: "%A, %m/%d",
@@ -1089,8 +1089,8 @@ function background_update_proc(layer, ctx) {
         drawPreview: function (config, canvasId, platform, state) {
             drawHelper(drawConfig, config, canvasId, platform, null, state);
         },
-        previewComplication: function (complication, config, canvasId, platform, state) {
-            drawHelper(drawComplication, config, canvasId, platform, complication, state);
+        previewComplication: function (widget, config, canvasId, platform, state) {
+            drawHelper(drawComplication, config, canvasId, platform, widget, state);
         },
         override: override,
         overrideConfig: function (new_vals, backup_vals) {
@@ -1107,7 +1107,7 @@ function background_update_proc(layer, ctx) {
           if ("SIMPLECONFIG_COLOR_MAIN" in new_vals) {
             res["CONFIG_COLOR_TIME"] = new_vals["SIMPLECONFIG_COLOR_MAIN"];
             res["CONFIG_COLOR_PERC"] = new_vals["SIMPLECONFIG_COLOR_MAIN"];
-            res["CONFIG_COLOR_BOTTOM_COMPLICATIONS"] = new_vals["SIMPLECONFIG_COLOR_MAIN"];
+            res["CONFIG_COLOR_BOTTOM_WIDGETS"] = new_vals["SIMPLECONFIG_COLOR_MAIN"];
             res["CONFIG_COLOR_PROGRESS_BAR2"] = new_vals["SIMPLECONFIG_COLOR_MAIN"];
           }
           if ("SIMPLECONFIG_COLOR_ACCENT" in new_vals) {
@@ -1117,7 +1117,7 @@ function background_update_proc(layer, ctx) {
           }
           if ("SIMPLECONFIG_COLOR_BACKGROUND" in new_vals) {
             res["CONFIG_COLOR_BACKGROUND"] = new_vals["SIMPLECONFIG_COLOR_BACKGROUND"];
-            res["CONFIG_COLOR_TOP_COMPLICATIONS"] = new_vals["SIMPLECONFIG_COLOR_BACKGROUND"];
+            res["CONFIG_COLOR_TOP_WIDGETS"] = new_vals["SIMPLECONFIG_COLOR_BACKGROUND"];
             res["CONFIG_COLOR_NIGHT"] = new_vals["SIMPLECONFIG_COLOR_BACKGROUND"];
           }
 // -- end autogen

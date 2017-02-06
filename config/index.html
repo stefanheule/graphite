@@ -42,10 +42,10 @@
       text-align: center;
       font-size: 11px;
     }
-    .complication {
+    .widget {
       border: 1px solid black;
     }
-    #complications-preview {
+    #widgets-preview {
       display: none;
       position: fixed;
       left: 15px;
@@ -61,10 +61,10 @@
       box-shadow: 0px 0px 30px rgba(0,0,0,0.7);
       overflow-y: scroll;
     }
-    #complications-preview .button-container {
+    #widgets-preview .button-container {
       margin-top: 15px;
     }
-    .complication-preview {
+    .widget-preview {
       border-top: 1px solid rgb(222, 222, 222);
       border-bottom: 1px solid rgb(222, 222, 222);
       padding: 5px 0;
@@ -104,150 +104,150 @@
       by changing the setting below (requires a free API key).</p>
     </div>
 
-    <div id="complications-preview">
+    <div id="widgets-preview">
 <!--
 // -- autogen
-// -- ## for key in complications
-// --       <div class="complication-preview" id="complication-preview-{{ key["id"] }}">
+// -- ## for key in widgets
+// --       <div class="widget-preview" id="widget-preview-{{ key["id"] }}">
 // --         <p>{{ key["desc"] }}</p>
-// --         <canvas class="complication" id="complication-preview-{{ key["id"] }}-canvas"></canvas>
+// --         <canvas class="widget" id="widget-preview-{{ key["id"] }}-canvas"></canvas>
 // --       </div>
 // -- ## endfor
 -->
-      <div class="complication-preview" id="complication-preview-0">
+      <div class="widget-preview" id="widget-preview-0">
         <p>Empty</p>
-        <canvas class="complication" id="complication-preview-0-canvas"></canvas>
+        <canvas class="widget" id="widget-preview-0-canvas"></canvas>
       </div>
-      <div class="complication-preview" id="complication-preview-1">
+      <div class="widget-preview" id="widget-preview-1">
         <p>Weather: Current temperature and icon</p>
-        <canvas class="complication" id="complication-preview-1-canvas"></canvas>
+        <canvas class="widget" id="widget-preview-1-canvas"></canvas>
       </div>
-      <div class="complication-preview" id="complication-preview-2">
+      <div class="widget-preview" id="widget-preview-2">
         <p>Weather: Today's low</p>
-        <canvas class="complication" id="complication-preview-2-canvas"></canvas>
+        <canvas class="widget" id="widget-preview-2-canvas"></canvas>
       </div>
-      <div class="complication-preview" id="complication-preview-3">
+      <div class="widget-preview" id="widget-preview-3">
         <p>Weather: Today's high</p>
-        <canvas class="complication" id="complication-preview-3-canvas"></canvas>
+        <canvas class="widget" id="widget-preview-3-canvas"></canvas>
       </div>
-      <div class="complication-preview" id="complication-preview-4">
+      <div class="widget-preview" id="widget-preview-4">
         <p>Bluetooth (on disconnect only)</p>
-        <canvas class="complication" id="complication-preview-4-canvas"></canvas>
+        <canvas class="widget" id="widget-preview-4-canvas"></canvas>
       </div>
-      <div class="complication-preview" id="complication-preview-5">
+      <div class="widget-preview" id="widget-preview-5">
         <p>Bluetooth (on disconnect only), alternative</p>
-        <canvas class="complication" id="complication-preview-5-canvas"></canvas>
+        <canvas class="widget" id="widget-preview-5-canvas"></canvas>
       </div>
-      <div class="complication-preview" id="complication-preview-6">
+      <div class="widget-preview" id="widget-preview-6">
         <p>Bluetooth (yes/no)</p>
-        <canvas class="complication" id="complication-preview-6-canvas"></canvas>
+        <canvas class="widget" id="widget-preview-6-canvas"></canvas>
       </div>
-      <div class="complication-preview" id="complication-preview-7">
+      <div class="widget-preview" id="widget-preview-7">
         <p>Battery icon</p>
-        <canvas class="complication" id="complication-preview-7-canvas"></canvas>
+        <canvas class="widget" id="widget-preview-7-canvas"></canvas>
       </div>
-      <div class="complication-preview" id="complication-preview-8">
+      <div class="widget-preview" id="widget-preview-8">
         <p>Quiet time enabled (only when on)</p>
-        <canvas class="complication" id="complication-preview-8-canvas"></canvas>
+        <canvas class="widget" id="widget-preview-8-canvas"></canvas>
       </div>
-      <div class="complication-preview" id="complication-preview-9">
+      <div class="widget-preview" id="widget-preview-9">
         <p>Quiet time indicator (two icons for on/off)</p>
-        <canvas class="complication" id="complication-preview-9-canvas"></canvas>
+        <canvas class="widget" id="widget-preview-9-canvas"></canvas>
       </div>
-      <div class="complication-preview" id="complication-preview-10">
+      <div class="widget-preview" id="widget-preview-10">
         <p>Steps</p>
-        <canvas class="complication" id="complication-preview-10-canvas"></canvas>
+        <canvas class="widget" id="widget-preview-10-canvas"></canvas>
       </div>
-      <div class="complication-preview" id="complication-preview-11">
+      <div class="widget-preview" id="widget-preview-11">
         <p>Steps (no icon)</p>
-        <canvas class="complication" id="complication-preview-11-canvas"></canvas>
+        <canvas class="widget" id="widget-preview-11-canvas"></canvas>
       </div>
-      <div class="complication-preview" id="complication-preview-12">
+      <div class="widget-preview" id="widget-preview-12">
         <p>Steps abbreviated</p>
-        <canvas class="complication" id="complication-preview-12-canvas"></canvas>
+        <canvas class="widget" id="widget-preview-12-canvas"></canvas>
       </div>
-      <div class="complication-preview" id="complication-preview-13">
+      <div class="widget-preview" id="widget-preview-13">
         <p>Steps abbreviated (no icon)</p>
-        <canvas class="complication" id="complication-preview-13-canvas"></canvas>
+        <canvas class="widget" id="widget-preview-13-canvas"></canvas>
       </div>
-      <div class="complication-preview" id="complication-preview-14">
+      <div class="widget-preview" id="widget-preview-14">
         <p>Calories burned, resting</p>
-        <canvas class="complication" id="complication-preview-14-canvas"></canvas>
+        <canvas class="widget" id="widget-preview-14-canvas"></canvas>
       </div>
-      <div class="complication-preview" id="complication-preview-15">
+      <div class="widget-preview" id="widget-preview-15">
         <p>Calories burned, resting (no icon)</p>
-        <canvas class="complication" id="complication-preview-15-canvas"></canvas>
+        <canvas class="widget" id="widget-preview-15-canvas"></canvas>
       </div>
-      <div class="complication-preview" id="complication-preview-16">
+      <div class="widget-preview" id="widget-preview-16">
         <p>Calories burned, active</p>
-        <canvas class="complication" id="complication-preview-16-canvas"></canvas>
+        <canvas class="widget" id="widget-preview-16-canvas"></canvas>
       </div>
-      <div class="complication-preview" id="complication-preview-17">
+      <div class="widget-preview" id="widget-preview-17">
         <p>Calories burned, active (no icon)</p>
-        <canvas class="complication" id="complication-preview-17-canvas"></canvas>
+        <canvas class="widget" id="widget-preview-17-canvas"></canvas>
       </div>
-      <div class="complication-preview" id="complication-preview-18">
+      <div class="widget-preview" id="widget-preview-18">
         <p>Calories burned, resting + active</p>
-        <canvas class="complication" id="complication-preview-18-canvas"></canvas>
+        <canvas class="widget" id="widget-preview-18-canvas"></canvas>
       </div>
-      <div class="complication-preview" id="complication-preview-19">
+      <div class="widget-preview" id="widget-preview-19">
         <p>Calories burned, resting + active (no icon)</p>
-        <canvas class="complication" id="complication-preview-19-canvas"></canvas>
+        <canvas class="widget" id="widget-preview-19-canvas"></canvas>
       </div>
-      <div class="complication-preview" id="complication-preview-20">
+      <div class="widget-preview" id="widget-preview-20">
         <p>Calories burned, resting, abbreviated</p>
-        <canvas class="complication" id="complication-preview-20-canvas"></canvas>
+        <canvas class="widget" id="widget-preview-20-canvas"></canvas>
       </div>
-      <div class="complication-preview" id="complication-preview-21">
+      <div class="widget-preview" id="widget-preview-21">
         <p>Calories burned, resting, abbreviated (no icon)</p>
-        <canvas class="complication" id="complication-preview-21-canvas"></canvas>
+        <canvas class="widget" id="widget-preview-21-canvas"></canvas>
       </div>
-      <div class="complication-preview" id="complication-preview-22">
+      <div class="widget-preview" id="widget-preview-22">
         <p>Calories burned, active, abbreviated</p>
-        <canvas class="complication" id="complication-preview-22-canvas"></canvas>
+        <canvas class="widget" id="widget-preview-22-canvas"></canvas>
       </div>
-      <div class="complication-preview" id="complication-preview-23">
+      <div class="widget-preview" id="widget-preview-23">
         <p>Calories burned, active, abbreviated (no icon)</p>
-        <canvas class="complication" id="complication-preview-23-canvas"></canvas>
+        <canvas class="widget" id="widget-preview-23-canvas"></canvas>
       </div>
-      <div class="complication-preview" id="complication-preview-24">
+      <div class="widget-preview" id="widget-preview-24">
         <p>Calories burned, resting + active, abbreviated</p>
-        <canvas class="complication" id="complication-preview-24-canvas"></canvas>
+        <canvas class="widget" id="widget-preview-24-canvas"></canvas>
       </div>
-      <div class="complication-preview" id="complication-preview-25">
+      <div class="widget-preview" id="widget-preview-25">
         <p>Calories burned, resting + active, abbreviated (no icon)</p>
-        <canvas class="complication" id="complication-preview-25-canvas"></canvas>
+        <canvas class="widget" id="widget-preview-25-canvas"></canvas>
       </div>
-      <div class="complication-preview" id="complication-preview-26">
+      <div class="widget-preview" id="widget-preview-26">
         <p>AM/PM</p>
-        <canvas class="complication" id="complication-preview-26-canvas"></canvas>
+        <canvas class="widget" id="widget-preview-26-canvas"></canvas>
       </div>
-      <div class="complication-preview" id="complication-preview-27">
+      <div class="widget-preview" id="widget-preview-27">
         <p>am/pm</p>
-        <canvas class="complication" id="complication-preview-27-canvas"></canvas>
+        <canvas class="widget" id="widget-preview-27-canvas"></canvas>
       </div>
-      <div class="complication-preview" id="complication-preview-28">
+      <div class="widget-preview" id="widget-preview-28">
         <p>Seconds</p>
-        <canvas class="complication" id="complication-preview-28-canvas"></canvas>
+        <canvas class="widget" id="widget-preview-28-canvas"></canvas>
       </div>
-      <div class="complication-preview" id="complication-preview-29">
+      <div class="widget-preview" id="widget-preview-29">
         <p>Day of week</p>
-        <canvas class="complication" id="complication-preview-29-canvas"></canvas>
+        <canvas class="widget" id="widget-preview-29-canvas"></canvas>
       </div>
 <!--
 // -- end autogen
 -->
       <div class='button-container'>
-        <input id='complication_cancel_button' type='button' class='item-button' value='Cancel'>
+        <input id='widget_cancel_button' type='button' class='item-button' value='Cancel'>
       </div>
     </div>
 
-    <input type="text" class="hidden item-input" id='CONFIG_COMPLICATION_1'>
-    <input type="text" class="hidden item-input" id='CONFIG_COMPLICATION_2'>
-    <input type="text" class="hidden item-input" id='CONFIG_COMPLICATION_3'>
-    <input type="text" class="hidden item-input" id='CONFIG_COMPLICATION_4'>
-    <input type="text" class="hidden item-input" id='CONFIG_COMPLICATION_5'>
-    <input type="text" class="hidden item-input" id='CONFIG_COMPLICATION_6'>
+    <input type="text" class="hidden item-input" id='CONFIG_WIDGET_1'>
+    <input type="text" class="hidden item-input" id='CONFIG_WIDGET_2'>
+    <input type="text" class="hidden item-input" id='CONFIG_WIDGET_3'>
+    <input type="text" class="hidden item-input" id='CONFIG_WIDGET_4'>
+    <input type="text" class="hidden item-input" id='CONFIG_WIDGET_5'>
+    <input type="text" class="hidden item-input" id='CONFIG_WIDGET_6'>
 
 
 
@@ -343,8 +343,8 @@
       </div>
       <div class="item-container-content">
         <label class='item'>
-          Bottom complications color
-          <input id='CONFIG_COLOR_BOTTOM_COMPLICATIONS' type='text' class='item-color item-color-normal'>
+          Bottom widgets color
+          <input id='CONFIG_COLOR_BOTTOM_WIDGETS' type='text' class='item-color item-color-normal'>
         </label>
       </div>
       <div class="item-container-content">
@@ -355,8 +355,8 @@
       </div>
       <div class="item-container-content">
         <label class='item'>
-          Top complications color
-          <input id='CONFIG_COLOR_TOP_COMPLICATIONS' type='text' class='item-color item-color-normal'>
+          Top widgets color
+          <input id='CONFIG_COLOR_TOP_WIDGETS' type='text' class='item-color item-color-normal'>
         </label>
       </div>
       <div class="item-container-content">
@@ -413,9 +413,9 @@
         <label class='item'>
           Top
           <span style="float:right;">
-            <canvas class="complication" id="complication1"></canvas>
-            <canvas class="complication" id="complication2"></canvas>
-            <canvas class="complication" id="complication3"></canvas>
+            <canvas class="widget" id="widget1"></canvas>
+            <canvas class="widget" id="widget2"></canvas>
+            <canvas class="widget" id="widget3"></canvas>
           </span>
         </label>
       </div>
@@ -423,13 +423,13 @@
         <label class='item'>
           Bottom
           <span style="float:right;">
-            <canvas class="complication" id="complication4"></canvas>
-            <canvas class="complication" id="complication5"></canvas>
-            <canvas class="complication" id="complication6"></canvas>
+            <canvas class="widget" id="widget4"></canvas>
+            <canvas class="widget" id="widget5"></canvas>
+            <canvas class="widget" id="widget6"></canvas>
           </span>
         </label>
         <div class="item-container-footer">
-          You can also directly click on the complication slots in the live preview to change them.
+          You can also directly click on the widget slots in the live preview to change them.
         </div>
       </div>
 
@@ -597,8 +597,8 @@
           </select>
         </label>
         <div class="item-container-footer">
-          Useful if you use the seconds complication, or want the heart rate
-          complication to update more frequently.  Higher update frequency may
+          Useful if you use the seconds widget, or want the heart rate
+          widget to update more frequently.  Higher update frequency may
           negatively impact battery life.
         </div>
       </div>
@@ -911,9 +911,9 @@
     return options;
   }
 
-  function has_complication(ids) {
+  function has_widget(ids) {
     for (var i = 1; i < 7; i++) {
-      var id = +readConfig("CONFIG_COMPLICATION_" + i);
+      var id = +readConfig("CONFIG_WIDGET_" + i);
       if (ids.indexOf(id) !== -1) return true;
     }
     return false;
@@ -1040,7 +1040,7 @@
     applyValue(el, mode([
       config["CONFIG_COLOR_TIME"],
       config["CONFIG_COLOR_PERC"],
-      config["CONFIG_COLOR_BOTTOM_COMPLICATIONS"],
+      config["CONFIG_COLOR_BOTTOM_WIDGETS"],
       config["CONFIG_COLOR_PROGRESS_BAR2"],
     ]));
 
@@ -1054,7 +1054,7 @@
     el = $("#SIMPLECONFIG_COLOR_BACKGROUND");
     applyValue(el, mode([
       config["CONFIG_COLOR_BACKGROUND"],
-      config["CONFIG_COLOR_TOP_COMPLICATIONS"],
+      config["CONFIG_COLOR_TOP_WIDGETS"],
       config["CONFIG_COLOR_NIGHT"],
     ]));
 // -- end autogen
@@ -1097,9 +1097,9 @@
         "CONFIG_COLOR_PROGRESS_BAR2": 16,
         "CONFIG_COLOR_TIME": 17,
         "CONFIG_COLOR_PERC": 18,
-        "CONFIG_COLOR_BOTTOM_COMPLICATIONS": 19,
+        "CONFIG_COLOR_BOTTOM_WIDGETS": 19,
         "CONFIG_COLOR_BACKGROUND": 20,
-        "CONFIG_COLOR_TOP_COMPLICATIONS": 21,
+        "CONFIG_COLOR_TOP_WIDGETS": 21,
         "CONFIG_COLOR_DAY": 22,
         "CONFIG_COLOR_NIGHT": 23,
         "CONFIG_COLOR_BAT_30": 24,
@@ -1107,12 +1107,12 @@
         "CONFIG_COLOR_BAT_10": 26,
         "CONFIG_LOWBAT_COL": 27,
         "CONFIG_ADVANCED_APPEARANCE_LOCAL": 28,
-        "CONFIG_COMPLICATION_1": 29,
-        "CONFIG_COMPLICATION_2": 30,
-        "CONFIG_COMPLICATION_3": 31,
-        "CONFIG_COMPLICATION_4": 32,
-        "CONFIG_COMPLICATION_5": 33,
-        "CONFIG_COMPLICATION_6": 34,
+        "CONFIG_WIDGET_1": 29,
+        "CONFIG_WIDGET_2": 30,
+        "CONFIG_WIDGET_3": 31,
+        "CONFIG_WIDGET_4": 32,
+        "CONFIG_WIDGET_5": 33,
+        "CONFIG_WIDGET_6": 34,
         "CONFIG_PROGRESS": 35,
         "CONFIG_TIME_FORMAT": 36,
         "CONFIG_INFO_BELOW": 37,
@@ -1261,8 +1261,8 @@
 // -- autogen
 // --     var load_lowhigh = {{ config_groups_lookup["GROUP_WEATHERLOWHIGH"]["selector"] }};
 // --     var load_cur = {{ config_groups_lookup["GROUP_WEATHERCUR"]["selector"] }};
-    var load_lowhigh = has_complication([2, 3]);
-    var load_cur = has_complication([1]);
+    var load_lowhigh = has_widget([2, 3]);
+    var load_cur = has_widget([1]);
 // -- end autogen
     return [load_rain || load_lowhigh || load_cur, load_rain, load_lowhigh, load_cur];
   }
@@ -1292,7 +1292,7 @@
 // --     showHideEl("#{{ key["key"] }}", {{ key["show_only_if"] }});
 // --   ## endif
 // -- ## endfor
-    showHideEl("#GROUP_WEATHER", has_complication([1, 2, 3]));
+    showHideEl("#GROUP_WEATHER", has_widget([1, 2, 3]));
 // -- end autogen
 
     
@@ -1323,7 +1323,7 @@
     if (id == "SIMPLECONFIG_COLOR_MAIN") {
       applyValue($("#CONFIG_COLOR_TIME"), value);
       applyValue($("#CONFIG_COLOR_PERC"), value);
-      applyValue($("#CONFIG_COLOR_BOTTOM_COMPLICATIONS"), value);
+      applyValue($("#CONFIG_COLOR_BOTTOM_WIDGETS"), value);
       applyValue($("#CONFIG_COLOR_PROGRESS_BAR2"), value);
     }
     if (id == "SIMPLECONFIG_COLOR_ACCENT") {
@@ -1333,7 +1333,7 @@
     }
     if (id == "SIMPLECONFIG_COLOR_BACKGROUND") {
       applyValue($("#CONFIG_COLOR_BACKGROUND"), value);
-      applyValue($("#CONFIG_COLOR_TOP_COMPLICATIONS"), value);
+      applyValue($("#CONFIG_COLOR_TOP_WIDGETS"), value);
       applyValue($("#CONFIG_COLOR_NIGHT"), value);
     }
 // -- end autogen
@@ -1386,21 +1386,21 @@
       }
     }
 
-    // check consistency of seconds complication
+    // check consistency of seconds widget
     if (id == "CONFIG_UPDATE_SECOND") {
 // -- autogen
-// --       var compl_seconds = {{ complications_lookup["COMPLICATION_SECONDS"]["id"] }};
-// --       var compl_empty = {{ complications_lookup["COMPLICATION_EMPTY"]["id"] }};
+// --       var compl_seconds = {{ widgets_lookup["WIDGET_SECONDS"]["id"] }};
+// --       var compl_empty = {{ widgets_lookup["WIDGET_EMPTY"]["id"] }};
       var compl_seconds = 28;
       var compl_empty = 0;
 // -- end autogen
-      if (value == 0 && has_complication([compl_seconds])) {
-        if (!window.confirm("Second complication is enabled and requires the watch face to update more often than once a minute.  Clear second complication?")) {
+      if (value == 0 && has_widget([compl_seconds])) {
+        if (!window.confirm("Second widget is enabled and requires the watch face to update more often than once a minute.  Clear second widget?")) {
           applyValue($("#CONFIG_UPDATE_SECOND"), 1);
         } else {
           for (var i = 1; i < 7; i++) {
-            if (readConfig("CONFIG_COMPLICATION_" + i) == compl_seconds) {
-              applyValue($("#CONFIG_COMPLICATION_" + i), compl_empty);
+            if (readConfig("CONFIG_WIDGET_" + i) == compl_seconds) {
+              applyValue($("#CONFIG_WIDGET_" + i), compl_empty);
             }
           }
         }
@@ -1435,14 +1435,14 @@
       allDepVals = [
         readOneConfig($("#CONFIG_COLOR_TIME")),
         readOneConfig($("#CONFIG_COLOR_PERC")),
-        readOneConfig($("#CONFIG_COLOR_BOTTOM_COMPLICATIONS")),
+        readOneConfig($("#CONFIG_COLOR_BOTTOM_WIDGETS")),
         readOneConfig($("#CONFIG_COLOR_PROGRESS_BAR2")),
       ];
       if (!allSame(allDepVals)) {
         options = "";
         options += "\n- Time color (" + GColor.toName(readOneConfig($("#CONFIG_COLOR_TIME"))) + ")";
         options += "\n- Precipitation bars color (" + GColor.toName(readOneConfig($("#CONFIG_COLOR_PERC"))) + ")";
-        options += "\n- Bottom complications color (" + GColor.toName(readOneConfig($("#CONFIG_COLOR_BOTTOM_COMPLICATIONS"))) + ")";
+        options += "\n- Bottom widgets color (" + GColor.toName(readOneConfig($("#CONFIG_COLOR_BOTTOM_WIDGETS"))) + ")";
         options += "\n- Second progress bar color (" + GColor.toName(readOneConfig($("#CONFIG_COLOR_PROGRESS_BAR2"))) + ")";
         if (!window.confirm("In the simplified configuration, the colors for all of " + options + "\nare represented as just a single value called 'Main color'.  However, in your current configuration, they do not have all the same value.  Do you still want to switch to the simplified configuration?  It will force all of these to have the same color: " + GColor.toName(mode(allDepVals)) + ".")) {
           applyValue($("#" + id), true);
@@ -1450,7 +1450,7 @@
         } else {
           applyValue($("#CONFIG_COLOR_TIME"), mode(allDepVals));
           applyValue($("#CONFIG_COLOR_PERC"), mode(allDepVals));
-          applyValue($("#CONFIG_COLOR_BOTTOM_COMPLICATIONS"), mode(allDepVals));
+          applyValue($("#CONFIG_COLOR_BOTTOM_WIDGETS"), mode(allDepVals));
           applyValue($("#CONFIG_COLOR_PROGRESS_BAR2"), mode(allDepVals));
           updateUI();
         }
@@ -1477,20 +1477,20 @@
       }
       allDepVals = [
         readOneConfig($("#CONFIG_COLOR_BACKGROUND")),
-        readOneConfig($("#CONFIG_COLOR_TOP_COMPLICATIONS")),
+        readOneConfig($("#CONFIG_COLOR_TOP_WIDGETS")),
         readOneConfig($("#CONFIG_COLOR_NIGHT")),
       ];
       if (!allSame(allDepVals)) {
         options = "";
         options += "\n- Background color (" + GColor.toName(readOneConfig($("#CONFIG_COLOR_BACKGROUND"))) + ")";
-        options += "\n- Top complications color (" + GColor.toName(readOneConfig($("#CONFIG_COLOR_TOP_COMPLICATIONS"))) + ")";
+        options += "\n- Top widgets color (" + GColor.toName(readOneConfig($("#CONFIG_COLOR_TOP_WIDGETS"))) + ")";
         options += "\n- Precipitation night time indicator color (" + GColor.toName(readOneConfig($("#CONFIG_COLOR_NIGHT"))) + ")";
         if (!window.confirm("In the simplified configuration, the colors for all of " + options + "\nare represented as just a single value called 'Background color'.  However, in your current configuration, they do not have all the same value.  Do you still want to switch to the simplified configuration?  It will force all of these to have the same color: " + GColor.toName(mode(allDepVals)) + ".")) {
           applyValue($("#" + id), true);
           return false;
         } else {
           applyValue($("#CONFIG_COLOR_BACKGROUND"), mode(allDepVals));
-          applyValue($("#CONFIG_COLOR_TOP_COMPLICATIONS"), mode(allDepVals));
+          applyValue($("#CONFIG_COLOR_TOP_WIDGETS"), mode(allDepVals));
           applyValue($("#CONFIG_COLOR_NIGHT"), mode(allDepVals));
           updateUI();
         }
@@ -1517,27 +1517,27 @@
     var w = bounds.width;
     var h = bounds.height;
     var top = h / 6;
-    var complication;
+    var widget;
     if (y < top || y > h - top) {
-      complication = 3;
-      if (x < w/3) complication = 1;
-      else if (x < 2*w/3) complication = 2;
+      widget = 3;
+      if (x < w/3) widget = 1;
+      else if (x < 2*w/3) widget = 2;
       if (y > h - top) {
-        complication += 3;
+        widget += 3;
       }
-      openComplicationChooser(complication);
+      openComplicationChooser(widget);
     }
     ev.stopPropagation();
   }
 
-  var _current_complication_slot_nr;
+  var _current_widget_slot_nr;
   function pickComplication(pickedComplicationNr) {
 // -- autogen
-// --     if (pickedComplicationNr == {{ complications_lookup["COMPLICATION_SECONDS"]["id"] }}) {
+// --     if (pickedComplicationNr == {{ widgets_lookup["WIDGET_SECONDS"]["id"] }}) {
     if (pickedComplicationNr == 28) {
 // -- end autogen
       if (readConfig("CONFIG_UPDATE_SECOND") == 0) {
-        if (!window.confirm("The second complication only works if the watch face gets updated more than once a minute.  Enable updates once a second now (may negatively impact battery life)?")) {
+        if (!window.confirm("The second widget only works if the watch face gets updated more than once a minute.  Enable updates once a second now (may negatively impact battery life)?")) {
           return;
         } else {
           applyValue($("#CONFIG_UPDATE_SECOND"), 1);
@@ -1546,25 +1546,25 @@
     }
 
     closeComplicationChooser();
-    var forSlotNr = _current_complication_slot_nr;
-    applyValue($("#CONFIG_COMPLICATION_" + forSlotNr), "" + pickedComplicationNr);
+    var forSlotNr = _current_widget_slot_nr;
+    applyValue($("#CONFIG_WIDGET_" + forSlotNr), "" + pickedComplicationNr);
     updateCanvas();
     updateUI();
     updateShowHideStatus();
   }
 
   function closeComplicationChooser() {
-    var chooser = $("#complications-preview");
+    var chooser = $("#widgets-preview");
     if (chooser.css("display") == "none") return;
     chooser.css("display", "none");
     document.body.classList.toggle('noscroll', false);
   }
 
   function openComplicationChooser(nr) {
-    var id = "complication" + nr;
-    _current_complication_slot_nr = nr;
+    var id = "widget" + nr;
+    _current_widget_slot_nr = nr;
 
-    var chooser = $("#complications-preview");
+    var chooser = $("#widgets-preview");
     chooser.css("display", "block");
     chooser.scrollTop(0);
     document.body.classList.toggle('noscroll', true);
@@ -1572,48 +1572,48 @@
 
   function initComplicationChooser() {
     for (var i = 1; i < 7; i++) {
-      $("#complication" + i).on("click", (function(x) { return function(ev) { openComplicationChooser(x); ev.stopPropagation(); } })(i));
+      $("#widget" + i).on("click", (function(x) { return function(ev) { openComplicationChooser(x); ev.stopPropagation(); } })(i));
     }
-    $("#complication_cancel_button").on("click", closeComplicationChooser);
+    $("#widget_cancel_button").on("click", closeComplicationChooser);
     $(document).click(function(ev) {
-      if (!$(ev.target).closest("#complications-preview").length) {
+      if (!$(ev.target).closest("#widgets-preview").length) {
         closeComplicationChooser();
       }
     });
 // -- autogen
-// -- ## for key in complications
-// --       $("#complication-preview-{{ key["id"] }}").on("click", function(){ pickComplication({{ key["id"] }}); });
+// -- ## for key in widgets
+// --       $("#widget-preview-{{ key["id"] }}").on("click", function(){ pickComplication({{ key["id"] }}); });
 // -- ## endfor
-      $("#complication-preview-0").on("click", function(){ pickComplication(0); });
-      $("#complication-preview-1").on("click", function(){ pickComplication(1); });
-      $("#complication-preview-2").on("click", function(){ pickComplication(2); });
-      $("#complication-preview-3").on("click", function(){ pickComplication(3); });
-      $("#complication-preview-4").on("click", function(){ pickComplication(4); });
-      $("#complication-preview-5").on("click", function(){ pickComplication(5); });
-      $("#complication-preview-6").on("click", function(){ pickComplication(6); });
-      $("#complication-preview-7").on("click", function(){ pickComplication(7); });
-      $("#complication-preview-8").on("click", function(){ pickComplication(8); });
-      $("#complication-preview-9").on("click", function(){ pickComplication(9); });
-      $("#complication-preview-10").on("click", function(){ pickComplication(10); });
-      $("#complication-preview-11").on("click", function(){ pickComplication(11); });
-      $("#complication-preview-12").on("click", function(){ pickComplication(12); });
-      $("#complication-preview-13").on("click", function(){ pickComplication(13); });
-      $("#complication-preview-14").on("click", function(){ pickComplication(14); });
-      $("#complication-preview-15").on("click", function(){ pickComplication(15); });
-      $("#complication-preview-16").on("click", function(){ pickComplication(16); });
-      $("#complication-preview-17").on("click", function(){ pickComplication(17); });
-      $("#complication-preview-18").on("click", function(){ pickComplication(18); });
-      $("#complication-preview-19").on("click", function(){ pickComplication(19); });
-      $("#complication-preview-20").on("click", function(){ pickComplication(20); });
-      $("#complication-preview-21").on("click", function(){ pickComplication(21); });
-      $("#complication-preview-22").on("click", function(){ pickComplication(22); });
-      $("#complication-preview-23").on("click", function(){ pickComplication(23); });
-      $("#complication-preview-24").on("click", function(){ pickComplication(24); });
-      $("#complication-preview-25").on("click", function(){ pickComplication(25); });
-      $("#complication-preview-26").on("click", function(){ pickComplication(26); });
-      $("#complication-preview-27").on("click", function(){ pickComplication(27); });
-      $("#complication-preview-28").on("click", function(){ pickComplication(28); });
-      $("#complication-preview-29").on("click", function(){ pickComplication(29); });
+      $("#widget-preview-0").on("click", function(){ pickComplication(0); });
+      $("#widget-preview-1").on("click", function(){ pickComplication(1); });
+      $("#widget-preview-2").on("click", function(){ pickComplication(2); });
+      $("#widget-preview-3").on("click", function(){ pickComplication(3); });
+      $("#widget-preview-4").on("click", function(){ pickComplication(4); });
+      $("#widget-preview-5").on("click", function(){ pickComplication(5); });
+      $("#widget-preview-6").on("click", function(){ pickComplication(6); });
+      $("#widget-preview-7").on("click", function(){ pickComplication(7); });
+      $("#widget-preview-8").on("click", function(){ pickComplication(8); });
+      $("#widget-preview-9").on("click", function(){ pickComplication(9); });
+      $("#widget-preview-10").on("click", function(){ pickComplication(10); });
+      $("#widget-preview-11").on("click", function(){ pickComplication(11); });
+      $("#widget-preview-12").on("click", function(){ pickComplication(12); });
+      $("#widget-preview-13").on("click", function(){ pickComplication(13); });
+      $("#widget-preview-14").on("click", function(){ pickComplication(14); });
+      $("#widget-preview-15").on("click", function(){ pickComplication(15); });
+      $("#widget-preview-16").on("click", function(){ pickComplication(16); });
+      $("#widget-preview-17").on("click", function(){ pickComplication(17); });
+      $("#widget-preview-18").on("click", function(){ pickComplication(18); });
+      $("#widget-preview-19").on("click", function(){ pickComplication(19); });
+      $("#widget-preview-20").on("click", function(){ pickComplication(20); });
+      $("#widget-preview-21").on("click", function(){ pickComplication(21); });
+      $("#widget-preview-22").on("click", function(){ pickComplication(22); });
+      $("#widget-preview-23").on("click", function(){ pickComplication(23); });
+      $("#widget-preview-24").on("click", function(){ pickComplication(24); });
+      $("#widget-preview-25").on("click", function(){ pickComplication(25); });
+      $("#widget-preview-26").on("click", function(){ pickComplication(26); });
+      $("#widget-preview-27").on("click", function(){ pickComplication(27); });
+      $("#widget-preview-28").on("click", function(){ pickComplication(28); });
+      $("#widget-preview-29").on("click", function(){ pickComplication(29); });
 // -- end autogen
   }
 
@@ -1690,9 +1690,9 @@
 
     // remove settings that don't apply to certain platforms
 // -- autogen
-// -- ## for key in complications
+// -- ## for key in widgets
 // -- ##   for platform in key['noton']
-// --       if (getPlatform() == "{{ platform }}") $("#complication-preview-{{ key["id"] }}").hide();
+// --       if (getPlatform() == "{{ platform }}") $("#widget-preview-{{ key["id"] }}").hide();
 // -- ##   endfor
 // -- ## endfor
 
@@ -1743,43 +1743,43 @@
       RedshiftPreview.drawPreview(config, 'preview', getPlatform());
 
 // -- autogen
-// -- ## for key in complications
-// --       RedshiftPreview.previewComplication({{ key["id"] }}, config, 'complication-preview-{{ key["id"] }}-canvas', getPlatform());
+// -- ## for key in widgets
+// --       RedshiftPreview.previewComplication({{ key["id"] }}, config, 'widget-preview-{{ key["id"] }}-canvas', getPlatform());
 // -- ## endfor
-      RedshiftPreview.previewComplication(0, config, 'complication-preview-0-canvas', getPlatform());
-      RedshiftPreview.previewComplication(1, config, 'complication-preview-1-canvas', getPlatform());
-      RedshiftPreview.previewComplication(2, config, 'complication-preview-2-canvas', getPlatform());
-      RedshiftPreview.previewComplication(3, config, 'complication-preview-3-canvas', getPlatform());
-      RedshiftPreview.previewComplication(4, config, 'complication-preview-4-canvas', getPlatform());
-      RedshiftPreview.previewComplication(5, config, 'complication-preview-5-canvas', getPlatform());
-      RedshiftPreview.previewComplication(6, config, 'complication-preview-6-canvas', getPlatform());
-      RedshiftPreview.previewComplication(7, config, 'complication-preview-7-canvas', getPlatform());
-      RedshiftPreview.previewComplication(8, config, 'complication-preview-8-canvas', getPlatform());
-      RedshiftPreview.previewComplication(9, config, 'complication-preview-9-canvas', getPlatform());
-      RedshiftPreview.previewComplication(10, config, 'complication-preview-10-canvas', getPlatform());
-      RedshiftPreview.previewComplication(11, config, 'complication-preview-11-canvas', getPlatform());
-      RedshiftPreview.previewComplication(12, config, 'complication-preview-12-canvas', getPlatform());
-      RedshiftPreview.previewComplication(13, config, 'complication-preview-13-canvas', getPlatform());
-      RedshiftPreview.previewComplication(14, config, 'complication-preview-14-canvas', getPlatform());
-      RedshiftPreview.previewComplication(15, config, 'complication-preview-15-canvas', getPlatform());
-      RedshiftPreview.previewComplication(16, config, 'complication-preview-16-canvas', getPlatform());
-      RedshiftPreview.previewComplication(17, config, 'complication-preview-17-canvas', getPlatform());
-      RedshiftPreview.previewComplication(18, config, 'complication-preview-18-canvas', getPlatform());
-      RedshiftPreview.previewComplication(19, config, 'complication-preview-19-canvas', getPlatform());
-      RedshiftPreview.previewComplication(20, config, 'complication-preview-20-canvas', getPlatform());
-      RedshiftPreview.previewComplication(21, config, 'complication-preview-21-canvas', getPlatform());
-      RedshiftPreview.previewComplication(22, config, 'complication-preview-22-canvas', getPlatform());
-      RedshiftPreview.previewComplication(23, config, 'complication-preview-23-canvas', getPlatform());
-      RedshiftPreview.previewComplication(24, config, 'complication-preview-24-canvas', getPlatform());
-      RedshiftPreview.previewComplication(25, config, 'complication-preview-25-canvas', getPlatform());
-      RedshiftPreview.previewComplication(26, config, 'complication-preview-26-canvas', getPlatform());
-      RedshiftPreview.previewComplication(27, config, 'complication-preview-27-canvas', getPlatform());
-      RedshiftPreview.previewComplication(28, config, 'complication-preview-28-canvas', getPlatform());
-      RedshiftPreview.previewComplication(29, config, 'complication-preview-29-canvas', getPlatform());
+      RedshiftPreview.previewComplication(0, config, 'widget-preview-0-canvas', getPlatform());
+      RedshiftPreview.previewComplication(1, config, 'widget-preview-1-canvas', getPlatform());
+      RedshiftPreview.previewComplication(2, config, 'widget-preview-2-canvas', getPlatform());
+      RedshiftPreview.previewComplication(3, config, 'widget-preview-3-canvas', getPlatform());
+      RedshiftPreview.previewComplication(4, config, 'widget-preview-4-canvas', getPlatform());
+      RedshiftPreview.previewComplication(5, config, 'widget-preview-5-canvas', getPlatform());
+      RedshiftPreview.previewComplication(6, config, 'widget-preview-6-canvas', getPlatform());
+      RedshiftPreview.previewComplication(7, config, 'widget-preview-7-canvas', getPlatform());
+      RedshiftPreview.previewComplication(8, config, 'widget-preview-8-canvas', getPlatform());
+      RedshiftPreview.previewComplication(9, config, 'widget-preview-9-canvas', getPlatform());
+      RedshiftPreview.previewComplication(10, config, 'widget-preview-10-canvas', getPlatform());
+      RedshiftPreview.previewComplication(11, config, 'widget-preview-11-canvas', getPlatform());
+      RedshiftPreview.previewComplication(12, config, 'widget-preview-12-canvas', getPlatform());
+      RedshiftPreview.previewComplication(13, config, 'widget-preview-13-canvas', getPlatform());
+      RedshiftPreview.previewComplication(14, config, 'widget-preview-14-canvas', getPlatform());
+      RedshiftPreview.previewComplication(15, config, 'widget-preview-15-canvas', getPlatform());
+      RedshiftPreview.previewComplication(16, config, 'widget-preview-16-canvas', getPlatform());
+      RedshiftPreview.previewComplication(17, config, 'widget-preview-17-canvas', getPlatform());
+      RedshiftPreview.previewComplication(18, config, 'widget-preview-18-canvas', getPlatform());
+      RedshiftPreview.previewComplication(19, config, 'widget-preview-19-canvas', getPlatform());
+      RedshiftPreview.previewComplication(20, config, 'widget-preview-20-canvas', getPlatform());
+      RedshiftPreview.previewComplication(21, config, 'widget-preview-21-canvas', getPlatform());
+      RedshiftPreview.previewComplication(22, config, 'widget-preview-22-canvas', getPlatform());
+      RedshiftPreview.previewComplication(23, config, 'widget-preview-23-canvas', getPlatform());
+      RedshiftPreview.previewComplication(24, config, 'widget-preview-24-canvas', getPlatform());
+      RedshiftPreview.previewComplication(25, config, 'widget-preview-25-canvas', getPlatform());
+      RedshiftPreview.previewComplication(26, config, 'widget-preview-26-canvas', getPlatform());
+      RedshiftPreview.previewComplication(27, config, 'widget-preview-27-canvas', getPlatform());
+      RedshiftPreview.previewComplication(28, config, 'widget-preview-28-canvas', getPlatform());
+      RedshiftPreview.previewComplication(29, config, 'widget-preview-29-canvas', getPlatform());
 // -- end autogen
 
       for (var i = 1; i < 7; i++) {
-        RedshiftPreview.previewComplication(config["CONFIG_COMPLICATION_" + i], config, 'complication' + i, getPlatform());
+        RedshiftPreview.previewComplication(config["CONFIG_WIDGET_" + i], config, 'widget' + i, getPlatform());
       }
     }
   </script>

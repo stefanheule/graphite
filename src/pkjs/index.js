@@ -143,15 +143,15 @@ Pebble.addEventListener('webviewclosed', function (e) {
     fullconfig["CONFIG_COLOR_PERC"] = urlconfig[18];
     config["CONFIG_COLOR_PERC"] = +urlconfig[18];
     localStorage.setItem("CONFIG_COLOR_PERC", urlconfig[18]);
-    fullconfig["CONFIG_COLOR_BOTTOM_COMPLICATIONS"] = urlconfig[19];
-    config["CONFIG_COLOR_BOTTOM_COMPLICATIONS"] = +urlconfig[19];
-    localStorage.setItem("CONFIG_COLOR_BOTTOM_COMPLICATIONS", urlconfig[19]);
+    fullconfig["CONFIG_COLOR_BOTTOM_WIDGETS"] = urlconfig[19];
+    config["CONFIG_COLOR_BOTTOM_WIDGETS"] = +urlconfig[19];
+    localStorage.setItem("CONFIG_COLOR_BOTTOM_WIDGETS", urlconfig[19]);
     fullconfig["CONFIG_COLOR_BACKGROUND"] = urlconfig[20];
     config["CONFIG_COLOR_BACKGROUND"] = +urlconfig[20];
     localStorage.setItem("CONFIG_COLOR_BACKGROUND", urlconfig[20]);
-    fullconfig["CONFIG_COLOR_TOP_COMPLICATIONS"] = urlconfig[21];
-    config["CONFIG_COLOR_TOP_COMPLICATIONS"] = +urlconfig[21];
-    localStorage.setItem("CONFIG_COLOR_TOP_COMPLICATIONS", urlconfig[21]);
+    fullconfig["CONFIG_COLOR_TOP_WIDGETS"] = urlconfig[21];
+    config["CONFIG_COLOR_TOP_WIDGETS"] = +urlconfig[21];
+    localStorage.setItem("CONFIG_COLOR_TOP_WIDGETS", urlconfig[21]);
     fullconfig["CONFIG_COLOR_DAY"] = urlconfig[22];
     config["CONFIG_COLOR_DAY"] = +urlconfig[22];
     localStorage.setItem("CONFIG_COLOR_DAY", urlconfig[22]);
@@ -172,24 +172,24 @@ Pebble.addEventListener('webviewclosed', function (e) {
     localStorage.setItem("CONFIG_LOWBAT_COL", urlconfig[27]);
     fullconfig["CONFIG_ADVANCED_APPEARANCE_LOCAL"] = urlconfig[28];
     localStorage.setItem("CONFIG_ADVANCED_APPEARANCE_LOCAL", urlconfig[28]);
-    fullconfig["CONFIG_COMPLICATION_1"] = urlconfig[29];
-    config["CONFIG_COMPLICATION_1"] = +urlconfig[29];
-    localStorage.setItem("CONFIG_COMPLICATION_1", urlconfig[29]);
-    fullconfig["CONFIG_COMPLICATION_2"] = urlconfig[30];
-    config["CONFIG_COMPLICATION_2"] = +urlconfig[30];
-    localStorage.setItem("CONFIG_COMPLICATION_2", urlconfig[30]);
-    fullconfig["CONFIG_COMPLICATION_3"] = urlconfig[31];
-    config["CONFIG_COMPLICATION_3"] = +urlconfig[31];
-    localStorage.setItem("CONFIG_COMPLICATION_3", urlconfig[31]);
-    fullconfig["CONFIG_COMPLICATION_4"] = urlconfig[32];
-    config["CONFIG_COMPLICATION_4"] = +urlconfig[32];
-    localStorage.setItem("CONFIG_COMPLICATION_4", urlconfig[32]);
-    fullconfig["CONFIG_COMPLICATION_5"] = urlconfig[33];
-    config["CONFIG_COMPLICATION_5"] = +urlconfig[33];
-    localStorage.setItem("CONFIG_COMPLICATION_5", urlconfig[33]);
-    fullconfig["CONFIG_COMPLICATION_6"] = urlconfig[34];
-    config["CONFIG_COMPLICATION_6"] = +urlconfig[34];
-    localStorage.setItem("CONFIG_COMPLICATION_6", urlconfig[34]);
+    fullconfig["CONFIG_WIDGET_1"] = urlconfig[29];
+    config["CONFIG_WIDGET_1"] = +urlconfig[29];
+    localStorage.setItem("CONFIG_WIDGET_1", urlconfig[29]);
+    fullconfig["CONFIG_WIDGET_2"] = urlconfig[30];
+    config["CONFIG_WIDGET_2"] = +urlconfig[30];
+    localStorage.setItem("CONFIG_WIDGET_2", urlconfig[30]);
+    fullconfig["CONFIG_WIDGET_3"] = urlconfig[31];
+    config["CONFIG_WIDGET_3"] = +urlconfig[31];
+    localStorage.setItem("CONFIG_WIDGET_3", urlconfig[31]);
+    fullconfig["CONFIG_WIDGET_4"] = urlconfig[32];
+    config["CONFIG_WIDGET_4"] = +urlconfig[32];
+    localStorage.setItem("CONFIG_WIDGET_4", urlconfig[32]);
+    fullconfig["CONFIG_WIDGET_5"] = urlconfig[33];
+    config["CONFIG_WIDGET_5"] = +urlconfig[33];
+    localStorage.setItem("CONFIG_WIDGET_5", urlconfig[33]);
+    fullconfig["CONFIG_WIDGET_6"] = urlconfig[34];
+    config["CONFIG_WIDGET_6"] = +urlconfig[34];
+    localStorage.setItem("CONFIG_WIDGET_6", urlconfig[34]);
     fullconfig["CONFIG_PROGRESS"] = urlconfig[35];
     config["CONFIG_PROGRESS"] = +urlconfig[35];
     localStorage.setItem("CONFIG_PROGRESS", urlconfig[35]);
@@ -431,9 +431,9 @@ function concurrentRequests(urls, succ) {
     }, 30000);
 }
 
-function has_complication(ids) {
+function has_widget(ids) {
     for (var i = 1; i < 7; i++) {
-        var id = +readConfig("CONFIG_COMPLICATION_" + i);
+        var id = +readConfig("CONFIG_WIDGET_" + i);
         if (ids.indexOf(id) !== -1) return true;
     }
     return false;
@@ -444,8 +444,8 @@ function need_weather() {
 // -- autogen
 // --     var load_lowhigh = {{ config_groups_lookup["GROUP_WEATHERLOWHIGH"]["selector"] }};
 // --     var load_cur = {{ config_groups_lookup["GROUP_WEATHERCUR"]["selector"] }};
-    var load_lowhigh = has_complication([2, 3]);
-    var load_cur = has_complication([1]);
+    var load_lowhigh = has_widget([2, 3]);
+    var load_cur = has_widget([1]);
 // -- end autogen
     return [load_rain || load_lowhigh || load_cur, load_rain, load_lowhigh, load_cur];
 }

@@ -145,8 +145,8 @@ void background_update_proc(Layer *layer, GContext *ctx) {
     height_full = bounds_full.size.h;
     width_full = bounds_full.size.w;
 // -- autogen
-// --     fontsize_complications = REM({{ fontsize_complications }});
-    fontsize_complications = REM(27);
+// --     fontsize_widgets = REM({{ fontsize_widgets }});
+    fontsize_widgets = REM(27);
 // -- end autogen
 
     // get current time
@@ -193,7 +193,7 @@ void background_update_proc(Layer *layer, GContext *ctx) {
     draw_rect(fctx, bounds_full, config_color_background);
 
     // top bar
-    fixed_t fontsize_weather = fontsize_complications;
+    fixed_t fontsize_weather = fontsize_widgets;
     fixed_t topbar_height = FIXED_ROUND(fontsize_weather + REM(4));
     draw_rect(fctx, FRect(bounds.origin, FSize(width, topbar_height)), config_color_topbar_bg);
 
@@ -296,28 +296,28 @@ void background_update_proc(Layer *layer, GContext *ctx) {
         }
     }
 
-    // top complications
-    fixed_t complications_margin_topbottom = REM(6); // gap between watch bounds and complications
-    fixed_t complications_margin_leftright = REM(8);
-    complications[config_complication_1](fctx, true, FPoint(complications_margin_leftright, complications_margin_topbottom), GTextAlignmentLeft, config_color_top_complications, config_color_topbar_bg);
-    complications[config_complication_2](fctx, true, FPoint(width/2, complications_margin_topbottom), GTextAlignmentCenter, config_color_top_complications, config_color_topbar_bg);
-    complications[config_complication_3](fctx, true, FPoint(width - complications_margin_leftright, complications_margin_topbottom), GTextAlignmentRight, config_color_top_complications, config_color_topbar_bg);
+    // top widgets
+    fixed_t widgets_margin_topbottom = REM(6); // gap between watch bounds and widgets
+    fixed_t widgets_margin_leftright = REM(8);
+    widgets[config_widget_1](fctx, true, FPoint(widgets_margin_leftright, widgets_margin_topbottom), GTextAlignmentLeft, config_color_top_widgets, config_color_topbar_bg);
+    widgets[config_widget_2](fctx, true, FPoint(width/2, widgets_margin_topbottom), GTextAlignmentCenter, config_color_top_widgets, config_color_topbar_bg);
+    widgets[config_widget_3](fctx, true, FPoint(width - widgets_margin_leftright, widgets_margin_topbottom), GTextAlignmentRight, config_color_top_widgets, config_color_topbar_bg);
 
-    // bottom complications
-    fixed_t compl_y = height_full - fontsize_complications;
+    // bottom widgets
+    fixed_t compl_y = height_full - fontsize_widgets;
     fixed_t compl_y2 = compl_y - progress_height;
     fixed_t compl_w;
     bool avoid_progress;
-    // complication 4 (always higher)
-    complications[config_complication_4](fctx, true, FPoint(complications_margin_leftright, progress_no ? compl_y : compl_y2), GTextAlignmentLeft, config_color_bottom_complications, config_color_background);
-    // complication 5 (sometimes higher)
-    compl_w = complications[config_complication_5](fctx, false, FPoint(0,0), GTextAlignmentLeft, config_color_bottom_complications, config_color_background);
+    // widget 4 (always higher)
+    widgets[config_widget_4](fctx, true, FPoint(widgets_margin_leftright, progress_no ? compl_y : compl_y2), GTextAlignmentLeft, config_color_bottom_widgets, config_color_background);
+    // widget 5 (sometimes higher)
+    compl_w = widgets[config_widget_5](fctx, false, FPoint(0,0), GTextAlignmentLeft, config_color_bottom_widgets, config_color_background);
     avoid_progress = width/2 - compl_w/2 < progress_endx + REM(5);
-    complications[config_complication_5](fctx, true, FPoint(width/2, avoid_progress ? compl_y2 : compl_y), GTextAlignmentCenter, config_color_bottom_complications, config_color_background);
-    // complication 6 (sometimes higher)
-    compl_w = complications[config_complication_6](fctx, false, FPoint(0,0), GTextAlignmentLeft, config_color_bottom_complications, config_color_background);
-    avoid_progress = width - complications_margin_leftright - compl_w < progress_endx + REM(5);
-    complications[config_complication_6](fctx, true, FPoint(width - complications_margin_leftright, avoid_progress ? compl_y2 : compl_y), GTextAlignmentRight, config_color_bottom_complications, config_color_background);
+    widgets[config_widget_5](fctx, true, FPoint(width/2, avoid_progress ? compl_y2 : compl_y), GTextAlignmentCenter, config_color_bottom_widgets, config_color_background);
+    // widget 6 (sometimes higher)
+    compl_w = widgets[config_widget_6](fctx, false, FPoint(0,0), GTextAlignmentLeft, config_color_bottom_widgets, config_color_background);
+    avoid_progress = width - widgets_margin_leftright - compl_w < progress_endx + REM(5);
+    widgets[config_widget_6](fctx, true, FPoint(width - widgets_margin_leftright, avoid_progress ? compl_y2 : compl_y), GTextAlignmentRight, config_color_bottom_widgets, config_color_background);
 
     // draw the bluetooth popup
     bool bluetooth = bluetooth_connection_service_peek();

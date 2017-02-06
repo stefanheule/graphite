@@ -28,7 +28,7 @@
 #include "settings.h"
 #include "ui-util.h"
 #include "ui.h"
-#include "complications.h"
+#include "widgets.h"
 
 ////////////////////////////////////////////
 //// Configuration constants
@@ -53,21 +53,21 @@
 #define CONFIG_COLOR_PROGRESS_BAR2 16
 #define CONFIG_COLOR_TIME 17
 #define CONFIG_COLOR_PERC 18
-#define CONFIG_COLOR_BOTTOM_COMPLICATIONS 19
+#define CONFIG_COLOR_BOTTOM_WIDGETS 19
 #define CONFIG_COLOR_BACKGROUND 20
-#define CONFIG_COLOR_TOP_COMPLICATIONS 21
+#define CONFIG_COLOR_TOP_WIDGETS 21
 #define CONFIG_COLOR_DAY 22
 #define CONFIG_COLOR_NIGHT 23
 #define CONFIG_COLOR_BAT_30 24
 #define CONFIG_COLOR_BAT_20 25
 #define CONFIG_COLOR_BAT_10 26
 #define CONFIG_LOWBAT_COL 27
-#define CONFIG_COMPLICATION_1 29
-#define CONFIG_COMPLICATION_2 30
-#define CONFIG_COMPLICATION_3 31
-#define CONFIG_COMPLICATION_4 32
-#define CONFIG_COMPLICATION_5 33
-#define CONFIG_COMPLICATION_6 34
+#define CONFIG_WIDGET_1 29
+#define CONFIG_WIDGET_2 30
+#define CONFIG_WIDGET_3 31
+#define CONFIG_WIDGET_4 32
+#define CONFIG_WIDGET_5 33
+#define CONFIG_WIDGET_6 34
 #define CONFIG_PROGRESS 35
 #define CONFIG_TIME_FORMAT 36
 #define CONFIG_INFO_BELOW 37
@@ -130,21 +130,21 @@ extern uint8_t config_color_progress_bar;
 extern uint8_t config_color_progress_bar2;
 extern uint8_t config_color_time;
 extern uint8_t config_color_perc;
-extern uint8_t config_color_bottom_complications;
+extern uint8_t config_color_bottom_widgets;
 extern uint8_t config_color_background;
-extern uint8_t config_color_top_complications;
+extern uint8_t config_color_top_widgets;
 extern uint8_t config_color_day;
 extern uint8_t config_color_night;
 extern uint8_t config_color_bat_30;
 extern uint8_t config_color_bat_20;
 extern uint8_t config_color_bat_10;
 extern uint8_t config_lowbat_col;
-extern uint8_t config_complication_1;
-extern uint8_t config_complication_2;
-extern uint8_t config_complication_3;
-extern uint8_t config_complication_4;
-extern uint8_t config_complication_5;
-extern uint8_t config_complication_6;
+extern uint8_t config_widget_1;
+extern uint8_t config_widget_2;
+extern uint8_t config_widget_3;
+extern uint8_t config_widget_4;
+extern uint8_t config_widget_5;
+extern uint8_t config_widget_6;
 extern uint8_t config_progress;
 extern char config_time_format[REDSHIFT_STRINGCONFIG_MAXLEN+1];
 extern char config_info_below[REDSHIFT_STRINGCONFIG_MAXLEN+1];
@@ -158,10 +158,10 @@ extern uint16_t config_step_goal;
 //// Complications
 ////////////////////////////////////////////
 
-// complications take a parameter draw and only will actually draw the content
-// if draw==true.  Otherwise they just return the width of the complication.
-typedef fixed_t (*complication_render_t)(FContext* fctx, bool draw, FPoint position, GTextAlignment align, uint8_t foreground_color, uint8_t background_color);
-extern complication_render_t complications[];
+// widgets take a parameter draw and only will actually draw the content
+// if draw==true.  Otherwise they just return the width of the widget.
+typedef fixed_t (*widget_render_t)(FContext* fctx, bool draw, FPoint position, GTextAlignment align, uint8_t foreground_color, uint8_t background_color);
+extern widget_render_t widgets[];
 
 
 ////////////////////////////////////////////
@@ -181,7 +181,7 @@ extern fixed_t width_full;
 extern FFont* font_main;
 extern FFont* font_weather;
 extern FFont* font_icon;
-extern fixed_t fontsize_complications;
+extern fixed_t fontsize_widgets;
 
 extern bool show_bluetooth_popup;
 extern AppTimer *timer_bluetooth_popup;
