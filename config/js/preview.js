@@ -12,7 +12,7 @@ var RedshiftPreview = (function () {
         high: 26,
         icon: "a",
       },
-      rain: [0, 0, 10, 12, 10, 20, 40, 45, 60, 100, 100, 20, 0, 0, 0, 0, 0, 0, 0, 50, 40, 30],
+      rain: [20, 0, 10, 12, 10, 20, 40, 45, 60, 100, 100, 20, 0, 0, 0, 0, 0, 0, 0, 50, 40, 30],
       time: function() {
         return Math.round((new Date()) / 1000);
       },
