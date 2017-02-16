@@ -1,5 +1,5 @@
 
--include .redshift_config
+-include .graphite_config
 
 ifndef DEFAULT_PLATFORM
 $(error DEFAULT_PLATFORM is not set.  Did you run ./configure?)
@@ -33,10 +33,10 @@ release:
 	@./configure > /dev/null
 	@rm -rf releases/$(VERSION)
 	@mkdir -p releases/$(VERSION)
-	@cp build/2016-redshift.pbw releases/$(VERSION)/redshift-$(VERSION).pbw
-	@echo "git-version: $(shell git rev-parse HEAD)" >> releases/$(VERSION)/redshift-$(VERSION).meta.txt
-	@echo "date: $(shell date +%Y-%m-%d) $(shell date +%H:%M:%S)" >> releases/$(VERSION)/redshift-$(VERSION).meta.txt
-	@echo "Done, releases/$(VERSION)/redshift-$(VERSION).pbw is ready for upload."
+	@cp build/2016-graphite.pbw releases/$(VERSION)/graphite-$(VERSION).pbw
+	@echo "git-version: $(shell git rev-parse HEAD)" >> releases/$(VERSION)/graphite-$(VERSION).meta.txt
+	@echo "date: $(shell date +%Y-%m-%d) $(shell date +%H:%M:%S)" >> releases/$(VERSION)/graphite-$(VERSION).meta.txt
+	@echo "Done, releases/$(VERSION)/graphite-$(VERSION).pbw is ready for upload."
 
 build: initialize
 	# copy fonts
