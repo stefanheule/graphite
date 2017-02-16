@@ -5,10 +5,10 @@ ifndef DEFAULT_PLATFORM
 $(error DEFAULT_PLATFORM is not set.  Did you run ./configure?)
 endif
 
-REDSHIFT_CONFIG=""
-REDSHIFT_FILE="out"
+GRAPHITE_CONFIG=""
+GRAPHITE_FILE="out"
 
-REDSHIFT_PHONE_IP="192.168.1.6"
+GRAPHITE_PHONE_IP="192.168.1.6"
 
 # platform
 P=$(DEFAULT_PLATFORM)
@@ -63,13 +63,13 @@ install_emulator:
 	pebble install --emulator $(P)
 
 install_deploy: build
-	pebble install --phone $(REDSHIFT_PHONE_IP)
+	pebble install --phone $(GRAPHITE_PHONE_IP)
 
 phone_log:
-	pebble logs --phone $(REDSHIFT_PHONE_IP)
+	pebble logs --phone $(GRAPHITE_PHONE_IP)
 
 menu_icon:
-	$(MAKE) write_header REDSHIFT_CONFIG="SCREENSHOT_MENU_ICON"
+	$(MAKE) write_header GRAPHITE_CONFIG="SCREENSHOT_MENU_ICON"
 	$(MAKE) build
 	$(MAKE) install_emulator
 	$(MAKE) clean_header
@@ -90,10 +90,10 @@ config_screenshots:
 	rm tmp.png
 
 single_screenshot: write_header build_quiet
-	scripts/take_screenshot.sh $(REDSHIFT_FILE)
+	scripts/take_screenshot.sh $(GRAPHITE_FILE)
 
 write_header:
-	@echo "#define $(REDSHIFT_CONFIG)" > src/config.h
+	@echo "#define $(GRAPHITE_CONFIG)" > src/config.h
 
 clean: clean_header
 	pebble clean 2> /dev/null
