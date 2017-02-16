@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
-  <title>Redshift Configuration</title>
+  <title>Graphite Configuration</title>
     <meta name=viewport content="width=device-width, initial-scale=1" />
     <link rel='stylesheet' type='text/css' href='../../config/css/slate.min.css'>
     <link rel='stylesheet' type='text/css' href='../../config/css/fonts.css'>
@@ -88,7 +88,7 @@
   }
 
   $(document).ready(function() {
-    var config = RedshiftPreview.defaultConfig();
+    var config = GraphitePreview.defaultConfig();
     var color_screenshots = [];
     var colors = [
       GColor.VividCerulean,
@@ -156,7 +156,7 @@
     for (var i in screenshots) {
       var key = "canvas-" + screenshots[i].id;
       $("#previews").append("<canvas class='preview' id=\"" + key + "\"></canvas>");
-      RedshiftPreview.drawPreview(RedshiftPreview.overrideConfig(screenshots[i].config, config), key, "basalt", RedshiftPreview.override(screenshots[i].state, RedshiftPreview.defaultState()));
+      GraphitePreview.drawPreview(GraphitePreview.overrideConfig(screenshots[i].config, config), key, "basalt", GraphitePreview.override(screenshots[i].state, GraphitePreview.defaultState()));
     }
 
     var widgets = [];
@@ -167,7 +167,7 @@
     for (i = 0; i < n_widgets; i++) {
       var id = "widget-"+i;
       widgets.push({ id: id, });
-      RedshiftPreview.previewComplication(i, config, 'canvas-' + id, "basalt");
+      GraphitePreview.previewComplication(i, config, 'canvas-' + id, "basalt");
     }
 
     // schedule capturing the preview

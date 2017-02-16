@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
-  <title>Redshift Configuration</title>
+  <title>Graphite Configuration</title>
     <meta name=viewport content="width=device-width, initial-scale=1" />
     <link rel='stylesheet' type='text/css' href='css/slate.min.css'>
     <link rel='stylesheet' type='text/css' href='css/fonts.css'>
@@ -691,7 +691,7 @@
           </div>
         </label>
         <div class="item-container-footer">
-          If the weather update fails, then Redshift will try again after
+          If the weather update fails, then Graphite will try again after
           this amount of time.
         </div>
       </div>
@@ -791,7 +791,7 @@
     <div class='item-container'>
       <div class='item-container-header'>Donation</div>
       <div class="item-container-footer">
-      <p>If you'd like, feel free to show your appreciation for Redshift.  Donations are fully optional.</p>
+      <p>If you'd like, feel free to show your appreciation for Graphite.  Donations are fully optional.</p>
       </div>
     <!-- <form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_top" style="margin-left:20px">
 <input type="hidden" name="cmd" value="_s-xclick">
@@ -806,7 +806,7 @@
       <div class='item-container-header'>Status information</div>
 
       <div class="item-container-footer">
-      <p>Redshift Version: <span id="version-info"></span></p>
+      <p>Graphite Version: <span id="version-info"></span></p>
       <p><a id="myprefs">Platform</a>: <span id="platform-info"></span></p>
       </div>
     </div>
@@ -936,7 +936,7 @@
 
   function readValuesFromStorage(use_defaults, did_read_defaults) {
 
-    var defaults = RedshiftPreview.defaultConfig(getPlatform());
+    var defaults = GraphitePreview.defaultConfig(getPlatform());
 
     var stringTypes = [
 // -- autogen
@@ -1705,7 +1705,7 @@
     // my preferences link
     $("#myprefs").on("click", function() {
       var old = readConfig("CONFIG_WEATHER_APIKEY_LOCAL");
-      applyValues(RedshiftPreview.myDefaultConfig(getPlatform()));
+      applyValues(GraphitePreview.myDefaultConfig(getPlatform()));
       applyValue($("#CONFIG_WEATHER_APIKEY_LOCAL"), old);
       $("#CONFIG_WEATHER_APIKEY_LOCAL").focus();
     });
@@ -1740,46 +1740,46 @@
   <script type="text/javascript">
     function updateCanvas() {
       var config = readConfigFromDom();
-      RedshiftPreview.drawPreview(config, 'preview', getPlatform());
+      GraphitePreview.drawPreview(config, 'preview', getPlatform());
 
 // -- autogen
 // -- ## for key in widgets
-// --       RedshiftPreview.previewComplication({{ key["id"] }}, config, 'widget-preview-{{ key["id"] }}-canvas', getPlatform());
+// --       GraphitePreview.previewComplication({{ key["id"] }}, config, 'widget-preview-{{ key["id"] }}-canvas', getPlatform());
 // -- ## endfor
-      RedshiftPreview.previewComplication(0, config, 'widget-preview-0-canvas', getPlatform());
-      RedshiftPreview.previewComplication(1, config, 'widget-preview-1-canvas', getPlatform());
-      RedshiftPreview.previewComplication(2, config, 'widget-preview-2-canvas', getPlatform());
-      RedshiftPreview.previewComplication(3, config, 'widget-preview-3-canvas', getPlatform());
-      RedshiftPreview.previewComplication(4, config, 'widget-preview-4-canvas', getPlatform());
-      RedshiftPreview.previewComplication(5, config, 'widget-preview-5-canvas', getPlatform());
-      RedshiftPreview.previewComplication(6, config, 'widget-preview-6-canvas', getPlatform());
-      RedshiftPreview.previewComplication(7, config, 'widget-preview-7-canvas', getPlatform());
-      RedshiftPreview.previewComplication(8, config, 'widget-preview-8-canvas', getPlatform());
-      RedshiftPreview.previewComplication(9, config, 'widget-preview-9-canvas', getPlatform());
-      RedshiftPreview.previewComplication(10, config, 'widget-preview-10-canvas', getPlatform());
-      RedshiftPreview.previewComplication(11, config, 'widget-preview-11-canvas', getPlatform());
-      RedshiftPreview.previewComplication(12, config, 'widget-preview-12-canvas', getPlatform());
-      RedshiftPreview.previewComplication(13, config, 'widget-preview-13-canvas', getPlatform());
-      RedshiftPreview.previewComplication(14, config, 'widget-preview-14-canvas', getPlatform());
-      RedshiftPreview.previewComplication(15, config, 'widget-preview-15-canvas', getPlatform());
-      RedshiftPreview.previewComplication(16, config, 'widget-preview-16-canvas', getPlatform());
-      RedshiftPreview.previewComplication(17, config, 'widget-preview-17-canvas', getPlatform());
-      RedshiftPreview.previewComplication(18, config, 'widget-preview-18-canvas', getPlatform());
-      RedshiftPreview.previewComplication(19, config, 'widget-preview-19-canvas', getPlatform());
-      RedshiftPreview.previewComplication(20, config, 'widget-preview-20-canvas', getPlatform());
-      RedshiftPreview.previewComplication(21, config, 'widget-preview-21-canvas', getPlatform());
-      RedshiftPreview.previewComplication(22, config, 'widget-preview-22-canvas', getPlatform());
-      RedshiftPreview.previewComplication(23, config, 'widget-preview-23-canvas', getPlatform());
-      RedshiftPreview.previewComplication(24, config, 'widget-preview-24-canvas', getPlatform());
-      RedshiftPreview.previewComplication(25, config, 'widget-preview-25-canvas', getPlatform());
-      RedshiftPreview.previewComplication(26, config, 'widget-preview-26-canvas', getPlatform());
-      RedshiftPreview.previewComplication(27, config, 'widget-preview-27-canvas', getPlatform());
-      RedshiftPreview.previewComplication(28, config, 'widget-preview-28-canvas', getPlatform());
-      RedshiftPreview.previewComplication(29, config, 'widget-preview-29-canvas', getPlatform());
+      GraphitePreview.previewComplication(0, config, 'widget-preview-0-canvas', getPlatform());
+      GraphitePreview.previewComplication(1, config, 'widget-preview-1-canvas', getPlatform());
+      GraphitePreview.previewComplication(2, config, 'widget-preview-2-canvas', getPlatform());
+      GraphitePreview.previewComplication(3, config, 'widget-preview-3-canvas', getPlatform());
+      GraphitePreview.previewComplication(4, config, 'widget-preview-4-canvas', getPlatform());
+      GraphitePreview.previewComplication(5, config, 'widget-preview-5-canvas', getPlatform());
+      GraphitePreview.previewComplication(6, config, 'widget-preview-6-canvas', getPlatform());
+      GraphitePreview.previewComplication(7, config, 'widget-preview-7-canvas', getPlatform());
+      GraphitePreview.previewComplication(8, config, 'widget-preview-8-canvas', getPlatform());
+      GraphitePreview.previewComplication(9, config, 'widget-preview-9-canvas', getPlatform());
+      GraphitePreview.previewComplication(10, config, 'widget-preview-10-canvas', getPlatform());
+      GraphitePreview.previewComplication(11, config, 'widget-preview-11-canvas', getPlatform());
+      GraphitePreview.previewComplication(12, config, 'widget-preview-12-canvas', getPlatform());
+      GraphitePreview.previewComplication(13, config, 'widget-preview-13-canvas', getPlatform());
+      GraphitePreview.previewComplication(14, config, 'widget-preview-14-canvas', getPlatform());
+      GraphitePreview.previewComplication(15, config, 'widget-preview-15-canvas', getPlatform());
+      GraphitePreview.previewComplication(16, config, 'widget-preview-16-canvas', getPlatform());
+      GraphitePreview.previewComplication(17, config, 'widget-preview-17-canvas', getPlatform());
+      GraphitePreview.previewComplication(18, config, 'widget-preview-18-canvas', getPlatform());
+      GraphitePreview.previewComplication(19, config, 'widget-preview-19-canvas', getPlatform());
+      GraphitePreview.previewComplication(20, config, 'widget-preview-20-canvas', getPlatform());
+      GraphitePreview.previewComplication(21, config, 'widget-preview-21-canvas', getPlatform());
+      GraphitePreview.previewComplication(22, config, 'widget-preview-22-canvas', getPlatform());
+      GraphitePreview.previewComplication(23, config, 'widget-preview-23-canvas', getPlatform());
+      GraphitePreview.previewComplication(24, config, 'widget-preview-24-canvas', getPlatform());
+      GraphitePreview.previewComplication(25, config, 'widget-preview-25-canvas', getPlatform());
+      GraphitePreview.previewComplication(26, config, 'widget-preview-26-canvas', getPlatform());
+      GraphitePreview.previewComplication(27, config, 'widget-preview-27-canvas', getPlatform());
+      GraphitePreview.previewComplication(28, config, 'widget-preview-28-canvas', getPlatform());
+      GraphitePreview.previewComplication(29, config, 'widget-preview-29-canvas', getPlatform());
 // -- end autogen
 
       for (var i = 1; i < 7; i++) {
-        RedshiftPreview.previewComplication(config["CONFIG_WIDGET_" + i], config, 'widget' + i, getPlatform());
+        GraphitePreview.previewComplication(config["CONFIG_WIDGET_" + i], config, 'widget' + i, getPlatform());
       }
     }
   </script>

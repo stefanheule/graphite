@@ -1,6 +1,6 @@
 "use strict";
 
-var RedshiftPreview = (function () {
+var GraphitePreview = (function () {
 
     /** Map from canvasIDs to configurations, platform and other info. */
     var datas = {};

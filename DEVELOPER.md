@@ -1,6 +1,6 @@
 # Developer Readme
 
-Information about development matters related to Redshift.
+Information about development matters related to Graphite.
 
 ## Build system
 
@@ -22,7 +22,7 @@ This is a section that gets automatically generated.  All lines starting with `/
 
 To release a new version, do the following:
 
-- Make changes to Redshift.
+- Make changes to Graphite.
 - Document changes in `README.md` in the changelog.
 - Update version number in `scripts/initialize.py`.
 - Update table in `README.md` that relates app version numbers with configuration version numbers.

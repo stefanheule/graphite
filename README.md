@@ -1,4 +1,4 @@
-# Redshift [![Build status](https://travis-ci.org/stefanheule/graphite.svg?branch=master)](https://travis-ci.org/stefanheule/graphite)
+# Graphite [![Build status](https://travis-ci.org/stefanheule/graphite.svg?branch=master)](https://travis-ci.org/stefanheule/graphite)
 
 Available in the Pebble App Store:
 
@@ -21,7 +21,7 @@ There are many possible causes:
 
 **What does it mean when the degree sign is missing for the weather?**
 
-In this case, the last attempt to update the weather failed.  This can be for any number of reasons (see above).  Redshift will keep displaying the previous weather information until it expires.
+In this case, the last attempt to update the weather failed.  This can be for any number of reasons (see above).  Graphite will keep displaying the previous weather information until it expires.
 
 ## Changelog
 

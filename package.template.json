@@ -1,5 +1,5 @@
 {
-  "name": "Redshift",
+  "name": "Graphite",
   "author": "Stefan Heule",
   "version": "{{ version }}.0",
   "private": true,
@@ -7,7 +7,7 @@
     "pebble-app"
   ],
   "pebble": {
-    "displayName": "Redshift",
+    "displayName": "Graphite",
     "sdkVersion": "3",
     "targetPlatforms": [
     ## set targetPlatformsComma = joiner(",")
