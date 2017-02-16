@@ -14,4 +14,4 @@ addons:
     - python-virtualenv
     - python-jinja2
 env:
-- PEBBLE_SDK=pebble-sdk-4.4.1-linux64 PEBBLE_PROJECT_PATH=stefanheule/graphite
+- PEBBLE_SDK=pebble-sdk-4.5-linux64 PEBBLE_PROJECT_PATH=stefanheule/graphite
