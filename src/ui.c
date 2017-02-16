@@ -74,7 +74,7 @@ fixed_t draw_weather(FContext* fctx, bool draw, const char* icon, const char* te
     fixed_t weather_fontsize = (fixed_t)(fontsize * 1.15);
     fixed_t w1 = string_width(fctx, icon, font_weather, weather_fontsize);
     fixed_t w2 = string_width(fctx, temp, font_main, fontsize);
-    fixed_t sep = REM(2);
+    fixed_t sep = w1 == 0 || w2 == 0 ? REM(0) : REM(2);
     fixed_t w = w1 + w2 + sep;
     GTextAlignment a = GTextAlignmentLeft;
 

@@ -76,6 +76,7 @@ resources:
 
 screenshots:
 	scripts/screenshot_from_config.py
+	SUPPORTED_PLATFORMS=$(SUPPORTED_PLATFORMS) scripts/assemble_screenshots.sh
 
 config_screenshots:
 	rm -f screenshots/aplite/config.png

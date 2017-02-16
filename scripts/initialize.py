@@ -316,6 +316,16 @@ widgets = [
     'group': ['WEATHER', 'WEATHERCUR'],
   },
   {
+    'key': 'WIDGET_WEATHER_CUR_TEMP',
+    'desc': 'Weather: Current temperature',
+    'group': ['WEATHER', 'WEATHERCUR'],
+  },
+  {
+    'key': 'WIDGET_WEATHER_CUR_ICON',
+    'desc': 'Weather: Current icon',
+    'group': ['WEATHER', 'WEATHERCUR'],
+  },
+  {
     'key': 'WIDGET_WEATHER_LOW_TEMP',
     'desc': 'Weather: Today\'s low',
     'group': ['WEATHER', 'WEATHERLOWHIGH'],

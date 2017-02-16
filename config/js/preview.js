@@ -361,34 +361,36 @@ var GraphitePreview = (function () {
 var widgets = [
     widget_empty, // id 0
     widget_weather_cur_temp_icon, // id 1
-    widget_weather_low_temp, // id 2
-    widget_weather_high_temp, // id 3
-    widget_bluetooth_disconly, // id 4
-    widget_bluetooth_disconly_alt, // id 5
-    widget_bluetooth_yesno, // id 6
-    widget_battery_icon, // id 7
-    widget_quiet_offonly, // id 8
-    widget_quiet, // id 9
-    widget_steps_icon, // id 10
-    widget_steps, // id 11
-    widget_steps_short_icon, // id 12
-    widget_steps_short, // id 13
-    widget_calories_resting_icon, // id 14
-    widget_calories_resting, // id 15
-    widget_calories_active_icon, // id 16
-    widget_calories_active, // id 17
-    widget_calories_all_icon, // id 18
-    widget_calories_all, // id 19
-    widget_calories_resting_short_icon, // id 20
-    widget_calories_resting_short, // id 21
-    widget_calories_active_short_icon, // id 22
-    widget_calories_active_short, // id 23
-    widget_calories_all_short_icon, // id 24
-    widget_calories_all_short, // id 25
-    widget_ampm, // id 26
-    widget_ampm_lower, // id 27
-    widget_seconds, // id 28
-    widget_day_of_week, // id 29
+    widget_weather_cur_temp, // id 2
+    widget_weather_cur_icon, // id 3
+    widget_weather_low_temp, // id 4
+    widget_weather_high_temp, // id 5
+    widget_bluetooth_disconly, // id 6
+    widget_bluetooth_disconly_alt, // id 7
+    widget_bluetooth_yesno, // id 8
+    widget_battery_icon, // id 9
+    widget_quiet_offonly, // id 10
+    widget_quiet, // id 11
+    widget_steps_icon, // id 12
+    widget_steps, // id 13
+    widget_steps_short_icon, // id 14
+    widget_steps_short, // id 15
+    widget_calories_resting_icon, // id 16
+    widget_calories_resting, // id 17
+    widget_calories_active_icon, // id 18
+    widget_calories_active, // id 19
+    widget_calories_all_icon, // id 20
+    widget_calories_all, // id 21
+    widget_calories_resting_short_icon, // id 22
+    widget_calories_resting_short, // id 23
+    widget_calories_active_short_icon, // id 24
+    widget_calories_active_short, // id 25
+    widget_calories_all_short_icon, // id 26
+    widget_calories_all_short, // id 27
+    widget_ampm, // id 28
+    widget_ampm_lower, // id 29
+    widget_seconds, // id 30
+    widget_day_of_week, // id 31
 ];
 function draw_icon_number_widget(fctx, draw, position, align, foreground_color, background_color, icon, text, show_icon) {
   var fontsize_icon = (fontsize_widgets * 0.62);
@@ -534,6 +536,28 @@ function widget_day_of_week(fctx, draw, position, align, foreground_color, backg
   if (draw) draw_string(fctx, buffer_1, position, font_main, foreground_color, fontsize_widgets, align);
   return string_width(fctx, buffer_1, font_main, fontsize_widgets);
 }
+function widget_weather_cur_temp(fctx, draw, position, align, foreground_color, background_color) {
+  if (show_weather()) {
+    if (weather.temp_cur == GRAPHITE_UNKNOWN_WEATHER) return 0;
+    if (weather.failed) {
+      buffer_2 = sprintf("%d", weather.temp_cur);
+    } else {
+      buffer_2 = sprintf("%d°", weather.temp_cur);
+    }
+    if (draw) draw_string(fctx, buffer_2, position, font_main, foreground_color, fontsize_widgets, align);
+    return string_width(fctx, buffer_2, font_main, fontsize_widgets);
+  }
+  return 0;
+}
+function widget_weather_cur_icon(fctx, draw, position, align, foreground_color, background_color) {
+  if (show_weather()) {
+    if (weather.temp_cur == GRAPHITE_UNKNOWN_WEATHER) return 0;
+    buffer_1 = sprintf("%c", weather.icon);
+buffer_2 = "";
+    return draw_weather(fctx, draw, buffer_1, buffer_2, position, foreground_color, fontsize_widgets, align);
+  }
+  return 0;
+}
 function widget_weather_cur_temp_icon(fctx, draw, position, align, foreground_color, background_color) {
   if (show_weather()) {
     if (weather.temp_cur == GRAPHITE_UNKNOWN_WEATHER) return 0;
@@ -661,7 +685,7 @@ function draw_weather(fctx, draw, icon, temp, position, color, fontsize, align) 
     var weather_fontsize = (fontsize * 1.15);
     var w1 = string_width(fctx, icon, font_weather, weather_fontsize);
     var w2 = string_width(fctx, temp, font_main, fontsize);
-    var sep = REM(2);
+    var sep = w1 == 0 || w2 == 0 ? REM(0) : REM(2);
     var w = w1 + w2 + sep;
     var a = GTextAlignmentLeft;
     if (draw) {
@@ -971,12 +995,12 @@ function background_update_proc(layer, ctx) {
             CONFIG_COLOR_BAT_10: +GColor.Folly,
             CONFIG_LOWBAT_COL: +false,
             CONFIG_ADVANCED_APPEARANCE_LOCAL: +false,
-            CONFIG_WIDGET_1: +2,
+            CONFIG_WIDGET_1: +4,
             CONFIG_WIDGET_2: +1,
-            CONFIG_WIDGET_3: +3,
-            CONFIG_WIDGET_4: +12,
-            CONFIG_WIDGET_5: +4,
-            CONFIG_WIDGET_6: +7,
+            CONFIG_WIDGET_3: +5,
+            CONFIG_WIDGET_4: +14,
+            CONFIG_WIDGET_5: +6,
+            CONFIG_WIDGET_6: +9,
             CONFIG_PROGRESS: +1,
             CONFIG_TIME_FORMAT: "%I:0%M",
             CONFIG_INFO_BELOW: "%A, %m/%d",
@@ -1032,12 +1056,12 @@ function background_update_proc(layer, ctx) {
             CONFIG_COLOR_BAT_10: +GColor.Folly,
             CONFIG_LOWBAT_COL: +true,
             CONFIG_ADVANCED_APPEARANCE_LOCAL: +false,
-            CONFIG_WIDGET_1: +2,
+            CONFIG_WIDGET_1: +4,
             CONFIG_WIDGET_2: +1,
-            CONFIG_WIDGET_3: +3,
-            CONFIG_WIDGET_4: +12,
-            CONFIG_WIDGET_5: +4,
-            CONFIG_WIDGET_6: +7,
+            CONFIG_WIDGET_3: +5,
+            CONFIG_WIDGET_4: +14,
+            CONFIG_WIDGET_5: +6,
+            CONFIG_WIDGET_6: +9,
             CONFIG_PROGRESS: +1,
             CONFIG_TIME_FORMAT: "%I:0%M",
             CONFIG_INFO_BELOW: "%A, %m/%d",

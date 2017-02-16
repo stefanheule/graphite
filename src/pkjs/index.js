@@ -456,8 +456,8 @@ function need_weather() {
 // -- autogen
 // --     var load_lowhigh = {{ config_groups_lookup["GROUP_WEATHERLOWHIGH"]["selector"] }};
 // --     var load_cur = {{ config_groups_lookup["GROUP_WEATHERCUR"]["selector"] }};
-    var load_lowhigh = has_widget([2, 3]);
-    var load_cur = has_widget([1]);
+    var load_lowhigh = has_widget([4, 5]);
+    var load_cur = has_widget([1, 2, 3]);
 // -- end autogen
     return [load_rain || load_lowhigh || load_cur, load_rain, load_lowhigh, load_cur];
 }

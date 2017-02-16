@@ -31,34 +31,36 @@ widget_render_t widgets[] = {
 // -- ## endfor
     widget_empty, // id 0
     widget_weather_cur_temp_icon, // id 1
-    widget_weather_low_temp, // id 2
-    widget_weather_high_temp, // id 3
-    widget_bluetooth_disconly, // id 4
-    widget_bluetooth_disconly_alt, // id 5
-    widget_bluetooth_yesno, // id 6
-    widget_battery_icon, // id 7
-    widget_quiet_offonly, // id 8
-    widget_quiet, // id 9
-    widget_steps_icon, // id 10
-    widget_steps, // id 11
-    widget_steps_short_icon, // id 12
-    widget_steps_short, // id 13
-    widget_calories_resting_icon, // id 14
-    widget_calories_resting, // id 15
-    widget_calories_active_icon, // id 16
-    widget_calories_active, // id 17
-    widget_calories_all_icon, // id 18
-    widget_calories_all, // id 19
-    widget_calories_resting_short_icon, // id 20
-    widget_calories_resting_short, // id 21
-    widget_calories_active_short_icon, // id 22
-    widget_calories_active_short, // id 23
-    widget_calories_all_short_icon, // id 24
-    widget_calories_all_short, // id 25
-    widget_ampm, // id 26
-    widget_ampm_lower, // id 27
-    widget_seconds, // id 28
-    widget_day_of_week, // id 29
+    widget_weather_cur_temp, // id 2
+    widget_weather_cur_icon, // id 3
+    widget_weather_low_temp, // id 4
+    widget_weather_high_temp, // id 5
+    widget_bluetooth_disconly, // id 6
+    widget_bluetooth_disconly_alt, // id 7
+    widget_bluetooth_yesno, // id 8
+    widget_battery_icon, // id 9
+    widget_quiet_offonly, // id 10
+    widget_quiet, // id 11
+    widget_steps_icon, // id 12
+    widget_steps, // id 13
+    widget_steps_short_icon, // id 14
+    widget_steps_short, // id 15
+    widget_calories_resting_icon, // id 16
+    widget_calories_resting, // id 17
+    widget_calories_active_icon, // id 18
+    widget_calories_active, // id 19
+    widget_calories_all_icon, // id 20
+    widget_calories_all, // id 21
+    widget_calories_resting_short_icon, // id 22
+    widget_calories_resting_short, // id 23
+    widget_calories_active_short_icon, // id 24
+    widget_calories_active_short, // id 25
+    widget_calories_all_short_icon, // id 26
+    widget_calories_all_short, // id 27
+    widget_ampm, // id 28
+    widget_ampm_lower, // id 29
+    widget_seconds, // id 30
+    widget_day_of_week, // id 31
 // -- end autogen
 
 // -- jsalternative
@@ -241,6 +243,33 @@ fixed_t widget_day_of_week(FContext* fctx, bool draw, FPoint position, GTextAlig
   strftime(buffer_1, sizeof(buffer_1), "%a", t);
   if (draw) draw_string(fctx, buffer_1, position, font_main, foreground_color, fontsize_widgets, align);
   return string_width(fctx, buffer_1, font_main, fontsize_widgets);
+}
+
+fixed_t widget_weather_cur_temp(FContext* fctx, bool draw, FPoint position, GTextAlignment align, uint8_t foreground_color, uint8_t background_color) {
+  if (show_weather()) {
+    if (weather.temp_cur == GRAPHITE_UNKNOWN_WEATHER) return 0;
+    if (weather.failed) {
+      snprintf(buffer_2, 10, "%d", weather.temp_cur);
+    } else {
+      snprintf(buffer_2, 10, "%d°", weather.temp_cur);
+    }
+    if (draw) draw_string(fctx, buffer_2, position, font_main, foreground_color, fontsize_widgets, align);
+    return string_width(fctx, buffer_2, font_main, fontsize_widgets);
+  }
+  return 0;
+}
+
+fixed_t widget_weather_cur_icon(FContext* fctx, bool draw, FPoint position, GTextAlignment align, uint8_t foreground_color, uint8_t background_color) {
+  if (show_weather()) {
+    if (weather.temp_cur == GRAPHITE_UNKNOWN_WEATHER) return 0;
+    snprintf(buffer_1, 10, "%c", weather.icon);
+// -- jsalternative
+// -- buffer_2 = "";
+      buffer_2[0] = 0;
+// -- end jsalternative
+    return draw_weather(fctx, draw, buffer_1, buffer_2, position, foreground_color, fontsize_widgets, align);
+  }
+  return 0;
 }
 
 fixed_t widget_weather_cur_temp_icon(FContext* fctx, bool draw, FPoint position, GTextAlignment align, uint8_t foreground_color, uint8_t background_color) {
