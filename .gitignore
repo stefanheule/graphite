@@ -3,5 +3,5 @@ build
 .idea/workspace.xml
 .graphite_config
 package.json
-
+cmake-build-debug
 node_modules/

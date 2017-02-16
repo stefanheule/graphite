@@ -129,19 +129,39 @@ configuration = [
     'desc': 'Precipitation bars color',
   },
   {
-    'key': 'CONFIG_COLOR_BOTTOM_WIDGETS',
+    'key': 'CONFIG_COLOR_WIDGET_1',
+    'default': 'GColorBlackARGB8',
+    'desc': 'Top left widget color',
+  },
+  {
+    'key': 'CONFIG_COLOR_WIDGET_2',
+    'default': 'GColorBlackARGB8',
+    'desc': 'Top middle widget color',
+  },
+  {
+    'key': 'CONFIG_COLOR_WIDGET_3',
+    'default': 'GColorBlackARGB8',
+    'desc': 'Top right widget color',
+  },
+  {
+    'key': 'CONFIG_COLOR_WIDGET_4',
     'default': 'GColorWhiteARGB8',
-    'desc': 'Bottom widgets color',
+    'desc': 'Bottom left widget color',
+  },
+  {
+    'key': 'CONFIG_COLOR_WIDGET_5',
+    'default': 'GColorWhiteARGB8',
+    'desc': 'Bottom middle widget color',
+  },
+  {
+    'key': 'CONFIG_COLOR_WIDGET_6',
+    'default': 'GColorWhiteARGB8',
+    'desc': 'Bottom right widget color',
   },
   {
     'key': 'CONFIG_COLOR_BACKGROUND',
     'default': 'GColorBlackARGB8',
     'desc': 'Background color',
-  },
-  {
-    'key': 'CONFIG_COLOR_TOP_WIDGETS',
-    'default': 'GColorBlackARGB8',
-    'desc': 'Top widgets color',
   },
   {
     'key': 'CONFIG_COLOR_DAY',
@@ -271,7 +291,7 @@ simple_config = [
   {
     'key': 'SIMPLECONFIG_COLOR_MAIN',
     'desc': 'Main color',
-    'depends': ['CONFIG_COLOR_TIME', 'CONFIG_COLOR_PERC', 'CONFIG_COLOR_BOTTOM_WIDGETS', 'CONFIG_COLOR_PROGRESS_BAR2'],
+    'depends': ['CONFIG_COLOR_TIME', 'CONFIG_COLOR_PERC', 'CONFIG_COLOR_WIDGET_4', 'CONFIG_COLOR_WIDGET_5', 'CONFIG_COLOR_WIDGET_6', 'CONFIG_COLOR_PROGRESS_BAR2'],
   },
   {
     'key': 'SIMPLECONFIG_COLOR_ACCENT',
@@ -281,7 +301,7 @@ simple_config = [
   {
     'key': 'SIMPLECONFIG_COLOR_BACKGROUND',
     'desc': 'Background color',
-    'depends': ['CONFIG_COLOR_BACKGROUND', 'CONFIG_COLOR_TOP_WIDGETS', 'CONFIG_COLOR_NIGHT'],
+    'depends': ['CONFIG_COLOR_BACKGROUND', 'CONFIG_COLOR_WIDGET_1', 'CONFIG_COLOR_WIDGET_2', 'CONFIG_COLOR_WIDGET_3', 'CONFIG_COLOR_NIGHT'],
   },
 ]
 

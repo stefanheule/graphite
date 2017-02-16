@@ -62,9 +62,13 @@ var GraphitePreview = (function () {
      var config_color_progress_bar2;
      var config_color_time;
      var config_color_perc;
-     var config_color_bottom_widgets;
+     var config_color_widget_1;
+     var config_color_widget_2;
+     var config_color_widget_3;
+     var config_color_widget_4;
+     var config_color_widget_5;
+     var config_color_widget_6;
      var config_color_background;
-     var config_color_top_widgets;
      var config_color_day;
      var config_color_night;
      var config_color_bat_30;
@@ -281,9 +285,13 @@ var GraphitePreview = (function () {
         config_color_progress_bar2 = config["CONFIG_COLOR_PROGRESS_BAR2"];
         config_color_time = config["CONFIG_COLOR_TIME"];
         config_color_perc = config["CONFIG_COLOR_PERC"];
-        config_color_bottom_widgets = config["CONFIG_COLOR_BOTTOM_WIDGETS"];
+        config_color_widget_1 = config["CONFIG_COLOR_WIDGET_1"];
+        config_color_widget_2 = config["CONFIG_COLOR_WIDGET_2"];
+        config_color_widget_3 = config["CONFIG_COLOR_WIDGET_3"];
+        config_color_widget_4 = config["CONFIG_COLOR_WIDGET_4"];
+        config_color_widget_5 = config["CONFIG_COLOR_WIDGET_5"];
+        config_color_widget_6 = config["CONFIG_COLOR_WIDGET_6"];
         config_color_background = config["CONFIG_COLOR_BACKGROUND"];
-        config_color_top_widgets = config["CONFIG_COLOR_TOP_WIDGETS"];
         config_color_day = config["CONFIG_COLOR_DAY"];
         config_color_night = config["CONFIG_COLOR_NIGHT"];
         config_color_bat_30 = config["CONFIG_COLOR_BAT_30"];
@@ -821,20 +829,20 @@ function background_update_proc(layer, ctx) {
     }
     var widgets_margin_topbottom = REM(6); // gap between watch bounds and widgets
     var widgets_margin_leftright = REM(8);
-    widgets[config_widget_1](fctx, true, FPoint(widgets_margin_leftright, widgets_margin_topbottom), GTextAlignmentLeft, config_color_top_widgets, config_color_topbar_bg);
-    widgets[config_widget_2](fctx, true, FPoint(width/2, widgets_margin_topbottom), GTextAlignmentCenter, config_color_top_widgets, config_color_topbar_bg);
-    widgets[config_widget_3](fctx, true, FPoint(width - widgets_margin_leftright, widgets_margin_topbottom), GTextAlignmentRight, config_color_top_widgets, config_color_topbar_bg);
+    widgets[config_widget_1](fctx, true, FPoint(widgets_margin_leftright, widgets_margin_topbottom), GTextAlignmentLeft, config_color_widget_1, config_color_topbar_bg);
+    widgets[config_widget_2](fctx, true, FPoint(width/2, widgets_margin_topbottom), GTextAlignmentCenter, config_color_widget_2, config_color_topbar_bg);
+    widgets[config_widget_3](fctx, true, FPoint(width - widgets_margin_leftright, widgets_margin_topbottom), GTextAlignmentRight, config_color_widget_3, config_color_topbar_bg);
     var compl_y = height_full - fontsize_widgets;
     var compl_y2 = compl_y - progress_height;
     var compl_w;
     var avoid_progress;
-    widgets[config_widget_4](fctx, true, FPoint(widgets_margin_leftright, progress_no ? compl_y : compl_y2), GTextAlignmentLeft, config_color_bottom_widgets, config_color_background);
-    compl_w = widgets[config_widget_5](fctx, false, FPoint(0,0), GTextAlignmentLeft, config_color_bottom_widgets, config_color_background);
+    widgets[config_widget_4](fctx, true, FPoint(widgets_margin_leftright, progress_no ? compl_y : compl_y2), GTextAlignmentLeft, config_color_widget_4, config_color_background);
+    compl_w = widgets[config_widget_5](fctx, false, FPoint(0,0), GTextAlignmentLeft, config_color_widget_5, config_color_background);
     avoid_progress = width/2 - compl_w/2 < progress_endx + REM(5);
-    widgets[config_widget_5](fctx, true, FPoint(width/2, avoid_progress ? compl_y2 : compl_y), GTextAlignmentCenter, config_color_bottom_widgets, config_color_background);
-    compl_w = widgets[config_widget_6](fctx, false, FPoint(0,0), GTextAlignmentLeft, config_color_bottom_widgets, config_color_background);
+    widgets[config_widget_5](fctx, true, FPoint(width/2, avoid_progress ? compl_y2 : compl_y), GTextAlignmentCenter, config_color_widget_5, config_color_background);
+    compl_w = widgets[config_widget_6](fctx, false, FPoint(0,0), GTextAlignmentLeft, config_color_widget_6, config_color_background);
     avoid_progress = width - widgets_margin_leftright - compl_w < progress_endx + REM(5);
-    widgets[config_widget_6](fctx, true, FPoint(width - widgets_margin_leftright, avoid_progress ? compl_y2 : compl_y), GTextAlignmentRight, config_color_bottom_widgets, config_color_background);
+    widgets[config_widget_6](fctx, true, FPoint(width - widgets_margin_leftright, avoid_progress ? compl_y2 : compl_y), GTextAlignmentRight, config_color_widget_6, config_color_background);
     var bluetooth = bluetooth_connection_service_peek();
     bluetooth_popup(fctx, ctx, bluetooth);
     fctx_deinit_context(fctx);
@@ -949,9 +957,13 @@ function background_update_proc(layer, ctx) {
             CONFIG_COLOR_PROGRESS_BAR2: +GColor.White,
             CONFIG_COLOR_TIME: +GColor.White,
             CONFIG_COLOR_PERC: +GColor.White,
-            CONFIG_COLOR_BOTTOM_WIDGETS: +GColor.White,
+            CONFIG_COLOR_WIDGET_1: +GColor.Black,
+            CONFIG_COLOR_WIDGET_2: +GColor.Black,
+            CONFIG_COLOR_WIDGET_3: +GColor.Black,
+            CONFIG_COLOR_WIDGET_4: +GColor.White,
+            CONFIG_COLOR_WIDGET_5: +GColor.White,
+            CONFIG_COLOR_WIDGET_6: +GColor.White,
             CONFIG_COLOR_BACKGROUND: +GColor.Black,
-            CONFIG_COLOR_TOP_WIDGETS: +GColor.Black,
             CONFIG_COLOR_DAY: +GColor.LightGray,
             CONFIG_COLOR_NIGHT: +GColor.Black,
             CONFIG_COLOR_BAT_30: +GColor.Yellow,
@@ -1006,9 +1018,13 @@ function background_update_proc(layer, ctx) {
             CONFIG_COLOR_PROGRESS_BAR2: +GColor.White,
             CONFIG_COLOR_TIME: +GColor.White,
             CONFIG_COLOR_PERC: +GColor.White,
-            CONFIG_COLOR_BOTTOM_WIDGETS: +GColor.White,
+            CONFIG_COLOR_WIDGET_1: +GColor.Black,
+            CONFIG_COLOR_WIDGET_2: +GColor.Black,
+            CONFIG_COLOR_WIDGET_3: +GColor.Black,
+            CONFIG_COLOR_WIDGET_4: +GColor.White,
+            CONFIG_COLOR_WIDGET_5: +GColor.White,
+            CONFIG_COLOR_WIDGET_6: +GColor.White,
             CONFIG_COLOR_BACKGROUND: +GColor.Black,
-            CONFIG_COLOR_TOP_WIDGETS: +GColor.Black,
             CONFIG_COLOR_DAY: +GColor.LightGray,
             CONFIG_COLOR_NIGHT: +GColor.Black,
             CONFIG_COLOR_BAT_30: +GColor.Yellow,
@@ -1107,7 +1123,9 @@ function background_update_proc(layer, ctx) {
           if ("SIMPLECONFIG_COLOR_MAIN" in new_vals) {
             res["CONFIG_COLOR_TIME"] = new_vals["SIMPLECONFIG_COLOR_MAIN"];
             res["CONFIG_COLOR_PERC"] = new_vals["SIMPLECONFIG_COLOR_MAIN"];
-            res["CONFIG_COLOR_BOTTOM_WIDGETS"] = new_vals["SIMPLECONFIG_COLOR_MAIN"];
+            res["CONFIG_COLOR_WIDGET_4"] = new_vals["SIMPLECONFIG_COLOR_MAIN"];
+            res["CONFIG_COLOR_WIDGET_5"] = new_vals["SIMPLECONFIG_COLOR_MAIN"];
+            res["CONFIG_COLOR_WIDGET_6"] = new_vals["SIMPLECONFIG_COLOR_MAIN"];
             res["CONFIG_COLOR_PROGRESS_BAR2"] = new_vals["SIMPLECONFIG_COLOR_MAIN"];
           }
           if ("SIMPLECONFIG_COLOR_ACCENT" in new_vals) {
@@ -1117,7 +1135,9 @@ function background_update_proc(layer, ctx) {
           }
           if ("SIMPLECONFIG_COLOR_BACKGROUND" in new_vals) {
             res["CONFIG_COLOR_BACKGROUND"] = new_vals["SIMPLECONFIG_COLOR_BACKGROUND"];
-            res["CONFIG_COLOR_TOP_WIDGETS"] = new_vals["SIMPLECONFIG_COLOR_BACKGROUND"];
+            res["CONFIG_COLOR_WIDGET_1"] = new_vals["SIMPLECONFIG_COLOR_BACKGROUND"];
+            res["CONFIG_COLOR_WIDGET_2"] = new_vals["SIMPLECONFIG_COLOR_BACKGROUND"];
+            res["CONFIG_COLOR_WIDGET_3"] = new_vals["SIMPLECONFIG_COLOR_BACKGROUND"];
             res["CONFIG_COLOR_NIGHT"] = new_vals["SIMPLECONFIG_COLOR_BACKGROUND"];
           }
 // -- end autogen

@@ -343,20 +343,44 @@
       </div>
       <div class="item-container-content">
         <label class='item'>
-          Bottom widgets color
-          <input id='CONFIG_COLOR_BOTTOM_WIDGETS' type='text' class='item-color item-color-normal'>
+          Top left widget color
+          <input id='CONFIG_COLOR_WIDGET_1' type='text' class='item-color item-color-normal'>
+        </label>
+      </div>
+      <div class="item-container-content">
+        <label class='item'>
+          Top middle widget color
+          <input id='CONFIG_COLOR_WIDGET_2' type='text' class='item-color item-color-normal'>
+        </label>
+      </div>
+      <div class="item-container-content">
+        <label class='item'>
+          Top right widget color
+          <input id='CONFIG_COLOR_WIDGET_3' type='text' class='item-color item-color-normal'>
+        </label>
+      </div>
+      <div class="item-container-content">
+        <label class='item'>
+          Bottom left widget color
+          <input id='CONFIG_COLOR_WIDGET_4' type='text' class='item-color item-color-normal'>
+        </label>
+      </div>
+      <div class="item-container-content">
+        <label class='item'>
+          Bottom middle widget color
+          <input id='CONFIG_COLOR_WIDGET_5' type='text' class='item-color item-color-normal'>
+        </label>
+      </div>
+      <div class="item-container-content">
+        <label class='item'>
+          Bottom right widget color
+          <input id='CONFIG_COLOR_WIDGET_6' type='text' class='item-color item-color-normal'>
         </label>
       </div>
       <div class="item-container-content">
         <label class='item'>
           Background color
           <input id='CONFIG_COLOR_BACKGROUND' type='text' class='item-color item-color-normal'>
-        </label>
-      </div>
-      <div class="item-container-content">
-        <label class='item'>
-          Top widgets color
-          <input id='CONFIG_COLOR_TOP_WIDGETS' type='text' class='item-color item-color-normal'>
         </label>
       </div>
       <div class="item-container-content">
@@ -1040,7 +1064,9 @@
     applyValue(el, mode([
       config["CONFIG_COLOR_TIME"],
       config["CONFIG_COLOR_PERC"],
-      config["CONFIG_COLOR_BOTTOM_WIDGETS"],
+      config["CONFIG_COLOR_WIDGET_4"],
+      config["CONFIG_COLOR_WIDGET_5"],
+      config["CONFIG_COLOR_WIDGET_6"],
       config["CONFIG_COLOR_PROGRESS_BAR2"],
     ]));
 
@@ -1054,7 +1080,9 @@
     el = $("#SIMPLECONFIG_COLOR_BACKGROUND");
     applyValue(el, mode([
       config["CONFIG_COLOR_BACKGROUND"],
-      config["CONFIG_COLOR_TOP_WIDGETS"],
+      config["CONFIG_COLOR_WIDGET_1"],
+      config["CONFIG_COLOR_WIDGET_2"],
+      config["CONFIG_COLOR_WIDGET_3"],
       config["CONFIG_COLOR_NIGHT"],
     ]));
 // -- end autogen
@@ -1097,31 +1125,35 @@
         "CONFIG_COLOR_PROGRESS_BAR2": 16,
         "CONFIG_COLOR_TIME": 17,
         "CONFIG_COLOR_PERC": 18,
-        "CONFIG_COLOR_BOTTOM_WIDGETS": 19,
-        "CONFIG_COLOR_BACKGROUND": 20,
-        "CONFIG_COLOR_TOP_WIDGETS": 21,
-        "CONFIG_COLOR_DAY": 22,
-        "CONFIG_COLOR_NIGHT": 23,
-        "CONFIG_COLOR_BAT_30": 24,
-        "CONFIG_COLOR_BAT_20": 25,
-        "CONFIG_COLOR_BAT_10": 26,
-        "CONFIG_LOWBAT_COL": 27,
-        "CONFIG_ADVANCED_APPEARANCE_LOCAL": 28,
-        "CONFIG_WIDGET_1": 29,
-        "CONFIG_WIDGET_2": 30,
-        "CONFIG_WIDGET_3": 31,
-        "CONFIG_WIDGET_4": 32,
-        "CONFIG_WIDGET_5": 33,
-        "CONFIG_WIDGET_6": 34,
-        "CONFIG_PROGRESS": 35,
-        "CONFIG_TIME_FORMAT": 36,
-        "CONFIG_INFO_BELOW": 37,
-        "CONFIG_UPDATE_SECOND": 38,
-        "CONFIG_ADVANCED_FORMAT_LOCAL": 39,
-        "CONFIG_TIME_FORMAT_LOCAL": 40,
-        "CONFIG_INFO_BELOW_LOCAL": 41,
-        "CONFIG_SHOW_DAYNIGHT": 42,
-        "CONFIG_STEP_GOAL": 43,
+        "CONFIG_COLOR_WIDGET_1": 19,
+        "CONFIG_COLOR_WIDGET_2": 20,
+        "CONFIG_COLOR_WIDGET_3": 21,
+        "CONFIG_COLOR_WIDGET_4": 22,
+        "CONFIG_COLOR_WIDGET_5": 23,
+        "CONFIG_COLOR_WIDGET_6": 24,
+        "CONFIG_COLOR_BACKGROUND": 25,
+        "CONFIG_COLOR_DAY": 26,
+        "CONFIG_COLOR_NIGHT": 27,
+        "CONFIG_COLOR_BAT_30": 28,
+        "CONFIG_COLOR_BAT_20": 29,
+        "CONFIG_COLOR_BAT_10": 30,
+        "CONFIG_LOWBAT_COL": 31,
+        "CONFIG_ADVANCED_APPEARANCE_LOCAL": 32,
+        "CONFIG_WIDGET_1": 33,
+        "CONFIG_WIDGET_2": 34,
+        "CONFIG_WIDGET_3": 35,
+        "CONFIG_WIDGET_4": 36,
+        "CONFIG_WIDGET_5": 37,
+        "CONFIG_WIDGET_6": 38,
+        "CONFIG_PROGRESS": 39,
+        "CONFIG_TIME_FORMAT": 40,
+        "CONFIG_INFO_BELOW": 41,
+        "CONFIG_UPDATE_SECOND": 42,
+        "CONFIG_ADVANCED_FORMAT_LOCAL": 43,
+        "CONFIG_TIME_FORMAT_LOCAL": 44,
+        "CONFIG_INFO_BELOW_LOCAL": 45,
+        "CONFIG_SHOW_DAYNIGHT": 46,
+        "CONFIG_STEP_GOAL": 47,
 // -- end autogen
     };
 
@@ -1323,7 +1355,9 @@
     if (id == "SIMPLECONFIG_COLOR_MAIN") {
       applyValue($("#CONFIG_COLOR_TIME"), value);
       applyValue($("#CONFIG_COLOR_PERC"), value);
-      applyValue($("#CONFIG_COLOR_BOTTOM_WIDGETS"), value);
+      applyValue($("#CONFIG_COLOR_WIDGET_4"), value);
+      applyValue($("#CONFIG_COLOR_WIDGET_5"), value);
+      applyValue($("#CONFIG_COLOR_WIDGET_6"), value);
       applyValue($("#CONFIG_COLOR_PROGRESS_BAR2"), value);
     }
     if (id == "SIMPLECONFIG_COLOR_ACCENT") {
@@ -1333,7 +1367,9 @@
     }
     if (id == "SIMPLECONFIG_COLOR_BACKGROUND") {
       applyValue($("#CONFIG_COLOR_BACKGROUND"), value);
-      applyValue($("#CONFIG_COLOR_TOP_WIDGETS"), value);
+      applyValue($("#CONFIG_COLOR_WIDGET_1"), value);
+      applyValue($("#CONFIG_COLOR_WIDGET_2"), value);
+      applyValue($("#CONFIG_COLOR_WIDGET_3"), value);
       applyValue($("#CONFIG_COLOR_NIGHT"), value);
     }
 // -- end autogen
@@ -1435,14 +1471,18 @@
       allDepVals = [
         readOneConfig($("#CONFIG_COLOR_TIME")),
         readOneConfig($("#CONFIG_COLOR_PERC")),
-        readOneConfig($("#CONFIG_COLOR_BOTTOM_WIDGETS")),
+        readOneConfig($("#CONFIG_COLOR_WIDGET_4")),
+        readOneConfig($("#CONFIG_COLOR_WIDGET_5")),
+        readOneConfig($("#CONFIG_COLOR_WIDGET_6")),
         readOneConfig($("#CONFIG_COLOR_PROGRESS_BAR2")),
       ];
       if (!allSame(allDepVals)) {
         options = "";
         options += "\n- Time color (" + GColor.toName(readOneConfig($("#CONFIG_COLOR_TIME"))) + ")";
         options += "\n- Precipitation bars color (" + GColor.toName(readOneConfig($("#CONFIG_COLOR_PERC"))) + ")";
-        options += "\n- Bottom widgets color (" + GColor.toName(readOneConfig($("#CONFIG_COLOR_BOTTOM_WIDGETS"))) + ")";
+        options += "\n- Bottom left widget color (" + GColor.toName(readOneConfig($("#CONFIG_COLOR_WIDGET_4"))) + ")";
+        options += "\n- Bottom middle widget color (" + GColor.toName(readOneConfig($("#CONFIG_COLOR_WIDGET_5"))) + ")";
+        options += "\n- Bottom right widget color (" + GColor.toName(readOneConfig($("#CONFIG_COLOR_WIDGET_6"))) + ")";
         options += "\n- Second progress bar color (" + GColor.toName(readOneConfig($("#CONFIG_COLOR_PROGRESS_BAR2"))) + ")";
         if (!window.confirm("In the simplified configuration, the colors for all of " + options + "\nare represented as just a single value called 'Main color'.  However, in your current configuration, they do not have all the same value.  Do you still want to switch to the simplified configuration?  It will force all of these to have the same color: " + GColor.toName(mode(allDepVals)) + ".")) {
           applyValue($("#" + id), true);
@@ -1450,7 +1490,9 @@
         } else {
           applyValue($("#CONFIG_COLOR_TIME"), mode(allDepVals));
           applyValue($("#CONFIG_COLOR_PERC"), mode(allDepVals));
-          applyValue($("#CONFIG_COLOR_BOTTOM_WIDGETS"), mode(allDepVals));
+          applyValue($("#CONFIG_COLOR_WIDGET_4"), mode(allDepVals));
+          applyValue($("#CONFIG_COLOR_WIDGET_5"), mode(allDepVals));
+          applyValue($("#CONFIG_COLOR_WIDGET_6"), mode(allDepVals));
           applyValue($("#CONFIG_COLOR_PROGRESS_BAR2"), mode(allDepVals));
           updateUI();
         }
@@ -1477,20 +1519,26 @@
       }
       allDepVals = [
         readOneConfig($("#CONFIG_COLOR_BACKGROUND")),
-        readOneConfig($("#CONFIG_COLOR_TOP_WIDGETS")),
+        readOneConfig($("#CONFIG_COLOR_WIDGET_1")),
+        readOneConfig($("#CONFIG_COLOR_WIDGET_2")),
+        readOneConfig($("#CONFIG_COLOR_WIDGET_3")),
         readOneConfig($("#CONFIG_COLOR_NIGHT")),
       ];
       if (!allSame(allDepVals)) {
         options = "";
         options += "\n- Background color (" + GColor.toName(readOneConfig($("#CONFIG_COLOR_BACKGROUND"))) + ")";
-        options += "\n- Top widgets color (" + GColor.toName(readOneConfig($("#CONFIG_COLOR_TOP_WIDGETS"))) + ")";
+        options += "\n- Top left widget color (" + GColor.toName(readOneConfig($("#CONFIG_COLOR_WIDGET_1"))) + ")";
+        options += "\n- Top middle widget color (" + GColor.toName(readOneConfig($("#CONFIG_COLOR_WIDGET_2"))) + ")";
+        options += "\n- Top right widget color (" + GColor.toName(readOneConfig($("#CONFIG_COLOR_WIDGET_3"))) + ")";
         options += "\n- Precipitation night time indicator color (" + GColor.toName(readOneConfig($("#CONFIG_COLOR_NIGHT"))) + ")";
         if (!window.confirm("In the simplified configuration, the colors for all of " + options + "\nare represented as just a single value called 'Background color'.  However, in your current configuration, they do not have all the same value.  Do you still want to switch to the simplified configuration?  It will force all of these to have the same color: " + GColor.toName(mode(allDepVals)) + ".")) {
           applyValue($("#" + id), true);
           return false;
         } else {
           applyValue($("#CONFIG_COLOR_BACKGROUND"), mode(allDepVals));
-          applyValue($("#CONFIG_COLOR_TOP_WIDGETS"), mode(allDepVals));
+          applyValue($("#CONFIG_COLOR_WIDGET_1"), mode(allDepVals));
+          applyValue($("#CONFIG_COLOR_WIDGET_2"), mode(allDepVals));
+          applyValue($("#CONFIG_COLOR_WIDGET_3"), mode(allDepVals));
           applyValue($("#CONFIG_COLOR_NIGHT"), mode(allDepVals));
           updateUI();
         }

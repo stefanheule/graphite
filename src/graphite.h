@@ -53,32 +53,36 @@
 #define CONFIG_COLOR_PROGRESS_BAR2 16
 #define CONFIG_COLOR_TIME 17
 #define CONFIG_COLOR_PERC 18
-#define CONFIG_COLOR_BOTTOM_WIDGETS 19
-#define CONFIG_COLOR_BACKGROUND 20
-#define CONFIG_COLOR_TOP_WIDGETS 21
-#define CONFIG_COLOR_DAY 22
-#define CONFIG_COLOR_NIGHT 23
-#define CONFIG_COLOR_BAT_30 24
-#define CONFIG_COLOR_BAT_20 25
-#define CONFIG_COLOR_BAT_10 26
-#define CONFIG_LOWBAT_COL 27
-#define CONFIG_WIDGET_1 29
-#define CONFIG_WIDGET_2 30
-#define CONFIG_WIDGET_3 31
-#define CONFIG_WIDGET_4 32
-#define CONFIG_WIDGET_5 33
-#define CONFIG_WIDGET_6 34
-#define CONFIG_PROGRESS 35
-#define CONFIG_TIME_FORMAT 36
-#define CONFIG_INFO_BELOW 37
-#define CONFIG_UPDATE_SECOND 38
-#define CONFIG_SHOW_DAYNIGHT 42
-#define CONFIG_STEP_GOAL 43
+#define CONFIG_COLOR_WIDGET_1 19
+#define CONFIG_COLOR_WIDGET_2 20
+#define CONFIG_COLOR_WIDGET_3 21
+#define CONFIG_COLOR_WIDGET_4 22
+#define CONFIG_COLOR_WIDGET_5 23
+#define CONFIG_COLOR_WIDGET_6 24
+#define CONFIG_COLOR_BACKGROUND 25
+#define CONFIG_COLOR_DAY 26
+#define CONFIG_COLOR_NIGHT 27
+#define CONFIG_COLOR_BAT_30 28
+#define CONFIG_COLOR_BAT_20 29
+#define CONFIG_COLOR_BAT_10 30
+#define CONFIG_LOWBAT_COL 31
+#define CONFIG_WIDGET_1 33
+#define CONFIG_WIDGET_2 34
+#define CONFIG_WIDGET_3 35
+#define CONFIG_WIDGET_4 36
+#define CONFIG_WIDGET_5 37
+#define CONFIG_WIDGET_6 38
+#define CONFIG_PROGRESS 39
+#define CONFIG_TIME_FORMAT 40
+#define CONFIG_INFO_BELOW 41
+#define CONFIG_UPDATE_SECOND 42
+#define CONFIG_SHOW_DAYNIGHT 46
+#define CONFIG_STEP_GOAL 47
 // -- end autogen
 
 // -- autogen
 // -- #define GRAPHITE_N_CONFIG {{ num_config_items }}
-#define GRAPHITE_N_CONFIG 43
+#define GRAPHITE_N_CONFIG 47
 // -- end autogen
 
 // -- autogen
@@ -130,9 +134,13 @@ extern uint8_t config_color_progress_bar;
 extern uint8_t config_color_progress_bar2;
 extern uint8_t config_color_time;
 extern uint8_t config_color_perc;
-extern uint8_t config_color_bottom_widgets;
+extern uint8_t config_color_widget_1;
+extern uint8_t config_color_widget_2;
+extern uint8_t config_color_widget_3;
+extern uint8_t config_color_widget_4;
+extern uint8_t config_color_widget_5;
+extern uint8_t config_color_widget_6;
 extern uint8_t config_color_background;
-extern uint8_t config_color_top_widgets;
 extern uint8_t config_color_day;
 extern uint8_t config_color_night;
 extern uint8_t config_color_bat_30;
