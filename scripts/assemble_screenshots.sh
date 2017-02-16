@@ -4,6 +4,16 @@
 
 set -e
 
+function optpng {
+  png=$1
+  pngcrush -rem time $png tmp.png &> /dev/null
+  mv tmp.png $png
+}
+
+convert screenshots/basalt/graphite-1.png -resize 21x25 resources/menu_icon.png
+convert resources/menu_icon.png -background transparent -gravity center -extent 25x25 resources/menu_icon.png
+optpng resources/menu_icon.png
+
 for platform in $SUPPORTED_PLATFORMS; do
 
   watch_width=144
@@ -31,7 +41,6 @@ done
 
 for platform in $SUPPORTED_PLATFORMS; do
   for f in screenshots/$platform/*.png; do
-    pngcrush -rem time $f tmp.png &> /dev/null
-    mv tmp.png $f
+    optpng $f
   done
 done
