@@ -1,4 +1,4 @@
-# Graphite [![Build status](https://travis-ci.org/stefanheule/graphite.svg?branch=master)](https://travis-ci.org/stefanheule/graphite)
+# Graphite
 
 Available in the Pebble App Store:
 
