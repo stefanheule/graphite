@@ -57,7 +57,7 @@ Pebble.addEventListener('showConfiguration', function () {
     var url = 'https://stefanheule.com/graphite/config/10/index.html';
     url = 'https://rawgit.com/stefanheule/graphite/master/config/';
 
-    url = 'https://local.com/graphite/config/0/index.html';
+    // url = 'https://local.com/graphite/config/0/index.html';
 
     url += '?platform=' + encodeURIComponent(getPlatform());
     url += '&watch=' + encodeURIComponent(getDetails());
