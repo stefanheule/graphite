@@ -55,7 +55,7 @@ Pull requests are welcome.
 
 ## License
 
-Copyright 2016 Stefan Heule
+Copyright 2016-2017 Stefan Heule
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
