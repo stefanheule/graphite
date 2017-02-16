@@ -1,3 +1,3 @@
 [submodule "screenshots/automate-save-page-as"]
 	path = screenshots/automate-save-page-as
-	url = git@github.com:abiyani/automate-save-page-as.git
+	url = https://github.com/abiyani/automate-save-page-as.git

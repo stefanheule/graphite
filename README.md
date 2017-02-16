@@ -6,22 +6,7 @@ Available in the Pebble App Store:
 
 ## Overview
 
-## Screenshots
-
-## FAQ
-
-**No weather information is displayed**
-
-There are many possible causes:
-
-- Ensure that your phone is connected to the internet.
-- If you use darksky.net or wunderground.com as a weather source, make sure the API key is correct.
-- If you use a custom location, make sure it is a valid location.
-- Make sure the color for the widget is different from the background color.
-
-**What does it mean when the degree sign is missing for the weather?**
-
-In this case, the last attempt to update the weather failed.  This can be for any number of reasons (see above).  Graphite will keep displaying the previous weather information until it expires.
+See [stefanheule.com/graphite/](https://stefanheule.com/graphite/).
 
 ## Changelog
 
