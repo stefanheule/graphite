@@ -56,7 +56,7 @@ config:
 log:
 	pebble logs --emulator $(P)
 
-travis_build:
+travis_build: initialize
 	yes | ~/pebble-dev/${PEBBLE_SDK}/bin/pebble build
 
 install_emulator:
