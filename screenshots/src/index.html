@@ -106,18 +106,18 @@
     var ncols = colors.length;
     for (var i = 0; i < ncols; i += 1) {
       var idx = (6 + i) % ncols;
-      color_screenshots.push(colored('redshift-color-' + (i+1), colors[idx]))
+      color_screenshots.push(colored('graphite-color-' + (i+1), colors[idx]))
     }
     var screenshots = [
       {
-        id: "redshift-1",
+        id: "graphite-1",
         state: {
           time: time,
           bluetooth: true,
         },
       },
       {
-        id: "redshift-2",
+        id: "graphite-2",
         state: {
           time: time,
           weather: {
@@ -134,7 +134,7 @@
         }
       },
       {
-        id: "redshift-3",
+        id: "graphite-3",
         state: {
           time: time,
           weather: {

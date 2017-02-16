@@ -464,8 +464,8 @@ files_to_render = [
   "package.template.json",
 ]
 files_to_inline_render = [
-  "src/redshift.h",
-  "src/redshift.c",
+  "src/graphite.h",
+  "src/graphite.c",
   "src/settings.c",
   "src/widgets.c",
   "src/widgets.h",
@@ -476,7 +476,7 @@ files_to_inline_render = [
   "screenshots/src/index.html"
 ]
 files_to_maybe_inline_render = [
-  "/home/stefan/dev/web/www/inc/php/tpl/blueshift.tpl.php"
+  "/home/stefan/dev/web/www/inc/php/tpl/graphite.tpl.php"
 ]
 
 now = datetime.datetime(2016, 11, 27, 17, 44, 57, 0)
@@ -618,11 +618,11 @@ def add_key_id(keys, prefix, start_id):
 
 def read_configure(key):
   """Read the value of a ./configure setting"""
-  config = read_file(".redshift_config")
+  config = read_file(".graphite_config")
   for line in config.split("\n"):
     if line[0:len(key)] == key:
       return line[len(key)+1:].strip('"')
-  error("tried to read '%s' in .redshift_config, but key does not exist." % (key))
+  error("tried to read '%s' in .graphite_config, but key does not exist." % (key))
 
 def read_file(name):
   """Read a file from disk"""

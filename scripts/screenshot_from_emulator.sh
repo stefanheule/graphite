@@ -10,7 +10,7 @@ function take_screenshot {
 pebble wipe
 pebble kill
 
-for platform in $REDSHIFT_SUPPORTED_PLATFORMS; do
+for platform in $GRAPHITE_SUPPORTED_PLATFORMS; do
   (take_screenshot $1 $platform)
   pebble wipe
   pebble kill

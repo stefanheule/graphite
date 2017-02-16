@@ -12,10 +12,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef REDSHIFT_FCTX_H
-#define REDSHIFT_FCTX_H
+#ifndef GRAPHITE_FCTX_H
+#define GRAPHITE_FCTX_H
 
-#include "redshift.h"
+#include "graphite.h"
 
 #define FRect(origin, size) ((FRect){(origin), (size)})
 #define FSize(w, h) ((FSize){(w), (h)})
@@ -30,4 +30,4 @@ fixed_t string_width(FContext *fctx, const char *str, FFont *font, int size);
 void draw_rect(FContext *fctx, FRect rect, uint8_t color);
 void draw_circle(FContext *fctx, FPoint center, fixed_t r, uint8_t color);
 
-#endif //REDSHIFT_FCTX_H
+#endif //GRAPHITE_FCTX_H

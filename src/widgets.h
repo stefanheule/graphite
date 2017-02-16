@@ -12,10 +12,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef REDSHIFT_WIDGETS_H
-#define REDSHIFT_WIDGETS_H
+#ifndef GRAPHITE_WIDGETS_H
+#define GRAPHITE_WIDGETS_H
 
-#include "redshift.h"
+#include "graphite.h"
 
 // -- autogen
 // -- ## for key in widgets
@@ -54,4 +54,4 @@ fixed_t widget_day_of_week(FContext* fctx, bool draw, FPoint position, GTextAlig
 // -- end autogen
 
 
-#endif //REDSHIFT_WIDGETS_H
+#endif //GRAPHITE_WIDGETS_H

@@ -1188,7 +1188,7 @@
   function post(event, data) {
     if (window.location.hostname != "stefanheule.com") return;
     var http = new XMLHttpRequest();
-    var url = "https://stefanheule.com/redshift/analytics/";
+    var url = "https://stefanheule.com/graphite/analytics/";
     var params = "id=" + __uid + "&event=" + event;
     for (var k in data) {
       var val = data[k];

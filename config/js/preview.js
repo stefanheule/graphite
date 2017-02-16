@@ -122,7 +122,7 @@ var RedshiftPreview = (function () {
     var PBL_DISPLAY_WIDTH;
     var PBL_DISPLAY_HEIGHT;
     var IF_HR;
-    var REDSHIFT_UNKNOWN_WEATHER = 32767;
+    var GRAPHITE_UNKNOWN_WEATHER = 32767;
 
     // graphics functions and constants
     function GPoint(x, y) { return {x: x, y: y}; }
@@ -528,7 +528,7 @@ function widget_day_of_week(fctx, draw, position, align, foreground_color, backg
 }
 function widget_weather_cur_temp_icon(fctx, draw, position, align, foreground_color, background_color) {
   if (show_weather()) {
-    if (weather.temp_cur == REDSHIFT_UNKNOWN_WEATHER) return 0;
+    if (weather.temp_cur == GRAPHITE_UNKNOWN_WEATHER) return 0;
     buffer_1 = sprintf("%c", weather.icon);
     if (weather.failed) {
         buffer_2 = sprintf("%d", weather.temp_cur);
@@ -541,7 +541,7 @@ function widget_weather_cur_temp_icon(fctx, draw, position, align, foreground_co
 }
 function widget_weather_low_temp(fctx, draw, position, align, foreground_color, background_color) {
   if (show_weather()) {
-    if (weather.temp_low == REDSHIFT_UNKNOWN_WEATHER) return 0;
+    if (weather.temp_low == GRAPHITE_UNKNOWN_WEATHER) return 0;
     if (weather.failed) {
         buffer_1 = sprintf("%d", weather.temp_low);
     } else {
@@ -554,7 +554,7 @@ function widget_weather_low_temp(fctx, draw, position, align, foreground_color, 
 }
 function widget_weather_high_temp(fctx, draw, position, align, foreground_color, background_color) {
   if (show_weather()) {
-    if (weather.temp_high == REDSHIFT_UNKNOWN_WEATHER) return 0;
+    if (weather.temp_high == GRAPHITE_UNKNOWN_WEATHER) return 0;
     if (weather.failed) {
         buffer_1 = sprintf("%d", weather.temp_high);
     } else {

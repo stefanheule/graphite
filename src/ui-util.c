@@ -13,7 +13,7 @@
 // limitations under the License.
 
 #include "ui-util.h"
-#include "redshift.h"
+#include "graphite.h"
 
 /**
  * Draw a string with a given font, color, size and position.

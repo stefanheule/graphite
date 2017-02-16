@@ -12,8 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef REDSHIFT_REDSHIFT_H
-#define REDSHIFT_REDSHIFT_H
+#ifndef GRAPHITE_GRAPHITE_H
+#define GRAPHITE_GRAPHITE_H
 
 #include <pebble.h>
 
@@ -77,8 +77,8 @@
 // -- end autogen
 
 // -- autogen
-// -- #define REDSHIFT_N_CONFIG {{ num_config_items }}
-#define REDSHIFT_N_CONFIG 43
+// -- #define GRAPHITE_N_CONFIG {{ num_config_items }}
+#define GRAPHITE_N_CONFIG 43
 // -- end autogen
 
 // -- autogen
@@ -105,7 +105,7 @@
 //// Configuration values
 ////////////////////////////////////////////
 
-#define REDSHIFT_STRINGCONFIG_MAXLEN 70
+#define GRAPHITE_STRINGCONFIG_MAXLEN 70
 
 // -- autogen
 // -- ## for key in configuration
@@ -113,7 +113,7 @@
 // -- ##   if key["type"] != "string"
 // -- extern {{ key["type"] | replace("string", "char") }} {{ key["key"] | lower }};
 // -- ##   else
-// -- extern char {{ key["key"] | lower }}[REDSHIFT_STRINGCONFIG_MAXLEN+1];
+// -- extern char {{ key["key"] | lower }}[GRAPHITE_STRINGCONFIG_MAXLEN+1];
 // -- ##   endif
 // -- ##   endif
 // -- ## endfor
@@ -146,8 +146,8 @@ extern uint8_t config_widget_4;
 extern uint8_t config_widget_5;
 extern uint8_t config_widget_6;
 extern uint8_t config_progress;
-extern char config_time_format[REDSHIFT_STRINGCONFIG_MAXLEN+1];
-extern char config_info_below[REDSHIFT_STRINGCONFIG_MAXLEN+1];
+extern char config_time_format[GRAPHITE_STRINGCONFIG_MAXLEN+1];
+extern char config_info_below[GRAPHITE_STRINGCONFIG_MAXLEN+1];
 extern uint8_t config_update_second;
 extern uint8_t config_show_daynight;
 extern uint16_t config_step_goal;
@@ -187,12 +187,12 @@ extern bool show_bluetooth_popup;
 extern AppTimer *timer_bluetooth_popup;
 
 // this definition should be updated whenever the Weather struct, or it's semantic meaning changes.  this ensures that no outdated values are read from storage
-#define REDSHIFT_WEATHER_VERSION 2
+#define GRAPHITE_WEATHER_VERSION 2
 // -- autogen
-// -- #define REDSHIFT_WEATHER_PERC_MAX_LEN {{ perc_max_len }}
-#define REDSHIFT_WEATHER_PERC_MAX_LEN 30
+// -- #define GRAPHITE_WEATHER_PERC_MAX_LEN {{ perc_max_len }}
+#define GRAPHITE_WEATHER_PERC_MAX_LEN 30
 // -- end autogen
-#define REDSHIFT_UNKNOWN_WEATHER 32767
+#define GRAPHITE_UNKNOWN_WEATHER 32767
 typedef struct {
     uint8_t version;
     time_t timestamp;
@@ -200,7 +200,7 @@ typedef struct {
     int16_t temp_cur;
     int16_t temp_low;
     int16_t temp_high;
-    uint8_t perc_data[REDSHIFT_WEATHER_PERC_MAX_LEN];
+    uint8_t perc_data[GRAPHITE_WEATHER_PERC_MAX_LEN];
     uint8_t perc_data_len; // maybe not all perc data items are valid
     time_t perc_data_ts;
     bool failed;
@@ -217,13 +217,13 @@ extern AppTimer * weather_request_timer;
 #define COLOR(c) ((GColor8) { .argb = (c) })
 #define MAX(x,y) ((x) < (y) ? (y) : (x))
 
-#define REDSHIFT_BLUETOOTH_POPUP_MS 5000
+#define GRAPHITE_BLUETOOTH_POPUP_MS 5000
 
-#define REDSHIFT_OUTBOX_SIZE 100
-#define REDSHIFT_WEATHER_N_INTS 6 // 3 temps + 1 icon + data len + data timestamp
-#define REDSHIFT_WEATHER_HOURS 30
+#define GRAPHITE_OUTBOX_SIZE 100
+#define GRAPHITE_WEATHER_N_INTS 6 // 3 temps + 1 icon + data len + data timestamp
+#define GRAPHITE_WEATHER_HOURS 30
 // 100 + an upper bound for all the configuration items we have OR the amount of data sent as weather update
-#define REDSHIFT_INBOX_SIZE (100 + MAX(1 + (REDSHIFT_N_CONFIG) * (7+4), REDSHIFT_WEATHER_N_INTS * 4 + REDSHIFT_WEATHER_HOURS * 4))
+#define GRAPHITE_INBOX_SIZE (100 + MAX(1 + (GRAPHITE_N_CONFIG) * (7+4), GRAPHITE_WEATHER_N_INTS * 4 + GRAPHITE_WEATHER_HOURS * 4))
 
 #define PIX(x) (INT_TO_FIXED(x))
 // returns a fixed_t value that corresponds to a relatively scaled version, where 1 rem is 1/200 of the screen width
@@ -242,4 +242,4 @@ extern AppTimer * weather_request_timer;
 ////////////////////////////////////////////
 
 
-#endif //REDSHIFT_REDSHIFT_H
+#endif //GRAPHITE_GRAPHITE_H

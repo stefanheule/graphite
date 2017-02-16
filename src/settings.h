@@ -12,14 +12,14 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef REDSHIFT_SETTINGS_H
-#define REDSHIFT_SETTINGS_H
+#ifndef GRAPHITE_SETTINGS_H
+#define GRAPHITE_SETTINGS_H
 
-#include "redshift.h"
+#include "graphite.h"
 
 void update_weather(bool force);
 void inbox_received_handler(DictionaryIterator *iter, void *context);
 void read_config_all();
 void subscribe_tick(bool also_unsubscribe);
 
-#endif //REDSHIFT_SETTINGS_H
+#endif //GRAPHITE_SETTINGS_H

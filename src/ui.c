@@ -14,7 +14,7 @@
 
 #include <pebble.h>
 #include "ui.h"
-#include "redshift.h"
+#include "graphite.h"
 
 
 /**

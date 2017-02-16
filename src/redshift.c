@@ -13,7 +13,7 @@
 // limitations under the License.
 
 
-#include "redshift.h"
+#include "graphite.h"
 
 
 ////////////////////////////////////////////
@@ -26,7 +26,7 @@
 // -- ##   if key["type"] != "string"
 // -- {{ key["type"] }} {{ key["key"] | lower }} = {{ key["default"]}};
 // -- ##   else
-// -- char {{ key["key"] | lower }}[REDSHIFT_STRINGCONFIG_MAXLEN+1] = {{ key["default"]}};
+// -- char {{ key["key"] | lower }}[GRAPHITE_STRINGCONFIG_MAXLEN+1] = {{ key["default"]}};
 // -- ##   endif
 // -- ##   endif
 // -- ## endfor
@@ -59,8 +59,8 @@ uint8_t config_widget_4 = 12;
 uint8_t config_widget_5 = 4;
 uint8_t config_widget_6 = 7;
 uint8_t config_progress = 1;
-char config_time_format[REDSHIFT_STRINGCONFIG_MAXLEN+1] = "%I:0%M";
-char config_info_below[REDSHIFT_STRINGCONFIG_MAXLEN+1] = "%A, %m/%d";
+char config_time_format[GRAPHITE_STRINGCONFIG_MAXLEN+1] = "%I:0%M";
+char config_info_below[GRAPHITE_STRINGCONFIG_MAXLEN+1] = "%A, %m/%d";
 uint8_t config_update_second = 0;
 uint8_t config_show_daynight = true;
 uint16_t config_step_goal = 10000;
@@ -154,9 +154,9 @@ void handle_bluetooth(bool connected) {
     if (show_popup) {
         show_bluetooth_popup = true;
         if (timer_bluetooth_popup) {
-            app_timer_reschedule(timer_bluetooth_popup, REDSHIFT_BLUETOOTH_POPUP_MS);
+            app_timer_reschedule(timer_bluetooth_popup, GRAPHITE_BLUETOOTH_POPUP_MS);
         } else {
-            timer_bluetooth_popup = app_timer_register(REDSHIFT_BLUETOOTH_POPUP_MS, timer_callback_bluetooth_popup,
+            timer_bluetooth_popup = app_timer_register(GRAPHITE_BLUETOOTH_POPUP_MS, timer_callback_bluetooth_popup,
                                                        NULL);
         }
     }
@@ -225,7 +225,7 @@ void init() {
     bluetooth_connection_service_subscribe(handle_bluetooth);
     battery_state_service_subscribe(handle_battery);
 
-    app_message_open(REDSHIFT_INBOX_SIZE, REDSHIFT_OUTBOX_SIZE);
+    app_message_open(GRAPHITE_INBOX_SIZE, GRAPHITE_OUTBOX_SIZE);
     app_message_register_inbox_received(inbox_received_handler);
 }
 

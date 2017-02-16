@@ -1,11 +1,11 @@
 cmake_minimum_required(VERSION 3.2)
-project(redshift)
+project(graphite)
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
 
 set(SOURCE_FILES
-        src/redshift.c
-        src/redshift.h
+        src/graphite.c
+        src/graphite.h
         src/config.h
         src/widgets.c
         src/widgets.h
@@ -16,7 +16,7 @@ set(SOURCE_FILES
         src/ui.c
         src/ui.h)
 
-add_executable(redshift ${SOURCE_FILES})
+add_executable(graphite ${SOURCE_FILES})
 
 include_directories(~/.pebble-sdk/SDKs/current/sdk-core/pebble/basalt/include)
-include_directories(~/dev/projects/redshift/node_modules/pebble-fctx/dist/include)
+include_directories(~/dev/projects/graphite/node_modules/pebble-fctx/dist/include)

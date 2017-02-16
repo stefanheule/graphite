@@ -1,4 +1,4 @@
-# Redshift [![Build status](https://travis-ci.org/stefanheule/redshift.svg?branch=master)](https://travis-ci.org/stefanheule/redshift)
+# Redshift [![Build status](https://travis-ci.org/stefanheule/graphite.svg?branch=master)](https://travis-ci.org/stefanheule/graphite)
 
 Available in the Pebble App Store:
 

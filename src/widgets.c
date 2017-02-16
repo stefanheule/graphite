@@ -13,7 +13,7 @@
 // limitations under the License.
 
 
-#include "redshift.h"
+#include "graphite.h"
 
 
 ////////////////////////////////////////////
@@ -245,7 +245,7 @@ fixed_t widget_day_of_week(FContext* fctx, bool draw, FPoint position, GTextAlig
 
 fixed_t widget_weather_cur_temp_icon(FContext* fctx, bool draw, FPoint position, GTextAlignment align, uint8_t foreground_color, uint8_t background_color) {
   if (show_weather()) {
-    if (weather.temp_cur == REDSHIFT_UNKNOWN_WEATHER) return 0;
+    if (weather.temp_cur == GRAPHITE_UNKNOWN_WEATHER) return 0;
     snprintf(buffer_1, 10, "%c", weather.icon);
     if (weather.failed) {
         snprintf(buffer_2, 10, "%d", weather.temp_cur);
@@ -259,7 +259,7 @@ fixed_t widget_weather_cur_temp_icon(FContext* fctx, bool draw, FPoint position,
 
 fixed_t widget_weather_low_temp(FContext* fctx, bool draw, FPoint position, GTextAlignment align, uint8_t foreground_color, uint8_t background_color) {
   if (show_weather()) {
-    if (weather.temp_low == REDSHIFT_UNKNOWN_WEATHER) return 0;
+    if (weather.temp_low == GRAPHITE_UNKNOWN_WEATHER) return 0;
     if (weather.failed) {
         snprintf(buffer_1, 10, "%d", weather.temp_low);
     } else {
@@ -273,7 +273,7 @@ fixed_t widget_weather_low_temp(FContext* fctx, bool draw, FPoint position, GTex
 
 fixed_t widget_weather_high_temp(FContext* fctx, bool draw, FPoint position, GTextAlignment align, uint8_t foreground_color, uint8_t background_color) {
   if (show_weather()) {
-    if (weather.temp_high == REDSHIFT_UNKNOWN_WEATHER) return 0;
+    if (weather.temp_high == GRAPHITE_UNKNOWN_WEATHER) return 0;
     if (weather.failed) {
         snprintf(buffer_1, 10, "%d", weather.temp_high);
     } else {

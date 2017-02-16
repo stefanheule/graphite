@@ -14,7 +14,7 @@
 
 #include <pebble.h>
 #include "settings.h"
-#include "redshift.h"
+#include "graphite.h"
 
 
 static void update_weather_helper(void *unused);
@@ -93,7 +93,7 @@ bool sync_helper_uint16_t(const uint32_t key, DictionaryIterator *iter, uint16_t
     return false;
 }
 bool sync_helper_string(const uint32_t key, DictionaryIterator *iter, char *buffer) {
-    int maxlen = REDSHIFT_STRINGCONFIG_MAXLEN;
+    int maxlen = GRAPHITE_STRINGCONFIG_MAXLEN;
     Tuple *new_tuple = dict_find(iter, key);
     if (new_tuple == NULL) return false;
     if (strncmp(buffer, new_tuple->value->cstring, maxlen) != 0) {
@@ -164,7 +164,7 @@ void inbox_received_handler(DictionaryIterator *iter, void *context) {
     Tuple *perc_data_ts_tuple = dict_find(iter, MSG_KEY_WEATHER_PERC_DATA_TS);
     Tuple *perc_data_len_tuple = dict_find(iter, MSG_KEY_WEATHER_PERC_DATA_LEN);
     if (icon_tuple && tempcur_tuple && templow_tuple && temphigh_tuple) {
-        weather.version = REDSHIFT_WEATHER_VERSION;
+        weather.version = GRAPHITE_WEATHER_VERSION;
         weather.timestamp = time(NULL);
         weather.icon = icon_tuple->value->int8;
         weather.temp_cur = tempcur_tuple->value->int16;
@@ -174,7 +174,7 @@ void inbox_received_handler(DictionaryIterator *iter, void *context) {
         if (perc_data_tuple && perc_data_ts_tuple && perc_data_len_tuple) {
             weather.perc_data_len = perc_data_len_tuple->value->uint8;
             weather.perc_data_ts = perc_data_ts_tuple->value->int32;
-            for (int i = 0; i < weather.perc_data_len && i < REDSHIFT_WEATHER_PERC_MAX_LEN; i++) {
+            for (int i = 0; i < weather.perc_data_len && i < GRAPHITE_WEATHER_PERC_MAX_LEN; i++) {
                 weather.perc_data[i] = perc_data_tuple->value->data[i];
             }
         } else {
@@ -227,7 +227,7 @@ void read_config_uint16_t(const uint32_t key, uint16_t *value) {
 }
 void read_config_string(const uint32_t key, char *buffer) {
     if (persist_exists(key)) {
-        persist_read_string(key, buffer, REDSHIFT_STRINGCONFIG_MAXLEN);
+        persist_read_string(key, buffer, GRAPHITE_STRINGCONFIG_MAXLEN);
     } else {
         persist_write_string(key, buffer);
     }
@@ -285,7 +285,7 @@ void read_config_all() {
         Weather tmp;
         persist_read_data(PERSIST_KEY_WEATHER, &tmp, sizeof(Weather));
         // make sure we are reading weather info that's consistent with the current version number
-        if (tmp.version == REDSHIFT_WEATHER_VERSION) {
+        if (tmp.version == GRAPHITE_WEATHER_VERSION) {
             weather = tmp;
         } else {
             weather.timestamp = 0;

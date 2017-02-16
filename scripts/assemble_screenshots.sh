@@ -19,12 +19,12 @@ for platform in $SUPPORTED_PLATFORMS; do
   for i in `seq 11 -1 6`; do
     x=$(((i-1)*hspace))
     y=$(((11-i)*vspace))
-    composite -compose atop -geometry +$x+$y screenshots/$platform/redshift-color-$i.png tmp.png tmp.png
+    composite -compose atop -geometry +$x+$y screenshots/$platform/graphite-color-$i.png tmp.png tmp.png
   done
   for i in `seq 1 6`; do
     x=$(((i-1)*hspace))
     y=$(((i-1)*vspace))
-    composite -compose atop -geometry +$x+$y screenshots/$platform/redshift-color-$i.png tmp.png tmp.png
+    composite -compose atop -geometry +$x+$y screenshots/$platform/graphite-color-$i.png tmp.png tmp.png
   done
   mv tmp.png screenshots/$platform/colors.png
 done
