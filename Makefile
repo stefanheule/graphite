@@ -56,7 +56,7 @@ config:
 config_new_version:
 	@read -p "New version number:" v; \
 	git checkout -b config-$$v; \
-	git push origin config-$$v; \
+	git push --set-upstream origin config-$$v; \
 	git checkout master
 
 log:
