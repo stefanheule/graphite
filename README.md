@@ -2,7 +2,7 @@
 
 Available in the Pebble App Store:
 
-[![Available on the Pebble App Store](http://pblweb.com/badge/xxxxx/black/small)](https://apps.getpebble.com/applications/xxxxx)
+[![Available on the Pebble App Store](http://pblweb.com/badge/58a64c9c6ca3877261000466/black/small)](https://apps.getpebble.com/applications/58a64c9c6ca3877261000466)
 
 ## Overview
 
