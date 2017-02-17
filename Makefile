@@ -53,6 +53,12 @@ build_quiet:
 config:
 	pebble emu-app-config --emulator $(P)
 
+config_new_version:
+	@read -p "New version number:" v; \
+	git checkout -b config-$$v; \
+	git push origin config-$$v; \
+	git checkout master
+
 log:
 	pebble logs --emulator $(P)
 
@@ -77,15 +83,6 @@ resources:
 screenshots:
 	scripts/screenshot_from_config.py
 	SUPPORTED_PLATFORMS=$(SUPPORTED_PLATFORMS) scripts/assemble_screenshots.sh
-
-config_screenshots:
-	rm -f screenshots/aplite/config.png
-	rm -f screenshots/basalt/config.png
-	rm -f screenshots/chalk/config.png
-	phantomjs scripts/capture-settings-screenshot.js TODO?platform=chalk&version=$(VERSION)
-	sleep 2
-	pngcrush -q -rem time tmp.png screenshots/chalk/config.png
-	rm tmp.png
 
 single_screenshot: write_header build_quiet
 	scripts/take_screenshot.sh $(GRAPHITE_FILE)
