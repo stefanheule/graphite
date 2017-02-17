@@ -38,7 +38,7 @@ def enum_widget(compl, m):
 # --- configuration
 # ------------------------------------------------------------------------------
 
-version = '1.0'
+version = '1.1'
 config_version = '1'
 
 configuration = [
