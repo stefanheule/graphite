@@ -10,9 +10,14 @@ See [stefanheule.com/graphite/](https://stefanheule.com/graphite/).
 
 ## Changelog
 
-**Version 1.0**
+**Version 1.1** (2017-02-17)
 
-- Initial version
+- Fix position of small icons.
+
+
+**Version 1.0** (2017-02-16)
+
+- Initial version.
 
 ## Building from Source
 
