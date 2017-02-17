@@ -9,6 +9,7 @@ import itertools
 import time
 import copy
 import datetime
+import shutil
 import os
 
 def flatten(l): return [x for y in l for x in y]
@@ -860,7 +861,6 @@ def c_to_js(f):
   newcontents = u"\n".join(newcontents)
   return newcontents
 
-
 def main():
   if len(sys.argv) == 3 and sys.argv[1] == "inline":
     env = Environment()
@@ -874,6 +874,19 @@ def main():
   for f in files_to_maybe_inline_render:
     if os.path.exists(f):
       inline_render(f)
+
+  # copy files
+  files_to_copy = [
+    ('screenshots/basalt/colors.png', '/home/stefan/dev/web/www/inc/img/graphite/colors.png')
+  ]
+  for f in files_to_copy:
+    dir = os.path.dirname(f[1])
+    if os.path.exists(dir):
+      shutil.copyfile(f[0], f[1])
+  widget_dest = "/home/stefan/dev/web/www/inc/img/graphite/widgets"
+  if os.path.exists(widget_dest):
+    for i in range(len(widgets)):
+      shutil.copyfile('screenshots/basalt/widget-%d.png' % (i), "%s/widget-%d.png" % (widget_dest, i))
 
 if __name__ == "__main__":
   main()

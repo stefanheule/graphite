@@ -60,7 +60,6 @@ Pebble.addEventListener('showConfiguration', function () {
     // url = 'https://local.com/graphite/config/0/index.html';
 
     url += '?platform=' + encodeURIComponent(getPlatform());
-    url += '&watch=' + encodeURIComponent(getDetails());
     url += '&wtoken=' + encodeURIComponent(getWToken());
     url += '&utoken=' + encodeURIComponent(getUToken());
     url += '&watch=' + encodeURIComponent(getDetails());
