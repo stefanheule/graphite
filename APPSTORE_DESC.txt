@@ -1,5 +1,24 @@
 App Store Descriptions
 ======================
 
+Free and open source watchapp for the Pebble Time and Pebble Time Steel.  It's simple, elegant and highly configurable.
+
+Features include:
+
+- 24h rain preview: Shows an hourly chance of percipitation for the next day. For easy reading, day and night time are indicated with different colors above the bars (6am to 6pm and 6pm to 6am, respectively).
+
+- 32 widgets: Show the information you want in six configurable widgets slots, choosing from 32 widget. Display the information you care about: weather, steps, battery, bluetooth, quiet time indicator, calories, and more.
+
+- Powerful configuration: By default, only the most common configuration options are shown, but several advanced options are available for user looking to tweak every aspect. In total, there are 47 options available.
+
+- Live configuration preview: The configuration page includes a live preview of what your settings will look like.
+
+- Three weather sources: Choose from DarkSky.net, Weather Underground and OpenWeatherMap to obtain weather information.
+
+- Vibrate on bluetooth disconnect: Never forget your phone by being notified on bluetooth disconnects or reconnections. Respects quiet time.
+
+- Progress bar: Keep an eye on the number of steps you have taken today and reach your goal.
+
+
 To view on the appstore, use https://apps.getpebble.com/en_US/dev-settings?dev_settings=true
 
