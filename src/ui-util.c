@@ -19,11 +19,17 @@
  * Draw a string with a given font, color, size and position.
  */
 void draw_string(FContext *fctx, const char *str, FPoint position, FFont *font, uint8_t color, fixed_t size, GTextAlignment align) {
+    FPoint pos = position;
+// -- jsalternative
+    if (font == font_icon) {
+        pos.y += REM(7);
+    }
+// -- end jsalternative
     fctx_begin_fill(fctx);
     fctx_set_fill_color(fctx, COLOR(color));
     fctx_set_color_bias(fctx, 0);
     fctx_set_pivot(fctx, FPointZero);
-    fctx_set_offset(fctx, position);
+    fctx_set_offset(fctx, pos);
     fctx_set_rotation(fctx, 0);
     fctx_set_text_em_height(fctx, font, FIXED_TO_INT(size));
     fctx_draw_string(fctx, str, font, align, FTextAnchorCapTop);
