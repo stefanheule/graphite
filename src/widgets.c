@@ -77,21 +77,27 @@ widget_render_t widgets[] = {
 // -- autogen
 // -- ## for i in range(num_tzs)
 // -- fixed_t widget_tz_{{ i }}(FContext* fctx, bool draw, FPoint position, GTextAlignment align, uint8_t foreground_color, uint8_t background_color) {
+// -- // -- jsalternative
+// -- // -- return 0;
 // --     int8_t dataidx = get_current_tz_idx(&tzinfo.data[{{ i }}]);
 // --     time_t adjusted = time(NULL) - tzinfo.data[{{ i }}].offsets[dataidx] * 60;
 // --     struct tm* t = gmtime(&adjusted);
 // --     strftime(buffer_1, sizeof(buffer_1), "%H:%M", t);
 // --     if (draw) draw_string(fctx, buffer_1, position, font_main, foreground_color, fontsize_widgets, align);
 // --     return string_width(fctx, buffer_1, font_main, fontsize_widgets);
+// -- // -- end jsalternative
 // -- }
 // -- ## endfor
 fixed_t widget_tz_0(FContext* fctx, bool draw, FPoint position, GTextAlignment align, uint8_t foreground_color, uint8_t background_color) {
+// -- jsalternative
+// -- return 0;
     int8_t dataidx = get_current_tz_idx(&tzinfo.data[0]);
     time_t adjusted = time(NULL) - tzinfo.data[0].offsets[dataidx] * 60;
     struct tm* t = gmtime(&adjusted);
     strftime(buffer_1, sizeof(buffer_1), "%H:%M", t);
     if (draw) draw_string(fctx, buffer_1, position, font_main, foreground_color, fontsize_widgets, align);
     return string_width(fctx, buffer_1, font_main, fontsize_widgets);
+// -- end jsalternative
 }
 // -- end autogen
 

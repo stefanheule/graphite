@@ -13,6 +13,8 @@
     <script src='js/strftime.js'></script>
     <script src='js/sprintf.min.js'></script>
     <script src="js/spark-md5.min.js"></script>
+    <script src='js/moment.js'></script>
+    <script src='js/moment-timezone.js'></script>
     <style>
     .noscroll { 
       overflow: hidden;
@@ -243,7 +245,7 @@
         <canvas class="widget" id="widget-preview-31-canvas"></canvas>
       </div>
       <div class="widget-preview" id="widget-preview-32">
-        <p>Additional timezone 0</p>
+        <p>Additional timezone 1</p>
         <canvas class="widget" id="widget-preview-32-canvas"></canvas>
       </div>
 <!--
@@ -444,7 +446,7 @@
 
 
     <div class='item-container'>
-      <div class='item-container-header'>Complications</div>
+      <div class='item-container-header'>Widgets</div>
       <div class='item-container-content'>
         <label class='item'>
           Top
@@ -468,6 +470,32 @@
           You can also directly click on the widget slots in the live preview to change them.
         </div>
       </div>
+<!--
+// -- autogen
+// -- ## for i in range(num_tzs)
+// --       <div class="item-container-content">
+// --         <label class="item">
+// --           Timezone {{ i + 1 }}
+// --           <select id='CONFIG_TZ_{{ i }}_LOCAL' class="item-select"></select>
+// --         </label>
+// --       </div>
+// -- ## endfor
+-->
+      <div class="item-container-content">
+        <label class="item">
+          Timezone 1
+          <select id='CONFIG_TZ_0' class="item-select"></select>
+        </label>
+      </div>
+<!--
+// -- end autogen
+-->
+
+    </div>
+
+
+    <div class='item-container'>
+      <div class='item-container-header'>Main settings</div>
 
       <div class="item-container-content">
         <label class="item">
@@ -1749,6 +1777,21 @@
     });
 
     initShowHideStatus(initialConfig);
+
+    // init timezones
+      var zonedropdown = $('#CONFIG_TZ_0');
+      var tznames = moment.tz.names();
+      var now = new Date().getTime();
+      for (var i = 0; i < tznames.length; i++) {
+          var tzname = tznames[i];
+          var mom = moment.tz(now, tzname);
+          var fullname = tzname + " (" + mom.format("z") + ", UTC" + mom.format("Z") + ")";
+          zonedropdown.append($('<option>',
+              {
+                  value: tzname,
+                  text: fullname
+              }));
+      }
 
     // remove settings that don't apply to certain platforms
 // -- autogen

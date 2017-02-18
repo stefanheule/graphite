@@ -286,7 +286,11 @@ configuration = [
     'type': 'uint16_t',
     'show_only_if': 'readConfig("CONFIG_PROGRESS") == 1',
   },
-]
+] + map(lambda i: {
+  'key': 'CONFIG_TZ_%d_LOCAL' % i,
+  'default': 'America/Los_Angeles',
+  'type': 'string',
+}, range(num_tzs))
 
 simple_config = [
   {
@@ -447,7 +451,7 @@ widgets = [
   },
 ] + map(lambda i: {
   'key': 'WIDGET_TZ_%d' % i,
-  'desc': 'Additional timezone %d' % i,
+  'desc': 'Additional timezone %d' % (i+1),
 }, range(num_tzs))
   # {
   #   'key': 'WIDGET_DISTANCE_KM',

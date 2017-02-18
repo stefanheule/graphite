@@ -394,12 +394,7 @@ var widgets = [
     widget_tz_0, // id 32
 ];
 function widget_tz_0(fctx, draw, position, align, foreground_color, background_color) {
-    var dataidx = get_current_tz_idx(tzinfo.data[0]);
-    var adjusted = time(NULL) - tzinfo.data[0].offsets[dataidx] * 60;
-    var t = gmtime(adjusted);
-    buffer_1 = strftime("%H:%M", new Date(now * 1000));
-    if (draw) draw_string(fctx, buffer_1, position, font_main, foreground_color, fontsize_widgets, align);
-    return string_width(fctx, buffer_1, font_main, fontsize_widgets);
+return 0;
 }
 function draw_icon_number_widget(fctx, draw, position, align, foreground_color, background_color, icon, text, show_icon) {
   var fontsize_icon = (fontsize_widgets * 0.62);

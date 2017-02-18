@@ -59,6 +59,11 @@ config_new_version:
 	git push --set-upstream origin config-$$v; \
 	git checkout master
 
+update_timezones:
+	wget -O tz.zip https://timezonedb.com/files/timezonedb.csv.zip
+	unzip tz.zip -d tz-data
+	rm -rf tz.zip
+
 log:
 	pebble logs --emulator $(P)
 
