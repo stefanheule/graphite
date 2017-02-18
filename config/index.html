@@ -242,6 +242,10 @@
         <p>Day of week</p>
         <canvas class="widget" id="widget-preview-31-canvas"></canvas>
       </div>
+      <div class="widget-preview" id="widget-preview-32">
+        <p>Additional timezone 0</p>
+        <canvas class="widget" id="widget-preview-32-canvas"></canvas>
+      </div>
 <!--
 // -- end autogen
 -->
@@ -1671,6 +1675,7 @@
       $("#widget-preview-29").on("click", function(){ pickComplication(29); });
       $("#widget-preview-30").on("click", function(){ pickComplication(30); });
       $("#widget-preview-31").on("click", function(){ pickComplication(31); });
+      $("#widget-preview-32").on("click", function(){ pickComplication(32); });
 // -- end autogen
   }
 
@@ -1835,6 +1840,7 @@
       GraphitePreview.previewComplication(29, config, 'widget-preview-29-canvas', getPlatform());
       GraphitePreview.previewComplication(30, config, 'widget-preview-30-canvas', getPlatform());
       GraphitePreview.previewComplication(31, config, 'widget-preview-31-canvas', getPlatform());
+      GraphitePreview.previewComplication(32, config, 'widget-preview-32-canvas', getPlatform());
 // -- end autogen
 
       for (var i = 1; i < 7; i++) {

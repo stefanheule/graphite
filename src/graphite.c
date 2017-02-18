@@ -110,6 +110,9 @@ bool js_ready;
 /** A timer used to schedule weather updates. */
 AppTimer * weather_request_timer;
 
+/** The timezone information. */
+TimeZoneInfo tzinfo;
+
 
 
 ////////////////////////////////////////////
@@ -216,6 +219,8 @@ void handle_battery(BatteryChargeState new_state) {
  * Initialization.
  */
 void init() {
+    setlocale(LC_ALL, "");
+
     read_config_all();
 
     window = window_create();

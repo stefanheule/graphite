@@ -17,6 +17,7 @@
 
 #include "graphite.h"
 
+int8_t get_current_tz_idx(TZData* data);
 void update_weather(bool force);
 void inbox_received_handler(DictionaryIterator *iter, void *context);
 void read_config_all();

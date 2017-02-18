@@ -32,16 +32,6 @@ function getUToken() {
     }
 }
 
-// var moment = require('./moment-timezone');
-// console.log("------------------------")
-// console.log("------------------------")
-
-// console.log(moment.tz.zone('America/Los_Angeles').untils)
-// console.log(moment.tz.zone('America/Los_Angeles').offsets)
-
-// console.log("------------------------")
-// console.log("------------------------")
-
 Pebble.addEventListener('ready', function () {
 // -- build=debug
 // --     console.log('[ info/app ] PebbleKit JS ready!');
@@ -614,6 +604,77 @@ function fetchWeather(latitude, longitude) {
     }
 }
 
+
+var moment = require('./moment-timezone');
+
+function toTimestamp(t) {
+    return Math.round(t / 1000)
+}
+
+function encode_int_to_bytes(val, nbytes) {
+    var byteArray = [];
+    for (var i = 0; i < nbytes; i++) byteArray.push(0);
+
+    for (var index = 0; index < nbytes; index++) {
+        var byte = val & 0xff;
+        byteArray[index] = byte;
+        val = (val - byte) / 256;
+    }
+
+    return byteArray;
+}
+
+function sendTzUpdate(idx, key) {
+    var now = (new Date()).getTime();
+    var zoneData = moment.tz.zone('America/Los_Angeles');
+    zoneData = moment.tz.zone('Europe/Zurich');
+    var untils = zoneData.untils;
+    var found = false;
+    var id = 0;
+    while (id < untils.length) {
+        if (now < untils[id]) {
+            found = true;
+            break;
+        }
+        id += 1
+    }
+    found = found && id >= 0;
+    if (!found) {
+        console.log('[ info/app ] error finding tz info');
+        return;
+    }
+    var data = [];
+    var i = 0;
+// -- autogen
+// --     var max_tzdata = {{ tz_max_datapoints }};
+    var max_tzdata = 3;
+// -- end autogen
+
+// -- build=debug
+// --     console.log('[ info/app ] tzdata:');
+    console.log('[ info/app ] tzdata:');
+// -- end build
+    while (id < untils.length && i < max_tzdata) {
+        var until = !isFinite(untils[id]) ? 2147483647 : toTimestamp(untils[id]);
+        var offset = zoneData.offsets[id];
+        Array.prototype.push.apply(data, encode_int_to_bytes(until, 4));
+        Array.prototype.push.apply(data, encode_int_to_bytes(offset, 2));
+        i += 1;
+        id += 1;
+// -- build=debug
+// --         console.log('    until  = ' + until);
+// --         console.log('    offset = ' + offset);
+        console.log('    until  = ' + until);
+        console.log('    offset = ' + offset);
+// -- end build
+    }
+
+    var pebbledata = {};
+    pebbledata[key] = data;
+    Pebble.sendAppMessage(pebbledata);
+}
+
+
 Pebble.addEventListener('appmessage',
     function (e) {
 // -- build=debug
@@ -639,5 +700,11 @@ Pebble.addEventListener('appmessage',
                 );
             }
         }
+// -- autogen
+// -- ## for i in range(num_tzs)
+// --         if (dict["MSG_KEY_FETCH_TZ_{{ i }}"]) sendTzUpdate({{ i }}, "MSG_KEY_TZ_{{ i }}");
+// -- ## endfor
+        if (dict["MSG_KEY_FETCH_TZ_0"]) sendTzUpdate(0, "MSG_KEY_TZ_0");
+// -- end autogen
     }
 );

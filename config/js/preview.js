@@ -391,7 +391,16 @@ var widgets = [
     widget_ampm_lower, // id 29
     widget_seconds, // id 30
     widget_day_of_week, // id 31
+    widget_tz_0, // id 32
 ];
+function widget_tz_0(fctx, draw, position, align, foreground_color, background_color) {
+    var dataidx = get_current_tz_idx(tzinfo.data[0]);
+    var adjusted = time(NULL) - tzinfo.data[0].offsets[dataidx] * 60;
+    var t = gmtime(adjusted);
+    buffer_1 = strftime("%H:%M", new Date(now * 1000));
+    if (draw) draw_string(fctx, buffer_1, position, font_main, foreground_color, fontsize_widgets, align);
+    return string_width(fctx, buffer_1, font_main, fontsize_widgets);
+}
 function draw_icon_number_widget(fctx, draw, position, align, foreground_color, background_color, icon, text, show_icon) {
   var fontsize_icon = (fontsize_widgets * 0.62);
   var w1 = !show_icon ? 0 : string_width(fctx, icon, font_icon, fontsize_icon);
@@ -505,7 +514,6 @@ function widget_quiet(fctx, draw, position, align, foreground_color, background_
 function widget_ampm(fctx, draw, position, align, foreground_color, background_color) {
   var now = time(NULL);
     var t = localtime(now);
-  setlocale(LC_ALL, "");
   buffer_1 = strftime("%p", new Date(now * 1000));
   if (draw) draw_string(fctx, buffer_1, position, font_main, foreground_color, fontsize_widgets, align);
   return string_width(fctx, buffer_1, font_main, fontsize_widgets);
@@ -513,7 +521,6 @@ function widget_ampm(fctx, draw, position, align, foreground_color, background_c
 function widget_ampm_lower(fctx, draw, position, align, foreground_color, background_color) {
   var now = time(NULL);
     var t = localtime(now);
-  setlocale(LC_ALL, "");
   buffer_1 = strftime("%P", new Date(now * 1000));
   if (draw) draw_string(fctx, buffer_1, position, font_main, foreground_color, fontsize_widgets, align);
   return string_width(fctx, buffer_1, font_main, fontsize_widgets);
@@ -521,7 +528,6 @@ function widget_ampm_lower(fctx, draw, position, align, foreground_color, backgr
 function widget_seconds(fctx, draw, position, align, foreground_color, background_color) {
   var now = time(NULL);
     var t = localtime(now);
-  setlocale(LC_ALL, "");
   buffer_1 = strftime("%S", new Date(now * 1000));
   buffer_1 = 
   remove_leading_zero(buffer_1, sizeof(buffer_1));
@@ -531,7 +537,6 @@ function widget_seconds(fctx, draw, position, align, foreground_color, backgroun
 function widget_day_of_week(fctx, draw, position, align, foreground_color, background_color) {
   var now = time(NULL);
     var t = localtime(now);
-  setlocale(LC_ALL, "");
   buffer_1 = strftime("%a", new Date(now * 1000));
   if (draw) draw_string(fctx, buffer_1, position, font_main, foreground_color, fontsize_widgets, align);
   return string_width(fctx, buffer_1, font_main, fontsize_widgets);
@@ -817,7 +822,6 @@ function background_update_proc(layer, ctx) {
         }
     }
     var time_y_offset = PBL_DISPLAY_WIDTH != 144 ? 0 : (height_full-height) / 8;
-    setlocale(LC_ALL, "");
     buffer_1 = strftime(config_time_format, new Date(now * 1000));
     buffer_1 = 
     remove_leading_zero(buffer_1, sizeof(buffer_1));

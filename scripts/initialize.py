@@ -306,6 +306,12 @@ simple_config = [
   },
 ]
 
+
+# number of timezone widgets
+num_tzs = 1
+# number of data points (offset/until pairs) per timezone
+tz_max_datapoints = 3
+
 widgets = [
   {
     'key': 'WIDGET_EMPTY',
@@ -439,7 +445,10 @@ widgets = [
     'key': 'WIDGET_DAY_OF_WEEK',
     'desc': 'Day of week',
   },
-]
+] + map(lambda i: {
+  'key': 'WIDGET_TZ_%d' % i,
+  'desc': 'Additional timezone %d' % i,
+}, range(num_tzs))
   # {
   #   'key': 'WIDGET_DISTANCE_KM',
   #   'desc': 'Distance walked (km)',
@@ -451,14 +460,6 @@ widgets = [
   # {
   #   'key': 'WIDGET_ACTIVE_TIME',
   #   'desc': 'Minutes spent active',
-  # },
-  # {
-  #   'key': 'WIDGET_CALORIES',
-  #   'desc': 'Calories burned (active)',
-  # },
-  # {
-  #   'key': 'WIDGET_CALORIES_FULL',
-  #   'desc': 'Calories burned (active + resting)',
   # },
 
 config_groups = [
@@ -487,6 +488,11 @@ msg_keys = [
   'FETCH_WEATHER',
   'WEATHER_FAILED',
   'JS_READY',
+] + [item for sublist in map(lambda i: ['FETCH_TZ_%d' % i, 'TZ_%d' % i], range(num_tzs)) for item in sublist]
+
+persist_keys = [
+  'WEATHER',
+  'TZ',
 ]
 
 perc_max_len = 30
@@ -529,8 +535,14 @@ def get_context():
     sc = add_additional_info(simple_config)
     compls = add_key_id(widgets, '', 0)
     pre_process(config, simple_config, compls, config_groups)
+    linear_version = version.split(".")
+    linear_version = int(linear_version[0]) * 1000 + int(linear_version[1])
+    msgkeys = add_key_id(msg_keys, 'MSG_KEY_', 100)
+    persistkeys = add_key_id(persist_keys, 'PERSIST_KEY_', 201)
+    assert len(config) < 100 and len(msgkeys) < 100
     _context =  {
       'version': version,
+      'linear_version': linear_version, # 16 bit version number
       'config_version': config_version,
       'supported_platforms': read_configure('SUPPORTED_PLATFORMS').split(' '),
       'configuration': config,
@@ -542,9 +554,11 @@ def get_context():
       'widgets': compls,
       'widgets_lookup': to_lookup(compls),
       'num_config_items': len(config),
-      'message_keys': add_key_id(msg_keys, 'MSG_KEY_', 100),
+      'message_keys': msgkeys + persistkeys,
       'perc_max_len': perc_max_len,
       'fontsize_widgets': 27,
+      'tz_max_datapoints': tz_max_datapoints,
+      'num_tzs': num_tzs,
       'build': read_configure('BUILD'),
     }
   return _context
@@ -877,7 +891,8 @@ def main():
 
   # copy files
   files_to_copy = [
-    ('screenshots/basalt/colors.png', '/home/stefan/dev/web/www/inc/img/graphite/colors.png')
+    ('screenshots/basalt/colors.png', '/home/stefan/dev/web/www/inc/img/graphite/colors.png'),
+    ('screenshots/fulloverview.png', '/home/stefan/dev/web/www/inc/img/graphite/fulloverview.png'),
   ]
   for f in files_to_copy:
     dir = os.path.dirname(f[1])
@@ -886,7 +901,8 @@ def main():
   widget_dest = "/home/stefan/dev/web/www/inc/img/graphite/widgets"
   if os.path.exists(widget_dest):
     for i in range(len(widgets)):
-      shutil.copyfile('screenshots/basalt/widget-%d.png' % (i), "%s/widget-%d.png" % (widget_dest, i))
+      src = 'screenshots/basalt/widget-%d.png' % (i)
+      if os.path.exists(src): shutil.copyfile(src, "%s/widget-%d.png" % (widget_dest, i))
 
 if __name__ == "__main__":
   main()

@@ -99,10 +99,11 @@
 #define MSG_KEY_FETCH_WEATHER 107
 #define MSG_KEY_WEATHER_FAILED 108
 #define MSG_KEY_JS_READY 109
-// -- end autogen
-
-// persitant storage keys (in addition to config keys above)
+#define MSG_KEY_FETCH_TZ_0 110
+#define MSG_KEY_TZ_0 111
 #define PERSIST_KEY_WEATHER 201
+#define PERSIST_KEY_TZ 202
+// -- end autogen
 
 
 ////////////////////////////////////////////
@@ -217,6 +218,29 @@ typedef struct {
 extern Weather weather;
 extern bool js_ready;
 extern AppTimer * weather_request_timer;
+
+// -- autogen
+// -- #define GRAPHITE_NUM_TZS {{ num_tzs }}
+// -- #define GRAPHITE_TZ_MAX_DATAPOINTS {{ tz_max_datapoints }}
+// -- #define GRAPHITE_VERSION {{ linear_version }}
+#define GRAPHITE_NUM_TZS 1
+#define GRAPHITE_TZ_MAX_DATAPOINTS 3
+#define GRAPHITE_VERSION 1001
+// -- end autogen
+
+typedef struct {
+    time_t timestamp;
+    int32_t untils[GRAPHITE_TZ_MAX_DATAPOINTS];
+    int16_t offsets[GRAPHITE_TZ_MAX_DATAPOINTS];
+    bool failed;
+} __attribute__((__packed__)) TZData;
+
+typedef struct {
+    uint16_t version;
+    TZData data[GRAPHITE_NUM_TZS];
+} __attribute__((__packed__)) TimeZoneInfo;
+extern TimeZoneInfo tzinfo;
+
 
 ////////////////////////////////////////////
 //// Static configuration and useful macros
