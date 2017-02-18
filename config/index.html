@@ -2630,6 +2630,7 @@
 // -- end autogen
   }
 
+  // from: https://github.com/select2/select2/issues/3034
   function modelMatcher(params, data) {
       data.parentText = data.parentText || "";
 
@@ -2679,6 +2680,19 @@
 
       // If it doesn't contain the term, don't return anything
       return null;
+  }
+
+  function initTzDropdown(id) {
+      var now = new Date().getTime();
+      var zonedropdown = $('#CONFIG_TZ_' + id + '_LOCAL');
+      zonedropdown.parent().find(".select-triangle").remove();
+      zonedropdown.find('option').each(function(i) {
+          var tzname = this.innerHTML;
+          var mom = moment.tz(now, tzname);
+          this.innerHTML = tzname + " (" + mom.format("z") + ", UTC" + mom.format("Z") + ")";
+      });
+      zonedropdown.select2({matcher: modelMatcher});
+      zonedropdown.parent().find(".select2").css("float", "right");
   }
 
   $(document).ready(function() {
@@ -2753,30 +2767,12 @@
     initShowHideStatus(initialConfig);
 
     // init timezone dropdown
-      var now = new Date().getTime();
-      var zonedropdown = $('#CONFIG_TZ_0_LOCAL');
-      zonedropdown.parent().find(".select-triangle").remove();
-      zonedropdown.find('option').each(function(i) {
-          var tzname = this.innerHTML;
-          var mom = moment.tz(now, tzname);
-          // add timezone shortcut and offset
-          this.innerHTML = tzname + " (" + mom.format("z") + ", UTC" + mom.format("Z") + ")";
-      });
-      zonedropdown.select2({matcher: modelMatcher});
-      zonedropdown.parent().find(".select2").css("float", "right");
-
-//      var tznames = moment.tz.names();
-//      var now = new Date().getTime();
-//      for (var i = 0; i < tznames.length; i++) {
-//          var tzname = tznames[i];
-//          var mom = moment.tz(now, tzname);
-//          var fullname = tzname + " (" + mom.format("z") + ", UTC" + mom.format("Z") + ")";
-//          zonedropdown.append($('<option>',
-//              {
-//                  value: tzname,
-//                  text: fullname
-//              }));
-//      }
+// -- autogen
+// -- ## for i in range(num_tzs)
+// --     initTzDropdown({{ i }});
+// -- ## endfor
+    initTzDropdown(0);
+// -- end autogen
 
     // remove settings that don't apply to certain platforms
 // -- autogen
