@@ -41,6 +41,11 @@ def enum_widget(compl, m):
 version = '1.1'
 config_version = '1'
 
+# number of timezone widgets
+num_tzs = 1
+# number of data points (offset/until pairs) per timezone
+tz_max_datapoints = 3
+
 configuration = [
   {
     'key': 'CONFIG_VIBRATE_DISCONNECT',
@@ -288,7 +293,7 @@ configuration = [
   },
 ] + map(lambda i: {
   'key': 'CONFIG_TZ_%d_LOCAL' % i,
-  'default': 'America/Los_Angeles',
+  'default': '"America/Los_Angeles"',
   'type': 'string',
 }, range(num_tzs))
 
@@ -310,11 +315,6 @@ simple_config = [
   },
 ]
 
-
-# number of timezone widgets
-num_tzs = 1
-# number of data points (offset/until pairs) per timezone
-tz_max_datapoints = 3
 
 widgets = [
   {
@@ -705,7 +705,7 @@ def inline_render(file):
 
   ishtml = False
   newcontents = []
-  env = Environment(line_statement_prefix=line_statement_prefix)
+  env = Environment(loader = FileSystemLoader('.'), line_statement_prefix=line_statement_prefix)
   contents = read_file(file)
   linenr = 0
   laststart = 0

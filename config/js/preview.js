@@ -91,6 +91,7 @@ var GraphitePreview = (function () {
      var config_info_below_local;
      var config_show_daynight;
      var config_step_goal;
+     var config_tz_0_local;
 // -- end autogen
 
     function get(k) {
@@ -314,6 +315,7 @@ var GraphitePreview = (function () {
         config_info_below_local = config["CONFIG_INFO_BELOW_LOCAL"];
         config_show_daynight = config["CONFIG_SHOW_DAYNIGHT"];
         config_step_goal = config["CONFIG_STEP_GOAL"];
+        config_tz_0_local = config["CONFIG_TZ_0_LOCAL"];
 // -- end autogen
 
         weather = getWeather(platform);
@@ -1009,6 +1011,7 @@ function background_update_proc(layer, ctx) {
             CONFIG_INFO_BELOW_LOCAL: +0,
             CONFIG_SHOW_DAYNIGHT: +true,
             CONFIG_STEP_GOAL: +10000,
+            CONFIG_TZ_0_LOCAL: "America/Los_Angeles",
 // -- end autogen
         };
         return cloneConfig(defaults);
@@ -1070,6 +1073,7 @@ function background_update_proc(layer, ctx) {
             CONFIG_INFO_BELOW_LOCAL: +0,
             CONFIG_SHOW_DAYNIGHT: +true,
             CONFIG_STEP_GOAL: +10000,
+            CONFIG_TZ_0_LOCAL: "America/Los_Angeles",
 // -- end autogen
         };
         return cloneConfig(defaults);

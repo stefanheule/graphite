@@ -82,7 +82,7 @@
 
 // -- autogen
 // -- #define GRAPHITE_N_CONFIG {{ num_config_items }}
-#define GRAPHITE_N_CONFIG 47
+#define GRAPHITE_N_CONFIG 48
 // -- end autogen
 
 // -- autogen

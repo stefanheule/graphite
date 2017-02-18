@@ -61,8 +61,10 @@ config_new_version:
 
 update_timezones:
 	wget -O tz.zip https://timezonedb.com/files/timezonedb.csv.zip
+	rm -rf tz-data
 	unzip tz.zip -d tz-data
 	rm -rf tz.zip
+	scripts/process_tz_data.py > tz-data/tz-select.html
 
 log:
 	pebble logs --emulator $(P)

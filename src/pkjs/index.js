@@ -215,6 +215,8 @@ Pebble.addEventListener('webviewclosed', function (e) {
     fullconfig["CONFIG_STEP_GOAL"] = urlconfig[47];
     config["CONFIG_STEP_GOAL"] = +urlconfig[47];
     localStorage.setItem("CONFIG_STEP_GOAL", urlconfig[47]);
+    fullconfig["CONFIG_TZ_0_LOCAL"] = urlconfig[48];
+    localStorage.setItem("CONFIG_TZ_0_LOCAL", urlconfig[48]);
 // -- end autogen
 
     // don't allow really small values for refresh rate
@@ -276,6 +278,8 @@ function readConfig(key) {
             return 0;
         } else if (key == "CONFIG_INFO_BELOW_LOCAL") {
             return 0;
+        } else if (key == "CONFIG_TZ_0_LOCAL") {
+            return "America/Los_Angeles";
 // -- end autogen
         }
     }
