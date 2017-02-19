@@ -2693,6 +2693,7 @@
       });
       zonedropdown.select2({matcher: modelMatcher});
       zonedropdown.parent().find(".select2").css("float", "right");
+      zonedropdown.parent().find(".select2").css("max-width", ($(document).width() - 20) + "px");
   }
 
   $(document).ready(function() {
