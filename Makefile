@@ -104,7 +104,11 @@ clean_header:
 	echo "" > src/config.h
 
 updated_config:
-	src/scripts/updated_config.sh
+	scripts/updated_config.sh
+
+stats:
+	@echo "Number of unique watches:"
+	ssh linode "cat /home/stefan/www/pages/common/data/graphite/analytics.json | sed "s/,/\\\\n/g" | grep wtoken | sort | uniq | wc -l"
 
 font_dl:
 	./node_modules/fontello-cli/bin/fontello-cli install --config resources/fonts/fontello-config.json --font resources/fonts --css resources/fonts
