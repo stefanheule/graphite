@@ -68,7 +68,12 @@ Pebble.addEventListener('showConfiguration', function () {
 Pebble.addEventListener('webviewclosed', function (e) {
     var urlconfig = JSON.parse(decodeURIComponent(e.response).replace(/@/g, "%"));
 
+// -- autogen
+// -- ## for i in range(num_tzs)
+// --     var previous_tz_{{ i }} = readConfig("CONFIG_TZ_{{ i }}_LOCAL");
+// -- ## endfor
     var previous_tz_0 = readConfig("CONFIG_TZ_0_LOCAL");
+// -- end autogen
 
     // decode config
     var config = {};
@@ -235,9 +240,12 @@ Pebble.addEventListener('webviewclosed', function (e) {
     console.log('[ info/app ] Configuration page returned: ' + JSON.stringify(fullconfig));
 // -- end build
 
-    if (previous_tz_0 != fullconfig["CONFIG_TZ_0_LOCAL"]) {
-        sendTzUpdate(0);
-    }
+// -- autogen
+// -- ## for i in range(num_tzs)
+// --     if (has_widget([{{ widgets_lookup["WIDGET_TZ_" + i|string]["id"] }}])) sendTzUpdate({{ i }});
+// -- ## endfor
+    if (has_widget([32])) sendTzUpdate(0);
+// -- end autogen
 
     Pebble.sendAppMessage(config, function () {
 // -- build=debug
