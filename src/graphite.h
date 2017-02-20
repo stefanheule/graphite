@@ -25,10 +25,6 @@
 // for various configurations
 #include "config.h"
 
-#include "settings.h"
-#include "ui-util.h"
-#include "ui.h"
-#include "widgets.h"
 
 ////////////////////////////////////////////
 //// Configuration constants
@@ -270,8 +266,12 @@ extern TimeZoneInfo tzinfo;
 #endif
 
 ////////////////////////////////////////////
-//// screenshot configurations
+//// includes
 ////////////////////////////////////////////
 
+#include "settings.h"
+#include "ui-util.h"
+#include "ui.h"
+#include "widgets.h"
 
 #endif //GRAPHITE_GRAPHITE_H

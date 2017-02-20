@@ -47,7 +47,7 @@ Pebble.addEventListener('showConfiguration', function () {
     var url = 'https://stefanheule.com/graphite/config/1/index.html';
     // url = 'https://rawgit.com/stefanheule/graphite/master/config/';
 
-    // url = 'https://local.com/graphite/config/0/index.html';
+    url = 'https://local.com/graphite/config/0/index.html';
 
     url += '?platform=' + encodeURIComponent(getPlatform());
     url += '&wtoken=' + encodeURIComponent(getWToken());
@@ -67,6 +67,8 @@ Pebble.addEventListener('showConfiguration', function () {
 
 Pebble.addEventListener('webviewclosed', function (e) {
     var urlconfig = JSON.parse(decodeURIComponent(e.response).replace(/@/g, "%"));
+
+    var previous_tz_0 = readConfig("CONFIG_TZ_0_LOCAL");
 
     // decode config
     var config = {};
@@ -232,6 +234,11 @@ Pebble.addEventListener('webviewclosed', function (e) {
 // --     console.log('[ info/app ] Configuration page returned: ' + JSON.stringify(fullconfig));
     console.log('[ info/app ] Configuration page returned: ' + JSON.stringify(fullconfig));
 // -- end build
+
+    if (previous_tz_0 != fullconfig["CONFIG_TZ_0_LOCAL"]) {
+        sendTzUpdate(0);
+    }
+
     Pebble.sendAppMessage(config, function () {
 // -- build=debug
 // --         console.log('[ info/app ] Send successful: ' + JSON.stringify(config));
@@ -628,10 +635,9 @@ function encode_int_to_bytes(val, nbytes) {
     return byteArray;
 }
 
-function sendTzUpdate(idx, key) {
+function sendTzUpdate(idx) {
     var now = (new Date()).getTime();
-    var zoneData = moment.tz.zone('America/Los_Angeles');
-    zoneData = moment.tz.zone('Europe/Zurich');
+    var zoneData = moment.tz.zone(readConfig("CONFIG_TZ_" + idx + "_LOCAL"));
     var untils = zoneData.untils;
     var found = false;
     var id = 0;
@@ -674,6 +680,7 @@ function sendTzUpdate(idx, key) {
     }
 
     var pebbledata = {};
+    var key = "MSG_KEY_TZ_" + idx;
     pebbledata[key] = data;
     Pebble.sendAppMessage(pebbledata);
 }
@@ -706,9 +713,9 @@ Pebble.addEventListener('appmessage',
         }
 // -- autogen
 // -- ## for i in range(num_tzs)
-// --         if (dict["MSG_KEY_FETCH_TZ_{{ i }}"]) sendTzUpdate({{ i }}, "MSG_KEY_TZ_{{ i }}");
+// --         if (dict["MSG_KEY_FETCH_TZ_{{ i }}"]) sendTzUpdate({{ i }});
 // -- ## endfor
-        if (dict["MSG_KEY_FETCH_TZ_0"]) sendTzUpdate(0, "MSG_KEY_TZ_0");
+        if (dict["MSG_KEY_FETCH_TZ_0"]) sendTzUpdate(0);
 // -- end autogen
     }
 );

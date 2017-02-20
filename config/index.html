@@ -1812,6 +1812,21 @@
   var isChalk = function() { return getPlatform() == "chalk"; };
   var isBasalt = function() { return getPlatform() == "basalt"; };
 
+  var stringTypes = [
+// -- autogen
+// -- ## for key in configuration
+// -- ## if key["type"] == "string"
+// --       "{{ key["key"] }}",
+// -- ## endif
+// -- ## endfor
+      "CONFIG_WEATHER_APIKEY_LOCAL",
+      "CONFIG_WEATHER_LOCATION_LOCAL",
+      "CONFIG_TIME_FORMAT",
+      "CONFIG_INFO_BELOW",
+      "CONFIG_TZ_0_LOCAL",
+// -- end autogen
+  ];
+
   var timeFormats = [
 // -- autogen
 // -- ## for key in configuration_lookup["CONFIG_TIME_FORMAT_LOCAL"]["options"]
@@ -1867,7 +1882,12 @@
     } else if (el.hasClass('item-toggle')) {
       val = +el.is(':checked');
     } else if (el.hasClass('item-select')) {
-      val = +el.val();
+      var id = el.attr('id');
+      if (stringTypes.indexOf(id) == -1) {
+          val = +el.val();
+      } else {
+          val = el.val();
+      }
     } else if (el.hasClass('item-input')) {
       val = el.val();
     } else {
@@ -1921,21 +1941,6 @@
   function readValuesFromStorage(use_defaults, did_read_defaults) {
 
     var defaults = GraphitePreview.defaultConfig(getPlatform());
-
-    var stringTypes = [
-// -- autogen
-// -- ## for key in configuration
-// -- ## if key["type"] == "string"
-// --       "{{ key["key"] }}",
-// -- ## endif
-// -- ## endfor
-      "CONFIG_WEATHER_APIKEY_LOCAL",
-      "CONFIG_WEATHER_LOCATION_LOCAL",
-      "CONFIG_TIME_FORMAT",
-      "CONFIG_INFO_BELOW",
-      "CONFIG_TZ_0_LOCAL",
-// -- end autogen
-    ];
 
     // use defaults
     if (use_defaults || localStorage.getItem(getStorageKey("CONFIG_WEATHER_REFRESH")) === null) {
