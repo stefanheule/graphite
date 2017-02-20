@@ -224,6 +224,9 @@ Pebble.addEventListener('webviewclosed', function (e) {
     localStorage.setItem("CONFIG_STEP_GOAL", urlconfig[47]);
     fullconfig["CONFIG_TZ_0_LOCAL"] = urlconfig[48];
     localStorage.setItem("CONFIG_TZ_0_LOCAL", urlconfig[48]);
+    fullconfig["CONFIG_TZ_0_FORMAT"] = urlconfig[49];
+    config["CONFIG_TZ_0_FORMAT"] = urlconfig[49];
+    localStorage.setItem("CONFIG_TZ_0_FORMAT", urlconfig[49]);
 // -- end autogen
 
     // don't allow really small values for refresh rate

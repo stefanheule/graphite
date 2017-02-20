@@ -92,6 +92,7 @@ var GraphitePreview = (function () {
      var config_show_daynight;
      var config_step_goal;
      var config_tz_0_local;
+     var config_tz_0_format;
 // -- end autogen
 
     function get(k) {
@@ -316,6 +317,7 @@ var GraphitePreview = (function () {
         config_show_daynight = config["CONFIG_SHOW_DAYNIGHT"];
         config_step_goal = config["CONFIG_STEP_GOAL"];
         config_tz_0_local = config["CONFIG_TZ_0_LOCAL"];
+        config_tz_0_format = config["CONFIG_TZ_0_FORMAT"];
 // -- end autogen
 
         weather = getWeather(platform);
@@ -396,7 +398,12 @@ var widgets = [
     widget_tz_0, // id 32
 ];
 function widget_tz_0(fctx, draw, position, align, foreground_color, background_color) {
-return 0;
+    var dat = moment(new Date()).tz(config_tz_0_local).format('YYYY-MM-DD HH:mm');
+    buffer_1 = strftime(config_tz_0_format, new Date(dat));
+    buffer_1 =
+    remove_leading_zero(buffer_1, sizeof(buffer_1));
+    if (draw) draw_string(fctx, buffer_1, position, font_main, foreground_color, fontsize_widgets, align);
+    return string_width(fctx, buffer_1, font_main, fontsize_widgets);
 }
 function draw_icon_number_widget(fctx, draw, position, align, foreground_color, background_color, icon, text, show_icon) {
   var fontsize_icon = (fontsize_widgets * 0.62);
@@ -1012,6 +1019,7 @@ function background_update_proc(layer, ctx) {
             CONFIG_SHOW_DAYNIGHT: +true,
             CONFIG_STEP_GOAL: +10000,
             CONFIG_TZ_0_LOCAL: "America/Los_Angeles",
+            CONFIG_TZ_0_FORMAT: "%I:0%M%P",
 // -- end autogen
         };
         return cloneConfig(defaults);
@@ -1074,6 +1082,7 @@ function background_update_proc(layer, ctx) {
             CONFIG_SHOW_DAYNIGHT: +true,
             CONFIG_STEP_GOAL: +10000,
             CONFIG_TZ_0_LOCAL: "America/Los_Angeles",
+            CONFIG_TZ_0_FORMAT: "%I:0%M%P",
 // -- end autogen
         };
         return cloneConfig(defaults);

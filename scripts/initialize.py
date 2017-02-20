@@ -294,6 +294,12 @@ configuration = [
 ] + map(lambda i: {
   'key': 'CONFIG_TZ_%d_LOCAL' % i,
   'default': '"America/Los_Angeles"',
+  'mydefault': '"Europe/Zurich"',
+  'type': 'string',
+}, range(num_tzs)) + map(lambda i: {
+  'key': 'CONFIG_TZ_%d_FORMAT' % i,
+  'default': '"%I:0%M%P"',
+  'mydefault': '"%I:0%M%Pmmm"',
   'type': 'string',
 }, range(num_tzs))
 

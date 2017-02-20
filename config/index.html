@@ -483,6 +483,14 @@
 // --           <select id='CONFIG_TZ_{{ i }}_LOCAL' class="item-select">{% include 'tz-data/tz-select.html' %}</select>
 // --         </label>
 // --       </div>
+// --      <div class="item-container-content">
+// --        <label class="item">
+// --          Format for Timezone {{ i + 1 }}
+// --          <div class="item-input-wrapper">
+// --            <input type="text" class="item-input" id='CONFIG_TZ_{{ i }}_FORMAT'>
+// --          </div>
+// --        </label>
+// --      </div>
 // -- ## endfor
 -->
       <div class="item-container-content">
@@ -1408,6 +1416,14 @@
 </optgroup></select>
         </label>
       </div>
+     <div class="item-container-content">
+       <label class="item">
+         Format for Timezone 1
+         <div class="item-input-wrapper">
+           <input type="text" class="item-input" id='CONFIG_TZ_0_FORMAT'>
+         </div>
+       </label>
+     </div>
 <!--
 // -- end autogen
 -->
@@ -1824,6 +1840,7 @@
       "CONFIG_TIME_FORMAT",
       "CONFIG_INFO_BELOW",
       "CONFIG_TZ_0_LOCAL",
+      "CONFIG_TZ_0_FORMAT",
 // -- end autogen
   ];
 
@@ -2121,6 +2138,7 @@
         "CONFIG_SHOW_DAYNIGHT": 46,
         "CONFIG_STEP_GOAL": 47,
         "CONFIG_TZ_0_LOCAL": 48,
+        "CONFIG_TZ_0_FORMAT": 49,
 // -- end autogen
     };
 

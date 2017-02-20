@@ -68,6 +68,7 @@ char config_info_below[GRAPHITE_STRINGCONFIG_MAXLEN+1] = "%A, %m/%d";
 uint8_t config_update_second = 0;
 uint8_t config_show_daynight = true;
 uint16_t config_step_goal = 10000;
+char config_tz_0_format[GRAPHITE_STRINGCONFIG_MAXLEN+1] = "%I:0%M%P";
 // -- end autogen
 
 

@@ -74,11 +74,12 @@
 #define CONFIG_UPDATE_SECOND 42
 #define CONFIG_SHOW_DAYNIGHT 46
 #define CONFIG_STEP_GOAL 47
+#define CONFIG_TZ_0_FORMAT 49
 // -- end autogen
 
 // -- autogen
 // -- #define GRAPHITE_N_CONFIG {{ num_config_items }}
-#define GRAPHITE_N_CONFIG 48
+#define GRAPHITE_N_CONFIG 49
 // -- end autogen
 
 // -- autogen
@@ -156,6 +157,7 @@ extern char config_info_below[GRAPHITE_STRINGCONFIG_MAXLEN+1];
 extern uint8_t config_update_second;
 extern uint8_t config_show_daynight;
 extern uint16_t config_step_goal;
+extern char config_tz_0_format[GRAPHITE_STRINGCONFIG_MAXLEN+1];
 // -- end autogen
 
 

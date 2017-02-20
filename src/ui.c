@@ -54,12 +54,33 @@ void bluetooth_popup(FContext* fctx, GContext *ctx, bool connected) {
  */
 // -- jsalternative
 // -- function remove_leading_zero(buffer, length) {
+// --     buffer = buffer.replace("mmmm", "");
 // --     if (buffer.substring(0, 1) == "0") buffer = buffer.substring(1);
 // --     return buffer.replace(new RegExp("([^0-9])0", 'g'), "$1");
 // -- }
 void remove_leading_zero(char *buffer, size_t length) {
     bool last_was_space = true;
+
+    int start_m = -1;
+    int ms = 0;
     int i = 0;
+    while (buffer[i] != 0) {
+        if (buffer[i] == 'm') {
+            ms += 1;
+            if (start_m == -1) start_m = i;
+        } else {
+            start_m = -1; ms = 0;
+        }
+        if (ms == 4) {
+            memcpy(&buffer[start_m], &buffer[start_m + 4], length - (start_m + 4));
+            i = start_m;
+            start_m = -1;
+            ms = 0;
+        }
+        i += 1;
+    }
+
+    i = 0;
     while (buffer[i] != 0) {
         if (buffer[i] == '0' && last_was_space) {
             memcpy(&buffer[i], &buffer[i + 1], length - (i + 1));
