@@ -329,55 +329,67 @@ widgets = [
   {
     'key': 'WIDGET_EMPTY',
     'desc': 'Empty',
+    'sort': 100,
   },
   {
     'key': 'WIDGET_WEATHER_CUR_TEMP_ICON',
     'desc': 'Weather: Current temperature and icon',
     'group': ['WEATHER', 'WEATHERCUR'],
+    'sort': 100,
   },
   {
     'key': 'WIDGET_WEATHER_CUR_TEMP',
     'desc': 'Weather: Current temperature',
     'group': ['WEATHER', 'WEATHERCUR'],
+    'sort': 100,
   },
   {
     'key': 'WIDGET_WEATHER_CUR_ICON',
     'desc': 'Weather: Current icon',
     'group': ['WEATHER', 'WEATHERCUR'],
+    'sort': 100,
   },
   {
     'key': 'WIDGET_WEATHER_LOW_TEMP',
     'desc': 'Weather: Today\'s low',
     'group': ['WEATHER', 'WEATHERLOWHIGH'],
+    'sort': 100,
   },
   {
     'key': 'WIDGET_WEATHER_HIGH_TEMP',
     'desc': 'Weather: Today\'s high',
     'group': ['WEATHER', 'WEATHERLOWHIGH'],
+    'sort': 100,
   },
   {
     'key': 'WIDGET_BLUETOOTH_DISCONLY',
     'desc': 'Bluetooth (on disconnect only)',
+    'sort': 200,
   },
   {
     'key': 'WIDGET_BLUETOOTH_DISCONLY_ALT',
     'desc': 'Bluetooth (on disconnect only), alternative',
+    'sort': 200,
   },
   {
     'key': 'WIDGET_BLUETOOTH_YESNO',
     'desc': 'Bluetooth (yes/no)',
+    'sort': 200,
   },
   {
     'key': 'WIDGET_BATTERY_ICON',
     'desc': 'Battery (icon)',
+    'sort': 300,
   },
   {
     'key': 'WIDGET_QUIET_OFFONLY',
     'desc': 'Quiet time enabled (only when on)',
+    'sort': 400,
   },
   {
     'key': 'WIDGET_QUIET',
     'desc': 'Quiet time indicator (two icons for on/off)',
+    'sort': 400,
   },
 ] + enum_widget(
   [
@@ -393,48 +405,56 @@ widgets = [
       'desc': 'Steps',
       'icontext': 'A',
       'text': 'format_unitless(health_service_sum_today(HealthMetricStepCount))',
+      'sort': 700,
     },
     {
       'key': 'WIDGET_STEPS_SHORT',
       'desc': 'Steps abbreviated',
       'icontext': 'A',
       'text': 'format_thousands(health_service_sum_today(HealthMetricStepCount))',
+      'sort': 700,
     },
     {
       'key': 'WIDGET_CALORIES_RESTING',
       'desc': 'Calories burned, resting',
       'icontext': 'K',
       'text': 'format_unitless(health_service_sum_today(HealthMetricRestingKCalories))',
+      'sort': 800,
     },
     {
       'key': 'WIDGET_CALORIES_ACTIVE',
       'desc': 'Calories burned, active',
       'icontext': 'K',
       'text': 'format_unitless(health_service_sum_today(HealthMetricActiveKCalories))',
+      'sort': 800,
     },
     {
       'key': 'WIDGET_CALORIES_ALL',
       'desc': 'Calories burned, resting + active',
       'icontext': 'K',
       'text': 'format_unitless(health_service_sum_today(HealthMetricRestingKCalories)+health_service_sum_today(HealthMetricActiveKCalories))',
+      'sort': 800,
     },
     {
       'key': 'WIDGET_CALORIES_RESTING_SHORT',
       'desc': 'Calories burned, resting, abbreviated',
       'icontext': 'K',
       'text': 'format_thousands(health_service_sum_today(HealthMetricRestingKCalories))',
+      'sort': 800,
     },
     {
       'key': 'WIDGET_CALORIES_ACTIVE_SHORT',
       'desc': 'Calories burned, active, abbreviated',
       'icontext': 'K',
       'text': 'format_thousands(health_service_sum_today(HealthMetricActiveKCalories))',
+      'sort': 800,
     },
     {
       'key': 'WIDGET_CALORIES_ALL_SHORT',
       'desc': 'Calories burned, resting + active, abbreviated',
       'icontext': 'K',
       'text': 'format_thousands(health_service_sum_today(HealthMetricRestingKCalories)+health_service_sum_today(HealthMetricActiveKCalories))',
+      'sort': 800,
     },
   ],
   {
@@ -445,27 +465,33 @@ widgets = [
   {
     'key': 'WIDGET_AMPM',
     'desc': 'AM/PM',
+    'sort': 600,
   },
   {
     'key': 'WIDGET_AMPM_LOWER',
     'desc': 'am/pm',
+    'sort': 600,
   },
   {
     'key': 'WIDGET_SECONDS',
     'desc': 'Seconds',
+    'sort': 600,
   },
   {
     'key': 'WIDGET_DAY_OF_WEEK',
     'desc': 'Day of week',
+    'sort': 600,
   },
   {
     'key': 'WIDGET_BATTERY_TEXT',
     'desc': 'Battery (text)',
+    'sort': 300,
   },
 ] + map(lambda i: {
   'key': 'WIDGET_TZ_%d' % i,
   'desc': 'Additional timezone %d' % (i+1),
   'group': ['TZ'],
+  'sort': 500 if i == 0 else 900,
 }, range(num_tzs))
   # {
   #   'key': 'WIDGET_DISTANCE_KM',
@@ -554,8 +580,8 @@ def get_context():
   if _context is None:
     config = add_key_id(configuration, '', 1)
     sc = add_additional_info(simple_config)
-    compls = add_key_id(widgets, '', 0)
-    pre_process(config, simple_config, compls, config_groups)
+    wdgts = add_key_id(widgets, '', 0)
+    pre_process(config, simple_config, wdgts, config_groups)
     linear_version = version.split(".")
     linear_version = int(linear_version[0]) * 1000 + int(linear_version[1])
     msgkeys = add_key_id(msg_keys, 'MSG_KEY_', 100)
@@ -572,8 +598,8 @@ def get_context():
       'simple_config_lookup': to_lookup(sc),
       'config_groups': config_groups,
       'config_groups_lookup': to_lookup(config_groups),
-      'widgets': compls,
-      'widgets_lookup': to_lookup(compls),
+      'widgets': sorted(wdgts, lambda a, b: cmp((a['sort'], a['id']), (b['sort'], b['id']))),
+      'widgets_lookup': to_lookup(wdgts),
       'num_config_items': len(config),
       'message_keys': msgkeys + persistkeys,
       'perc_max_len': perc_max_len,

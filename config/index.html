@@ -160,6 +160,10 @@
         <p>Battery (icon)</p>
         <canvas class="widget" id="widget-preview-9-canvas"></canvas>
       </div>
+      <div class="widget-preview" id="widget-preview-32">
+        <p>Battery (text)</p>
+        <canvas class="widget" id="widget-preview-32-canvas"></canvas>
+      </div>
       <div class="widget-preview" id="widget-preview-10">
         <p>Quiet time enabled (only when on)</p>
         <canvas class="widget" id="widget-preview-10-canvas"></canvas>
@@ -167,6 +171,26 @@
       <div class="widget-preview" id="widget-preview-11">
         <p>Quiet time indicator (two icons for on/off)</p>
         <canvas class="widget" id="widget-preview-11-canvas"></canvas>
+      </div>
+      <div class="widget-preview" id="widget-preview-33">
+        <p>Additional timezone 1</p>
+        <canvas class="widget" id="widget-preview-33-canvas"></canvas>
+      </div>
+      <div class="widget-preview" id="widget-preview-28">
+        <p>AM/PM</p>
+        <canvas class="widget" id="widget-preview-28-canvas"></canvas>
+      </div>
+      <div class="widget-preview" id="widget-preview-29">
+        <p>am/pm</p>
+        <canvas class="widget" id="widget-preview-29-canvas"></canvas>
+      </div>
+      <div class="widget-preview" id="widget-preview-30">
+        <p>Seconds</p>
+        <canvas class="widget" id="widget-preview-30-canvas"></canvas>
+      </div>
+      <div class="widget-preview" id="widget-preview-31">
+        <p>Day of week</p>
+        <canvas class="widget" id="widget-preview-31-canvas"></canvas>
       </div>
       <div class="widget-preview" id="widget-preview-12">
         <p>Steps</p>
@@ -231,30 +255,6 @@
       <div class="widget-preview" id="widget-preview-27">
         <p>Calories burned, resting + active, abbreviated (no icon)</p>
         <canvas class="widget" id="widget-preview-27-canvas"></canvas>
-      </div>
-      <div class="widget-preview" id="widget-preview-28">
-        <p>AM/PM</p>
-        <canvas class="widget" id="widget-preview-28-canvas"></canvas>
-      </div>
-      <div class="widget-preview" id="widget-preview-29">
-        <p>am/pm</p>
-        <canvas class="widget" id="widget-preview-29-canvas"></canvas>
-      </div>
-      <div class="widget-preview" id="widget-preview-30">
-        <p>Seconds</p>
-        <canvas class="widget" id="widget-preview-30-canvas"></canvas>
-      </div>
-      <div class="widget-preview" id="widget-preview-31">
-        <p>Day of week</p>
-        <canvas class="widget" id="widget-preview-31-canvas"></canvas>
-      </div>
-      <div class="widget-preview" id="widget-preview-32">
-        <p>Battery (text)</p>
-        <canvas class="widget" id="widget-preview-32-canvas"></canvas>
-      </div>
-      <div class="widget-preview" id="widget-preview-33">
-        <p>Additional timezone 1</p>
-        <canvas class="widget" id="widget-preview-33-canvas"></canvas>
       </div>
       <div class="widget-preview" id="widget-preview-34">
         <p>Additional timezone 2</p>
@@ -7362,8 +7362,14 @@
       $("#widget-preview-7").on("click", function(){ pickComplication(7); });
       $("#widget-preview-8").on("click", function(){ pickComplication(8); });
       $("#widget-preview-9").on("click", function(){ pickComplication(9); });
+      $("#widget-preview-32").on("click", function(){ pickComplication(32); });
       $("#widget-preview-10").on("click", function(){ pickComplication(10); });
       $("#widget-preview-11").on("click", function(){ pickComplication(11); });
+      $("#widget-preview-33").on("click", function(){ pickComplication(33); });
+      $("#widget-preview-28").on("click", function(){ pickComplication(28); });
+      $("#widget-preview-29").on("click", function(){ pickComplication(29); });
+      $("#widget-preview-30").on("click", function(){ pickComplication(30); });
+      $("#widget-preview-31").on("click", function(){ pickComplication(31); });
       $("#widget-preview-12").on("click", function(){ pickComplication(12); });
       $("#widget-preview-13").on("click", function(){ pickComplication(13); });
       $("#widget-preview-14").on("click", function(){ pickComplication(14); });
@@ -7380,12 +7386,6 @@
       $("#widget-preview-25").on("click", function(){ pickComplication(25); });
       $("#widget-preview-26").on("click", function(){ pickComplication(26); });
       $("#widget-preview-27").on("click", function(){ pickComplication(27); });
-      $("#widget-preview-28").on("click", function(){ pickComplication(28); });
-      $("#widget-preview-29").on("click", function(){ pickComplication(29); });
-      $("#widget-preview-30").on("click", function(){ pickComplication(30); });
-      $("#widget-preview-31").on("click", function(){ pickComplication(31); });
-      $("#widget-preview-32").on("click", function(){ pickComplication(32); });
-      $("#widget-preview-33").on("click", function(){ pickComplication(33); });
       $("#widget-preview-34").on("click", function(){ pickComplication(34); });
       $("#widget-preview-35").on("click", function(){ pickComplication(35); });
       $("#widget-preview-36").on("click", function(){ pickComplication(36); });
@@ -7612,8 +7612,14 @@
       GraphitePreview.previewComplication(7, config, 'widget-preview-7-canvas', getPlatform());
       GraphitePreview.previewComplication(8, config, 'widget-preview-8-canvas', getPlatform());
       GraphitePreview.previewComplication(9, config, 'widget-preview-9-canvas', getPlatform());
+      GraphitePreview.previewComplication(32, config, 'widget-preview-32-canvas', getPlatform());
       GraphitePreview.previewComplication(10, config, 'widget-preview-10-canvas', getPlatform());
       GraphitePreview.previewComplication(11, config, 'widget-preview-11-canvas', getPlatform());
+      GraphitePreview.previewComplication(33, config, 'widget-preview-33-canvas', getPlatform());
+      GraphitePreview.previewComplication(28, config, 'widget-preview-28-canvas', getPlatform());
+      GraphitePreview.previewComplication(29, config, 'widget-preview-29-canvas', getPlatform());
+      GraphitePreview.previewComplication(30, config, 'widget-preview-30-canvas', getPlatform());
+      GraphitePreview.previewComplication(31, config, 'widget-preview-31-canvas', getPlatform());
       GraphitePreview.previewComplication(12, config, 'widget-preview-12-canvas', getPlatform());
       GraphitePreview.previewComplication(13, config, 'widget-preview-13-canvas', getPlatform());
       GraphitePreview.previewComplication(14, config, 'widget-preview-14-canvas', getPlatform());
@@ -7630,12 +7636,6 @@
       GraphitePreview.previewComplication(25, config, 'widget-preview-25-canvas', getPlatform());
       GraphitePreview.previewComplication(26, config, 'widget-preview-26-canvas', getPlatform());
       GraphitePreview.previewComplication(27, config, 'widget-preview-27-canvas', getPlatform());
-      GraphitePreview.previewComplication(28, config, 'widget-preview-28-canvas', getPlatform());
-      GraphitePreview.previewComplication(29, config, 'widget-preview-29-canvas', getPlatform());
-      GraphitePreview.previewComplication(30, config, 'widget-preview-30-canvas', getPlatform());
-      GraphitePreview.previewComplication(31, config, 'widget-preview-31-canvas', getPlatform());
-      GraphitePreview.previewComplication(32, config, 'widget-preview-32-canvas', getPlatform());
-      GraphitePreview.previewComplication(33, config, 'widget-preview-33-canvas', getPlatform());
       GraphitePreview.previewComplication(34, config, 'widget-preview-34-canvas', getPlatform());
       GraphitePreview.previewComplication(35, config, 'widget-preview-35-canvas', getPlatform());
       GraphitePreview.previewComplication(36, config, 'widget-preview-36-canvas', getPlatform());
