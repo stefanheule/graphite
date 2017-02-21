@@ -92,17 +92,7 @@ var GraphitePreview = (function () {
      var config_show_daynight;
      var config_step_goal;
      var config_tz_0_local;
-     var config_tz_1_local;
-     var config_tz_2_local;
-     var config_tz_3_local;
-     var config_tz_4_local;
-     var config_tz_5_local;
      var config_tz_0_format;
-     var config_tz_1_format;
-     var config_tz_2_format;
-     var config_tz_3_format;
-     var config_tz_4_format;
-     var config_tz_5_format;
 // -- end autogen
 
     function get(k) {
@@ -327,17 +317,7 @@ var GraphitePreview = (function () {
         config_show_daynight = config["CONFIG_SHOW_DAYNIGHT"];
         config_step_goal = config["CONFIG_STEP_GOAL"];
         config_tz_0_local = config["CONFIG_TZ_0_LOCAL"];
-        config_tz_1_local = config["CONFIG_TZ_1_LOCAL"];
-        config_tz_2_local = config["CONFIG_TZ_2_LOCAL"];
-        config_tz_3_local = config["CONFIG_TZ_3_LOCAL"];
-        config_tz_4_local = config["CONFIG_TZ_4_LOCAL"];
-        config_tz_5_local = config["CONFIG_TZ_5_LOCAL"];
         config_tz_0_format = config["CONFIG_TZ_0_FORMAT"];
-        config_tz_1_format = config["CONFIG_TZ_1_FORMAT"];
-        config_tz_2_format = config["CONFIG_TZ_2_FORMAT"];
-        config_tz_3_format = config["CONFIG_TZ_3_FORMAT"];
-        config_tz_4_format = config["CONFIG_TZ_4_FORMAT"];
-        config_tz_5_format = config["CONFIG_TZ_5_FORMAT"];
 // -- end autogen
 
         weather = getWeather(platform);
@@ -417,55 +397,10 @@ var widgets = [
     widget_calories_active_short, // id 25
     widget_calories_all_short_icon, // id 26
     widget_calories_all_short, // id 27
-    widget_tz_1, // id 34
-    widget_tz_2, // id 35
-    widget_tz_3, // id 36
-    widget_tz_4, // id 37
-    widget_tz_5, // id 38
 ];
 function widget_tz_0(fctx, draw, position, align, foreground_color, background_color) {
     var dat = moment(new Date()).tz(config_tz_0_local).format('YYYY-MM-DD HH:mm');
     buffer_1 = strftime(config_tz_0_format, new Date(dat));
-    buffer_1 =
-    remove_leading_zero(buffer_1, sizeof(buffer_1));
-    if (draw) draw_string(fctx, buffer_1, position, font_main, foreground_color, fontsize_widgets, align);
-    return string_width(fctx, buffer_1, font_main, fontsize_widgets);
-}
-function widget_tz_1(fctx, draw, position, align, foreground_color, background_color) {
-    var dat = moment(new Date()).tz(config_tz_1_local).format('YYYY-MM-DD HH:mm');
-    buffer_1 = strftime(config_tz_1_format, new Date(dat));
-    buffer_1 =
-    remove_leading_zero(buffer_1, sizeof(buffer_1));
-    if (draw) draw_string(fctx, buffer_1, position, font_main, foreground_color, fontsize_widgets, align);
-    return string_width(fctx, buffer_1, font_main, fontsize_widgets);
-}
-function widget_tz_2(fctx, draw, position, align, foreground_color, background_color) {
-    var dat = moment(new Date()).tz(config_tz_2_local).format('YYYY-MM-DD HH:mm');
-    buffer_1 = strftime(config_tz_2_format, new Date(dat));
-    buffer_1 =
-    remove_leading_zero(buffer_1, sizeof(buffer_1));
-    if (draw) draw_string(fctx, buffer_1, position, font_main, foreground_color, fontsize_widgets, align);
-    return string_width(fctx, buffer_1, font_main, fontsize_widgets);
-}
-function widget_tz_3(fctx, draw, position, align, foreground_color, background_color) {
-    var dat = moment(new Date()).tz(config_tz_3_local).format('YYYY-MM-DD HH:mm');
-    buffer_1 = strftime(config_tz_3_format, new Date(dat));
-    buffer_1 =
-    remove_leading_zero(buffer_1, sizeof(buffer_1));
-    if (draw) draw_string(fctx, buffer_1, position, font_main, foreground_color, fontsize_widgets, align);
-    return string_width(fctx, buffer_1, font_main, fontsize_widgets);
-}
-function widget_tz_4(fctx, draw, position, align, foreground_color, background_color) {
-    var dat = moment(new Date()).tz(config_tz_4_local).format('YYYY-MM-DD HH:mm');
-    buffer_1 = strftime(config_tz_4_format, new Date(dat));
-    buffer_1 =
-    remove_leading_zero(buffer_1, sizeof(buffer_1));
-    if (draw) draw_string(fctx, buffer_1, position, font_main, foreground_color, fontsize_widgets, align);
-    return string_width(fctx, buffer_1, font_main, fontsize_widgets);
-}
-function widget_tz_5(fctx, draw, position, align, foreground_color, background_color) {
-    var dat = moment(new Date()).tz(config_tz_5_local).format('YYYY-MM-DD HH:mm');
-    buffer_1 = strftime(config_tz_5_format, new Date(dat));
     buffer_1 =
     remove_leading_zero(buffer_1, sizeof(buffer_1));
     if (draw) draw_string(fctx, buffer_1, position, font_main, foreground_color, fontsize_widgets, align);
@@ -1093,17 +1028,7 @@ function background_update_proc(layer, ctx) {
             CONFIG_SHOW_DAYNIGHT: +true,
             CONFIG_STEP_GOAL: +10000,
             CONFIG_TZ_0_LOCAL: "America/Los_Angeles",
-            CONFIG_TZ_1_LOCAL: "America/Los_Angeles",
-            CONFIG_TZ_2_LOCAL: "America/Los_Angeles",
-            CONFIG_TZ_3_LOCAL: "America/Los_Angeles",
-            CONFIG_TZ_4_LOCAL: "America/Los_Angeles",
-            CONFIG_TZ_5_LOCAL: "America/Los_Angeles",
             CONFIG_TZ_0_FORMAT: "%I:0%M%P",
-            CONFIG_TZ_1_FORMAT: "%I:0%M%P",
-            CONFIG_TZ_2_FORMAT: "%I:0%M%P",
-            CONFIG_TZ_3_FORMAT: "%I:0%M%P",
-            CONFIG_TZ_4_FORMAT: "%I:0%M%P",
-            CONFIG_TZ_5_FORMAT: "%I:0%M%P",
 // -- end autogen
         };
         return cloneConfig(defaults);
@@ -1166,17 +1091,7 @@ function background_update_proc(layer, ctx) {
             CONFIG_SHOW_DAYNIGHT: +true,
             CONFIG_STEP_GOAL: +10000,
             CONFIG_TZ_0_LOCAL: "Europe/Zurich",
-            CONFIG_TZ_1_LOCAL: "Europe/Zurich",
-            CONFIG_TZ_2_LOCAL: "Europe/Zurich",
-            CONFIG_TZ_3_LOCAL: "Europe/Zurich",
-            CONFIG_TZ_4_LOCAL: "Europe/Zurich",
-            CONFIG_TZ_5_LOCAL: "Europe/Zurich",
             CONFIG_TZ_0_FORMAT: "%I:0%M%Pmmm",
-            CONFIG_TZ_1_FORMAT: "%I:0%M%Pmmm",
-            CONFIG_TZ_2_FORMAT: "%I:0%M%Pmmm",
-            CONFIG_TZ_3_FORMAT: "%I:0%M%Pmmm",
-            CONFIG_TZ_4_FORMAT: "%I:0%M%Pmmm",
-            CONFIG_TZ_5_FORMAT: "%I:0%M%Pmmm",
 // -- end autogen
         };
         return cloneConfig(defaults);

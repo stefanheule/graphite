@@ -121,11 +121,6 @@ void check_update_tz() {
 // --     check_update_tz_helper({{ i }}, MSG_KEY_FETCH_TZ_{{ i }});
 // -- ## endfor
     check_update_tz_helper(0, MSG_KEY_FETCH_TZ_0);
-    check_update_tz_helper(1, MSG_KEY_FETCH_TZ_1);
-    check_update_tz_helper(2, MSG_KEY_FETCH_TZ_2);
-    check_update_tz_helper(3, MSG_KEY_FETCH_TZ_3);
-    check_update_tz_helper(4, MSG_KEY_FETCH_TZ_4);
-    check_update_tz_helper(5, MSG_KEY_FETCH_TZ_5);
 // -- end autogen
 }
 
@@ -260,11 +255,6 @@ void inbox_received_handler(DictionaryIterator *iter, void *context) {
     dirty |= sync_helper_uint8_t(CONFIG_SHOW_DAYNIGHT, iter, &config_show_daynight);
     dirty |= sync_helper_uint16_t(CONFIG_STEP_GOAL, iter, &config_step_goal);
     dirty |= sync_helper_string(CONFIG_TZ_0_FORMAT, iter, config_tz_0_format);
-    dirty |= sync_helper_string(CONFIG_TZ_1_FORMAT, iter, config_tz_1_format);
-    dirty |= sync_helper_string(CONFIG_TZ_2_FORMAT, iter, config_tz_2_format);
-    dirty |= sync_helper_string(CONFIG_TZ_3_FORMAT, iter, config_tz_3_format);
-    dirty |= sync_helper_string(CONFIG_TZ_4_FORMAT, iter, config_tz_4_format);
-    dirty |= sync_helper_string(CONFIG_TZ_5_FORMAT, iter, config_tz_5_format);
 // -- end autogen
 
     bool ask_for_weather_update = true;
@@ -314,11 +304,6 @@ void inbox_received_handler(DictionaryIterator *iter, void *context) {
 // --     if (sync_tz({{ i }}, MSG_KEY_TZ_{{ i }}, iter)) { dirty = true; ask_for_tz_update = false; }
 // -- ## endfor
     if (sync_tz(0, MSG_KEY_TZ_0, iter)) { dirty = true; ask_for_tz_update = false; }
-    if (sync_tz(1, MSG_KEY_TZ_1, iter)) { dirty = true; ask_for_tz_update = false; }
-    if (sync_tz(2, MSG_KEY_TZ_2, iter)) { dirty = true; ask_for_tz_update = false; }
-    if (sync_tz(3, MSG_KEY_TZ_3, iter)) { dirty = true; ask_for_tz_update = false; }
-    if (sync_tz(4, MSG_KEY_TZ_4, iter)) { dirty = true; ask_for_tz_update = false; }
-    if (sync_tz(5, MSG_KEY_TZ_5, iter)) { dirty = true; ask_for_tz_update = false; }
 // -- end autogen
 
     if (dict_find(iter, MSG_KEY_JS_READY)) {
@@ -414,11 +399,6 @@ void read_config_all() {
     read_config_uint8_t(CONFIG_SHOW_DAYNIGHT, &config_show_daynight);
     read_config_uint16_t(CONFIG_STEP_GOAL, &config_step_goal);
     read_config_string(CONFIG_TZ_0_FORMAT, config_tz_0_format);
-    read_config_string(CONFIG_TZ_1_FORMAT, config_tz_1_format);
-    read_config_string(CONFIG_TZ_2_FORMAT, config_tz_2_format);
-    read_config_string(CONFIG_TZ_3_FORMAT, config_tz_3_format);
-    read_config_string(CONFIG_TZ_4_FORMAT, config_tz_4_format);
-    read_config_string(CONFIG_TZ_5_FORMAT, config_tz_5_format);
 // -- end autogen
 
     if (persist_exists(PERSIST_KEY_WEATHER) && persist_get_size(PERSIST_KEY_WEATHER) == sizeof(Weather)) {
@@ -446,11 +426,6 @@ void read_config_all() {
 // --             tzinfo.data[{{ i }}].timestamp = 0;
 // -- ## endfor
             tzinfo.data[0].timestamp = 0;
-            tzinfo.data[1].timestamp = 0;
-            tzinfo.data[2].timestamp = 0;
-            tzinfo.data[3].timestamp = 0;
-            tzinfo.data[4].timestamp = 0;
-            tzinfo.data[5].timestamp = 0;
 // -- end autogen
         }
     } else {
@@ -459,11 +434,6 @@ void read_config_all() {
 // --         tzinfo.data[{{ i }}].timestamp = 0;
 // -- ## endfor
         tzinfo.data[0].timestamp = 0;
-        tzinfo.data[1].timestamp = 0;
-        tzinfo.data[2].timestamp = 0;
-        tzinfo.data[3].timestamp = 0;
-        tzinfo.data[4].timestamp = 0;
-        tzinfo.data[5].timestamp = 0;
 // -- end autogen
     }
 

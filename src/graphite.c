@@ -69,11 +69,6 @@ uint8_t config_update_second = 0;
 uint8_t config_show_daynight = true;
 uint16_t config_step_goal = 10000;
 char config_tz_0_format[GRAPHITE_STRINGCONFIG_MAXLEN+1] = "%I:0%M%P";
-char config_tz_1_format[GRAPHITE_STRINGCONFIG_MAXLEN+1] = "%I:0%M%P";
-char config_tz_2_format[GRAPHITE_STRINGCONFIG_MAXLEN+1] = "%I:0%M%P";
-char config_tz_3_format[GRAPHITE_STRINGCONFIG_MAXLEN+1] = "%I:0%M%P";
-char config_tz_4_format[GRAPHITE_STRINGCONFIG_MAXLEN+1] = "%I:0%M%P";
-char config_tz_5_format[GRAPHITE_STRINGCONFIG_MAXLEN+1] = "%I:0%M%P";
 // -- end autogen
 
 
