@@ -461,6 +461,7 @@ widgets = [
 ] + map(lambda i: {
   'key': 'WIDGET_TZ_%d' % i,
   'desc': 'Additional timezone %d' % (i+1),
+  'group': ['TZ'],
 }, range(num_tzs))
   # {
   #   'key': 'WIDGET_DISTANCE_KM',
@@ -487,6 +488,9 @@ config_groups = [
   {
     'name': 'WEATHERCUR',
     'selector': 'has_widget(ALL_WEATHERCUR_WIDGET_IDS)',
+  },
+  {
+    'name': 'TZ',
   },
 ]
 
@@ -619,6 +623,7 @@ def pre_process(config, simple_config, wdgts, groups):
     k['key'] = "GROUP_%s" % (name)
     ids = map(lambda x: str(x), group_ids[name])
     resolved = "[%s]" % (", ".join(ids))
+    k['ALL_IDS'] = resolved
     for kk in k:
       k[kk] = k[kk].replace("ALL_%s_WIDGET_IDS" % (name), resolved)
 
