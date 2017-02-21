@@ -199,7 +199,7 @@ bool sync_tz(uint8_t idx, const uint32_t key, DictionaryIterator *iter) {
             tzinfo.data[idx].untils[i] = 0;
             i += 1;
         }
-        tzinfo.version = GRAPHITE_VERSION;
+        tzinfo.version = GRAPHITE_TZ_DATA_VERSION;
         persist_write_data(PERSIST_KEY_TZ, &tzinfo, sizeof(TimeZoneInfo));
         return true;
     }
@@ -421,7 +421,7 @@ void read_config_all() {
         TimeZoneInfo tmp;
         persist_read_data(PERSIST_KEY_TZ, &tmp, sizeof(TimeZoneInfo));
         // make sure we are reading tz info that's consistent with the current version number
-        if (tmp.version == GRAPHITE_VERSION) {
+        if (tmp.version == GRAPHITE_TZ_DATA_VERSION) {
             tzinfo = tmp;
         } else {
 // -- autogen

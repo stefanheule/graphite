@@ -65,6 +65,7 @@ update_timezones:
 	unzip tz.zip -d tz-data
 	rm -rf tz.zip
 	scripts/process_tz_data.py > tz-data/tz-select.html
+	echo "Update the GRAPHITE_TZ_DATA_VERSION in src/graphite.h"
 
 log:
 	pebble logs --emulator $(P)

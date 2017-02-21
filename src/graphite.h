@@ -220,11 +220,10 @@ extern AppTimer * weather_request_timer;
 // -- autogen
 // -- #define GRAPHITE_NUM_TZS {{ num_tzs }}
 // -- #define GRAPHITE_TZ_MAX_DATAPOINTS {{ tz_max_datapoints }}
-// -- #define GRAPHITE_VERSION {{ linear_version }}
 #define GRAPHITE_NUM_TZS 1
 #define GRAPHITE_TZ_MAX_DATAPOINTS 3
-#define GRAPHITE_VERSION 1002
 // -- end autogen
+#define GRAPHITE_TZ_DATA_VERSION 1
 
 typedef struct {
     bool valid;
