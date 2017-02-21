@@ -415,12 +415,13 @@ var widgets = [
     widget_ampm_lower, // id 29
     widget_seconds, // id 30
     widget_day_of_week, // id 31
-    widget_tz_0, // id 32
-    widget_tz_1, // id 33
-    widget_tz_2, // id 34
-    widget_tz_3, // id 35
-    widget_tz_4, // id 36
-    widget_tz_5, // id 37
+    widget_battery_text, // id 32
+    widget_tz_0, // id 33
+    widget_tz_1, // id 34
+    widget_tz_2, // id 35
+    widget_tz_3, // id 36
+    widget_tz_4, // id 37
+    widget_tz_5, // id 38
 ];
 function widget_tz_0(fctx, draw, position, align, foreground_color, background_color) {
     var dat = moment(new Date()).tz(config_tz_0_local).format('YYYY-MM-DD HH:mm');
@@ -517,6 +518,12 @@ function format_thousands(num) {
 }
 function widget_empty(fctx, draw, position, align, foreground_color, background_color) {
   return 0;
+}
+function widget_battery_text(fctx, draw, position, align, foreground_color, background_color) {
+    var battery_state = battery_state_service_peek();
+    buffer_1 = sprintf("%d%%", battery_state.charge_percent);
+    if (draw) draw_string(fctx, buffer_1, position, font_main, foreground_color, fontsize_widgets, align);
+    return string_width(fctx, buffer_1, font_main, fontsize_widgets);
 }
 function widget_battery_icon(fctx, draw, position, align, foreground_color, background_color) {
   var bat_thickness = PIX(1);
@@ -1146,7 +1153,7 @@ function background_update_proc(layer, ctx) {
             CONFIG_WIDGET_1: +4,
             CONFIG_WIDGET_2: +1,
             CONFIG_WIDGET_3: +5,
-            CONFIG_WIDGET_4: +32,
+            CONFIG_WIDGET_4: +33,
             CONFIG_WIDGET_5: +6,
             CONFIG_WIDGET_6: +9,
             CONFIG_PROGRESS: +1,

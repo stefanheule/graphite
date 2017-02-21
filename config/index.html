@@ -157,7 +157,7 @@
         <canvas class="widget" id="widget-preview-8-canvas"></canvas>
       </div>
       <div class="widget-preview" id="widget-preview-9">
-        <p>Battery icon</p>
+        <p>Battery (icon)</p>
         <canvas class="widget" id="widget-preview-9-canvas"></canvas>
       </div>
       <div class="widget-preview" id="widget-preview-10">
@@ -249,28 +249,32 @@
         <canvas class="widget" id="widget-preview-31-canvas"></canvas>
       </div>
       <div class="widget-preview" id="widget-preview-32">
-        <p>Additional timezone 1</p>
+        <p>Battery (text)</p>
         <canvas class="widget" id="widget-preview-32-canvas"></canvas>
       </div>
       <div class="widget-preview" id="widget-preview-33">
-        <p>Additional timezone 2</p>
+        <p>Additional timezone 1</p>
         <canvas class="widget" id="widget-preview-33-canvas"></canvas>
       </div>
       <div class="widget-preview" id="widget-preview-34">
-        <p>Additional timezone 3</p>
+        <p>Additional timezone 2</p>
         <canvas class="widget" id="widget-preview-34-canvas"></canvas>
       </div>
       <div class="widget-preview" id="widget-preview-35">
-        <p>Additional timezone 4</p>
+        <p>Additional timezone 3</p>
         <canvas class="widget" id="widget-preview-35-canvas"></canvas>
       </div>
       <div class="widget-preview" id="widget-preview-36">
-        <p>Additional timezone 5</p>
+        <p>Additional timezone 4</p>
         <canvas class="widget" id="widget-preview-36-canvas"></canvas>
       </div>
       <div class="widget-preview" id="widget-preview-37">
-        <p>Additional timezone 6</p>
+        <p>Additional timezone 5</p>
         <canvas class="widget" id="widget-preview-37-canvas"></canvas>
+      </div>
+      <div class="widget-preview" id="widget-preview-38">
+        <p>Additional timezone 6</p>
+        <canvas class="widget" id="widget-preview-38-canvas"></canvas>
       </div>
 <!--
 // -- end autogen
@@ -6117,9 +6121,7 @@
         <!--
         // -- autogen
         // --          {{ configuration_lookup["CONFIG_TZ_0_FORMAT"]["default"] }}.
-        -->
-        "%I:0%M%P".
-        <!--
+         "%I:0%M%P".
         // -- end autogen
         -->
         Leading zeros are removed.  Use 0 in front of a token to keep one leading zero.
@@ -7021,19 +7023,19 @@
     showHideOption("CONFIG_COLOR_BAT_10", readConfig("CONFIG_LOWBAT_COL") != 0);
     showHideOption("CONFIG_SHOW_DAYNIGHT", readConfig("CONFIG_WEATHER_RAIN_LOCAL") == 1);
     showHideOption("CONFIG_STEP_GOAL", readConfig("CONFIG_PROGRESS") == 1);
-    showHideOption("CONFIG_TZ_0_LOCAL", has_widget([32]));
-    showHideOption("CONFIG_TZ_1_LOCAL", has_widget([33]));
-    showHideOption("CONFIG_TZ_2_LOCAL", has_widget([34]));
-    showHideOption("CONFIG_TZ_3_LOCAL", has_widget([35]));
-    showHideOption("CONFIG_TZ_4_LOCAL", has_widget([36]));
-    showHideOption("CONFIG_TZ_5_LOCAL", has_widget([37]));
-    showHideOption("CONFIG_TZ_0_FORMAT", has_widget([32]));
-    showHideOption("CONFIG_TZ_1_FORMAT", has_widget([33]));
-    showHideOption("CONFIG_TZ_2_FORMAT", has_widget([34]));
-    showHideOption("CONFIG_TZ_3_FORMAT", has_widget([35]));
-    showHideOption("CONFIG_TZ_4_FORMAT", has_widget([36]));
-    showHideOption("CONFIG_TZ_5_FORMAT", has_widget([37]));
-    $('#tz_format_help').toggle(has_widget([32, 33, 34, 35, 36, 37]));
+    showHideOption("CONFIG_TZ_0_LOCAL", has_widget([33]));
+    showHideOption("CONFIG_TZ_1_LOCAL", has_widget([34]));
+    showHideOption("CONFIG_TZ_2_LOCAL", has_widget([35]));
+    showHideOption("CONFIG_TZ_3_LOCAL", has_widget([36]));
+    showHideOption("CONFIG_TZ_4_LOCAL", has_widget([37]));
+    showHideOption("CONFIG_TZ_5_LOCAL", has_widget([38]));
+    showHideOption("CONFIG_TZ_0_FORMAT", has_widget([33]));
+    showHideOption("CONFIG_TZ_1_FORMAT", has_widget([34]));
+    showHideOption("CONFIG_TZ_2_FORMAT", has_widget([35]));
+    showHideOption("CONFIG_TZ_3_FORMAT", has_widget([36]));
+    showHideOption("CONFIG_TZ_4_FORMAT", has_widget([37]));
+    showHideOption("CONFIG_TZ_5_FORMAT", has_widget([38]));
+    $('#tz_format_help').toggle(has_widget([33, 34, 35, 36, 37, 38]));
 // -- end autogen
 
 // -- autogen
@@ -7388,6 +7390,7 @@
       $("#widget-preview-35").on("click", function(){ pickComplication(35); });
       $("#widget-preview-36").on("click", function(){ pickComplication(36); });
       $("#widget-preview-37").on("click", function(){ pickComplication(37); });
+      $("#widget-preview-38").on("click", function(){ pickComplication(38); });
 // -- end autogen
   }
 
@@ -7637,6 +7640,7 @@
       GraphitePreview.previewComplication(35, config, 'widget-preview-35-canvas', getPlatform());
       GraphitePreview.previewComplication(36, config, 'widget-preview-36-canvas', getPlatform());
       GraphitePreview.previewComplication(37, config, 'widget-preview-37-canvas', getPlatform());
+      GraphitePreview.previewComplication(38, config, 'widget-preview-38-canvas', getPlatform());
 // -- end autogen
 
       for (var i = 1; i < 7; i++) {

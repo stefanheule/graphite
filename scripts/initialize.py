@@ -369,7 +369,7 @@ widgets = [
   },
   {
     'key': 'WIDGET_BATTERY_ICON',
-    'desc': 'Battery icon',
+    'desc': 'Battery (icon)',
   },
   {
     'key': 'WIDGET_QUIET_OFFONLY',
@@ -457,6 +457,10 @@ widgets = [
   {
     'key': 'WIDGET_DAY_OF_WEEK',
     'desc': 'Day of week',
+  },
+  {
+    'key': 'WIDGET_BATTERY_TEXT',
+    'desc': 'Battery (text)',
   },
 ] + map(lambda i: {
   'key': 'WIDGET_TZ_%d' % i,

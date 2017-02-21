@@ -13,6 +13,7 @@
 // limitations under the License.
 
 
+#include <pebble.h>
 #include "graphite.h"
 
 
@@ -61,12 +62,13 @@ widget_render_t widgets[] = {
     widget_ampm_lower, // id 29
     widget_seconds, // id 30
     widget_day_of_week, // id 31
-    widget_tz_0, // id 32
-    widget_tz_1, // id 33
-    widget_tz_2, // id 34
-    widget_tz_3, // id 35
-    widget_tz_4, // id 36
-    widget_tz_5, // id 37
+    widget_battery_text, // id 32
+    widget_tz_0, // id 33
+    widget_tz_1, // id 34
+    widget_tz_2, // id 35
+    widget_tz_3, // id 36
+    widget_tz_4, // id 37
+    widget_tz_5, // id 38
 // -- end autogen
 
 // -- jsalternative
@@ -238,6 +240,13 @@ char* format_thousands(int num) {
 
 fixed_t widget_empty(FContext* fctx, bool draw, FPoint position, GTextAlignment align, uint8_t foreground_color, uint8_t background_color) {
   return 0;
+}
+
+fixed_t widget_battery_text(FContext* fctx, bool draw, FPoint position, GTextAlignment align, uint8_t foreground_color, uint8_t background_color) {
+    BatteryChargeState battery_state = battery_state_service_peek();
+    snprintf(buffer_1, sizeof(buffer_1), "%d%%", battery_state.charge_percent);
+    if (draw) draw_string(fctx, buffer_1, position, font_main, foreground_color, fontsize_widgets, align);
+    return string_width(fctx, buffer_1, font_main, fontsize_widgets);
 }
 
 fixed_t widget_battery_icon(FContext* fctx, bool draw, FPoint position, GTextAlignment align, uint8_t foreground_color, uint8_t background_color) {
