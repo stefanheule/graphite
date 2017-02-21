@@ -480,6 +480,7 @@ function draw_icon_number_widget(fctx, draw, position, align, foreground_color, 
   var color = foreground_color;
   if (draw) {
       var icon_y = position.y + fontsize_icon*0.4;
+icon_y += REM(7);
       if (align == GTextAlignmentCenter) {
           if (w1) draw_string(fctx, icon, FPoint(position.x - w/2, icon_y), font_icon, color, fontsize_icon, a);
           draw_string(fctx, text, FPoint(position.x - w/2 + w1 + sep, position.y), font_main, color, fontsize_widgets, a);

@@ -297,11 +297,13 @@ configuration = [
   'default': '"America/Los_Angeles"',
   'mydefault': '"Europe/Zurich"',
   'type': 'string',
+  'show_only_if': 'has_widget([WIDGET_TZ_%d])' % i,
 }, range(num_tzs)) + map(lambda i: {
   'key': 'CONFIG_TZ_%d_FORMAT' % i,
   'default': '"%I:0%M%P"',
   'mydefault': '"%I:0%M%Pmmm"',
   'type': 'string',
+  'show_only_if': 'has_widget([WIDGET_TZ_%d])' % i,
 }, range(num_tzs))
 
 simple_config = [
@@ -574,7 +576,7 @@ def get_context():
     }
   return _context
 
-def pre_process(config, simple_config, compls, groups):
+def pre_process(config, simple_config, wdgts, groups):
   lc = to_lookup(config)
   # decide which colors are part of a simple color, and which are not
   for k in simple_config:
@@ -594,18 +596,19 @@ def pre_process(config, simple_config, compls, groups):
     return res
 
   # resolve widget defaults
-  clc = to_lookup(compls)
+  clc = to_lookup(wdgts)
   group_ids = {}
   for k in config:
     k['default'] = resolve_widgets(k['default'])
     k['jsdefault'] = resolve_widgets(k['jsdefault'])
     k['mydefault'] = resolve_widgets(k['mydefault'])
     k['jsmydefault'] = resolve_widgets(k['jsmydefault'])
+    if 'show_only_if' in k: k['show_only_if'] = resolve_widgets(k['show_only_if'])
     if 'options' in k:
       k['options'] = map(lambda x: {'desc': (format_time(x[1][0]) + ("" if x[1][1]=="" else (" (%s)" % x[1][1]))).strip(), 'id': x[0], 'format': x[1]}, enumerate(k['options']))
 
   # prepare widget groups
-  for k in compls:
+  for k in wdgts:
     if 'group' in k:
       for gid in k['group']:
         if gid not in group_ids:

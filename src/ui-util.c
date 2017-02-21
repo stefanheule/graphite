@@ -20,11 +20,9 @@
  */
 void draw_string(FContext *fctx, const char *str, FPoint position, FFont *font, uint8_t color, fixed_t size, GTextAlignment align) {
     FPoint pos = position;
-// -- jsalternative
     if (font == font_icon) {
         pos.y += REM(7);
     }
-// -- end jsalternative
     fctx_begin_fill(fctx);
     fctx_set_fill_color(fctx, COLOR(color));
     fctx_set_color_bias(fctx, 0);

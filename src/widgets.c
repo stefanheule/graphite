@@ -195,6 +195,9 @@ fixed_t draw_icon_number_widget(FContext* fctx, bool draw, FPoint position, GTex
 
   if (draw) {
       fixed_t icon_y = position.y + fontsize_icon*0.4;
+// -- jsalternative
+// -- icon_y += REM(7);
+// -- end jsalternative
       if (align == GTextAlignmentCenter) {
           if (w1) draw_string(fctx, icon, FPoint(position.x - w/2, icon_y), font_icon, color, fontsize_icon, a);
           draw_string(fctx, text, FPoint(position.x - w/2 + w1 + sep, position.y), font_main, color, fontsize_widgets, a);
