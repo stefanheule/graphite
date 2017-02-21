@@ -227,7 +227,7 @@ extern AppTimer * weather_request_timer;
 // -- end autogen
 
 typedef struct {
-    time_t timestamp;
+    bool valid;
     int32_t untils[GRAPHITE_TZ_MAX_DATAPOINTS];
     int16_t offsets[GRAPHITE_TZ_MAX_DATAPOINTS];
     bool failed;

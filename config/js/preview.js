@@ -373,14 +373,8 @@ var widgets = [
     widget_bluetooth_disconly_alt, // id 7
     widget_bluetooth_yesno, // id 8
     widget_battery_icon, // id 9
-    widget_battery_text, // id 32
     widget_quiet_offonly, // id 10
     widget_quiet, // id 11
-    widget_tz_0, // id 33
-    widget_ampm, // id 28
-    widget_ampm_lower, // id 29
-    widget_seconds, // id 30
-    widget_day_of_week, // id 31
     widget_steps_icon, // id 12
     widget_steps, // id 13
     widget_steps_short_icon, // id 14
@@ -397,6 +391,12 @@ var widgets = [
     widget_calories_active_short, // id 25
     widget_calories_all_short_icon, // id 26
     widget_calories_all_short, // id 27
+    widget_ampm, // id 28
+    widget_ampm_lower, // id 29
+    widget_seconds, // id 30
+    widget_day_of_week, // id 31
+    widget_battery_text, // id 32
+    widget_tz_0, // id 33
 ];
 function widget_tz_0(fctx, draw, position, align, foreground_color, background_color) {
     var dat = moment(new Date()).tz(config_tz_0_local).format('YYYY-MM-DD HH:mm');

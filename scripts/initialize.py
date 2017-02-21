@@ -599,6 +599,7 @@ def get_context():
       'config_groups': config_groups,
       'config_groups_lookup': to_lookup(config_groups),
       'widgets': sorted(wdgts, lambda a, b: cmp((a['sort'], a['id']), (b['sort'], b['id']))),
+      'widgets_idsorted': wdgts,
       'widgets_lookup': to_lookup(wdgts),
       'num_config_items': len(config),
       'message_keys': msgkeys + persistkeys,

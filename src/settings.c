@@ -70,6 +70,9 @@ static void update_weather_helper(void *unused) {
 }
 
 int8_t get_current_tz_idx(TZData* data) {
+    // do we have valid data?
+    if (!data->valid) return -1;
+
     time_t now = time(NULL);
     int i = 0;
     while (i < GRAPHITE_TZ_MAX_DATAPOINTS) {
@@ -171,7 +174,7 @@ bool sync_tz(uint8_t idx, const uint32_t key, DictionaryIterator *iter) {
     Tuple *tz_data;
     tz_data = dict_find(iter, key);
     if (tz_data) {
-        tzinfo.data[idx].timestamp = time(NULL);
+        tzinfo.data[idx].valid = true;
         int i = 0;
 // -- build=debug
 // --             APP_LOG(APP_LOG_LEVEL_DEBUG, "received tz data:");
@@ -423,17 +426,17 @@ void read_config_all() {
         } else {
 // -- autogen
 // -- ## for i in range(num_tzs)
-// --             tzinfo.data[{{ i }}].timestamp = 0;
+// --             tzinfo.data[{{ i }}].valid = false;
 // -- ## endfor
-            tzinfo.data[0].timestamp = 0;
+            tzinfo.data[0].valid = false;
 // -- end autogen
         }
     } else {
 // -- autogen
 // -- ## for i in range(num_tzs)
-// --         tzinfo.data[{{ i }}].timestamp = 0;
+// --         tzinfo.data[{{ i }}].valid = false;
 // -- ## endfor
-        tzinfo.data[0].timestamp = 0;
+        tzinfo.data[0].valid = false;
 // -- end autogen
     }
 
