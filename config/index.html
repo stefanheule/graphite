@@ -495,29 +495,6 @@
         </div>
       </div>
 
-      <div class="item-container-footer" id="tz_format_help">
-        Format string can include the following tokens:
-        <table class="format">
-          <tr><td>%H</td><td>Hour (24h clock)</td></tr>
-          <tr><td>%I</td><td>Hour (12h clock)</td></tr>
-          <tr><td>%M</td><td>Minute</td></tr>
-          <tr><td>%P</td><td>am/pm</td></tr>
-          <tr><td>%p</td><td>AM/PM</td></tr>
-        </table>
-        Default is
-<!--
-// -- autogen
-// --          {{ configuration_lookup["CONFIG_TZ_0_FORMAT"]["default"] }}.
--->
-         "%I:0%M%P".
-<!--
-// -- end autogen
--->
-        Leading zeros are removed.  Use 0 in front of a token to keep one leading zero.
-        <br>
-        <a href="https://sourceware.org/newlib/libc.html#strftime">Full format information</a>.
-      </div>
-
 <!--
 // -- autogen
 // -- ## for i in range(num_tzs)
@@ -6126,6 +6103,29 @@
 <!--
 // -- end autogen
 -->
+
+      <div class="item-container-footer" id="tz_format_help">
+        Format string can include the following tokens:
+        <table class="format">
+          <tr><td>%H</td><td>Hour (24h clock)</td></tr>
+          <tr><td>%I</td><td>Hour (12h clock)</td></tr>
+          <tr><td>%M</td><td>Minute</td></tr>
+          <tr><td>%P</td><td>am/pm</td></tr>
+          <tr><td>%p</td><td>AM/PM</td></tr>
+        </table>
+        Default is
+        <!--
+        // -- autogen
+        // --          {{ configuration_lookup["CONFIG_TZ_0_FORMAT"]["default"] }}.
+        -->
+        "%I:0%M%P".
+        <!--
+        // -- end autogen
+        -->
+        Leading zeros are removed.  Use 0 in front of a token to keep one leading zero.
+        <br>
+        <a href="https://sourceware.org/newlib/libc.html#strftime">Full format information</a>.
+      </div>
 
     </div>
 
