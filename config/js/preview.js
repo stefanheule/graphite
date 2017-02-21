@@ -687,6 +687,7 @@ function bluetooth_popup(fctx, ctx, connected) {
  * Remove all leading zeros in a string.
  */
 function remove_leading_zero(buffer, length) {
+    buffer = buffer.replace("mmmm", "");
     if (buffer.substring(0, 1) == "0") buffer = buffer.substring(1);
     return buffer.replace(new RegExp("([^0-9])0", 'g'), "$1");
 }
@@ -1069,7 +1070,7 @@ function background_update_proc(layer, ctx) {
             CONFIG_WIDGET_1: +4,
             CONFIG_WIDGET_2: +1,
             CONFIG_WIDGET_3: +5,
-            CONFIG_WIDGET_4: +14,
+            CONFIG_WIDGET_4: +32,
             CONFIG_WIDGET_5: +6,
             CONFIG_WIDGET_6: +9,
             CONFIG_PROGRESS: +1,
@@ -1081,8 +1082,8 @@ function background_update_proc(layer, ctx) {
             CONFIG_INFO_BELOW_LOCAL: +0,
             CONFIG_SHOW_DAYNIGHT: +true,
             CONFIG_STEP_GOAL: +10000,
-            CONFIG_TZ_0_LOCAL: "America/Los_Angeles",
-            CONFIG_TZ_0_FORMAT: "%I:0%M%P",
+            CONFIG_TZ_0_LOCAL: "Europe/Zurich",
+            CONFIG_TZ_0_FORMAT: "%I:0%M%Pmmm",
 // -- end autogen
         };
         return cloneConfig(defaults);

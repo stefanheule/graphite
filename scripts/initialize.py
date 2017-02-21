@@ -226,6 +226,7 @@ configuration = [
   {
     'key': 'CONFIG_WIDGET_4',
     'default': 'WIDGET_STEPS_SHORT_ICON',
+    'mydefault': 'WIDGET_TZ_0',
   },
   {
     'key': 'CONFIG_WIDGET_5',
