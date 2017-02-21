@@ -10,6 +10,13 @@ See [stefanheule.com/graphite/](https://stefanheule.com/graphite/).
 
 ## Changelog
 
+**Version 1.2** (2017-02-21)
+
+- Add up to 6 additional timezone widgets.
+- Add a battery text widget.
+- Fix position of small icons in preview.
+
+
 **Version 1.1** (2017-02-17)
 
 - Fix position of small icons.
@@ -18,6 +25,7 @@ See [stefanheule.com/graphite/](https://stefanheule.com/graphite/).
 **Version 1.0** (2017-02-16)
 
 - Initial version.
+
 
 ## Building from Source
 
@@ -37,7 +45,8 @@ The watchface itself uses relatively arbitrary version numbers of MAJOR.MINOR.  
 
 | Watchface version | Configuration version |
 |------------------:|----------------------:|
-|     1.0 until now |                     1 |
+|     1.0 until 1.1 |                     1 |
+|     1.2 until now |                     2 |
 
 ## Contributing
 

@@ -243,7 +243,7 @@ extern AppTimer * weather_request_timer;
 // -- #define GRAPHITE_VERSION {{ linear_version }}
 #define GRAPHITE_NUM_TZS 6
 #define GRAPHITE_TZ_MAX_DATAPOINTS 3
-#define GRAPHITE_VERSION 1001
+#define GRAPHITE_VERSION 1002
 // -- end autogen
 
 typedef struct {
