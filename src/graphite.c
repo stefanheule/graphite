@@ -81,8 +81,6 @@ Layer *layer_background;
 /** Buffers for strings */
 char buffer_1[30];
 char buffer_2[30];
-char buffer_3[30];
-char buffer_4[30];
 
 /** The height and width of the watch */
 fixed_t height;

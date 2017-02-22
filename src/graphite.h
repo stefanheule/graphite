@@ -179,8 +179,6 @@ extern Window *window;
 extern Layer *layer_background;
 extern char buffer_1[30];
 extern char buffer_2[30];
-extern char buffer_3[30];
-extern char buffer_4[30];
 extern fixed_t height;
 extern fixed_t width;
 extern fixed_t height_full;
