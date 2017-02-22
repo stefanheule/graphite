@@ -164,7 +164,6 @@ void background_update_proc(Layer *layer, GContext *ctx) {
     width = bounds.size.w;
     FRect bounds_full = g2frect(layer_get_bounds(layer_background));
     height_full = bounds_full.size.h;
-    width_full = bounds_full.size.w;
 // -- autogen
 // --     fontsize_widgets = REM({{ fontsize_widgets }});
     fontsize_widgets = REM(27);
