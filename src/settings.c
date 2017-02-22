@@ -308,6 +308,7 @@ void inbox_received_handler(DictionaryIterator *iter, void *context) {
 // -- ## endfor
     if (sync_tz(0, MSG_KEY_TZ_0, iter)) { dirty = true; ask_for_tz_update = false; }
 // -- end autogen
+    if (!ask_for_tz_update) ask_for_weather_update = false;
 
     if (dict_find(iter, MSG_KEY_JS_READY)) {
         js_ready = true;

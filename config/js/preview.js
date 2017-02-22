@@ -758,7 +758,6 @@ function background_update_proc(layer, ctx) {
     width = bounds.size.w;
     var bounds_full = g2frect(layer_get_bounds(layer_background));
     height_full = bounds_full.size.h;
-    width_full = bounds_full.size.w;
     fontsize_widgets = REM(27);
     var now = time(NULL);
     var t = localtime(now);
