@@ -229,7 +229,6 @@ typedef struct {
     bool valid;
     int32_t untils[GRAPHITE_TZ_MAX_DATAPOINTS];
     int16_t offsets[GRAPHITE_TZ_MAX_DATAPOINTS];
-    bool failed;
 } __attribute__((__packed__)) TZData;
 
 typedef struct {
