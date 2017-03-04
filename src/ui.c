@@ -72,7 +72,7 @@ void remove_leading_zero(char *buffer, size_t length) {
             start_m = -1; ms = 0;
         }
         if (ms == 4) {
-            memcpy(&buffer[start_m], &buffer[start_m + 4], length - (start_m + 4));
+            memmove(&buffer[start_m], &buffer[start_m + 4], length - (start_m + 4));
             i = start_m;
             start_m = -1;
             ms = 0;
@@ -83,7 +83,7 @@ void remove_leading_zero(char *buffer, size_t length) {
     i = 0;
     while (buffer[i] != 0) {
         if (buffer[i] == '0' && last_was_space) {
-            memcpy(&buffer[i], &buffer[i + 1], length - (i + 1));
+            memmove(&buffer[i], &buffer[i + 1], length - (i + 1));
         }
         last_was_space = !(buffer[i] <= '9' && buffer[i] >= '0');
         i += 1;
