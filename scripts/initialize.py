@@ -487,6 +487,11 @@ widgets = [
     'desc': 'Battery (text)',
     'sort': 300,
   },
+  {
+    'key': 'WIDGET_BATTERY_TEXT2',
+    'desc': 'Battery (text, no percentage sign)',
+    'sort': 300,
+  },
 ] + map(lambda i: {
   'key': 'WIDGET_TZ_%d' % i,
   'desc': 'Additional timezone %d' % (i+1),

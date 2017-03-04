@@ -117,7 +117,7 @@ font_dl:
 
 font_build:
 	node_modules/pebble-fctx-compiler/fctx-compiler.js -r "[ABabdfghij]" resources/fonts/nupe2.svg
-	node_modules/pebble-fctx-compiler/fctx-compiler.js -r "[0-9a-zA-Z.:\-/° ,]" resources/fonts/OpenSans-CondensedBold.svg
+	node_modules/pebble-fctx-compiler/fctx-compiler.js -r "[0-9a-zA-Z.:\-/° ,%]" resources/fonts/OpenSans-CondensedBold.svg
 	node_modules/pebble-fctx-compiler/fctx-compiler.js -r "." resources/fonts/fasubset.svg
 
 library_dl:

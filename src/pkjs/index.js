@@ -277,12 +277,12 @@ Pebble.addEventListener('webviewclosed', function (e) {
 // -- ## for i in range(num_tzs)
 // --     if (has_widget([{{ widgets_lookup["WIDGET_TZ_" + i|string]["id"] }}])) sendTzUpdate({{ i }});
 // -- ## endfor
-    if (has_widget([33])) sendTzUpdate(0);
-    if (has_widget([34])) sendTzUpdate(1);
-    if (has_widget([35])) sendTzUpdate(2);
-    if (has_widget([36])) sendTzUpdate(3);
-    if (has_widget([37])) sendTzUpdate(4);
-    if (has_widget([38])) sendTzUpdate(5);
+    if (has_widget([34])) sendTzUpdate(0);
+    if (has_widget([35])) sendTzUpdate(1);
+    if (has_widget([36])) sendTzUpdate(2);
+    if (has_widget([37])) sendTzUpdate(3);
+    if (has_widget([38])) sendTzUpdate(4);
+    if (has_widget([39])) sendTzUpdate(5);
 // -- end autogen
 
     Pebble.sendAppMessage(config, function () {
