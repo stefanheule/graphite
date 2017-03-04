@@ -126,9 +126,6 @@ void check_update_tz() {
     check_update_tz_helper(0, MSG_KEY_FETCH_TZ_0);
     check_update_tz_helper(1, MSG_KEY_FETCH_TZ_1);
     check_update_tz_helper(2, MSG_KEY_FETCH_TZ_2);
-    check_update_tz_helper(3, MSG_KEY_FETCH_TZ_3);
-    check_update_tz_helper(4, MSG_KEY_FETCH_TZ_4);
-    check_update_tz_helper(5, MSG_KEY_FETCH_TZ_5);
 // -- end autogen
 }
 
@@ -265,9 +262,6 @@ void inbox_received_handler(DictionaryIterator *iter, void *context) {
     dirty |= sync_helper_string(CONFIG_TZ_0_FORMAT, iter, config_tz_0_format);
     dirty |= sync_helper_string(CONFIG_TZ_1_FORMAT, iter, config_tz_1_format);
     dirty |= sync_helper_string(CONFIG_TZ_2_FORMAT, iter, config_tz_2_format);
-    dirty |= sync_helper_string(CONFIG_TZ_3_FORMAT, iter, config_tz_3_format);
-    dirty |= sync_helper_string(CONFIG_TZ_4_FORMAT, iter, config_tz_4_format);
-    dirty |= sync_helper_string(CONFIG_TZ_5_FORMAT, iter, config_tz_5_format);
     dirty |= sync_helper_uint8_t(CONFIG_HOURLY_VIBRATE, iter, &config_hourly_vibrate);
 // -- end autogen
 
@@ -320,9 +314,6 @@ void inbox_received_handler(DictionaryIterator *iter, void *context) {
     if (sync_tz(0, MSG_KEY_TZ_0, iter)) { dirty = true; ask_for_tz_update = false; }
     if (sync_tz(1, MSG_KEY_TZ_1, iter)) { dirty = true; ask_for_tz_update = false; }
     if (sync_tz(2, MSG_KEY_TZ_2, iter)) { dirty = true; ask_for_tz_update = false; }
-    if (sync_tz(3, MSG_KEY_TZ_3, iter)) { dirty = true; ask_for_tz_update = false; }
-    if (sync_tz(4, MSG_KEY_TZ_4, iter)) { dirty = true; ask_for_tz_update = false; }
-    if (sync_tz(5, MSG_KEY_TZ_5, iter)) { dirty = true; ask_for_tz_update = false; }
 // -- end autogen
     if (!ask_for_tz_update) ask_for_weather_update = false;
 
@@ -423,9 +414,6 @@ void read_config_all() {
     read_config_string(CONFIG_TZ_0_FORMAT, config_tz_0_format);
     read_config_string(CONFIG_TZ_1_FORMAT, config_tz_1_format);
     read_config_string(CONFIG_TZ_2_FORMAT, config_tz_2_format);
-    read_config_string(CONFIG_TZ_3_FORMAT, config_tz_3_format);
-    read_config_string(CONFIG_TZ_4_FORMAT, config_tz_4_format);
-    read_config_string(CONFIG_TZ_5_FORMAT, config_tz_5_format);
     read_config_uint8_t(CONFIG_HOURLY_VIBRATE, &config_hourly_vibrate);
 // -- end autogen
 
@@ -456,9 +444,6 @@ void read_config_all() {
             tzinfo.data[0].valid = false;
             tzinfo.data[1].valid = false;
             tzinfo.data[2].valid = false;
-            tzinfo.data[3].valid = false;
-            tzinfo.data[4].valid = false;
-            tzinfo.data[5].valid = false;
 // -- end autogen
         }
     } else {
@@ -469,9 +454,6 @@ void read_config_all() {
         tzinfo.data[0].valid = false;
         tzinfo.data[1].valid = false;
         tzinfo.data[2].valid = false;
-        tzinfo.data[3].valid = false;
-        tzinfo.data[4].valid = false;
-        tzinfo.data[5].valid = false;
 // -- end autogen
     }
 

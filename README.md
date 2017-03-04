@@ -12,7 +12,7 @@ See [stefanheule.com/graphite/](https://stefanheule.com/graphite/).
 
 **Version 1.2** (2017-02-21)
 
-- Add up to 6 additional timezone widgets.
+- Add up to 3 additional timezone widgets.
 - Add a battery text widget (two versions, one with percent sign, one without).
 - Add option for hourly vibration.
 - Fix position of small icons in preview.
