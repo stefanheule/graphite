@@ -103,6 +103,7 @@ var GraphitePreview = (function () {
      var config_tz_3_format;
      var config_tz_4_format;
      var config_tz_5_format;
+     var config_hourly_vibrate;
 // -- end autogen
 
     function get(k) {
@@ -338,6 +339,7 @@ var GraphitePreview = (function () {
         config_tz_3_format = config["CONFIG_TZ_3_FORMAT"];
         config_tz_4_format = config["CONFIG_TZ_4_FORMAT"];
         config_tz_5_format = config["CONFIG_TZ_5_FORMAT"];
+        config_hourly_vibrate = config["CONFIG_HOURLY_VIBRATE"];
 // -- end autogen
 
         weather = getWeather(platform);
@@ -1111,6 +1113,7 @@ function background_update_proc(layer, ctx) {
             CONFIG_TZ_3_FORMAT: "%I:0%M%P",
             CONFIG_TZ_4_FORMAT: "%I:0%M%P",
             CONFIG_TZ_5_FORMAT: "%I:0%M%P",
+            CONFIG_HOURLY_VIBRATE: +false,
 // -- end autogen
         };
         return cloneConfig(defaults);
@@ -1184,6 +1187,7 @@ function background_update_proc(layer, ctx) {
             CONFIG_TZ_3_FORMAT: "%I:0%M%Pmmm",
             CONFIG_TZ_4_FORMAT: "%I:0%M%Pmmm",
             CONFIG_TZ_5_FORMAT: "%I:0%M%Pmmm",
+            CONFIG_HOURLY_VIBRATE: +false,
 // -- end autogen
         };
         return cloneConfig(defaults);

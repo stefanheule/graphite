@@ -257,6 +257,9 @@ Pebble.addEventListener('webviewclosed', function (e) {
     fullconfig["CONFIG_TZ_5_FORMAT"] = urlconfig[59];
     config["CONFIG_TZ_5_FORMAT"] = urlconfig[59];
     localStorage.setItem("CONFIG_TZ_5_FORMAT", urlconfig[59]);
+    fullconfig["CONFIG_HOURLY_VIBRATE"] = urlconfig[60];
+    config["CONFIG_HOURLY_VIBRATE"] = +urlconfig[60];
+    localStorage.setItem("CONFIG_HOURLY_VIBRATE", urlconfig[60]);
 // -- end autogen
 
     // don't allow really small values for refresh rate

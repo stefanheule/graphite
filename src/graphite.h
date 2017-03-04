@@ -21,6 +21,8 @@
 #include <pebble-fctx/fctx.h>
 #include <pebble-fctx/ffont.h>
 
+#include <pebble-hourly-vibes/hourly-vibes.h>
+
 // I don't know how to pass parameters to the compiler, so I'm using this file
 // for various configurations
 #include "config.h"
@@ -80,11 +82,12 @@
 #define CONFIG_TZ_3_FORMAT 57
 #define CONFIG_TZ_4_FORMAT 58
 #define CONFIG_TZ_5_FORMAT 59
+#define CONFIG_HOURLY_VIBRATE 60
 // -- end autogen
 
 // -- autogen
 // -- #define GRAPHITE_N_CONFIG {{ num_config_items }}
-#define GRAPHITE_N_CONFIG 59
+#define GRAPHITE_N_CONFIG 60
 // -- end autogen
 
 // -- autogen
@@ -178,6 +181,7 @@ extern char config_tz_2_format[GRAPHITE_STRINGCONFIG_MAXLEN+1];
 extern char config_tz_3_format[GRAPHITE_STRINGCONFIG_MAXLEN+1];
 extern char config_tz_4_format[GRAPHITE_STRINGCONFIG_MAXLEN+1];
 extern char config_tz_5_format[GRAPHITE_STRINGCONFIG_MAXLEN+1];
+extern uint8_t config_hourly_vibrate;
 // -- end autogen
 
 

@@ -304,7 +304,12 @@ configuration = [
   'mydefault': '"%I:0%M%Pmmm"',
   'type': 'string',
   'show_only_if': 'has_widget([WIDGET_TZ_%d])' % i,
-}, range(num_tzs))
+}, range(num_tzs)) + [
+  {
+    'key': 'CONFIG_HOURLY_VIBRATE',
+    'default': 'false',
+  },
+]
 
 simple_config = [
   {
@@ -489,7 +494,7 @@ widgets = [
   },
   {
     'key': 'WIDGET_BATTERY_TEXT2',
-    'desc': 'Battery (text, no percentage sign)',
+    'desc': 'Battery (text, no percent sign)',
     'sort': 300,
   },
 ] + map(lambda i: {

@@ -74,6 +74,7 @@ char config_tz_2_format[GRAPHITE_STRINGCONFIG_MAXLEN+1] = "%I:0%M%P";
 char config_tz_3_format[GRAPHITE_STRINGCONFIG_MAXLEN+1] = "%I:0%M%P";
 char config_tz_4_format[GRAPHITE_STRINGCONFIG_MAXLEN+1] = "%I:0%M%P";
 char config_tz_5_format[GRAPHITE_STRINGCONFIG_MAXLEN+1] = "%I:0%M%P";
+uint8_t config_hourly_vibrate = false;
 // -- end autogen
 
 
@@ -222,6 +223,11 @@ void handle_battery(BatteryChargeState new_state) {
  * Initialization.
  */
 void init() {
+    hourly_vibes_init();
+#ifdef PBL_HEALTH
+    hourly_vibes_enable_health(true);
+#endif
+
     setlocale(LC_ALL, "");
 
     read_config_all();
@@ -252,6 +258,8 @@ void deinit() {
     window_destroy(window);
 
     app_message_deregister_callbacks();
+
+    hourly_vibes_deinit();
 }
 
 /**

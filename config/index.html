@@ -165,7 +165,7 @@
         <canvas class="widget" id="widget-preview-32-canvas"></canvas>
       </div>
       <div class="widget-preview" id="widget-preview-33">
-        <p>Battery (text, no percentage sign)</p>
+        <p>Battery (text, no percent sign)</p>
         <canvas class="widget" id="widget-preview-33-canvas"></canvas>
       </div>
       <div class="widget-preview" id="widget-preview-10">
@@ -6406,7 +6406,7 @@
 
 
     <div class='item-container'>
-      <div class='item-container-header'>Bluetooth</div>
+      <div class='item-container-header'>Bluetooth and Vibration</div>
 
       <div class='item-container-content'>
         <label class='item'>
@@ -6439,6 +6439,13 @@
         <label class='item'>
           Message on Re-connect (5 seconds)
           <input id='CONFIG_MESSAGE_RECONNECT' type='checkbox' class='item-toggle'>
+        </label>
+      </div>
+
+      <div class='item-container-content'>
+        <label class='item'>
+          Hourly vibration
+          <input id='CONFIG_HOURLY_VIBRATE' type='checkbox' class='item-toggle'>
         </label>
       </div>
       
@@ -6864,6 +6871,7 @@
         "CONFIG_TZ_3_FORMAT": 57,
         "CONFIG_TZ_4_FORMAT": 58,
         "CONFIG_TZ_5_FORMAT": 59,
+        "CONFIG_HOURLY_VIBRATE": 60,
 // -- end autogen
     };
 

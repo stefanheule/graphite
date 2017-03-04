@@ -268,6 +268,7 @@ void inbox_received_handler(DictionaryIterator *iter, void *context) {
     dirty |= sync_helper_string(CONFIG_TZ_3_FORMAT, iter, config_tz_3_format);
     dirty |= sync_helper_string(CONFIG_TZ_4_FORMAT, iter, config_tz_4_format);
     dirty |= sync_helper_string(CONFIG_TZ_5_FORMAT, iter, config_tz_5_format);
+    dirty |= sync_helper_uint8_t(CONFIG_HOURLY_VIBRATE, iter, &config_hourly_vibrate);
 // -- end autogen
 
     bool ask_for_weather_update = true;
@@ -340,6 +341,8 @@ void inbox_received_handler(DictionaryIterator *iter, void *context) {
     if (ask_for_tz_update) {
         check_update_tz();
     }
+
+    hourly_vibes_set_enabled(config_hourly_vibrate);
 }
 
 /**
@@ -423,6 +426,7 @@ void read_config_all() {
     read_config_string(CONFIG_TZ_3_FORMAT, config_tz_3_format);
     read_config_string(CONFIG_TZ_4_FORMAT, config_tz_4_format);
     read_config_string(CONFIG_TZ_5_FORMAT, config_tz_5_format);
+    read_config_uint8_t(CONFIG_HOURLY_VIBRATE, &config_hourly_vibrate);
 // -- end autogen
 
     if (persist_exists(PERSIST_KEY_WEATHER) && persist_get_size(PERSIST_KEY_WEATHER) == sizeof(Weather)) {
@@ -472,4 +476,6 @@ void read_config_all() {
     }
 
     js_ready = false;
+
+    hourly_vibes_set_enabled(config_hourly_vibrate);
 }
