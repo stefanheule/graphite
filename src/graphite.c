@@ -82,8 +82,8 @@ Window *window;
 Layer *layer_background;
 
 /** Buffers for strings */
-char buffer_1[30];
-char buffer_2[30];
+char buffer_1[GRAPHITE_STRINGCONFIG_MAXLEN+1];
+char buffer_2[GRAPHITE_STRINGCONFIG_MAXLEN+1];
 
 /** The height and width of the watch */
 fixed_t height;

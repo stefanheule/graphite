@@ -501,7 +501,7 @@ widgets = [
   'key': 'WIDGET_TZ_%d' % i,
   'desc': 'Additional timezone %d' % (i+1),
   'group': ['TZ'],
-  'sort': 500 if i == 0 else 900,
+  'sort': 500,
 }, range(num_tzs))
   # {
   #   'key': 'WIDGET_DISTANCE_KM',

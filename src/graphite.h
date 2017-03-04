@@ -116,7 +116,7 @@
 //// Configuration values
 ////////////////////////////////////////////
 
-#define GRAPHITE_STRINGCONFIG_MAXLEN 70
+#define GRAPHITE_STRINGCONFIG_MAXLEN 50
 
 // -- autogen
 // -- ## for key in configuration
@@ -189,8 +189,8 @@ extern widget_render_t widgets[];
 
 extern Window *window;
 extern Layer *layer_background;
-extern char buffer_1[30];
-extern char buffer_2[30];
+extern char buffer_1[GRAPHITE_STRINGCONFIG_MAXLEN+1];
+extern char buffer_2[GRAPHITE_STRINGCONFIG_MAXLEN+1];
 extern fixed_t height;
 extern fixed_t width;
 extern fixed_t height_full;
