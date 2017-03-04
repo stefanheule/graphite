@@ -310,9 +310,9 @@ var OWM_ICONS = {
     // day icons
     "01d": "a", // sun
     "02d": "b", // cloud and sun
-    "03d": "c", // cloud
+    "03d": "d", // cloud
     "04d": "d", // clouds
-    "09d": "e", // rain drops
+    "09d": "f", // rain drops
     "10d": "f", // rain drops
     "11d": "g", // lightning
     "13d": "h", // snow flake
@@ -320,13 +320,13 @@ var OWM_ICONS = {
     // night icons
     "01n": "A",
     "02n": "B",
-    "03n": "C",
-    "04n": "D",
-    "09n": "E",
-    "10n": "F",
-    "11n": "G",
-    "13n": "H",
-    "50n": "I"
+    "03n": "d",
+    "04n": "d",
+    "09n": "f",
+    "10n": "f",
+    "11n": "g",
+    "13n": "h",
+    "50n": "i"
 };
 
 var FORECAST_ICONS = {
@@ -348,16 +348,16 @@ var FORECAST_ICONS = {
 var WU_ICONS = {
     // see https://www.wunderground.com/weather/api/d/docs?d=resources/icon-sets for details
     "chanceflurries": "h",
-    "chancerain": "e",
+    "chancerain": "f",
     "chancesleet": "h",
     "chancesnow": "h",
     "chancetstorms": "f",
     "clear": "a",
-    "cloudy": "c",
+    "cloudy": "d",
     "flurries": "h",
     "fog": "i",
     "hazy": "i",
-    "mostlycloudy": "c",
+    "mostlycloudy": "d",
     "mostlysunny": "b",
     "partlycloudy": "d",
     "partlysunny": "b",

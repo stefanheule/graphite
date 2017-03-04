@@ -19,21 +19,9 @@
       "src": "fontawesome"
     },
     {
-      "uid": "0f4cae16f34ae243a6144c18a003f2d8",
-      "css": "cancel-circled",
-      "code": 67,
-      "src": "fontawesome"
-    },
-    {
       "uid": "12f4ece88e46abd864e40b35e05b11cd",
       "css": "ok",
       "code": 68,
-      "src": "fontawesome"
-    },
-    {
-      "uid": "43ab845088317bd348dee1d975700c48",
-      "css": "ok-circled",
-      "code": 69,
       "src": "fontawesome"
     },
     {
@@ -58,12 +46,6 @@
       "uid": "9a0873ae5167deefbf38061b7cddbe34",
       "css": "bluetooth-b",
       "code": 73,
-      "src": "fontawesome"
-    },
-    {
-      "uid": "d73eceadda1f594cec0536087539afbf",
-      "css": "heart",
-      "code": 74,
       "src": "fontawesome"
     },
     {
