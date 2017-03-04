@@ -73,6 +73,11 @@ Pebble.addEventListener('webviewclosed', function (e) {
 // --     var previous_tz_{{ i }} = readConfig("CONFIG_TZ_{{ i }}_LOCAL");
 // -- ## endfor
     var previous_tz_0 = readConfig("CONFIG_TZ_0_LOCAL");
+    var previous_tz_1 = readConfig("CONFIG_TZ_1_LOCAL");
+    var previous_tz_2 = readConfig("CONFIG_TZ_2_LOCAL");
+    var previous_tz_3 = readConfig("CONFIG_TZ_3_LOCAL");
+    var previous_tz_4 = readConfig("CONFIG_TZ_4_LOCAL");
+    var previous_tz_5 = readConfig("CONFIG_TZ_5_LOCAL");
 // -- end autogen
 
     // decode config
@@ -224,9 +229,34 @@ Pebble.addEventListener('webviewclosed', function (e) {
     localStorage.setItem("CONFIG_STEP_GOAL", urlconfig[47]);
     fullconfig["CONFIG_TZ_0_LOCAL"] = urlconfig[48];
     localStorage.setItem("CONFIG_TZ_0_LOCAL", urlconfig[48]);
-    fullconfig["CONFIG_TZ_0_FORMAT"] = urlconfig[49];
-    config["CONFIG_TZ_0_FORMAT"] = urlconfig[49];
-    localStorage.setItem("CONFIG_TZ_0_FORMAT", urlconfig[49]);
+    fullconfig["CONFIG_TZ_1_LOCAL"] = urlconfig[49];
+    localStorage.setItem("CONFIG_TZ_1_LOCAL", urlconfig[49]);
+    fullconfig["CONFIG_TZ_2_LOCAL"] = urlconfig[50];
+    localStorage.setItem("CONFIG_TZ_2_LOCAL", urlconfig[50]);
+    fullconfig["CONFIG_TZ_3_LOCAL"] = urlconfig[51];
+    localStorage.setItem("CONFIG_TZ_3_LOCAL", urlconfig[51]);
+    fullconfig["CONFIG_TZ_4_LOCAL"] = urlconfig[52];
+    localStorage.setItem("CONFIG_TZ_4_LOCAL", urlconfig[52]);
+    fullconfig["CONFIG_TZ_5_LOCAL"] = urlconfig[53];
+    localStorage.setItem("CONFIG_TZ_5_LOCAL", urlconfig[53]);
+    fullconfig["CONFIG_TZ_0_FORMAT"] = urlconfig[54];
+    config["CONFIG_TZ_0_FORMAT"] = urlconfig[54];
+    localStorage.setItem("CONFIG_TZ_0_FORMAT", urlconfig[54]);
+    fullconfig["CONFIG_TZ_1_FORMAT"] = urlconfig[55];
+    config["CONFIG_TZ_1_FORMAT"] = urlconfig[55];
+    localStorage.setItem("CONFIG_TZ_1_FORMAT", urlconfig[55]);
+    fullconfig["CONFIG_TZ_2_FORMAT"] = urlconfig[56];
+    config["CONFIG_TZ_2_FORMAT"] = urlconfig[56];
+    localStorage.setItem("CONFIG_TZ_2_FORMAT", urlconfig[56]);
+    fullconfig["CONFIG_TZ_3_FORMAT"] = urlconfig[57];
+    config["CONFIG_TZ_3_FORMAT"] = urlconfig[57];
+    localStorage.setItem("CONFIG_TZ_3_FORMAT", urlconfig[57]);
+    fullconfig["CONFIG_TZ_4_FORMAT"] = urlconfig[58];
+    config["CONFIG_TZ_4_FORMAT"] = urlconfig[58];
+    localStorage.setItem("CONFIG_TZ_4_FORMAT", urlconfig[58]);
+    fullconfig["CONFIG_TZ_5_FORMAT"] = urlconfig[59];
+    config["CONFIG_TZ_5_FORMAT"] = urlconfig[59];
+    localStorage.setItem("CONFIG_TZ_5_FORMAT", urlconfig[59]);
 // -- end autogen
 
     // don't allow really small values for refresh rate
@@ -248,6 +278,11 @@ Pebble.addEventListener('webviewclosed', function (e) {
 // --     if (has_widget([{{ widgets_lookup["WIDGET_TZ_" + i|string]["id"] }}])) sendTzUpdate({{ i }});
 // -- ## endfor
     if (has_widget([33])) sendTzUpdate(0);
+    if (has_widget([34])) sendTzUpdate(1);
+    if (has_widget([35])) sendTzUpdate(2);
+    if (has_widget([36])) sendTzUpdate(3);
+    if (has_widget([37])) sendTzUpdate(4);
+    if (has_widget([38])) sendTzUpdate(5);
 // -- end autogen
 
     Pebble.sendAppMessage(config, function () {
@@ -297,6 +332,16 @@ function readConfig(key) {
         } else if (key == "CONFIG_INFO_BELOW_LOCAL") {
             return 0;
         } else if (key == "CONFIG_TZ_0_LOCAL") {
+            return "America/Los_Angeles";
+        } else if (key == "CONFIG_TZ_1_LOCAL") {
+            return "America/Los_Angeles";
+        } else if (key == "CONFIG_TZ_2_LOCAL") {
+            return "America/Los_Angeles";
+        } else if (key == "CONFIG_TZ_3_LOCAL") {
+            return "America/Los_Angeles";
+        } else if (key == "CONFIG_TZ_4_LOCAL") {
+            return "America/Los_Angeles";
+        } else if (key == "CONFIG_TZ_5_LOCAL") {
             return "America/Los_Angeles";
 // -- end autogen
         }
@@ -727,6 +772,11 @@ Pebble.addEventListener('appmessage',
 // --         if (dict["MSG_KEY_FETCH_TZ_{{ i }}"]) sendTzUpdate({{ i }});
 // -- ## endfor
         if (dict["MSG_KEY_FETCH_TZ_0"]) sendTzUpdate(0);
+        if (dict["MSG_KEY_FETCH_TZ_1"]) sendTzUpdate(1);
+        if (dict["MSG_KEY_FETCH_TZ_2"]) sendTzUpdate(2);
+        if (dict["MSG_KEY_FETCH_TZ_3"]) sendTzUpdate(3);
+        if (dict["MSG_KEY_FETCH_TZ_4"]) sendTzUpdate(4);
+        if (dict["MSG_KEY_FETCH_TZ_5"]) sendTzUpdate(5);
 // -- end autogen
     }
 );

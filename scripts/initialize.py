@@ -42,7 +42,7 @@ version = '1.2'
 config_version = '2'
 
 # number of timezone widgets
-num_tzs = 1
+num_tzs = 6
 # number of data points (offset/until pairs) per timezone
 tz_max_datapoints = 3
 

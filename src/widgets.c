@@ -64,6 +64,11 @@ widget_render_t widgets[] = {
     widget_day_of_week, // id 31
     widget_battery_text, // id 32
     widget_tz_0, // id 33
+    widget_tz_1, // id 34
+    widget_tz_2, // id 35
+    widget_tz_3, // id 36
+    widget_tz_4, // id 37
+    widget_tz_5, // id 38
 // -- end autogen
 
 // -- jsalternative
@@ -104,6 +109,81 @@ fixed_t widget_tz_0(FContext* fctx, bool draw, FPoint position, GTextAlignment a
     time_t adjusted = time(NULL) - tzinfo.data[0].offsets[dataidx] * 60;
     struct tm* t = gmtime(&adjusted);
     strftime(buffer_1, sizeof(buffer_1), config_tz_0_format, t);
+// -- end jsalternative
+    remove_leading_zero(buffer_1, sizeof(buffer_1));
+    if (draw) draw_string(fctx, buffer_1, position, font_main, foreground_color, fontsize_widgets, align);
+    return string_width(fctx, buffer_1, font_main, fontsize_widgets);
+}
+fixed_t widget_tz_1(FContext* fctx, bool draw, FPoint position, GTextAlignment align, uint8_t foreground_color, uint8_t background_color) {
+// -- jsalternative
+// --     var dat = moment(new Date()).tz(config_tz_1_local).format('YYYY-MM-DD HH:mm');
+// --     buffer_1 = strftime(config_tz_1_format, new Date(dat));
+// --     buffer_1 =
+    int8_t dataidx = get_current_tz_idx(&tzinfo.data[1]);
+    if (dataidx == -1) return 0;
+    time_t adjusted = time(NULL) - tzinfo.data[1].offsets[dataidx] * 60;
+    struct tm* t = gmtime(&adjusted);
+    strftime(buffer_1, sizeof(buffer_1), config_tz_1_format, t);
+// -- end jsalternative
+    remove_leading_zero(buffer_1, sizeof(buffer_1));
+    if (draw) draw_string(fctx, buffer_1, position, font_main, foreground_color, fontsize_widgets, align);
+    return string_width(fctx, buffer_1, font_main, fontsize_widgets);
+}
+fixed_t widget_tz_2(FContext* fctx, bool draw, FPoint position, GTextAlignment align, uint8_t foreground_color, uint8_t background_color) {
+// -- jsalternative
+// --     var dat = moment(new Date()).tz(config_tz_2_local).format('YYYY-MM-DD HH:mm');
+// --     buffer_1 = strftime(config_tz_2_format, new Date(dat));
+// --     buffer_1 =
+    int8_t dataidx = get_current_tz_idx(&tzinfo.data[2]);
+    if (dataidx == -1) return 0;
+    time_t adjusted = time(NULL) - tzinfo.data[2].offsets[dataidx] * 60;
+    struct tm* t = gmtime(&adjusted);
+    strftime(buffer_1, sizeof(buffer_1), config_tz_2_format, t);
+// -- end jsalternative
+    remove_leading_zero(buffer_1, sizeof(buffer_1));
+    if (draw) draw_string(fctx, buffer_1, position, font_main, foreground_color, fontsize_widgets, align);
+    return string_width(fctx, buffer_1, font_main, fontsize_widgets);
+}
+fixed_t widget_tz_3(FContext* fctx, bool draw, FPoint position, GTextAlignment align, uint8_t foreground_color, uint8_t background_color) {
+// -- jsalternative
+// --     var dat = moment(new Date()).tz(config_tz_3_local).format('YYYY-MM-DD HH:mm');
+// --     buffer_1 = strftime(config_tz_3_format, new Date(dat));
+// --     buffer_1 =
+    int8_t dataidx = get_current_tz_idx(&tzinfo.data[3]);
+    if (dataidx == -1) return 0;
+    time_t adjusted = time(NULL) - tzinfo.data[3].offsets[dataidx] * 60;
+    struct tm* t = gmtime(&adjusted);
+    strftime(buffer_1, sizeof(buffer_1), config_tz_3_format, t);
+// -- end jsalternative
+    remove_leading_zero(buffer_1, sizeof(buffer_1));
+    if (draw) draw_string(fctx, buffer_1, position, font_main, foreground_color, fontsize_widgets, align);
+    return string_width(fctx, buffer_1, font_main, fontsize_widgets);
+}
+fixed_t widget_tz_4(FContext* fctx, bool draw, FPoint position, GTextAlignment align, uint8_t foreground_color, uint8_t background_color) {
+// -- jsalternative
+// --     var dat = moment(new Date()).tz(config_tz_4_local).format('YYYY-MM-DD HH:mm');
+// --     buffer_1 = strftime(config_tz_4_format, new Date(dat));
+// --     buffer_1 =
+    int8_t dataidx = get_current_tz_idx(&tzinfo.data[4]);
+    if (dataidx == -1) return 0;
+    time_t adjusted = time(NULL) - tzinfo.data[4].offsets[dataidx] * 60;
+    struct tm* t = gmtime(&adjusted);
+    strftime(buffer_1, sizeof(buffer_1), config_tz_4_format, t);
+// -- end jsalternative
+    remove_leading_zero(buffer_1, sizeof(buffer_1));
+    if (draw) draw_string(fctx, buffer_1, position, font_main, foreground_color, fontsize_widgets, align);
+    return string_width(fctx, buffer_1, font_main, fontsize_widgets);
+}
+fixed_t widget_tz_5(FContext* fctx, bool draw, FPoint position, GTextAlignment align, uint8_t foreground_color, uint8_t background_color) {
+// -- jsalternative
+// --     var dat = moment(new Date()).tz(config_tz_5_local).format('YYYY-MM-DD HH:mm');
+// --     buffer_1 = strftime(config_tz_5_format, new Date(dat));
+// --     buffer_1 =
+    int8_t dataidx = get_current_tz_idx(&tzinfo.data[5]);
+    if (dataidx == -1) return 0;
+    time_t adjusted = time(NULL) - tzinfo.data[5].offsets[dataidx] * 60;
+    struct tm* t = gmtime(&adjusted);
+    strftime(buffer_1, sizeof(buffer_1), config_tz_5_format, t);
 // -- end jsalternative
     remove_leading_zero(buffer_1, sizeof(buffer_1));
     if (draw) draw_string(fctx, buffer_1, position, font_main, foreground_color, fontsize_widgets, align);

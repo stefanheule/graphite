@@ -74,12 +74,17 @@
 #define CONFIG_UPDATE_SECOND 42
 #define CONFIG_SHOW_DAYNIGHT 46
 #define CONFIG_STEP_GOAL 47
-#define CONFIG_TZ_0_FORMAT 49
+#define CONFIG_TZ_0_FORMAT 54
+#define CONFIG_TZ_1_FORMAT 55
+#define CONFIG_TZ_2_FORMAT 56
+#define CONFIG_TZ_3_FORMAT 57
+#define CONFIG_TZ_4_FORMAT 58
+#define CONFIG_TZ_5_FORMAT 59
 // -- end autogen
 
 // -- autogen
 // -- #define GRAPHITE_N_CONFIG {{ num_config_items }}
-#define GRAPHITE_N_CONFIG 49
+#define GRAPHITE_N_CONFIG 59
 // -- end autogen
 
 // -- autogen
@@ -98,6 +103,16 @@
 #define MSG_KEY_JS_READY 109
 #define MSG_KEY_FETCH_TZ_0 110
 #define MSG_KEY_TZ_0 111
+#define MSG_KEY_FETCH_TZ_1 112
+#define MSG_KEY_TZ_1 113
+#define MSG_KEY_FETCH_TZ_2 114
+#define MSG_KEY_TZ_2 115
+#define MSG_KEY_FETCH_TZ_3 116
+#define MSG_KEY_TZ_3 117
+#define MSG_KEY_FETCH_TZ_4 118
+#define MSG_KEY_TZ_4 119
+#define MSG_KEY_FETCH_TZ_5 120
+#define MSG_KEY_TZ_5 121
 #define PERSIST_KEY_WEATHER 201
 #define PERSIST_KEY_TZ 202
 // -- end autogen
@@ -158,6 +173,11 @@ extern uint8_t config_update_second;
 extern uint8_t config_show_daynight;
 extern uint16_t config_step_goal;
 extern char config_tz_0_format[GRAPHITE_STRINGCONFIG_MAXLEN+1];
+extern char config_tz_1_format[GRAPHITE_STRINGCONFIG_MAXLEN+1];
+extern char config_tz_2_format[GRAPHITE_STRINGCONFIG_MAXLEN+1];
+extern char config_tz_3_format[GRAPHITE_STRINGCONFIG_MAXLEN+1];
+extern char config_tz_4_format[GRAPHITE_STRINGCONFIG_MAXLEN+1];
+extern char config_tz_5_format[GRAPHITE_STRINGCONFIG_MAXLEN+1];
 // -- end autogen
 
 
@@ -217,7 +237,7 @@ extern AppTimer * weather_request_timer;
 // -- autogen
 // -- #define GRAPHITE_NUM_TZS {{ num_tzs }}
 // -- #define GRAPHITE_TZ_MAX_DATAPOINTS {{ tz_max_datapoints }}
-#define GRAPHITE_NUM_TZS 1
+#define GRAPHITE_NUM_TZS 6
 #define GRAPHITE_TZ_MAX_DATAPOINTS 3
 // -- end autogen
 #define GRAPHITE_TZ_DATA_VERSION 1
