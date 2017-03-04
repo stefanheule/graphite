@@ -45,7 +45,7 @@ Pebble.addEventListener('ready', function () {
 
 Pebble.addEventListener('showConfiguration', function () {
     var url = 'https://stefanheule.com/graphite/config/1/index.html';
-    url = 'https://rawgit.com/stefanheule/graphite/feature-tz/config/';
+    url = 'https://rawgit.com/stefanheule/graphite/master/config/';
 
     // url = 'https://local.com/graphite/config/0/index.html';
 
