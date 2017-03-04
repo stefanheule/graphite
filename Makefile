@@ -124,4 +124,19 @@ library_dl:
 	wget http://momentjs.com/downloads/moment.min.js -O src/pkjs/moment.js
 	wget http://momentjs.com/downloads/moment-timezone-with-data-2010-2020.min.js -O src/pkjs/moment-timezone.js
 
+coverity_scan:
+	make clean
+	~/software/cov-analysis-linux64-8.7.0/bin/cov-configure --comptype gcc --compiler arm-none-eabi-gcc --template
+	~/software/cov-analysis-linux64-8.7.0/bin/cov-build --dir cov-int make build
+	rm -f graphite-coverity.tgz
+	tar czf graphite-coverity.tgz cov-int
+	rm -rf cov-int
+	curl --form token=_-37pwMfnnG1HrgX1_KnYg \
+      --form email=stefanheule@gmail.com \
+      --form file=@graphite-coverity.tgz \
+      --form version="git hash `git rev-parse HEAD`" \
+      --form description="Automatic submission from Makefile" \
+      https://scan.coverity.com/builds?project=stefanheule%2Fgraphite
+	rm -f graphite-coverity.tgz
+
 .PHONY: all deploy build build_quiet config log resources install_emulator install_deploy menu_icon screenshots screenshot screenshot_config write_header clean clean_header
