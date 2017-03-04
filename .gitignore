@@ -5,3 +5,4 @@ build
 package.json
 cmake-build-debug
 node_modules/
+tz-data

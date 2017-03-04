@@ -91,6 +91,13 @@ var GraphitePreview = (function () {
      var config_info_below_local;
      var config_show_daynight;
      var config_step_goal;
+     var config_tz_0_local;
+     var config_tz_1_local;
+     var config_tz_2_local;
+     var config_tz_0_format;
+     var config_tz_1_format;
+     var config_tz_2_format;
+     var config_hourly_vibrate;
 // -- end autogen
 
     function get(k) {
@@ -314,6 +321,13 @@ var GraphitePreview = (function () {
         config_info_below_local = config["CONFIG_INFO_BELOW_LOCAL"];
         config_show_daynight = config["CONFIG_SHOW_DAYNIGHT"];
         config_step_goal = config["CONFIG_STEP_GOAL"];
+        config_tz_0_local = config["CONFIG_TZ_0_LOCAL"];
+        config_tz_1_local = config["CONFIG_TZ_1_LOCAL"];
+        config_tz_2_local = config["CONFIG_TZ_2_LOCAL"];
+        config_tz_0_format = config["CONFIG_TZ_0_FORMAT"];
+        config_tz_1_format = config["CONFIG_TZ_1_FORMAT"];
+        config_tz_2_format = config["CONFIG_TZ_2_FORMAT"];
+        config_hourly_vibrate = config["CONFIG_HOURLY_VIBRATE"];
 // -- end autogen
 
         weather = getWeather(platform);
@@ -391,7 +405,36 @@ var widgets = [
     widget_ampm_lower, // id 29
     widget_seconds, // id 30
     widget_day_of_week, // id 31
+    widget_battery_text, // id 32
+    widget_battery_text2, // id 33
+    widget_tz_0, // id 34
+    widget_tz_1, // id 35
+    widget_tz_2, // id 36
 ];
+function widget_tz_0(fctx, draw, position, align, foreground_color, background_color) {
+    var dat = moment(new Date()).tz(config_tz_0_local).format('YYYY-MM-DD HH:mm');
+    buffer_1 = strftime(config_tz_0_format, new Date(dat));
+    buffer_1 =
+    remove_leading_zero(buffer_1, sizeof(buffer_1));
+    if (draw) draw_string(fctx, buffer_1, position, font_main, foreground_color, fontsize_widgets, align);
+    return string_width(fctx, buffer_1, font_main, fontsize_widgets);
+}
+function widget_tz_1(fctx, draw, position, align, foreground_color, background_color) {
+    var dat = moment(new Date()).tz(config_tz_1_local).format('YYYY-MM-DD HH:mm');
+    buffer_1 = strftime(config_tz_1_format, new Date(dat));
+    buffer_1 =
+    remove_leading_zero(buffer_1, sizeof(buffer_1));
+    if (draw) draw_string(fctx, buffer_1, position, font_main, foreground_color, fontsize_widgets, align);
+    return string_width(fctx, buffer_1, font_main, fontsize_widgets);
+}
+function widget_tz_2(fctx, draw, position, align, foreground_color, background_color) {
+    var dat = moment(new Date()).tz(config_tz_2_local).format('YYYY-MM-DD HH:mm');
+    buffer_1 = strftime(config_tz_2_format, new Date(dat));
+    buffer_1 =
+    remove_leading_zero(buffer_1, sizeof(buffer_1));
+    if (draw) draw_string(fctx, buffer_1, position, font_main, foreground_color, fontsize_widgets, align);
+    return string_width(fctx, buffer_1, font_main, fontsize_widgets);
+}
 function draw_icon_number_widget(fctx, draw, position, align, foreground_color, background_color, icon, text, show_icon) {
   var fontsize_icon = (fontsize_widgets * 0.62);
   var w1 = !show_icon ? 0 : string_width(fctx, icon, font_icon, fontsize_icon);
@@ -402,6 +445,7 @@ function draw_icon_number_widget(fctx, draw, position, align, foreground_color, 
   var color = foreground_color;
   if (draw) {
       var icon_y = position.y + fontsize_icon*0.4;
+icon_y += REM(7);
       if (align == GTextAlignmentCenter) {
           if (w1) draw_string(fctx, icon, FPoint(position.x - w/2, icon_y), font_icon, color, fontsize_icon, a);
           draw_string(fctx, text, FPoint(position.x - w/2 + w1 + sep, position.y), font_main, color, fontsize_widgets, a);
@@ -438,6 +482,18 @@ function format_thousands(num) {
 }
 function widget_empty(fctx, draw, position, align, foreground_color, background_color) {
   return 0;
+}
+function widget_battery_text(fctx, draw, position, align, foreground_color, background_color) {
+    var battery_state = battery_state_service_peek();
+    buffer_1 = sprintf("%d%%", battery_state.charge_percent);
+    if (draw) draw_string(fctx, buffer_1, position, font_main, foreground_color, fontsize_widgets, align);
+    return string_width(fctx, buffer_1, font_main, fontsize_widgets);
+}
+function widget_battery_text2(fctx, draw, position, align, foreground_color, background_color) {
+    var battery_state = battery_state_service_peek();
+    buffer_1 = sprintf("%d", battery_state.charge_percent);
+    if (draw) draw_string(fctx, buffer_1, position, font_main, foreground_color, fontsize_widgets, align);
+    return string_width(fctx, buffer_1, font_main, fontsize_widgets);
 }
 function widget_battery_icon(fctx, draw, position, align, foreground_color, background_color) {
   var bat_thickness = PIX(1);
@@ -505,7 +561,6 @@ function widget_quiet(fctx, draw, position, align, foreground_color, background_
 function widget_ampm(fctx, draw, position, align, foreground_color, background_color) {
   var now = time(NULL);
     var t = localtime(now);
-  setlocale(LC_ALL, "");
   buffer_1 = strftime("%p", new Date(now * 1000));
   if (draw) draw_string(fctx, buffer_1, position, font_main, foreground_color, fontsize_widgets, align);
   return string_width(fctx, buffer_1, font_main, fontsize_widgets);
@@ -513,7 +568,6 @@ function widget_ampm(fctx, draw, position, align, foreground_color, background_c
 function widget_ampm_lower(fctx, draw, position, align, foreground_color, background_color) {
   var now = time(NULL);
     var t = localtime(now);
-  setlocale(LC_ALL, "");
   buffer_1 = strftime("%P", new Date(now * 1000));
   if (draw) draw_string(fctx, buffer_1, position, font_main, foreground_color, fontsize_widgets, align);
   return string_width(fctx, buffer_1, font_main, fontsize_widgets);
@@ -521,7 +575,6 @@ function widget_ampm_lower(fctx, draw, position, align, foreground_color, backgr
 function widget_seconds(fctx, draw, position, align, foreground_color, background_color) {
   var now = time(NULL);
     var t = localtime(now);
-  setlocale(LC_ALL, "");
   buffer_1 = strftime("%S", new Date(now * 1000));
   buffer_1 = 
   remove_leading_zero(buffer_1, sizeof(buffer_1));
@@ -531,7 +584,6 @@ function widget_seconds(fctx, draw, position, align, foreground_color, backgroun
 function widget_day_of_week(fctx, draw, position, align, foreground_color, background_color) {
   var now = time(NULL);
     var t = localtime(now);
-  setlocale(LC_ALL, "");
   buffer_1 = strftime("%a", new Date(now * 1000));
   if (draw) draw_string(fctx, buffer_1, position, font_main, foreground_color, fontsize_widgets, align);
   return string_width(fctx, buffer_1, font_main, fontsize_widgets);
@@ -678,6 +730,7 @@ function bluetooth_popup(fctx, ctx, connected) {
  * Remove all leading zeros in a string.
  */
 function remove_leading_zero(buffer, length) {
+    buffer = buffer.replace("mmmm", "");
     if (buffer.substring(0, 1) == "0") buffer = buffer.substring(1);
     return buffer.replace(new RegExp("([^0-9])0", 'g'), "$1");
 }
@@ -740,7 +793,6 @@ function background_update_proc(layer, ctx) {
     width = bounds.size.w;
     var bounds_full = g2frect(layer_get_bounds(layer_background));
     height_full = bounds_full.size.h;
-    width_full = bounds_full.size.w;
     fontsize_widgets = REM(27);
     var now = time(NULL);
     var t = localtime(now);
@@ -748,25 +800,28 @@ function background_update_proc(layer, ctx) {
     if (battery_state.is_charging || battery_state.is_plugged) {
         battery_state.charge_percent = 100;
     }
+    var config_color_topbar_bg_local = config_color_topbar_bg;
+    var config_color_info_below_local = config_color_info_below;
+    var config_color_progress_bar_local = config_color_progress_bar;
     if (config_lowbat_col) {
         if (battery_state.charge_percent <= 10) {
-          config_color_topbar_bg = config_color_bat_10;
-          config_color_info_below = config_color_bat_10;
-          config_color_progress_bar = config_color_bat_10;
+          config_color_topbar_bg_local = config_color_bat_10;
+          config_color_info_below_local = config_color_bat_10;
+          config_color_progress_bar_local = config_color_bat_10;
         } else if (battery_state.charge_percent <= 20) {
-          config_color_topbar_bg = config_color_bat_20;
-          config_color_info_below = config_color_bat_20;
-          config_color_progress_bar = config_color_bat_20;
+          config_color_topbar_bg_local = config_color_bat_20;
+          config_color_info_below_local = config_color_bat_20;
+          config_color_progress_bar_local = config_color_bat_20;
         } else if (battery_state.charge_percent <= 30) {
-          config_color_topbar_bg = config_color_bat_30;
-          config_color_info_below = config_color_bat_30;
-          config_color_progress_bar = config_color_bat_30;
+          config_color_topbar_bg_local = config_color_bat_30;
+          config_color_info_below_local = config_color_bat_30;
+          config_color_progress_bar_local = config_color_bat_30;
         }
     }
     draw_rect(fctx, bounds_full, config_color_background);
     var fontsize_weather = fontsize_widgets;
     var topbar_height = FIXED_ROUND(fontsize_weather + REM(4));
-    draw_rect(fctx, FRect(bounds.origin, FSize(width, topbar_height)), config_color_topbar_bg);
+    draw_rect(fctx, FRect(bounds.origin, FSize(width, topbar_height)), config_color_topbar_bg_local);
     if (show_weather()) {
         var first_perc_index = -1;
         var sec_in_hour = 60*60;
@@ -817,7 +872,6 @@ function background_update_proc(layer, ctx) {
         }
     }
     var time_y_offset = PBL_DISPLAY_WIDTH != 144 ? 0 : (height_full-height) / 8;
-    setlocale(LC_ALL, "");
     buffer_1 = strftime(config_time_format, new Date(now * 1000));
     buffer_1 = 
     remove_leading_zero(buffer_1, sizeof(buffer_1));
@@ -829,7 +883,7 @@ function background_update_proc(layer, ctx) {
     remove_leading_zero(buffer_1, sizeof(buffer_1));
     var fontsize_date = REM(28);
     var fontsize_date_real = find_fontsize(fctx, fontsize_date, REM(15), buffer_1);
-    draw_string(fctx, buffer_1, FPoint(width / 2, height_full / 2 + fontsize_time / 3 - time_y_offset), font_main, config_color_info_below, fontsize_date_real, GTextAlignmentCenter);
+    draw_string(fctx, buffer_1, FPoint(width / 2, height_full / 2 + fontsize_time / 3 - time_y_offset), font_main, config_color_info_below_local, fontsize_date_real, GTextAlignmentCenter);
     var progress_cur = 0;
     var progress_max = 0;
     var progress_no = config_progress == 0;
@@ -840,11 +894,12 @@ function background_update_proc(layer, ctx) {
         progress_cur = battery_state.charge_percent;
         progress_max = 100;
     }
+    if (progress_max == 0) progress_max = 1;
     var progress_height = REM(5);
     var progress_endx = width * progress_cur / progress_max;
     if (!progress_no) {
-        draw_rect(fctx, FRect(FPoint(0, height_full - progress_height), FSize(progress_endx, progress_height)), config_color_progress_bar);
-        draw_circle(fctx, FPoint(progress_endx, height_full), progress_height, config_color_progress_bar);
+        draw_rect(fctx, FRect(FPoint(0, height_full - progress_height), FSize(progress_endx, progress_height)), config_color_progress_bar_local);
+        draw_circle(fctx, FPoint(progress_endx, height_full), progress_height, config_color_progress_bar_local);
         if (progress_cur > progress_max) {
             var progress_endx2 = width * (progress_cur - progress_max) / progress_max;
             draw_rect(fctx, FRect(FPoint(0, height_full - progress_height), FSize(progress_endx2, progress_height)), config_color_progress_bar2);
@@ -853,9 +908,9 @@ function background_update_proc(layer, ctx) {
     }
     var widgets_margin_topbottom = REM(6); // gap between watch bounds and widgets
     var widgets_margin_leftright = REM(8);
-    widgets[config_widget_1](fctx, true, FPoint(widgets_margin_leftright, widgets_margin_topbottom), GTextAlignmentLeft, config_color_widget_1, config_color_topbar_bg);
-    widgets[config_widget_2](fctx, true, FPoint(width/2, widgets_margin_topbottom), GTextAlignmentCenter, config_color_widget_2, config_color_topbar_bg);
-    widgets[config_widget_3](fctx, true, FPoint(width - widgets_margin_leftright, widgets_margin_topbottom), GTextAlignmentRight, config_color_widget_3, config_color_topbar_bg);
+    widgets[config_widget_1](fctx, true, FPoint(widgets_margin_leftright, widgets_margin_topbottom), GTextAlignmentLeft, config_color_widget_1, config_color_topbar_bg_local);
+    widgets[config_widget_2](fctx, true, FPoint(width/2, widgets_margin_topbottom), GTextAlignmentCenter, config_color_widget_2, config_color_topbar_bg_local);
+    widgets[config_widget_3](fctx, true, FPoint(width - widgets_margin_leftright, widgets_margin_topbottom), GTextAlignmentRight, config_color_widget_3, config_color_topbar_bg_local);
     var compl_y = height_full - fontsize_widgets;
     var compl_y2 = compl_y - progress_height;
     var compl_w;
@@ -1010,6 +1065,13 @@ function background_update_proc(layer, ctx) {
             CONFIG_INFO_BELOW_LOCAL: +0,
             CONFIG_SHOW_DAYNIGHT: +true,
             CONFIG_STEP_GOAL: +10000,
+            CONFIG_TZ_0_LOCAL: "America/Los_Angeles",
+            CONFIG_TZ_1_LOCAL: "America/Los_Angeles",
+            CONFIG_TZ_2_LOCAL: "America/Los_Angeles",
+            CONFIG_TZ_0_FORMAT: "%I:0%M%P",
+            CONFIG_TZ_1_FORMAT: "%I:0%M%P",
+            CONFIG_TZ_2_FORMAT: "%I:0%M%P",
+            CONFIG_HOURLY_VIBRATE: +false,
 // -- end autogen
         };
         return cloneConfig(defaults);
@@ -1059,7 +1121,7 @@ function background_update_proc(layer, ctx) {
             CONFIG_WIDGET_1: +4,
             CONFIG_WIDGET_2: +1,
             CONFIG_WIDGET_3: +5,
-            CONFIG_WIDGET_4: +14,
+            CONFIG_WIDGET_4: +34,
             CONFIG_WIDGET_5: +6,
             CONFIG_WIDGET_6: +9,
             CONFIG_PROGRESS: +1,
@@ -1071,6 +1133,13 @@ function background_update_proc(layer, ctx) {
             CONFIG_INFO_BELOW_LOCAL: +0,
             CONFIG_SHOW_DAYNIGHT: +true,
             CONFIG_STEP_GOAL: +10000,
+            CONFIG_TZ_0_LOCAL: "Europe/Zurich",
+            CONFIG_TZ_1_LOCAL: "Europe/Zurich",
+            CONFIG_TZ_2_LOCAL: "Europe/Zurich",
+            CONFIG_TZ_0_FORMAT: "%I:0%M%Pmmm",
+            CONFIG_TZ_1_FORMAT: "%I:0%M%Pmmm",
+            CONFIG_TZ_2_FORMAT: "%I:0%M%Pmmm",
+            CONFIG_HOURLY_VIBRATE: +false,
 // -- end autogen
         };
         return cloneConfig(defaults);

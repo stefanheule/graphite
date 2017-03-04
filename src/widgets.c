@@ -13,6 +13,7 @@
 // limitations under the License.
 
 
+#include <pebble.h>
 #include "graphite.h"
 
 
@@ -26,7 +27,7 @@ widget_render_t widgets[] = {
 // -- end jsalternative
 
 // -- autogen
-// -- ## for key in widgets
+// -- ## for key in widgets_idsorted
 // --     {{ key["key"] | lower }}, // id {{ key["id"] }}
 // -- ## endfor
     widget_empty, // id 0
@@ -61,6 +62,11 @@ widget_render_t widgets[] = {
     widget_ampm_lower, // id 29
     widget_seconds, // id 30
     widget_day_of_week, // id 31
+    widget_battery_text, // id 32
+    widget_battery_text2, // id 33
+    widget_tz_0, // id 34
+    widget_tz_1, // id 35
+    widget_tz_2, // id 36
 // -- end autogen
 
 // -- jsalternative
@@ -72,6 +78,71 @@ widget_render_t widgets[] = {
 ////////////////////////////////////////////
 //// Complication render implementations
 ////////////////////////////////////////////
+
+// -- autogen
+// -- ## for i in range(num_tzs)
+// -- fixed_t widget_tz_{{ i }}(FContext* fctx, bool draw, FPoint position, GTextAlignment align, uint8_t foreground_color, uint8_t background_color) {
+// -- // -- jsalternative
+// -- // --     var dat = moment(new Date()).tz(config_tz_{{ i }}_local).format('YYYY-MM-DD HH:mm');
+// -- // --     buffer_1 = strftime(config_tz_{{ i }}_format, new Date(dat));
+// -- // --     buffer_1 =
+// --     int8_t dataidx = get_current_tz_idx(&tzinfo.data[{{ i }}]);
+// --     if (dataidx == -1) return 0;
+// --     time_t adjusted = time(NULL) - tzinfo.data[{{ i }}].offsets[dataidx] * 60;
+// --     struct tm* t = gmtime(&adjusted);
+// --     strftime(buffer_1, sizeof(buffer_1), config_tz_{{ i }}_format, t);
+// -- // -- end jsalternative
+// --     remove_leading_zero(buffer_1, sizeof(buffer_1));
+// --     if (draw) draw_string(fctx, buffer_1, position, font_main, foreground_color, fontsize_widgets, align);
+// --     return string_width(fctx, buffer_1, font_main, fontsize_widgets);
+// -- }
+// -- ## endfor
+fixed_t widget_tz_0(FContext* fctx, bool draw, FPoint position, GTextAlignment align, uint8_t foreground_color, uint8_t background_color) {
+// -- jsalternative
+// --     var dat = moment(new Date()).tz(config_tz_0_local).format('YYYY-MM-DD HH:mm');
+// --     buffer_1 = strftime(config_tz_0_format, new Date(dat));
+// --     buffer_1 =
+    int8_t dataidx = get_current_tz_idx(&tzinfo.data[0]);
+    if (dataidx == -1) return 0;
+    time_t adjusted = time(NULL) - tzinfo.data[0].offsets[dataidx] * 60;
+    struct tm* t = gmtime(&adjusted);
+    strftime(buffer_1, sizeof(buffer_1), config_tz_0_format, t);
+// -- end jsalternative
+    remove_leading_zero(buffer_1, sizeof(buffer_1));
+    if (draw) draw_string(fctx, buffer_1, position, font_main, foreground_color, fontsize_widgets, align);
+    return string_width(fctx, buffer_1, font_main, fontsize_widgets);
+}
+fixed_t widget_tz_1(FContext* fctx, bool draw, FPoint position, GTextAlignment align, uint8_t foreground_color, uint8_t background_color) {
+// -- jsalternative
+// --     var dat = moment(new Date()).tz(config_tz_1_local).format('YYYY-MM-DD HH:mm');
+// --     buffer_1 = strftime(config_tz_1_format, new Date(dat));
+// --     buffer_1 =
+    int8_t dataidx = get_current_tz_idx(&tzinfo.data[1]);
+    if (dataidx == -1) return 0;
+    time_t adjusted = time(NULL) - tzinfo.data[1].offsets[dataidx] * 60;
+    struct tm* t = gmtime(&adjusted);
+    strftime(buffer_1, sizeof(buffer_1), config_tz_1_format, t);
+// -- end jsalternative
+    remove_leading_zero(buffer_1, sizeof(buffer_1));
+    if (draw) draw_string(fctx, buffer_1, position, font_main, foreground_color, fontsize_widgets, align);
+    return string_width(fctx, buffer_1, font_main, fontsize_widgets);
+}
+fixed_t widget_tz_2(FContext* fctx, bool draw, FPoint position, GTextAlignment align, uint8_t foreground_color, uint8_t background_color) {
+// -- jsalternative
+// --     var dat = moment(new Date()).tz(config_tz_2_local).format('YYYY-MM-DD HH:mm');
+// --     buffer_1 = strftime(config_tz_2_format, new Date(dat));
+// --     buffer_1 =
+    int8_t dataidx = get_current_tz_idx(&tzinfo.data[2]);
+    if (dataidx == -1) return 0;
+    time_t adjusted = time(NULL) - tzinfo.data[2].offsets[dataidx] * 60;
+    struct tm* t = gmtime(&adjusted);
+    strftime(buffer_1, sizeof(buffer_1), config_tz_2_format, t);
+// -- end jsalternative
+    remove_leading_zero(buffer_1, sizeof(buffer_1));
+    if (draw) draw_string(fctx, buffer_1, position, font_main, foreground_color, fontsize_widgets, align);
+    return string_width(fctx, buffer_1, font_main, fontsize_widgets);
+}
+// -- end autogen
 
 typedef char* (*num_formater_t)(int num, void* data);
 
@@ -86,6 +157,9 @@ fixed_t draw_icon_number_widget(FContext* fctx, bool draw, FPoint position, GTex
 
   if (draw) {
       fixed_t icon_y = position.y + fontsize_icon*0.4;
+// -- jsalternative
+// -- icon_y += REM(7);
+// -- end jsalternative
       if (align == GTextAlignmentCenter) {
           if (w1) draw_string(fctx, icon, FPoint(position.x - w/2, icon_y), font_icon, color, fontsize_icon, a);
           draw_string(fctx, text, FPoint(position.x - w/2 + w1 + sep, position.y), font_main, color, fontsize_widgets, a);
@@ -126,6 +200,20 @@ char* format_thousands(int num) {
 
 fixed_t widget_empty(FContext* fctx, bool draw, FPoint position, GTextAlignment align, uint8_t foreground_color, uint8_t background_color) {
   return 0;
+}
+
+fixed_t widget_battery_text(FContext* fctx, bool draw, FPoint position, GTextAlignment align, uint8_t foreground_color, uint8_t background_color) {
+    BatteryChargeState battery_state = battery_state_service_peek();
+    snprintf(buffer_1, sizeof(buffer_1), "%d%%", battery_state.charge_percent);
+    if (draw) draw_string(fctx, buffer_1, position, font_main, foreground_color, fontsize_widgets, align);
+    return string_width(fctx, buffer_1, font_main, fontsize_widgets);
+}
+
+fixed_t widget_battery_text2(FContext* fctx, bool draw, FPoint position, GTextAlignment align, uint8_t foreground_color, uint8_t background_color) {
+    BatteryChargeState battery_state = battery_state_service_peek();
+    snprintf(buffer_1, sizeof(buffer_1), "%d", battery_state.charge_percent);
+    if (draw) draw_string(fctx, buffer_1, position, font_main, foreground_color, fontsize_widgets, align);
+    return string_width(fctx, buffer_1, font_main, fontsize_widgets);
 }
 
 fixed_t widget_battery_icon(FContext* fctx, bool draw, FPoint position, GTextAlignment align, uint8_t foreground_color, uint8_t background_color) {
@@ -208,7 +296,6 @@ fixed_t widget_quiet(FContext* fctx, bool draw, FPoint position, GTextAlignment 
 fixed_t widget_ampm(FContext* fctx, bool draw, FPoint position, GTextAlignment align, uint8_t foreground_color, uint8_t background_color) {
   time_t now = time(NULL);
     struct tm *t = localtime(&now);
-  setlocale(LC_ALL, "");
   strftime(buffer_1, sizeof(buffer_1), "%p", t);
   if (draw) draw_string(fctx, buffer_1, position, font_main, foreground_color, fontsize_widgets, align);
   return string_width(fctx, buffer_1, font_main, fontsize_widgets);
@@ -217,7 +304,6 @@ fixed_t widget_ampm(FContext* fctx, bool draw, FPoint position, GTextAlignment a
 fixed_t widget_ampm_lower(FContext* fctx, bool draw, FPoint position, GTextAlignment align, uint8_t foreground_color, uint8_t background_color) {
   time_t now = time(NULL);
     struct tm *t = localtime(&now);
-  setlocale(LC_ALL, "");
   strftime(buffer_1, sizeof(buffer_1), "%P", t);
   if (draw) draw_string(fctx, buffer_1, position, font_main, foreground_color, fontsize_widgets, align);
   return string_width(fctx, buffer_1, font_main, fontsize_widgets);
@@ -226,7 +312,6 @@ fixed_t widget_ampm_lower(FContext* fctx, bool draw, FPoint position, GTextAlign
 fixed_t widget_seconds(FContext* fctx, bool draw, FPoint position, GTextAlignment align, uint8_t foreground_color, uint8_t background_color) {
   time_t now = time(NULL);
     struct tm *t = localtime(&now);
-  setlocale(LC_ALL, "");
   strftime(buffer_1, sizeof(buffer_1), "%S", t);
 // -- jsalternative
 // --   buffer_1 = 
@@ -239,7 +324,6 @@ fixed_t widget_seconds(FContext* fctx, bool draw, FPoint position, GTextAlignmen
 fixed_t widget_day_of_week(FContext* fctx, bool draw, FPoint position, GTextAlignment align, uint8_t foreground_color, uint8_t background_color) {
   time_t now = time(NULL);
     struct tm *t = localtime(&now);
-  setlocale(LC_ALL, "");
   strftime(buffer_1, sizeof(buffer_1), "%a", t);
   if (draw) draw_string(fctx, buffer_1, position, font_main, foreground_color, fontsize_widgets, align);
   return string_width(fctx, buffer_1, font_main, fontsize_widgets);

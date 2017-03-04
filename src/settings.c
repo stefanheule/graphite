@@ -69,6 +69,66 @@ static void update_weather_helper(void *unused) {
     update_weather(false);
 }
 
+int8_t get_current_tz_idx(TZData* data) {
+    // do we have valid data?
+    if (!data->valid) return -1;
+
+    time_t now = time(NULL);
+    int i = 0;
+    while (i < GRAPHITE_TZ_MAX_DATAPOINTS) {
+        if (data->untils[i] == 0) return -1;
+        if (now < data->untils[i]) return i;
+        i += 1;
+    }
+    return -1;
+}
+/**
+ * Check if we need to update the timezone.
+ */
+void check_update_tz_helper(uint8_t idx, uint32_t key) {
+    // return if we don't use the timezone widget
+    // TODO
+
+    // check if we have valid time zone information
+    time_t now = time(NULL);
+    int8_t dataidx = get_current_tz_idx(&tzinfo.data[idx]);
+
+    if (dataidx >= 0) {
+        // check if it expires soon
+        if (tzinfo.data[idx].untils[dataidx] - now < 100) {
+            // check if there is more
+            if (dataidx < GRAPHITE_TZ_MAX_DATAPOINTS-1 && tzinfo.data[idx].untils[dataidx+1] != 0) {
+                // there is more
+                return;
+            }
+        } else {
+            // it doesn't
+            return;
+        }
+    }
+
+    // actually request a tz update
+    DictionaryIterator *iter;
+    app_message_outbox_begin(&iter);
+    dict_write_uint8(iter, key, 1);
+    app_message_outbox_send();
+
+// -- build=debug
+// --     APP_LOG(APP_LOG_LEVEL_INFO, "requesting tz update for %d", idx);
+    APP_LOG(APP_LOG_LEVEL_INFO, "requesting tz update for %d", idx);
+// -- end build
+}
+void check_update_tz() {
+// -- autogen
+// -- ## for i in range(num_tzs)
+// --     check_update_tz_helper({{ i }}, MSG_KEY_FETCH_TZ_{{ i }});
+// -- ## endfor
+    check_update_tz_helper(0, MSG_KEY_FETCH_TZ_0);
+    check_update_tz_helper(1, MSG_KEY_FETCH_TZ_1);
+    check_update_tz_helper(2, MSG_KEY_FETCH_TZ_2);
+// -- end autogen
+}
+
 /**
  * Helpers to process new configuration.
  */
@@ -99,6 +159,50 @@ bool sync_helper_string(const uint32_t key, DictionaryIterator *iter, char *buff
     if (strncmp(buffer, new_tuple->value->cstring, maxlen) != 0) {
         strncpy(buffer, new_tuple->value->cstring, maxlen);
         persist_write_string(key, buffer);
+        return true;
+    }
+    return false;
+}
+
+uint32_t decode_bytes_to_int(uint8_t *bytes, uint8_t nbytes) {
+    uint32_t res = 0;
+    for (int i = nbytes - 1; i >= 0; i--) {
+        res = (res * 256) + bytes[i];
+    }
+    return res;
+}
+
+bool sync_tz(uint8_t idx, const uint32_t key, DictionaryIterator *iter) {
+    Tuple *tz_data;
+    tz_data = dict_find(iter, key);
+    if (tz_data) {
+        tzinfo.data[idx].valid = true;
+        int i = 0;
+// -- build=debug
+// --             APP_LOG(APP_LOG_LEVEL_DEBUG, "received tz data:");
+            APP_LOG(APP_LOG_LEVEL_DEBUG, "received tz data:");
+// -- end build
+        while (i < GRAPHITE_TZ_MAX_DATAPOINTS) {
+            tzinfo.data[idx].untils[i] = decode_bytes_to_int(tz_data->value->data + i * 6, 4);
+            if (tzinfo.data[idx].untils[i] != 0) {
+                tzinfo.data[idx].offsets[i] = decode_bytes_to_int(tz_data->value->data + i * 6 + 4, 2);
+            } else {
+                break;
+            }
+// -- build=debug
+// --             APP_LOG(APP_LOG_LEVEL_DEBUG, "  until  = %d", tzinfo.data[idx].untils[i]);
+// --             APP_LOG(APP_LOG_LEVEL_DEBUG, "  offset = %d", tzinfo.data[idx].offsets[i]);
+            APP_LOG(APP_LOG_LEVEL_DEBUG, "  until  = %d", tzinfo.data[idx].untils[i]);
+            APP_LOG(APP_LOG_LEVEL_DEBUG, "  offset = %d", tzinfo.data[idx].offsets[i]);
+// -- end build
+            i += 1;
+        }
+        while (i < GRAPHITE_TZ_MAX_DATAPOINTS) {
+            tzinfo.data[idx].untils[i] = 0;
+            i += 1;
+        }
+        tzinfo.version = GRAPHITE_TZ_DATA_VERSION;
+        persist_write_data(PERSIST_KEY_TZ, &tzinfo, sizeof(TimeZoneInfo));
         return true;
     }
     return false;
@@ -155,6 +259,10 @@ void inbox_received_handler(DictionaryIterator *iter, void *context) {
     dirty |= sync_helper_uint8_t(CONFIG_UPDATE_SECOND, iter, &config_update_second);
     dirty |= sync_helper_uint8_t(CONFIG_SHOW_DAYNIGHT, iter, &config_show_daynight);
     dirty |= sync_helper_uint16_t(CONFIG_STEP_GOAL, iter, &config_step_goal);
+    dirty |= sync_helper_string(CONFIG_TZ_0_FORMAT, iter, config_tz_0_format);
+    dirty |= sync_helper_string(CONFIG_TZ_1_FORMAT, iter, config_tz_1_format);
+    dirty |= sync_helper_string(CONFIG_TZ_2_FORMAT, iter, config_tz_2_format);
+    dirty |= sync_helper_uint8_t(CONFIG_HOURLY_VIBRATE, iter, &config_hourly_vibrate);
 // -- end autogen
 
     bool ask_for_weather_update = true;
@@ -198,6 +306,17 @@ void inbox_received_handler(DictionaryIterator *iter, void *context) {
         weather.failed = true;
     }
 
+    bool ask_for_tz_update = true;
+// -- autogen
+// -- ## for i in range(num_tzs)
+// --     if (sync_tz({{ i }}, MSG_KEY_TZ_{{ i }}, iter)) { dirty = true; ask_for_tz_update = false; }
+// -- ## endfor
+    if (sync_tz(0, MSG_KEY_TZ_0, iter)) { dirty = true; ask_for_tz_update = false; }
+    if (sync_tz(1, MSG_KEY_TZ_1, iter)) { dirty = true; ask_for_tz_update = false; }
+    if (sync_tz(2, MSG_KEY_TZ_2, iter)) { dirty = true; ask_for_tz_update = false; }
+// -- end autogen
+    if (!ask_for_tz_update) ask_for_weather_update = false;
+
     if (dict_find(iter, MSG_KEY_JS_READY)) {
         js_ready = true;
         force_weather_update = false;
@@ -210,6 +329,11 @@ void inbox_received_handler(DictionaryIterator *iter, void *context) {
     if (ask_for_weather_update) {
         update_weather(force_weather_update);
     }
+    if (ask_for_tz_update) {
+        check_update_tz();
+    }
+
+    hourly_vibes_set_enabled(config_hourly_vibrate);
 }
 
 /**
@@ -287,6 +411,10 @@ void read_config_all() {
     read_config_uint8_t(CONFIG_UPDATE_SECOND, &config_update_second);
     read_config_uint8_t(CONFIG_SHOW_DAYNIGHT, &config_show_daynight);
     read_config_uint16_t(CONFIG_STEP_GOAL, &config_step_goal);
+    read_config_string(CONFIG_TZ_0_FORMAT, config_tz_0_format);
+    read_config_string(CONFIG_TZ_1_FORMAT, config_tz_1_format);
+    read_config_string(CONFIG_TZ_2_FORMAT, config_tz_2_format);
+    read_config_uint8_t(CONFIG_HOURLY_VIBRATE, &config_hourly_vibrate);
 // -- end autogen
 
     if (persist_exists(PERSIST_KEY_WEATHER) && persist_get_size(PERSIST_KEY_WEATHER) == sizeof(Weather)) {
@@ -302,5 +430,34 @@ void read_config_all() {
         weather.timestamp = 0;
     }
 
+    if (persist_exists(PERSIST_KEY_TZ) && persist_get_size(PERSIST_KEY_TZ) == sizeof(TimeZoneInfo)) {
+        TimeZoneInfo tmp;
+        persist_read_data(PERSIST_KEY_TZ, &tmp, sizeof(TimeZoneInfo));
+        // make sure we are reading tz info that's consistent with the current version number
+        if (tmp.version == GRAPHITE_TZ_DATA_VERSION) {
+            tzinfo = tmp;
+        } else {
+// -- autogen
+// -- ## for i in range(num_tzs)
+// --             tzinfo.data[{{ i }}].valid = false;
+// -- ## endfor
+            tzinfo.data[0].valid = false;
+            tzinfo.data[1].valid = false;
+            tzinfo.data[2].valid = false;
+// -- end autogen
+        }
+    } else {
+// -- autogen
+// -- ## for i in range(num_tzs)
+// --         tzinfo.data[{{ i }}].valid = false;
+// -- ## endfor
+        tzinfo.data[0].valid = false;
+        tzinfo.data[1].valid = false;
+        tzinfo.data[2].valid = false;
+// -- end autogen
+    }
+
     js_ready = false;
+
+    hourly_vibes_set_enabled(config_hourly_vibrate);
 }

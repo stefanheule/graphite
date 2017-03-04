@@ -38,8 +38,13 @@ def enum_widget(compl, m):
 # --- configuration
 # ------------------------------------------------------------------------------
 
-version = '1.1'
-config_version = '1'
+version = '1.2'
+config_version = '2'
+
+# number of timezone widgets
+num_tzs = 3
+# number of data points (offset/until pairs) per timezone
+tz_max_datapoints = 3
 
 configuration = [
   {
@@ -221,6 +226,7 @@ configuration = [
   {
     'key': 'CONFIG_WIDGET_4',
     'default': 'WIDGET_STEPS_SHORT_ICON',
+    'mydefault': 'WIDGET_TZ_0',
   },
   {
     'key': 'CONFIG_WIDGET_5',
@@ -286,6 +292,23 @@ configuration = [
     'type': 'uint16_t',
     'show_only_if': 'readConfig("CONFIG_PROGRESS") == 1',
   },
+] + map(lambda i: {
+  'key': 'CONFIG_TZ_%d_LOCAL' % i,
+  'default': '"America/Los_Angeles"',
+  'mydefault': '"Europe/Zurich"',
+  'type': 'string',
+  'show_only_if': 'has_widget([WIDGET_TZ_%d])' % i,
+}, range(num_tzs)) + map(lambda i: {
+  'key': 'CONFIG_TZ_%d_FORMAT' % i,
+  'default': '"%I:0%M%P"',
+  'mydefault': '"%I:0%M%Pmmm"',
+  'type': 'string',
+  'show_only_if': 'has_widget([WIDGET_TZ_%d])' % i,
+}, range(num_tzs)) + [
+  {
+    'key': 'CONFIG_HOURLY_VIBRATE',
+    'default': 'false',
+  },
 ]
 
 simple_config = [
@@ -306,59 +329,72 @@ simple_config = [
   },
 ]
 
+
 widgets = [
   {
     'key': 'WIDGET_EMPTY',
     'desc': 'Empty',
+    'sort': 100,
   },
   {
     'key': 'WIDGET_WEATHER_CUR_TEMP_ICON',
     'desc': 'Weather: Current temperature and icon',
     'group': ['WEATHER', 'WEATHERCUR'],
+    'sort': 100,
   },
   {
     'key': 'WIDGET_WEATHER_CUR_TEMP',
     'desc': 'Weather: Current temperature',
     'group': ['WEATHER', 'WEATHERCUR'],
+    'sort': 100,
   },
   {
     'key': 'WIDGET_WEATHER_CUR_ICON',
     'desc': 'Weather: Current icon',
     'group': ['WEATHER', 'WEATHERCUR'],
+    'sort': 100,
   },
   {
     'key': 'WIDGET_WEATHER_LOW_TEMP',
     'desc': 'Weather: Today\'s low',
     'group': ['WEATHER', 'WEATHERLOWHIGH'],
+    'sort': 100,
   },
   {
     'key': 'WIDGET_WEATHER_HIGH_TEMP',
     'desc': 'Weather: Today\'s high',
     'group': ['WEATHER', 'WEATHERLOWHIGH'],
+    'sort': 100,
   },
   {
     'key': 'WIDGET_BLUETOOTH_DISCONLY',
     'desc': 'Bluetooth (on disconnect only)',
+    'sort': 200,
   },
   {
     'key': 'WIDGET_BLUETOOTH_DISCONLY_ALT',
     'desc': 'Bluetooth (on disconnect only), alternative',
+    'sort': 200,
   },
   {
     'key': 'WIDGET_BLUETOOTH_YESNO',
     'desc': 'Bluetooth (yes/no)',
+    'sort': 200,
   },
   {
     'key': 'WIDGET_BATTERY_ICON',
-    'desc': 'Battery icon',
+    'desc': 'Battery (icon)',
+    'sort': 300,
   },
   {
     'key': 'WIDGET_QUIET_OFFONLY',
     'desc': 'Quiet time enabled (only when on)',
+    'sort': 400,
   },
   {
     'key': 'WIDGET_QUIET',
     'desc': 'Quiet time indicator (two icons for on/off)',
+    'sort': 400,
   },
 ] + enum_widget(
   [
@@ -374,48 +410,56 @@ widgets = [
       'desc': 'Steps',
       'icontext': 'A',
       'text': 'format_unitless(health_service_sum_today(HealthMetricStepCount))',
+      'sort': 700,
     },
     {
       'key': 'WIDGET_STEPS_SHORT',
       'desc': 'Steps abbreviated',
       'icontext': 'A',
       'text': 'format_thousands(health_service_sum_today(HealthMetricStepCount))',
+      'sort': 700,
     },
     {
       'key': 'WIDGET_CALORIES_RESTING',
       'desc': 'Calories burned, resting',
       'icontext': 'K',
       'text': 'format_unitless(health_service_sum_today(HealthMetricRestingKCalories))',
+      'sort': 800,
     },
     {
       'key': 'WIDGET_CALORIES_ACTIVE',
       'desc': 'Calories burned, active',
       'icontext': 'K',
       'text': 'format_unitless(health_service_sum_today(HealthMetricActiveKCalories))',
+      'sort': 800,
     },
     {
       'key': 'WIDGET_CALORIES_ALL',
       'desc': 'Calories burned, resting + active',
       'icontext': 'K',
       'text': 'format_unitless(health_service_sum_today(HealthMetricRestingKCalories)+health_service_sum_today(HealthMetricActiveKCalories))',
+      'sort': 800,
     },
     {
       'key': 'WIDGET_CALORIES_RESTING_SHORT',
       'desc': 'Calories burned, resting, abbreviated',
       'icontext': 'K',
       'text': 'format_thousands(health_service_sum_today(HealthMetricRestingKCalories))',
+      'sort': 800,
     },
     {
       'key': 'WIDGET_CALORIES_ACTIVE_SHORT',
       'desc': 'Calories burned, active, abbreviated',
       'icontext': 'K',
       'text': 'format_thousands(health_service_sum_today(HealthMetricActiveKCalories))',
+      'sort': 800,
     },
     {
       'key': 'WIDGET_CALORIES_ALL_SHORT',
       'desc': 'Calories burned, resting + active, abbreviated',
       'icontext': 'K',
       'text': 'format_thousands(health_service_sum_today(HealthMetricRestingKCalories)+health_service_sum_today(HealthMetricActiveKCalories))',
+      'sort': 800,
     },
   ],
   {
@@ -426,20 +470,39 @@ widgets = [
   {
     'key': 'WIDGET_AMPM',
     'desc': 'AM/PM',
+    'sort': 600,
   },
   {
     'key': 'WIDGET_AMPM_LOWER',
     'desc': 'am/pm',
+    'sort': 600,
   },
   {
     'key': 'WIDGET_SECONDS',
     'desc': 'Seconds',
+    'sort': 600,
   },
   {
     'key': 'WIDGET_DAY_OF_WEEK',
     'desc': 'Day of week',
+    'sort': 600,
   },
-]
+  {
+    'key': 'WIDGET_BATTERY_TEXT',
+    'desc': 'Battery (text)',
+    'sort': 300,
+  },
+  {
+    'key': 'WIDGET_BATTERY_TEXT2',
+    'desc': 'Battery (text, no percent sign)',
+    'sort': 300,
+  },
+] + map(lambda i: {
+  'key': 'WIDGET_TZ_%d' % i,
+  'desc': 'Additional timezone %d' % (i+1),
+  'group': ['TZ'],
+  'sort': 500,
+}, range(num_tzs))
   # {
   #   'key': 'WIDGET_DISTANCE_KM',
   #   'desc': 'Distance walked (km)',
@@ -451,14 +514,6 @@ widgets = [
   # {
   #   'key': 'WIDGET_ACTIVE_TIME',
   #   'desc': 'Minutes spent active',
-  # },
-  # {
-  #   'key': 'WIDGET_CALORIES',
-  #   'desc': 'Calories burned (active)',
-  # },
-  # {
-  #   'key': 'WIDGET_CALORIES_FULL',
-  #   'desc': 'Calories burned (active + resting)',
   # },
 
 config_groups = [
@@ -474,6 +529,9 @@ config_groups = [
     'name': 'WEATHERCUR',
     'selector': 'has_widget(ALL_WEATHERCUR_WIDGET_IDS)',
   },
+  {
+    'name': 'TZ',
+  },
 ]
 
 msg_keys = [
@@ -487,6 +545,11 @@ msg_keys = [
   'FETCH_WEATHER',
   'WEATHER_FAILED',
   'JS_READY',
+] + [item for sublist in map(lambda i: ['FETCH_TZ_%d' % i, 'TZ_%d' % i], range(num_tzs)) for item in sublist]
+
+persist_keys = [
+  'WEATHER',
+  'TZ',
 ]
 
 perc_max_len = 30
@@ -527,10 +590,16 @@ def get_context():
   if _context is None:
     config = add_key_id(configuration, '', 1)
     sc = add_additional_info(simple_config)
-    compls = add_key_id(widgets, '', 0)
-    pre_process(config, simple_config, compls, config_groups)
+    wdgts = add_key_id(widgets, '', 0)
+    pre_process(config, simple_config, wdgts, config_groups)
+    linear_version = version.split(".")
+    linear_version = int(linear_version[0]) * 1000 + int(linear_version[1])
+    msgkeys = add_key_id(msg_keys, 'MSG_KEY_', 100)
+    persistkeys = add_key_id(persist_keys, 'PERSIST_KEY_', 201)
+    assert len(config) < 100 and len(msgkeys) < 100
     _context =  {
       'version': version,
+      'linear_version': linear_version, # 16 bit version number
       'config_version': config_version,
       'supported_platforms': read_configure('SUPPORTED_PLATFORMS').split(' '),
       'configuration': config,
@@ -539,17 +608,20 @@ def get_context():
       'simple_config_lookup': to_lookup(sc),
       'config_groups': config_groups,
       'config_groups_lookup': to_lookup(config_groups),
-      'widgets': compls,
-      'widgets_lookup': to_lookup(compls),
+      'widgets': sorted(wdgts, lambda a, b: cmp((a['sort'], a['id']), (b['sort'], b['id']))),
+      'widgets_idsorted': wdgts,
+      'widgets_lookup': to_lookup(wdgts),
       'num_config_items': len(config),
-      'message_keys': add_key_id(msg_keys, 'MSG_KEY_', 100),
+      'message_keys': msgkeys + persistkeys,
       'perc_max_len': perc_max_len,
       'fontsize_widgets': 27,
+      'tz_max_datapoints': tz_max_datapoints,
+      'num_tzs': num_tzs,
       'build': read_configure('BUILD'),
     }
   return _context
 
-def pre_process(config, simple_config, compls, groups):
+def pre_process(config, simple_config, wdgts, groups):
   lc = to_lookup(config)
   # decide which colors are part of a simple color, and which are not
   for k in simple_config:
@@ -569,18 +641,19 @@ def pre_process(config, simple_config, compls, groups):
     return res
 
   # resolve widget defaults
-  clc = to_lookup(compls)
+  clc = to_lookup(wdgts)
   group_ids = {}
   for k in config:
     k['default'] = resolve_widgets(k['default'])
     k['jsdefault'] = resolve_widgets(k['jsdefault'])
     k['mydefault'] = resolve_widgets(k['mydefault'])
     k['jsmydefault'] = resolve_widgets(k['jsmydefault'])
+    if 'show_only_if' in k: k['show_only_if'] = resolve_widgets(k['show_only_if'])
     if 'options' in k:
       k['options'] = map(lambda x: {'desc': (format_time(x[1][0]) + ("" if x[1][1]=="" else (" (%s)" % x[1][1]))).strip(), 'id': x[0], 'format': x[1]}, enumerate(k['options']))
 
   # prepare widget groups
-  for k in compls:
+  for k in wdgts:
     if 'group' in k:
       for gid in k['group']:
         if gid not in group_ids:
@@ -591,6 +664,7 @@ def pre_process(config, simple_config, compls, groups):
     k['key'] = "GROUP_%s" % (name)
     ids = map(lambda x: str(x), group_ids[name])
     resolved = "[%s]" % (", ".join(ids))
+    k['ALL_IDS'] = resolved
     for kk in k:
       k[kk] = k[kk].replace("ALL_%s_WIDGET_IDS" % (name), resolved)
 
@@ -687,7 +761,7 @@ def inline_render(file):
 
   ishtml = False
   newcontents = []
-  env = Environment(line_statement_prefix=line_statement_prefix)
+  env = Environment(loader = FileSystemLoader('.'), line_statement_prefix=line_statement_prefix)
   contents = read_file(file)
   linenr = 0
   laststart = 0
@@ -877,7 +951,8 @@ def main():
 
   # copy files
   files_to_copy = [
-    ('screenshots/basalt/colors.png', '/home/stefan/dev/web/www/inc/img/graphite/colors.png')
+    ('screenshots/basalt/colors.png', '/home/stefan/dev/web/www/inc/img/graphite/colors.png'),
+    ('screenshots/fulloverview.png', '/home/stefan/dev/web/www/inc/img/graphite/fulloverview.png'),
   ]
   for f in files_to_copy:
     dir = os.path.dirname(f[1])
@@ -886,7 +961,8 @@ def main():
   widget_dest = "/home/stefan/dev/web/www/inc/img/graphite/widgets"
   if os.path.exists(widget_dest):
     for i in range(len(widgets)):
-      shutil.copyfile('screenshots/basalt/widget-%d.png' % (i), "%s/widget-%d.png" % (widget_dest, i))
+      src = 'screenshots/basalt/widget-%d.png' % (i)
+      if os.path.exists(src): shutil.copyfile(src, "%s/widget-%d.png" % (widget_dest, i))
 
 if __name__ == "__main__":
   main()

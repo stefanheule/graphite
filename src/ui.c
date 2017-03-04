@@ -54,15 +54,36 @@ void bluetooth_popup(FContext* fctx, GContext *ctx, bool connected) {
  */
 // -- jsalternative
 // -- function remove_leading_zero(buffer, length) {
+// --     buffer = buffer.replace("mmmm", "");
 // --     if (buffer.substring(0, 1) == "0") buffer = buffer.substring(1);
 // --     return buffer.replace(new RegExp("([^0-9])0", 'g'), "$1");
 // -- }
 void remove_leading_zero(char *buffer, size_t length) {
     bool last_was_space = true;
+
+    int start_m = -1;
+    int ms = 0;
     int i = 0;
     while (buffer[i] != 0) {
+        if (buffer[i] == 'm') {
+            ms += 1;
+            if (start_m == -1) start_m = i;
+        } else {
+            start_m = -1; ms = 0;
+        }
+        if (ms == 4) {
+            memmove(&buffer[start_m], &buffer[start_m + 4], length - (start_m + 4));
+            i = start_m;
+            start_m = -1;
+            ms = 0;
+        }
+        i += 1;
+    }
+
+    i = 0;
+    while (buffer[i] != 0) {
         if (buffer[i] == '0' && last_was_space) {
-            memcpy(&buffer[i], &buffer[i + 1], length - (i + 1));
+            memmove(&buffer[i], &buffer[i + 1], length - (i + 1));
         }
         last_was_space = !(buffer[i] <= '9' && buffer[i] >= '0');
         i += 1;
@@ -143,7 +164,6 @@ void background_update_proc(Layer *layer, GContext *ctx) {
     width = bounds.size.w;
     FRect bounds_full = g2frect(layer_get_bounds(layer_background));
     height_full = bounds_full.size.h;
-    width_full = bounds_full.size.w;
 // -- autogen
 // --     fontsize_widgets = REM({{ fontsize_widgets }});
     fontsize_widgets = REM(27);
@@ -158,33 +178,41 @@ void background_update_proc(Layer *layer, GContext *ctx) {
     if (battery_state.is_charging || battery_state.is_plugged) {
         battery_state.charge_percent = 100;
     }
+// -- autogen
+// -- ## for dep in simple_config_lookup["SIMPLECONFIG_COLOR_ACCENT"]["depends"]
+// --     uint8_t {{ dep | lower }}_local = {{ dep | lower }};
+// -- ## endfor
+    uint8_t config_color_topbar_bg_local = config_color_topbar_bg;
+    uint8_t config_color_info_below_local = config_color_info_below;
+    uint8_t config_color_progress_bar_local = config_color_progress_bar;
+// -- end autogen
     if (config_lowbat_col) {
         if (battery_state.charge_percent <= 10) {
 // -- autogen
 // -- ## for dep in simple_config_lookup["SIMPLECONFIG_COLOR_ACCENT"]["depends"]
-// --           {{ dep | lower }} = config_color_bat_10;
+// --           {{ dep | lower }}_local = config_color_bat_10;
 // -- ## endfor
-          config_color_topbar_bg = config_color_bat_10;
-          config_color_info_below = config_color_bat_10;
-          config_color_progress_bar = config_color_bat_10;
+          config_color_topbar_bg_local = config_color_bat_10;
+          config_color_info_below_local = config_color_bat_10;
+          config_color_progress_bar_local = config_color_bat_10;
 // -- end autogen
         } else if (battery_state.charge_percent <= 20) {
 // -- autogen
 // -- ## for dep in simple_config_lookup["SIMPLECONFIG_COLOR_ACCENT"]["depends"]
-// --           {{ dep | lower }} = config_color_bat_20;
+// --           {{ dep | lower }}_local = config_color_bat_20;
 // -- ## endfor
-          config_color_topbar_bg = config_color_bat_20;
-          config_color_info_below = config_color_bat_20;
-          config_color_progress_bar = config_color_bat_20;
+          config_color_topbar_bg_local = config_color_bat_20;
+          config_color_info_below_local = config_color_bat_20;
+          config_color_progress_bar_local = config_color_bat_20;
 // -- end autogen
         } else if (battery_state.charge_percent <= 30) {
 // -- autogen
 // -- ## for dep in simple_config_lookup["SIMPLECONFIG_COLOR_ACCENT"]["depends"]
-// --           {{ dep | lower }} = config_color_bat_30;
+// --           {{ dep | lower }}_local = config_color_bat_30;
 // -- ## endfor
-          config_color_topbar_bg = config_color_bat_30;
-          config_color_info_below = config_color_bat_30;
-          config_color_progress_bar = config_color_bat_30;
+          config_color_topbar_bg_local = config_color_bat_30;
+          config_color_info_below_local = config_color_bat_30;
+          config_color_progress_bar_local = config_color_bat_30;
 // -- end autogen
         }
     }
@@ -195,7 +223,7 @@ void background_update_proc(Layer *layer, GContext *ctx) {
     // top bar
     fixed_t fontsize_weather = fontsize_widgets;
     fixed_t topbar_height = FIXED_ROUND(fontsize_weather + REM(4));
-    draw_rect(fctx, FRect(bounds.origin, FSize(width, topbar_height)), config_color_topbar_bg);
+    draw_rect(fctx, FRect(bounds.origin, FSize(width, topbar_height)), config_color_topbar_bg_local);
 
     // rain preview
     if (show_weather()) {
@@ -253,7 +281,6 @@ void background_update_proc(Layer *layer, GContext *ctx) {
 
     // time
     fixed_t time_y_offset = PBL_DISPLAY_WIDTH != 144 ? 0 : (height_full-height) / 8;
-    setlocale(LC_ALL, "");
     strftime(buffer_1, sizeof(buffer_1), config_time_format, t);
 // -- jsalternative
 // --     buffer_1 = 
@@ -271,7 +298,7 @@ void background_update_proc(Layer *layer, GContext *ctx) {
     remove_leading_zero(buffer_1, sizeof(buffer_1));
     fixed_t fontsize_date = REM(28);
     fixed_t fontsize_date_real = find_fontsize(fctx, fontsize_date, REM(15), buffer_1);
-    draw_string(fctx, buffer_1, FPoint(width / 2, height_full / 2 + fontsize_time / 3 - time_y_offset), font_main, config_color_info_below, fontsize_date_real, GTextAlignmentCenter);
+    draw_string(fctx, buffer_1, FPoint(width / 2, height_full / 2 + fontsize_time / 3 - time_y_offset), font_main, config_color_info_below_local, fontsize_date_real, GTextAlignmentCenter);
 
     // progress bar
     int progress_cur = 0;
@@ -284,11 +311,13 @@ void background_update_proc(Layer *layer, GContext *ctx) {
         progress_cur = battery_state.charge_percent;
         progress_max = 100;
     }
+    if (progress_max == 0) progress_max = 1;
+
     fixed_t progress_height = REM(5);
     fixed_t progress_endx = width * progress_cur / progress_max;
     if (!progress_no) {
-        draw_rect(fctx, FRect(FPoint(0, height_full - progress_height), FSize(progress_endx, progress_height)), config_color_progress_bar);
-        draw_circle(fctx, FPoint(progress_endx, height_full), progress_height, config_color_progress_bar);
+        draw_rect(fctx, FRect(FPoint(0, height_full - progress_height), FSize(progress_endx, progress_height)), config_color_progress_bar_local);
+        draw_circle(fctx, FPoint(progress_endx, height_full), progress_height, config_color_progress_bar_local);
         if (progress_cur > progress_max) {
             fixed_t progress_endx2 = width * (progress_cur - progress_max) / progress_max;
             draw_rect(fctx, FRect(FPoint(0, height_full - progress_height), FSize(progress_endx2, progress_height)), config_color_progress_bar2);
@@ -299,9 +328,9 @@ void background_update_proc(Layer *layer, GContext *ctx) {
     // top widgets
     fixed_t widgets_margin_topbottom = REM(6); // gap between watch bounds and widgets
     fixed_t widgets_margin_leftright = REM(8);
-    widgets[config_widget_1](fctx, true, FPoint(widgets_margin_leftright, widgets_margin_topbottom), GTextAlignmentLeft, config_color_widget_1, config_color_topbar_bg);
-    widgets[config_widget_2](fctx, true, FPoint(width/2, widgets_margin_topbottom), GTextAlignmentCenter, config_color_widget_2, config_color_topbar_bg);
-    widgets[config_widget_3](fctx, true, FPoint(width - widgets_margin_leftright, widgets_margin_topbottom), GTextAlignmentRight, config_color_widget_3, config_color_topbar_bg);
+    widgets[config_widget_1](fctx, true, FPoint(widgets_margin_leftright, widgets_margin_topbottom), GTextAlignmentLeft, config_color_widget_1, config_color_topbar_bg_local);
+    widgets[config_widget_2](fctx, true, FPoint(width/2, widgets_margin_topbottom), GTextAlignmentCenter, config_color_widget_2, config_color_topbar_bg_local);
+    widgets[config_widget_3](fctx, true, FPoint(width - widgets_margin_leftright, widgets_margin_topbottom), GTextAlignmentRight, config_color_widget_3, config_color_topbar_bg_local);
 
     // bottom widgets
     fixed_t compl_y = height_full - fontsize_widgets;

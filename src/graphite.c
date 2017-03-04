@@ -68,6 +68,10 @@ char config_info_below[GRAPHITE_STRINGCONFIG_MAXLEN+1] = "%A, %m/%d";
 uint8_t config_update_second = 0;
 uint8_t config_show_daynight = true;
 uint16_t config_step_goal = 10000;
+char config_tz_0_format[GRAPHITE_STRINGCONFIG_MAXLEN+1] = "%I:0%M%P";
+char config_tz_1_format[GRAPHITE_STRINGCONFIG_MAXLEN+1] = "%I:0%M%P";
+char config_tz_2_format[GRAPHITE_STRINGCONFIG_MAXLEN+1] = "%I:0%M%P";
+uint8_t config_hourly_vibrate = false;
 // -- end autogen
 
 
@@ -78,16 +82,13 @@ Window *window;
 Layer *layer_background;
 
 /** Buffers for strings */
-char buffer_1[30];
-char buffer_2[30];
-char buffer_3[30];
-char buffer_4[30];
+char buffer_1[GRAPHITE_STRINGCONFIG_MAXLEN+1];
+char buffer_2[GRAPHITE_STRINGCONFIG_MAXLEN+1];
 
 /** The height and width of the watch */
 fixed_t height;
 fixed_t width;
 fixed_t height_full;
-fixed_t width_full;
 
 /** Fonts. */
 FFont* font_main;
@@ -109,6 +110,9 @@ bool js_ready;
 
 /** A timer used to schedule weather updates. */
 AppTimer * weather_request_timer;
+
+/** The timezone information. */
+TimeZoneInfo tzinfo;
 
 
 
@@ -216,6 +220,13 @@ void handle_battery(BatteryChargeState new_state) {
  * Initialization.
  */
 void init() {
+    hourly_vibes_init();
+#ifdef PBL_HEALTH
+    hourly_vibes_enable_health(true);
+#endif
+
+    setlocale(LC_ALL, "");
+
     read_config_all();
 
     window = window_create();
@@ -244,6 +255,8 @@ void deinit() {
     window_destroy(window);
 
     app_message_deregister_callbacks();
+
+    hourly_vibes_deinit();
 }
 
 /**

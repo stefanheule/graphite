@@ -59,6 +59,14 @@ config_new_version:
 	git push --set-upstream origin config-$$v; \
 	git checkout master
 
+update_timezones:
+	wget -O tz.zip https://timezonedb.com/files/timezonedb.csv.zip
+	rm -rf tz-data
+	unzip tz.zip -d tz-data
+	rm -rf tz.zip
+	scripts/process_tz_data.py > tz-data/tz-select.html
+	echo "Update the GRAPHITE_TZ_DATA_VERSION in src/graphite.h"
+
 log:
 	pebble logs --emulator $(P)
 
@@ -97,19 +105,38 @@ clean_header:
 	echo "" > src/config.h
 
 updated_config:
-	src/scripts/updated_config.sh
+	scripts/updated_config.sh
+
+stats:
+	@echo "Number of unique watches:"
+	ssh linode "cat /home/stefan/www/pages/common/data/graphite/analytics.json | sed "s/,/\\\\n/g" | grep wtoken | sort | uniq | wc -l"
 
 font_dl:
 	./node_modules/fontello-cli/bin/fontello-cli install --config resources/fonts/fontello-config.json --font resources/fonts --css resources/fonts
 	rm -rf resources/fonts/animation.css resources/fonts/fasubset-codes.css resources/fonts/fasubset-embedded.css resources/fonts/fasubset-ie7-codes.css resources/fonts/fasubset-ie7.css resources/fonts/fasubset.css resources/fonts/fasubset.eot resources/fonts/fasubset.woff resources/fonts/fasubset.woff2
 
 font_build:
-	node_modules/pebble-fctx-compiler/fctx-compiler.js -r "[A-Ia-jz]" resources/fonts/nupe2.svg
-	node_modules/pebble-fctx-compiler/fctx-compiler.js -r "[0-9a-zA-Z.:\-/° ,]" resources/fonts/OpenSans-CondensedBold.svg
+	node_modules/pebble-fctx-compiler/fctx-compiler.js -r "[ABabdfghij]" resources/fonts/nupe2.svg
+	node_modules/pebble-fctx-compiler/fctx-compiler.js -r "[0-9a-zA-Z.:\-/° ,%]" resources/fonts/OpenSans-CondensedBold.svg
 	node_modules/pebble-fctx-compiler/fctx-compiler.js -r "." resources/fonts/fasubset.svg
 
 library_dl:
 	wget http://momentjs.com/downloads/moment.min.js -O src/pkjs/moment.js
 	wget http://momentjs.com/downloads/moment-timezone-with-data-2010-2020.min.js -O src/pkjs/moment-timezone.js
+
+coverity_scan:
+	make clean
+	~/software/cov-analysis-linux64-8.7.0/bin/cov-configure --comptype gcc --compiler arm-none-eabi-gcc --template
+	~/software/cov-analysis-linux64-8.7.0/bin/cov-build --dir cov-int make build
+	rm -f graphite-coverity.tgz
+	tar czf graphite-coverity.tgz cov-int
+	rm -rf cov-int
+	curl --form token=_-37pwMfnnG1HrgX1_KnYg \
+      --form email=stefanheule@gmail.com \
+      --form file=@graphite-coverity.tgz \
+      --form version="git hash `git rev-parse HEAD`" \
+      --form description="Automatic submission from Makefile" \
+      https://scan.coverity.com/builds?project=stefanheule%2Fgraphite
+	rm -f graphite-coverity.tgz
 
 .PHONY: all deploy build build_quiet config log resources install_emulator install_deploy menu_icon screenshots screenshot screenshot_config write_header clean clean_header

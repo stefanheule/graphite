@@ -32,16 +32,6 @@ function getUToken() {
     }
 }
 
-// var moment = require('./moment-timezone');
-// console.log("------------------------")
-// console.log("------------------------")
-
-// console.log(moment.tz.zone('America/Los_Angeles').untils)
-// console.log(moment.tz.zone('America/Los_Angeles').offsets)
-
-// console.log("------------------------")
-// console.log("------------------------")
-
 Pebble.addEventListener('ready', function () {
 // -- build=debug
 // --     console.log('[ info/app ] PebbleKit JS ready!');
@@ -55,7 +45,7 @@ Pebble.addEventListener('ready', function () {
 
 Pebble.addEventListener('showConfiguration', function () {
     var url = 'https://stefanheule.com/graphite/config/1/index.html';
-    // url = 'https://rawgit.com/stefanheule/graphite/master/config/';
+    url = 'https://rawgit.com/stefanheule/graphite/feature-tz/config/';
 
     // url = 'https://local.com/graphite/config/0/index.html';
 
@@ -65,7 +55,7 @@ Pebble.addEventListener('showConfiguration', function () {
     url += '&watch=' + encodeURIComponent(getDetails());
 // -- autogen
 // --     url += '&version={{ version }}';
-    url += '&version=1.1';
+    url += '&version=1.2';
 // -- end autogen
 
 // -- build=debug
@@ -77,6 +67,15 @@ Pebble.addEventListener('showConfiguration', function () {
 
 Pebble.addEventListener('webviewclosed', function (e) {
     var urlconfig = JSON.parse(decodeURIComponent(e.response).replace(/@/g, "%"));
+
+// -- autogen
+// -- ## for i in range(num_tzs)
+// --     var previous_tz_{{ i }} = readConfig("CONFIG_TZ_{{ i }}_LOCAL");
+// -- ## endfor
+    var previous_tz_0 = readConfig("CONFIG_TZ_0_LOCAL");
+    var previous_tz_1 = readConfig("CONFIG_TZ_1_LOCAL");
+    var previous_tz_2 = readConfig("CONFIG_TZ_2_LOCAL");
+// -- end autogen
 
     // decode config
     var config = {};
@@ -225,6 +224,24 @@ Pebble.addEventListener('webviewclosed', function (e) {
     fullconfig["CONFIG_STEP_GOAL"] = urlconfig[47];
     config["CONFIG_STEP_GOAL"] = +urlconfig[47];
     localStorage.setItem("CONFIG_STEP_GOAL", urlconfig[47]);
+    fullconfig["CONFIG_TZ_0_LOCAL"] = urlconfig[48];
+    localStorage.setItem("CONFIG_TZ_0_LOCAL", urlconfig[48]);
+    fullconfig["CONFIG_TZ_1_LOCAL"] = urlconfig[49];
+    localStorage.setItem("CONFIG_TZ_1_LOCAL", urlconfig[49]);
+    fullconfig["CONFIG_TZ_2_LOCAL"] = urlconfig[50];
+    localStorage.setItem("CONFIG_TZ_2_LOCAL", urlconfig[50]);
+    fullconfig["CONFIG_TZ_0_FORMAT"] = urlconfig[51];
+    config["CONFIG_TZ_0_FORMAT"] = urlconfig[51];
+    localStorage.setItem("CONFIG_TZ_0_FORMAT", urlconfig[51]);
+    fullconfig["CONFIG_TZ_1_FORMAT"] = urlconfig[52];
+    config["CONFIG_TZ_1_FORMAT"] = urlconfig[52];
+    localStorage.setItem("CONFIG_TZ_1_FORMAT", urlconfig[52]);
+    fullconfig["CONFIG_TZ_2_FORMAT"] = urlconfig[53];
+    config["CONFIG_TZ_2_FORMAT"] = urlconfig[53];
+    localStorage.setItem("CONFIG_TZ_2_FORMAT", urlconfig[53]);
+    fullconfig["CONFIG_HOURLY_VIBRATE"] = urlconfig[54];
+    config["CONFIG_HOURLY_VIBRATE"] = +urlconfig[54];
+    localStorage.setItem("CONFIG_HOURLY_VIBRATE", urlconfig[54]);
 // -- end autogen
 
     // don't allow really small values for refresh rate
@@ -240,6 +257,16 @@ Pebble.addEventListener('webviewclosed', function (e) {
 // --     console.log('[ info/app ] Configuration page returned: ' + JSON.stringify(fullconfig));
     console.log('[ info/app ] Configuration page returned: ' + JSON.stringify(fullconfig));
 // -- end build
+
+// -- autogen
+// -- ## for i in range(num_tzs)
+// --     if (has_widget([{{ widgets_lookup["WIDGET_TZ_" + i|string]["id"] }}])) sendTzUpdate({{ i }});
+// -- ## endfor
+    if (has_widget([34])) sendTzUpdate(0);
+    if (has_widget([35])) sendTzUpdate(1);
+    if (has_widget([36])) sendTzUpdate(2);
+// -- end autogen
+
     Pebble.sendAppMessage(config, function () {
 // -- build=debug
 // --         console.log('[ info/app ] Send successful: ' + JSON.stringify(config));
@@ -286,6 +313,12 @@ function readConfig(key) {
             return 0;
         } else if (key == "CONFIG_INFO_BELOW_LOCAL") {
             return 0;
+        } else if (key == "CONFIG_TZ_0_LOCAL") {
+            return "America/Los_Angeles";
+        } else if (key == "CONFIG_TZ_1_LOCAL") {
+            return "America/Los_Angeles";
+        } else if (key == "CONFIG_TZ_2_LOCAL") {
+            return "America/Los_Angeles";
 // -- end autogen
         }
     }
@@ -298,9 +331,9 @@ var OWM_ICONS = {
     // day icons
     "01d": "a", // sun
     "02d": "b", // cloud and sun
-    "03d": "c", // cloud
+    "03d": "d", // cloud
     "04d": "d", // clouds
-    "09d": "e", // rain drops
+    "09d": "f", // rain drops
     "10d": "f", // rain drops
     "11d": "g", // lightning
     "13d": "h", // snow flake
@@ -308,13 +341,13 @@ var OWM_ICONS = {
     // night icons
     "01n": "A",
     "02n": "B",
-    "03n": "C",
-    "04n": "D",
-    "09n": "E",
-    "10n": "F",
-    "11n": "G",
-    "13n": "H",
-    "50n": "I"
+    "03n": "d",
+    "04n": "d",
+    "09n": "f",
+    "10n": "f",
+    "11n": "g",
+    "13n": "h",
+    "50n": "i"
 };
 
 var FORECAST_ICONS = {
@@ -336,16 +369,16 @@ var FORECAST_ICONS = {
 var WU_ICONS = {
     // see https://www.wunderground.com/weather/api/d/docs?d=resources/icon-sets for details
     "chanceflurries": "h",
-    "chancerain": "e",
+    "chancerain": "f",
     "chancesleet": "h",
     "chancesnow": "h",
     "chancetstorms": "f",
     "clear": "a",
-    "cloudy": "c",
+    "cloudy": "d",
     "flurries": "h",
     "fog": "i",
     "hazy": "i",
-    "mostlycloudy": "c",
+    "mostlycloudy": "d",
     "mostlysunny": "b",
     "partlycloudy": "d",
     "partlysunny": "b",
@@ -614,6 +647,77 @@ function fetchWeather(latitude, longitude) {
     }
 }
 
+
+var moment = require('./moment-timezone');
+
+function toTimestamp(t) {
+    return Math.round(t / 1000)
+}
+
+function encode_int_to_bytes(val, nbytes) {
+    var byteArray = [];
+    for (var i = 0; i < nbytes; i++) byteArray.push(0);
+
+    for (var index = 0; index < nbytes; index++) {
+        var byte = val & 0xff;
+        byteArray[index] = byte;
+        val = (val - byte) / 256;
+    }
+
+    return byteArray;
+}
+
+function sendTzUpdate(idx) {
+    var now = (new Date()).getTime();
+    var zoneData = moment.tz.zone(readConfig("CONFIG_TZ_" + idx + "_LOCAL"));
+    var untils = zoneData.untils;
+    var found = false;
+    var id = 0;
+    while (id < untils.length) {
+        if (now < untils[id]) {
+            found = true;
+            break;
+        }
+        id += 1
+    }
+    found = found && id >= 0;
+    if (!found) {
+        console.log('[ info/app ] error finding tz info');
+        return;
+    }
+    var data = [];
+    var i = 0;
+// -- autogen
+// --     var max_tzdata = {{ tz_max_datapoints }};
+    var max_tzdata = 3;
+// -- end autogen
+
+// -- build=debug
+// --     console.log('[ info/app ] tzdata:');
+    console.log('[ info/app ] tzdata:');
+// -- end build
+    while (id < untils.length && i < max_tzdata) {
+        var until = !isFinite(untils[id]) ? 2147483647 : toTimestamp(untils[id]);
+        var offset = zoneData.offsets[id];
+        Array.prototype.push.apply(data, encode_int_to_bytes(until, 4));
+        Array.prototype.push.apply(data, encode_int_to_bytes(offset, 2));
+        i += 1;
+        id += 1;
+// -- build=debug
+// --         console.log('    until  = ' + until);
+// --         console.log('    offset = ' + offset);
+        console.log('    until  = ' + until);
+        console.log('    offset = ' + offset);
+// -- end build
+    }
+
+    var pebbledata = {};
+    var key = "MSG_KEY_TZ_" + idx;
+    pebbledata[key] = data;
+    Pebble.sendAppMessage(pebbledata);
+}
+
+
 Pebble.addEventListener('appmessage',
     function (e) {
 // -- build=debug
@@ -639,5 +743,13 @@ Pebble.addEventListener('appmessage',
                 );
             }
         }
+// -- autogen
+// -- ## for i in range(num_tzs)
+// --         if (dict["MSG_KEY_FETCH_TZ_{{ i }}"]) sendTzUpdate({{ i }});
+// -- ## endfor
+        if (dict["MSG_KEY_FETCH_TZ_0"]) sendTzUpdate(0);
+        if (dict["MSG_KEY_FETCH_TZ_1"]) sendTzUpdate(1);
+        if (dict["MSG_KEY_FETCH_TZ_2"]) sendTzUpdate(2);
+// -- end autogen
     }
 );
