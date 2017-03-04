@@ -303,6 +303,8 @@ void background_update_proc(Layer *layer, GContext *ctx) {
         progress_cur = battery_state.charge_percent;
         progress_max = 100;
     }
+    if (progress_max == 0) progress_max = 1;
+
     fixed_t progress_height = REM(5);
     fixed_t progress_endx = width * progress_cur / progress_max;
     if (!progress_no) {
