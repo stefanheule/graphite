@@ -180,6 +180,14 @@
         <p>Additional timezone 1</p>
         <canvas class="widget" id="widget-preview-34-canvas"></canvas>
       </div>
+      <div class="widget-preview" id="widget-preview-35">
+        <p>Additional timezone 2</p>
+        <canvas class="widget" id="widget-preview-35-canvas"></canvas>
+      </div>
+      <div class="widget-preview" id="widget-preview-36">
+        <p>Additional timezone 3</p>
+        <canvas class="widget" id="widget-preview-36-canvas"></canvas>
+      </div>
       <div class="widget-preview" id="widget-preview-28">
         <p>AM/PM</p>
         <canvas class="widget" id="widget-preview-28-canvas"></canvas>
@@ -259,14 +267,6 @@
       <div class="widget-preview" id="widget-preview-27">
         <p>Calories burned, resting + active, abbreviated (no icon)</p>
         <canvas class="widget" id="widget-preview-27-canvas"></canvas>
-      </div>
-      <div class="widget-preview" id="widget-preview-35">
-        <p>Additional timezone 2</p>
-        <canvas class="widget" id="widget-preview-35-canvas"></canvas>
-      </div>
-      <div class="widget-preview" id="widget-preview-36">
-        <p>Additional timezone 3</p>
-        <canvas class="widget" id="widget-preview-36-canvas"></canvas>
       </div>
 <!--
 // -- end autogen
@@ -4556,6 +4556,8 @@
       $("#widget-preview-10").on("click", function(){ pickComplication(10); });
       $("#widget-preview-11").on("click", function(){ pickComplication(11); });
       $("#widget-preview-34").on("click", function(){ pickComplication(34); });
+      $("#widget-preview-35").on("click", function(){ pickComplication(35); });
+      $("#widget-preview-36").on("click", function(){ pickComplication(36); });
       $("#widget-preview-28").on("click", function(){ pickComplication(28); });
       $("#widget-preview-29").on("click", function(){ pickComplication(29); });
       $("#widget-preview-30").on("click", function(){ pickComplication(30); });
@@ -4576,8 +4578,6 @@
       $("#widget-preview-25").on("click", function(){ pickComplication(25); });
       $("#widget-preview-26").on("click", function(){ pickComplication(26); });
       $("#widget-preview-27").on("click", function(){ pickComplication(27); });
-      $("#widget-preview-35").on("click", function(){ pickComplication(35); });
-      $("#widget-preview-36").on("click", function(){ pickComplication(36); });
 // -- end autogen
   }
 
@@ -4801,6 +4801,8 @@
       GraphitePreview.previewComplication(10, config, 'widget-preview-10-canvas', getPlatform());
       GraphitePreview.previewComplication(11, config, 'widget-preview-11-canvas', getPlatform());
       GraphitePreview.previewComplication(34, config, 'widget-preview-34-canvas', getPlatform());
+      GraphitePreview.previewComplication(35, config, 'widget-preview-35-canvas', getPlatform());
+      GraphitePreview.previewComplication(36, config, 'widget-preview-36-canvas', getPlatform());
       GraphitePreview.previewComplication(28, config, 'widget-preview-28-canvas', getPlatform());
       GraphitePreview.previewComplication(29, config, 'widget-preview-29-canvas', getPlatform());
       GraphitePreview.previewComplication(30, config, 'widget-preview-30-canvas', getPlatform());
@@ -4821,8 +4823,6 @@
       GraphitePreview.previewComplication(25, config, 'widget-preview-25-canvas', getPlatform());
       GraphitePreview.previewComplication(26, config, 'widget-preview-26-canvas', getPlatform());
       GraphitePreview.previewComplication(27, config, 'widget-preview-27-canvas', getPlatform());
-      GraphitePreview.previewComplication(35, config, 'widget-preview-35-canvas', getPlatform());
-      GraphitePreview.previewComplication(36, config, 'widget-preview-36-canvas', getPlatform());
 // -- end autogen
 
       for (var i = 1; i < 7; i++) {

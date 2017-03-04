@@ -800,25 +800,28 @@ function background_update_proc(layer, ctx) {
     if (battery_state.is_charging || battery_state.is_plugged) {
         battery_state.charge_percent = 100;
     }
+    var config_color_topbar_bg_local = config_color_topbar_bg;
+    var config_color_info_below_local = config_color_info_below;
+    var config_color_progress_bar_local = config_color_progress_bar;
     if (config_lowbat_col) {
         if (battery_state.charge_percent <= 10) {
-          config_color_topbar_bg = config_color_bat_10;
-          config_color_info_below = config_color_bat_10;
-          config_color_progress_bar = config_color_bat_10;
+          config_color_topbar_bg_local = config_color_bat_10;
+          config_color_info_below_local = config_color_bat_10;
+          config_color_progress_bar_local = config_color_bat_10;
         } else if (battery_state.charge_percent <= 20) {
-          config_color_topbar_bg = config_color_bat_20;
-          config_color_info_below = config_color_bat_20;
-          config_color_progress_bar = config_color_bat_20;
+          config_color_topbar_bg_local = config_color_bat_20;
+          config_color_info_below_local = config_color_bat_20;
+          config_color_progress_bar_local = config_color_bat_20;
         } else if (battery_state.charge_percent <= 30) {
-          config_color_topbar_bg = config_color_bat_30;
-          config_color_info_below = config_color_bat_30;
-          config_color_progress_bar = config_color_bat_30;
+          config_color_topbar_bg_local = config_color_bat_30;
+          config_color_info_below_local = config_color_bat_30;
+          config_color_progress_bar_local = config_color_bat_30;
         }
     }
     draw_rect(fctx, bounds_full, config_color_background);
     var fontsize_weather = fontsize_widgets;
     var topbar_height = FIXED_ROUND(fontsize_weather + REM(4));
-    draw_rect(fctx, FRect(bounds.origin, FSize(width, topbar_height)), config_color_topbar_bg);
+    draw_rect(fctx, FRect(bounds.origin, FSize(width, topbar_height)), config_color_topbar_bg_local);
     if (show_weather()) {
         var first_perc_index = -1;
         var sec_in_hour = 60*60;
@@ -880,7 +883,7 @@ function background_update_proc(layer, ctx) {
     remove_leading_zero(buffer_1, sizeof(buffer_1));
     var fontsize_date = REM(28);
     var fontsize_date_real = find_fontsize(fctx, fontsize_date, REM(15), buffer_1);
-    draw_string(fctx, buffer_1, FPoint(width / 2, height_full / 2 + fontsize_time / 3 - time_y_offset), font_main, config_color_info_below, fontsize_date_real, GTextAlignmentCenter);
+    draw_string(fctx, buffer_1, FPoint(width / 2, height_full / 2 + fontsize_time / 3 - time_y_offset), font_main, config_color_info_below_local, fontsize_date_real, GTextAlignmentCenter);
     var progress_cur = 0;
     var progress_max = 0;
     var progress_no = config_progress == 0;
@@ -895,8 +898,8 @@ function background_update_proc(layer, ctx) {
     var progress_height = REM(5);
     var progress_endx = width * progress_cur / progress_max;
     if (!progress_no) {
-        draw_rect(fctx, FRect(FPoint(0, height_full - progress_height), FSize(progress_endx, progress_height)), config_color_progress_bar);
-        draw_circle(fctx, FPoint(progress_endx, height_full), progress_height, config_color_progress_bar);
+        draw_rect(fctx, FRect(FPoint(0, height_full - progress_height), FSize(progress_endx, progress_height)), config_color_progress_bar_local);
+        draw_circle(fctx, FPoint(progress_endx, height_full), progress_height, config_color_progress_bar_local);
         if (progress_cur > progress_max) {
             var progress_endx2 = width * (progress_cur - progress_max) / progress_max;
             draw_rect(fctx, FRect(FPoint(0, height_full - progress_height), FSize(progress_endx2, progress_height)), config_color_progress_bar2);
@@ -905,9 +908,9 @@ function background_update_proc(layer, ctx) {
     }
     var widgets_margin_topbottom = REM(6); // gap between watch bounds and widgets
     var widgets_margin_leftright = REM(8);
-    widgets[config_widget_1](fctx, true, FPoint(widgets_margin_leftright, widgets_margin_topbottom), GTextAlignmentLeft, config_color_widget_1, config_color_topbar_bg);
-    widgets[config_widget_2](fctx, true, FPoint(width/2, widgets_margin_topbottom), GTextAlignmentCenter, config_color_widget_2, config_color_topbar_bg);
-    widgets[config_widget_3](fctx, true, FPoint(width - widgets_margin_leftright, widgets_margin_topbottom), GTextAlignmentRight, config_color_widget_3, config_color_topbar_bg);
+    widgets[config_widget_1](fctx, true, FPoint(widgets_margin_leftright, widgets_margin_topbottom), GTextAlignmentLeft, config_color_widget_1, config_color_topbar_bg_local);
+    widgets[config_widget_2](fctx, true, FPoint(width/2, widgets_margin_topbottom), GTextAlignmentCenter, config_color_widget_2, config_color_topbar_bg_local);
+    widgets[config_widget_3](fctx, true, FPoint(width - widgets_margin_leftright, widgets_margin_topbottom), GTextAlignmentRight, config_color_widget_3, config_color_topbar_bg_local);
     var compl_y = height_full - fontsize_widgets;
     var compl_y2 = compl_y - progress_height;
     var compl_w;
