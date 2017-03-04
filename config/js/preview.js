@@ -921,6 +921,7 @@ function background_update_proc(layer, ctx) {
         progress_cur = battery_state.charge_percent;
         progress_max = 100;
     }
+    if (progress_max == 0) progress_max = 1;
     var progress_height = REM(5);
     var progress_endx = width * progress_cur / progress_max;
     if (!progress_no) {
