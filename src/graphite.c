@@ -128,8 +128,10 @@ void handle_second_tick(struct tm *tick_time, TimeUnits units_changed) {
         layer_mark_dirty(layer_background);
     }
     if (!quiet_time_is_active() && config_hourly_vibrate) {
-        if ((units_changed & HOUR_UNIT) != 0) {
-            vibes_short_pulse();
+        if ((units_changed & MINUTE_UNIT) != 0) {
+            if ((tick_time->tm_min % config_hourly_vibrate) == 0) {
+                vibes_short_pulse();
+            }
         }
     }
 }
