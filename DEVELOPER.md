@@ -23,12 +23,21 @@ This is a section that gets automatically generated.  All lines starting with `/
 To release a new version, do the following:
 
 - Make changes to Graphite.
+- Update screenshots if necessary (in particular, if there are new widgets).
 - Document changes in `README.md` in the changelog.
 - Update version number in `scripts/initialize.py`.
 - Update table in `README.md` that relates app version numbers with configuration version numbers.
-    - Publish a new branch `config-X` if a new configuration version `X` was necessary.
-- Build a clean version: `make clean build`.
+    - Publish a new branch `config-X` if a new configuration version `X` was necessary.  Can be done using `make config_new_version`.
+- Build a clean release version: `make release`.
+- Commit new files in `release` folder.
 - Upload and publish new version.
+- Update website if necessary.
+
+
+## Crashes
+
+If after adding a new feature, Graphite crashes, it might be because Graphite ran out of memory.  The resources need at runtime (fonts and icons), and the buffer used by `pebble-fctx` use a lot of memory.
+
 
 ## Pebble Screen Sizes
 
