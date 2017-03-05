@@ -21,8 +21,6 @@
 #include <pebble-fctx/fctx.h>
 #include <pebble-fctx/ffont.h>
 
-#include <pebble-hourly-vibes/hourly-vibes.h>
-
 // I don't know how to pass parameters to the compiler, so I'm using this file
 // for various configurations
 #include "config.h"

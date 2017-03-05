@@ -332,8 +332,6 @@ void inbox_received_handler(DictionaryIterator *iter, void *context) {
     if (ask_for_tz_update) {
         check_update_tz();
     }
-
-    hourly_vibes_set_enabled(config_hourly_vibrate);
 }
 
 /**
@@ -458,6 +456,4 @@ void read_config_all() {
     }
 
     js_ready = false;
-
-    hourly_vibes_set_enabled(config_hourly_vibrate);
 }

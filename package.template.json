@@ -66,7 +66,6 @@
     "fontello-cli": "^0.4.0"
   },
   "dependencies": {
-    "pebble-fctx": "^1.6.2",
-    "pebble-hourly-vibes": "^1.1.0"
+    "pebble-fctx": "^1.6.2"
   }
 }

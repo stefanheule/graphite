@@ -124,9 +124,14 @@ TimeZoneInfo tzinfo;
  * Handler for time ticks.
  */
 void handle_second_tick(struct tm *tick_time, TimeUnits units_changed) {
-  if (config_update_second == 0 || (tick_time->tm_sec == 0) || ((tick_time->tm_sec % config_update_second) == 0)) {
-    layer_mark_dirty(layer_background);
-  }
+    if (config_update_second == 0 || (tick_time->tm_sec == 0) || ((tick_time->tm_sec % config_update_second) == 0)) {
+        layer_mark_dirty(layer_background);
+    }
+    if (!quiet_time_is_active() && config_hourly_vibrate) {
+        if ((units_changed & HOUR_UNIT) != 0) {
+            vibes_short_pulse();
+        }
+    }
 }
 
 void timer_callback_bluetooth_popup(void *data) {
@@ -220,11 +225,6 @@ void handle_battery(BatteryChargeState new_state) {
  * Initialization.
  */
 void init() {
-    hourly_vibes_init();
-#ifdef PBL_HEALTH
-    hourly_vibes_enable_health(true);
-#endif
-
     setlocale(LC_ALL, "");
 
     read_config_all();
@@ -255,8 +255,6 @@ void deinit() {
     window_destroy(window);
 
     app_message_deregister_callbacks();
-
-    hourly_vibes_deinit();
 }
 
 /**
