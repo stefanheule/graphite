@@ -73,7 +73,7 @@ log:
 install_emulator:
 	pebble install --emulator $(P)
 
-install_deploy: build
+install_deploy:
 	pebble install --phone $(GRAPHITE_PHONE_IP)
 
 phone_log:
