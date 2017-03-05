@@ -120,6 +120,17 @@ TimeZoneInfo tzinfo;
 //// Implementation
 ////////////////////////////////////////////
 
+bool user_sleeping() {
+    HealthActivityMask activities = health_service_peek_current_activities();
+    if (activities & HealthActivitySleep) {
+        return true;
+    } else if (activities & HealthActivityRestfulSleep) {
+        return true;
+    } else {
+        return false;
+    }
+}
+
 /**
  * Handler for time ticks.
  */
@@ -130,7 +141,9 @@ void handle_second_tick(struct tm *tick_time, TimeUnits units_changed) {
     if (!quiet_time_is_active() && config_hourly_vibrate) {
         if ((units_changed & MINUTE_UNIT) != 0) {
             if ((tick_time->tm_min % config_hourly_vibrate) == 0) {
-                vibes_short_pulse();
+                if (!user_sleeping()) {
+                    vibes_short_pulse();
+                }
             }
         }
     }
@@ -156,12 +169,13 @@ void handle_bluetooth(bool connected) {
     }
 
     // vibrate
-    if (vibrate && !quiet_time_is_active()) {
+    bool sleep_or_quiet = quiet_time_is_active() || user_sleeping();
+    if (vibrate && !sleep_or_quiet) {
         vibes_double_pulse();
     }
 
     // turn light on
-    if (show_popup && !quiet_time_is_active()) {
+    if (show_popup && !sleep_or_quiet) {
         light_enable_interaction();
     }
 
