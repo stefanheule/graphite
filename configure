@@ -15,8 +15,8 @@ function error {
 
 ## Now do some parsing, look for options
 
-DEFAULT_PLATFORM="basalt"
-SUPPORTED_PLATFORMS="basalt"
+DEFAULT_PLATFORM="chalk"
+SUPPORTED_PLATFORMS="basalt chalk"
 BUILD="debug"
 
 while :; do
