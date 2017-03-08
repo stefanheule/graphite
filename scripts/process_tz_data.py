@@ -35,5 +35,10 @@ def main():
       print  '  <option value="%s">%s</option>' % (zone, zone)
     print '</optgroup>'
 
+  ## add utc timezone
+  print '<optgroup label="Coordinated Universal Time">'
+  print  '  <option value="Etc/UCT">Coordinated Universal Time</option>'
+  print '</optgroup>'
+
 if __name__ == "__main__":
   main()
