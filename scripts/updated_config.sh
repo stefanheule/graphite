@@ -2,7 +2,9 @@
 
 echo "IMPORTANT: Make sure you updated the config branch and pushed to github, otherwise this might not do anything."
 
-version=$(cat src/pkjs/index.js |& grep "stefanheule.com/graphite/config/" | sed "s/.*config\/\([0-9]*\).*/\1/")
+version=$(cat src/pkjs/index.js |& grep "stefanheule.com/graphite/config/[0-9]" | sed "s/.*config\/\([0-9]*\).*/\1/")
+
+exit 1
 
 echo "Detected config version $version..."
 echo "Resetting config $version on server."
