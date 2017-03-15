@@ -436,7 +436,7 @@ function widget_tz_2(fctx, draw, position, align, foreground_color, background_c
     return string_width(fctx, buffer_1, font_main, fontsize_widgets);
 }
 function draw_icon_number_widget(fctx, draw, position, align, foreground_color, background_color, icon, text, show_icon) {
-  var fontsize_icon = (fontsize_widgets * 0.62);
+  var fontsize_icon = (fontsize_widgets * 31 / 50); // 0.62
   var w1 = !show_icon ? 0 : string_width(fctx, icon, font_icon, fontsize_icon);
   var w2 = string_width(fctx, text, font_main, fontsize_widgets);
   var sep = REM(2);
@@ -444,7 +444,7 @@ function draw_icon_number_widget(fctx, draw, position, align, foreground_color, 
   var a = GTextAlignmentLeft;
   var color = foreground_color;
   if (draw) {
-      var icon_y = position.y + fontsize_icon*0.4;
+      var icon_y = position.y + fontsize_icon*2/5; // 0.4
 icon_y += REM(7);
       if (align == GTextAlignmentCenter) {
           if (w1) draw_string(fctx, icon, FPoint(position.x - w/2, icon_y), font_icon, color, fontsize_icon, a);
@@ -735,7 +735,7 @@ function remove_leading_zero(buffer, length) {
     return buffer.replace(new RegExp("([^0-9])0", 'g'), "$1");
 }
 function draw_weather(fctx, draw, icon, temp, position, color, fontsize, align) {
-    var weather_fontsize = (fontsize * 1.15);
+    var weather_fontsize = (fontsize * 23 / 20); // 1.15
     var w1 = string_width(fctx, icon, font_weather, weather_fontsize);
     var w2 = string_width(fctx, temp, font_main, fontsize);
     var sep = w1 == 0 || w2 == 0 ? REM(0) : REM(2);
@@ -875,7 +875,7 @@ function background_update_proc(layer, ctx) {
     buffer_1 = strftime(config_time_format, new Date(now * 1000));
     buffer_1 = 
     remove_leading_zero(buffer_1, sizeof(buffer_1));
-    var fontsize_time = (width / 2.2);
+    var fontsize_time = (width * 9/20); // 1/2.2
     var fontsize_time_real = find_fontsize(fctx, fontsize_time, REM(15), buffer_1);
     draw_string(fctx, buffer_1, FPoint(width / 2, height_full / 2 - fontsize_time_real / 2 - time_y_offset), font_main, config_color_time, fontsize_time_real, GTextAlignmentCenter);
     buffer_1 = strftime(config_info_below, new Date(now * 1000));

@@ -92,7 +92,7 @@ void remove_leading_zero(char *buffer, size_t length) {
 // -- end jsalternative
 
 fixed_t draw_weather(FContext* fctx, bool draw, const char* icon, const char* temp, FPoint position, uint8_t color, fixed_t fontsize, GTextAlignment align) {
-    fixed_t weather_fontsize = (fixed_t)(fontsize * 1.15);
+    fixed_t weather_fontsize = (fixed_t)(fontsize * 23 / 20); // 1.15
     fixed_t w1 = string_width(fctx, icon, font_weather, weather_fontsize);
     fixed_t w2 = string_width(fctx, temp, font_main, fontsize);
     fixed_t sep = w1 == 0 || w2 == 0 ? REM(0) : REM(2);
@@ -286,7 +286,7 @@ void background_update_proc(Layer *layer, GContext *ctx) {
 // --     buffer_1 = 
 // -- end jsalternative
     remove_leading_zero(buffer_1, sizeof(buffer_1));
-    fixed_t fontsize_time = (fixed_t)(width / 2.2);
+    fixed_t fontsize_time = (fixed_t)(width * 9/20); // 1/2.2
     fixed_t fontsize_time_real = find_fontsize(fctx, fontsize_time, REM(15), buffer_1);
     draw_string(fctx, buffer_1, FPoint(width / 2, height_full / 2 - fontsize_time_real / 2 - time_y_offset), font_main, config_color_time, fontsize_time_real, GTextAlignmentCenter);
 

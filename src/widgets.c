@@ -147,7 +147,7 @@ fixed_t widget_tz_2(FContext* fctx, bool draw, FPoint position, GTextAlignment a
 typedef char* (*num_formater_t)(int num, void* data);
 
 fixed_t draw_icon_number_widget(FContext* fctx, bool draw, FPoint position, GTextAlignment align, uint8_t foreground_color, uint8_t background_color, const char* icon, const char* text, bool show_icon) {
-  fixed_t fontsize_icon = (fixed_t)(fontsize_widgets * 0.62);
+  fixed_t fontsize_icon = (fixed_t)(fontsize_widgets * 31 / 50); // 0.62
   fixed_t w1 = !show_icon ? 0 : string_width(fctx, icon, font_icon, fontsize_icon);
   fixed_t w2 = string_width(fctx, text, font_main, fontsize_widgets);
   fixed_t sep = REM(2);
@@ -156,7 +156,7 @@ fixed_t draw_icon_number_widget(FContext* fctx, bool draw, FPoint position, GTex
   uint8_t color = foreground_color;
 
   if (draw) {
-      fixed_t icon_y = position.y + fontsize_icon*0.4;
+      fixed_t icon_y = position.y + fontsize_icon*2/5; // 0.4
 // -- jsalternative
 // -- icon_y += REM(7);
 // -- end jsalternative
