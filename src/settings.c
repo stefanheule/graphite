@@ -208,6 +208,82 @@ bool sync_tz(uint8_t idx, const uint32_t key, DictionaryIterator *iter) {
     return false;
 }
 
+typedef struct {
+    uint8_t key;
+    void* var;
+} __attribute__((__packed__)) ConfigKeyAddr;
+
+ConfigKeyAddr config_ka_8bit[] = {
+// -- autogen
+// -- ## for key in configuration
+// -- ##   if not key["local"] and key["type"] == "uint8_t"
+// --     { .key = {{ key["key"] }}, .var = &{{ key["key"] | lower }} },
+// -- ##   endif
+// -- ## endfor
+    { .key = CONFIG_VIBRATE_DISCONNECT, .var = &config_vibrate_disconnect },
+    { .key = CONFIG_VIBRATE_RECONNECT, .var = &config_vibrate_reconnect },
+    { .key = CONFIG_MESSAGE_DISCONNECT, .var = &config_message_disconnect },
+    { .key = CONFIG_MESSAGE_RECONNECT, .var = &config_message_reconnect },
+    { .key = CONFIG_COLOR_TOPBAR_BG, .var = &config_color_topbar_bg },
+    { .key = CONFIG_COLOR_INFO_BELOW, .var = &config_color_info_below },
+    { .key = CONFIG_COLOR_PROGRESS_BAR, .var = &config_color_progress_bar },
+    { .key = CONFIG_COLOR_PROGRESS_BAR2, .var = &config_color_progress_bar2 },
+    { .key = CONFIG_COLOR_TIME, .var = &config_color_time },
+    { .key = CONFIG_COLOR_PERC, .var = &config_color_perc },
+    { .key = CONFIG_COLOR_WIDGET_1, .var = &config_color_widget_1 },
+    { .key = CONFIG_COLOR_WIDGET_2, .var = &config_color_widget_2 },
+    { .key = CONFIG_COLOR_WIDGET_3, .var = &config_color_widget_3 },
+    { .key = CONFIG_COLOR_WIDGET_4, .var = &config_color_widget_4 },
+    { .key = CONFIG_COLOR_WIDGET_5, .var = &config_color_widget_5 },
+    { .key = CONFIG_COLOR_WIDGET_6, .var = &config_color_widget_6 },
+    { .key = CONFIG_COLOR_BACKGROUND, .var = &config_color_background },
+    { .key = CONFIG_COLOR_DAY, .var = &config_color_day },
+    { .key = CONFIG_COLOR_NIGHT, .var = &config_color_night },
+    { .key = CONFIG_COLOR_BAT_30, .var = &config_color_bat_30 },
+    { .key = CONFIG_COLOR_BAT_20, .var = &config_color_bat_20 },
+    { .key = CONFIG_COLOR_BAT_10, .var = &config_color_bat_10 },
+    { .key = CONFIG_LOWBAT_COL, .var = &config_lowbat_col },
+    { .key = CONFIG_WIDGET_1, .var = &config_widget_1 },
+    { .key = CONFIG_WIDGET_2, .var = &config_widget_2 },
+    { .key = CONFIG_WIDGET_3, .var = &config_widget_3 },
+    { .key = CONFIG_WIDGET_4, .var = &config_widget_4 },
+    { .key = CONFIG_WIDGET_5, .var = &config_widget_5 },
+    { .key = CONFIG_WIDGET_6, .var = &config_widget_6 },
+    { .key = CONFIG_PROGRESS, .var = &config_progress },
+    { .key = CONFIG_UPDATE_SECOND, .var = &config_update_second },
+    { .key = CONFIG_SHOW_DAYNIGHT, .var = &config_show_daynight },
+    { .key = CONFIG_HOURLY_VIBRATE, .var = &config_hourly_vibrate },
+// -- end autogen
+};
+ConfigKeyAddr config_ka_16bit[] = {
+// -- autogen
+// -- ## for key in configuration
+// -- ##   if not key["local"] and key["type"] == "uint16_t"
+// --     { .key = {{ key["key"] }}, .var = &{{ key["key"] | lower }} },
+// -- ##   endif
+// -- ## endfor
+    { .key = CONFIG_WEATHER_REFRESH, .var = &config_weather_refresh },
+    { .key = CONFIG_WEATHER_EXPIRATION, .var = &config_weather_expiration },
+    { .key = CONFIG_WEATHER_REFRESH_FAILED, .var = &config_weather_refresh_failed },
+    { .key = CONFIG_STEP_GOAL, .var = &config_step_goal },
+// -- end autogen
+};
+ConfigKeyAddr config_ka_string[] = {
+// -- autogen
+// -- ## for key in configuration
+// -- ##   if not key["local"] and key["type"] == "string"
+// --     { .key = {{ key["key"] }}, .var = {{ key["key"] | lower }} },
+// -- ##   endif
+// -- ## endfor
+    { .key = CONFIG_TIME_FORMAT, .var = config_time_format },
+    { .key = CONFIG_INFO_BELOW, .var = config_info_below },
+    { .key = CONFIG_TZ_0_FORMAT, .var = config_tz_0_format },
+    { .key = CONFIG_TZ_1_FORMAT, .var = config_tz_1_format },
+    { .key = CONFIG_TZ_2_FORMAT, .var = config_tz_2_format },
+// -- end autogen
+};
+
+
 void inbox_received_handler(DictionaryIterator *iter, void *context) {
 // -- build=debug
 // --     APP_LOG(APP_LOG_LEVEL_DEBUG, "received message");
@@ -215,55 +291,15 @@ void inbox_received_handler(DictionaryIterator *iter, void *context) {
 // -- end build
 
     bool dirty = false;
-// -- autogen
-// -- ## for key in configuration
-// -- ##   if not key["local"]
-// --     dirty |= sync_helper_{{ key["type"] }}({{ key["key"] }}, iter, {% if key["type"] != "string" %}&{% endif %}{{ key["key"] | lower }});
-// -- ##   endif
-// -- ## endfor
-    dirty |= sync_helper_uint8_t(CONFIG_VIBRATE_DISCONNECT, iter, &config_vibrate_disconnect);
-    dirty |= sync_helper_uint8_t(CONFIG_VIBRATE_RECONNECT, iter, &config_vibrate_reconnect);
-    dirty |= sync_helper_uint8_t(CONFIG_MESSAGE_DISCONNECT, iter, &config_message_disconnect);
-    dirty |= sync_helper_uint8_t(CONFIG_MESSAGE_RECONNECT, iter, &config_message_reconnect);
-    dirty |= sync_helper_uint16_t(CONFIG_WEATHER_REFRESH, iter, &config_weather_refresh);
-    dirty |= sync_helper_uint16_t(CONFIG_WEATHER_EXPIRATION, iter, &config_weather_expiration);
-    dirty |= sync_helper_uint16_t(CONFIG_WEATHER_REFRESH_FAILED, iter, &config_weather_refresh_failed);
-    dirty |= sync_helper_uint8_t(CONFIG_COLOR_TOPBAR_BG, iter, &config_color_topbar_bg);
-    dirty |= sync_helper_uint8_t(CONFIG_COLOR_INFO_BELOW, iter, &config_color_info_below);
-    dirty |= sync_helper_uint8_t(CONFIG_COLOR_PROGRESS_BAR, iter, &config_color_progress_bar);
-    dirty |= sync_helper_uint8_t(CONFIG_COLOR_PROGRESS_BAR2, iter, &config_color_progress_bar2);
-    dirty |= sync_helper_uint8_t(CONFIG_COLOR_TIME, iter, &config_color_time);
-    dirty |= sync_helper_uint8_t(CONFIG_COLOR_PERC, iter, &config_color_perc);
-    dirty |= sync_helper_uint8_t(CONFIG_COLOR_WIDGET_1, iter, &config_color_widget_1);
-    dirty |= sync_helper_uint8_t(CONFIG_COLOR_WIDGET_2, iter, &config_color_widget_2);
-    dirty |= sync_helper_uint8_t(CONFIG_COLOR_WIDGET_3, iter, &config_color_widget_3);
-    dirty |= sync_helper_uint8_t(CONFIG_COLOR_WIDGET_4, iter, &config_color_widget_4);
-    dirty |= sync_helper_uint8_t(CONFIG_COLOR_WIDGET_5, iter, &config_color_widget_5);
-    dirty |= sync_helper_uint8_t(CONFIG_COLOR_WIDGET_6, iter, &config_color_widget_6);
-    dirty |= sync_helper_uint8_t(CONFIG_COLOR_BACKGROUND, iter, &config_color_background);
-    dirty |= sync_helper_uint8_t(CONFIG_COLOR_DAY, iter, &config_color_day);
-    dirty |= sync_helper_uint8_t(CONFIG_COLOR_NIGHT, iter, &config_color_night);
-    dirty |= sync_helper_uint8_t(CONFIG_COLOR_BAT_30, iter, &config_color_bat_30);
-    dirty |= sync_helper_uint8_t(CONFIG_COLOR_BAT_20, iter, &config_color_bat_20);
-    dirty |= sync_helper_uint8_t(CONFIG_COLOR_BAT_10, iter, &config_color_bat_10);
-    dirty |= sync_helper_uint8_t(CONFIG_LOWBAT_COL, iter, &config_lowbat_col);
-    dirty |= sync_helper_uint8_t(CONFIG_WIDGET_1, iter, &config_widget_1);
-    dirty |= sync_helper_uint8_t(CONFIG_WIDGET_2, iter, &config_widget_2);
-    dirty |= sync_helper_uint8_t(CONFIG_WIDGET_3, iter, &config_widget_3);
-    dirty |= sync_helper_uint8_t(CONFIG_WIDGET_4, iter, &config_widget_4);
-    dirty |= sync_helper_uint8_t(CONFIG_WIDGET_5, iter, &config_widget_5);
-    dirty |= sync_helper_uint8_t(CONFIG_WIDGET_6, iter, &config_widget_6);
-    dirty |= sync_helper_uint8_t(CONFIG_PROGRESS, iter, &config_progress);
-    dirty |= sync_helper_string(CONFIG_TIME_FORMAT, iter, config_time_format);
-    dirty |= sync_helper_string(CONFIG_INFO_BELOW, iter, config_info_below);
-    dirty |= sync_helper_uint8_t(CONFIG_UPDATE_SECOND, iter, &config_update_second);
-    dirty |= sync_helper_uint8_t(CONFIG_SHOW_DAYNIGHT, iter, &config_show_daynight);
-    dirty |= sync_helper_uint16_t(CONFIG_STEP_GOAL, iter, &config_step_goal);
-    dirty |= sync_helper_string(CONFIG_TZ_0_FORMAT, iter, config_tz_0_format);
-    dirty |= sync_helper_string(CONFIG_TZ_1_FORMAT, iter, config_tz_1_format);
-    dirty |= sync_helper_string(CONFIG_TZ_2_FORMAT, iter, config_tz_2_format);
-    dirty |= sync_helper_uint8_t(CONFIG_HOURLY_VIBRATE, iter, &config_hourly_vibrate);
-// -- end autogen
+    for (unsigned i = 0; i < ARRAY_LENGTH(config_ka_8bit); i++) {
+        dirty |= sync_helper_uint8_t(config_ka_8bit[i].key, iter, config_ka_8bit[i].var);
+    }
+    for (unsigned i = 0; i < ARRAY_LENGTH(config_ka_16bit); i++) {
+        dirty |= sync_helper_uint16_t(config_ka_16bit[i].key, iter, config_ka_16bit[i].var);
+    }
+    for (unsigned i = 0; i < ARRAY_LENGTH(config_ka_string); i++) {
+        dirty |= sync_helper_string(config_ka_string[i].key, iter, config_ka_string[i].var);
+    }
 
     bool ask_for_weather_update = true;
     bool force_weather_update = true;
@@ -369,55 +405,15 @@ void read_config_string(const uint32_t key, char *buffer) {
  */
 void read_config_all() {
 
-// -- autogen
-// -- ## for key in configuration
-// -- ##   if not key["local"]
-// --     read_config_{{ key["type"] }}({{ key["key"] }}, {% if key["type"] != "string" %}&{% endif %}{{ key["key"] | lower }});
-// -- ##   endif
-// -- ## endfor
-    read_config_uint8_t(CONFIG_VIBRATE_DISCONNECT, &config_vibrate_disconnect);
-    read_config_uint8_t(CONFIG_VIBRATE_RECONNECT, &config_vibrate_reconnect);
-    read_config_uint8_t(CONFIG_MESSAGE_DISCONNECT, &config_message_disconnect);
-    read_config_uint8_t(CONFIG_MESSAGE_RECONNECT, &config_message_reconnect);
-    read_config_uint16_t(CONFIG_WEATHER_REFRESH, &config_weather_refresh);
-    read_config_uint16_t(CONFIG_WEATHER_EXPIRATION, &config_weather_expiration);
-    read_config_uint16_t(CONFIG_WEATHER_REFRESH_FAILED, &config_weather_refresh_failed);
-    read_config_uint8_t(CONFIG_COLOR_TOPBAR_BG, &config_color_topbar_bg);
-    read_config_uint8_t(CONFIG_COLOR_INFO_BELOW, &config_color_info_below);
-    read_config_uint8_t(CONFIG_COLOR_PROGRESS_BAR, &config_color_progress_bar);
-    read_config_uint8_t(CONFIG_COLOR_PROGRESS_BAR2, &config_color_progress_bar2);
-    read_config_uint8_t(CONFIG_COLOR_TIME, &config_color_time);
-    read_config_uint8_t(CONFIG_COLOR_PERC, &config_color_perc);
-    read_config_uint8_t(CONFIG_COLOR_WIDGET_1, &config_color_widget_1);
-    read_config_uint8_t(CONFIG_COLOR_WIDGET_2, &config_color_widget_2);
-    read_config_uint8_t(CONFIG_COLOR_WIDGET_3, &config_color_widget_3);
-    read_config_uint8_t(CONFIG_COLOR_WIDGET_4, &config_color_widget_4);
-    read_config_uint8_t(CONFIG_COLOR_WIDGET_5, &config_color_widget_5);
-    read_config_uint8_t(CONFIG_COLOR_WIDGET_6, &config_color_widget_6);
-    read_config_uint8_t(CONFIG_COLOR_BACKGROUND, &config_color_background);
-    read_config_uint8_t(CONFIG_COLOR_DAY, &config_color_day);
-    read_config_uint8_t(CONFIG_COLOR_NIGHT, &config_color_night);
-    read_config_uint8_t(CONFIG_COLOR_BAT_30, &config_color_bat_30);
-    read_config_uint8_t(CONFIG_COLOR_BAT_20, &config_color_bat_20);
-    read_config_uint8_t(CONFIG_COLOR_BAT_10, &config_color_bat_10);
-    read_config_uint8_t(CONFIG_LOWBAT_COL, &config_lowbat_col);
-    read_config_uint8_t(CONFIG_WIDGET_1, &config_widget_1);
-    read_config_uint8_t(CONFIG_WIDGET_2, &config_widget_2);
-    read_config_uint8_t(CONFIG_WIDGET_3, &config_widget_3);
-    read_config_uint8_t(CONFIG_WIDGET_4, &config_widget_4);
-    read_config_uint8_t(CONFIG_WIDGET_5, &config_widget_5);
-    read_config_uint8_t(CONFIG_WIDGET_6, &config_widget_6);
-    read_config_uint8_t(CONFIG_PROGRESS, &config_progress);
-    read_config_string(CONFIG_TIME_FORMAT, config_time_format);
-    read_config_string(CONFIG_INFO_BELOW, config_info_below);
-    read_config_uint8_t(CONFIG_UPDATE_SECOND, &config_update_second);
-    read_config_uint8_t(CONFIG_SHOW_DAYNIGHT, &config_show_daynight);
-    read_config_uint16_t(CONFIG_STEP_GOAL, &config_step_goal);
-    read_config_string(CONFIG_TZ_0_FORMAT, config_tz_0_format);
-    read_config_string(CONFIG_TZ_1_FORMAT, config_tz_1_format);
-    read_config_string(CONFIG_TZ_2_FORMAT, config_tz_2_format);
-    read_config_uint8_t(CONFIG_HOURLY_VIBRATE, &config_hourly_vibrate);
-// -- end autogen
+    for (unsigned i = 0; i < ARRAY_LENGTH(config_ka_8bit); i++) {
+        read_config_uint8_t(config_ka_8bit[i].key, config_ka_8bit[i].var);
+    }
+    for (unsigned i = 0; i < ARRAY_LENGTH(config_ka_16bit); i++) {
+        read_config_uint16_t(config_ka_16bit[i].key, config_ka_16bit[i].var);
+    }
+    for (unsigned i = 0; i < ARRAY_LENGTH(config_ka_string); i++) {
+        read_config_string(config_ka_string[i].key, config_ka_string[i].var);
+    }
 
     if (persist_exists(PERSIST_KEY_WEATHER) && persist_get_size(PERSIST_KEY_WEATHER) == sizeof(Weather)) {
         Weather tmp;
