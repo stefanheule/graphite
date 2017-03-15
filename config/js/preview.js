@@ -581,18 +581,21 @@ function widget_day_of_week(fctx, draw, position, align, foreground_color, backg
   if (draw) draw_string(fctx, buffer_1, position, font_main, foreground_color, fontsize_widgets, align);
   return string_width(fctx, buffer_1, font_main, fontsize_widgets);
 }
-function widget_weather_cur_temp(fctx, draw, position, align, foreground_color, background_color) {
+function widget_weather_temp(fctx, draw, position, align, foreground_color, temp) {
   if (show_weather()) {
-    if (weather.temp_cur == GRAPHITE_UNKNOWN_WEATHER) return 0;
+    if (temp == GRAPHITE_UNKNOWN_WEATHER) return 0;
     if (weather.failed) {
-      buffer_2 = sprintf("%d", weather.temp_cur);
+        buffer_1 = sprintf("%d", temp);
     } else {
-      buffer_2 = sprintf("%d°", weather.temp_cur);
+        buffer_1 = sprintf("%d°", temp);
     }
-    if (draw) draw_string(fctx, buffer_2, position, font_main, foreground_color, fontsize_widgets, align);
-    return string_width(fctx, buffer_2, font_main, fontsize_widgets);
+    if (draw) draw_string(fctx, buffer_1, position, font_main, foreground_color, fontsize_widgets, align);
+    return string_width(fctx, buffer_1, font_main, fontsize_widgets);
   }
   return 0;
+}
+function widget_weather_cur_temp(fctx, draw, position, align, foreground_color, background_color) {
+  return widget_weather_temp(fctx, draw, position, align, foreground_color, weather.temp_cur);
 }
 function widget_weather_cur_icon(fctx, draw, position, align, foreground_color, background_color) {
   if (show_weather()) {
@@ -617,30 +620,10 @@ function widget_weather_cur_temp_icon(fctx, draw, position, align, foreground_co
   return 0;
 }
 function widget_weather_low_temp(fctx, draw, position, align, foreground_color, background_color) {
-  if (show_weather()) {
-    if (weather.temp_low == GRAPHITE_UNKNOWN_WEATHER) return 0;
-    if (weather.failed) {
-        buffer_1 = sprintf("%d", weather.temp_low);
-    } else {
-        buffer_1 = sprintf("%d°", weather.temp_low);
-    }
-    if (draw) draw_string(fctx, buffer_1, position, font_main, foreground_color, fontsize_widgets, align);
-    return string_width(fctx, buffer_1, font_main, fontsize_widgets);
-  }
-  return 0;
+  return widget_weather_temp(fctx, draw, position, align, foreground_color, weather.temp_low);
 }
 function widget_weather_high_temp(fctx, draw, position, align, foreground_color, background_color) {
-  if (show_weather()) {
-    if (weather.temp_high == GRAPHITE_UNKNOWN_WEATHER) return 0;
-    if (weather.failed) {
-        buffer_1 = sprintf("%d", weather.temp_high);
-    } else {
-        buffer_1 = sprintf("%d°", weather.temp_high);
-    }
-    if (draw) draw_string(fctx, buffer_1, position, font_main, foreground_color, fontsize_widgets, align);
-    return string_width(fctx, buffer_1, font_main, fontsize_widgets);
-  }
-  return 0;
+  return widget_weather_temp(fctx, draw, position, align, foreground_color, weather.temp_high);
 }
 function widget_steps_icon(fctx, draw, position, align, foreground_color, background_color) {
   return draw_icon_number_widget(fctx, draw, position, align, foreground_color, background_color, "A", format_unitless(health_service_sum_today(HealthMetricStepCount)), true);

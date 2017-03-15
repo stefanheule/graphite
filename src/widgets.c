@@ -297,18 +297,22 @@ fixed_t widget_day_of_week(FContext* fctx, bool draw, FPoint position, GTextAlig
   return string_width(fctx, buffer_1, font_main, fontsize_widgets);
 }
 
-fixed_t widget_weather_cur_temp(FContext* fctx, bool draw, FPoint position, GTextAlignment align, uint8_t foreground_color, uint8_t background_color) {
+fixed_t widget_weather_temp(FContext* fctx, bool draw, FPoint position, GTextAlignment align, uint8_t foreground_color, int16_t temp) {
   if (show_weather()) {
-    if (weather.temp_cur == GRAPHITE_UNKNOWN_WEATHER) return 0;
+    if (temp == GRAPHITE_UNKNOWN_WEATHER) return 0;
     if (weather.failed) {
-      snprintf(buffer_2, 10, "%d", weather.temp_cur);
+        snprintf(buffer_1, 10, "%d", temp);
     } else {
-      snprintf(buffer_2, 10, "%d°", weather.temp_cur);
+        snprintf(buffer_1, 10, "%d°", temp);
     }
-    if (draw) draw_string(fctx, buffer_2, position, font_main, foreground_color, fontsize_widgets, align);
-    return string_width(fctx, buffer_2, font_main, fontsize_widgets);
+    if (draw) draw_string(fctx, buffer_1, position, font_main, foreground_color, fontsize_widgets, align);
+    return string_width(fctx, buffer_1, font_main, fontsize_widgets);
   }
   return 0;
+}
+
+fixed_t widget_weather_cur_temp(FContext* fctx, bool draw, FPoint position, GTextAlignment align, uint8_t foreground_color, uint8_t background_color) {
+  return widget_weather_temp(fctx, draw, position, align, foreground_color, weather.temp_cur);
 }
 
 fixed_t widget_weather_cur_icon(FContext* fctx, bool draw, FPoint position, GTextAlignment align, uint8_t foreground_color, uint8_t background_color) {
@@ -339,31 +343,11 @@ fixed_t widget_weather_cur_temp_icon(FContext* fctx, bool draw, FPoint position,
 }
 
 fixed_t widget_weather_low_temp(FContext* fctx, bool draw, FPoint position, GTextAlignment align, uint8_t foreground_color, uint8_t background_color) {
-  if (show_weather()) {
-    if (weather.temp_low == GRAPHITE_UNKNOWN_WEATHER) return 0;
-    if (weather.failed) {
-        snprintf(buffer_1, 10, "%d", weather.temp_low);
-    } else {
-        snprintf(buffer_1, 10, "%d°", weather.temp_low);
-    }
-    if (draw) draw_string(fctx, buffer_1, position, font_main, foreground_color, fontsize_widgets, align);
-    return string_width(fctx, buffer_1, font_main, fontsize_widgets);
-  }
-  return 0;
+  return widget_weather_temp(fctx, draw, position, align, foreground_color, weather.temp_low);
 }
 
 fixed_t widget_weather_high_temp(FContext* fctx, bool draw, FPoint position, GTextAlignment align, uint8_t foreground_color, uint8_t background_color) {
-  if (show_weather()) {
-    if (weather.temp_high == GRAPHITE_UNKNOWN_WEATHER) return 0;
-    if (weather.failed) {
-        snprintf(buffer_1, 10, "%d", weather.temp_high);
-    } else {
-        snprintf(buffer_1, 10, "%d°", weather.temp_high);
-    }
-    if (draw) draw_string(fctx, buffer_1, position, font_main, foreground_color, fontsize_widgets, align);
-    return string_width(fctx, buffer_1, font_main, fontsize_widgets);
-  }
-  return 0;
+  return widget_weather_temp(fctx, draw, position, align, foreground_color, weather.temp_high);
 }
 
 
