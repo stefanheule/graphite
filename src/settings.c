@@ -308,12 +308,16 @@ void inbox_received_handler(DictionaryIterator *iter, void *context) {
 
     bool ask_for_tz_update = true;
 // -- autogen
+// --     if (false
 // -- ## for i in range(num_tzs)
-// --     if (sync_tz({{ i }}, MSG_KEY_TZ_{{ i }}, iter)) { dirty = true; ask_for_tz_update = false; }
+// --     | sync_tz({{ i }}, MSG_KEY_TZ_{{ i }}, iter)
 // -- ## endfor
-    if (sync_tz(0, MSG_KEY_TZ_0, iter)) { dirty = true; ask_for_tz_update = false; }
-    if (sync_tz(1, MSG_KEY_TZ_1, iter)) { dirty = true; ask_for_tz_update = false; }
-    if (sync_tz(2, MSG_KEY_TZ_2, iter)) { dirty = true; ask_for_tz_update = false; }
+// --     ) { dirty = true; ask_for_tz_update = false; }
+    if (false
+    | sync_tz(0, MSG_KEY_TZ_0, iter)
+    | sync_tz(1, MSG_KEY_TZ_1, iter)
+    | sync_tz(2, MSG_KEY_TZ_2, iter)
+    ) { dirty = true; ask_for_tz_update = false; }
 // -- end autogen
     if (!ask_for_tz_update) ask_for_weather_update = false;
 
