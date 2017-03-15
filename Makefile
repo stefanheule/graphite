@@ -27,16 +27,19 @@ release:
 		echo Working directory is dirty!  Commit all changes first; \
 		exit 1; \
 	fi
-	@./configure --release > /dev/null
-	@$(MAKE) clean > /dev/null
-	@$(MAKE) build_quiet > /dev/null
-	@./configure > /dev/null
+	make build_release
 	@rm -rf releases/$(VERSION)
 	@mkdir -p releases/$(VERSION)
 	@cp build/2016-graphite.pbw releases/$(VERSION)/graphite-$(VERSION).pbw
 	@echo "git-version: $(shell git rev-parse HEAD)" >> releases/$(VERSION)/graphite-$(VERSION).meta.txt
 	@echo "date: $(shell date +%Y-%m-%d) $(shell date +%H:%M:%S)" >> releases/$(VERSION)/graphite-$(VERSION).meta.txt
 	@echo "Done, releases/$(VERSION)/graphite-$(VERSION).pbw is ready for upload."
+
+build_release:
+	@./configure --release > /dev/null
+	@$(MAKE) clean > /dev/null
+	@$(MAKE) build_quiet > /dev/null
+	@./configure > /dev/null
 
 build: initialize
 	# copy fonts
@@ -106,6 +109,18 @@ clean_header:
 
 updated_config:
 	scripts/updated_config.sh
+
+analyze_size_details:
+	arm-none-eabi-nm --print-size --size-sort --radix=d build/basalt/pebble-app.elf
+
+analyze_size:
+	@#make clean build_release
+	@echo "Full size:"
+	@arm-none-eabi-nm --print-size --size-sort --radix=d build/basalt/pebble-app.elf | sed "s/.* \([0-9]*\) .*/\1/"  | paste -sd+ | bc
+	@echo "Config variables:"
+	@arm-none-eabi-nm --print-size --size-sort --radix=d build/basalt/pebble-app.elf | grep " config_" | sed "s/.* \([0-9]*\) .*/\1/" | paste -sd+ | bc
+	@echo "Widget drawing:"
+	@arm-none-eabi-nm --print-size --size-sort --radix=d build/basalt/pebble-app.elf | grep " widget_" | sed "s/.* \([0-9]*\) .*/\1/" | paste -sd+ | bc
 
 stats:
 	@echo "Number of unique watches:"
