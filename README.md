@@ -10,6 +10,11 @@ See [stefanheule.com/graphite/](https://stefanheule.com/graphite/).
 
 ## Changelog
 
+**Version 1.3** ()
+
+- Size optimizations
+
+
 **Version 1.2** (2017-03-04)
 
 - Add up to 3 additional timezone widgets.
