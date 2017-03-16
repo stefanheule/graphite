@@ -46,7 +46,7 @@ Pebble.addEventListener('ready', function () {
 Pebble.addEventListener('showConfiguration', function () {
 // -- autogen
 // --     var url = 'https://stefanheule.com/graphite/config/{{ config_version }}/index.html';
-    var url = 'https://stefanheule.com/graphite/config/2/index.html';
+    var url = 'https://stefanheule.com/graphite/config/3/index.html';
 // -- end autogen
 //     url = 'https://rawgit.com/stefanheule/graphite/master/config/';
 
@@ -58,7 +58,7 @@ Pebble.addEventListener('showConfiguration', function () {
     url += '&watch=' + encodeURIComponent(getDetails());
 // -- autogen
 // --     url += '&version={{ version }}';
-    url += '&version=1.2';
+    url += '&version=1.3';
 // -- end autogen
 
 // -- build=debug
