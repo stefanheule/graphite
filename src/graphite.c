@@ -72,6 +72,7 @@ char config_tz_0_format[GRAPHITE_STRINGCONFIG_MAXLEN+1] = "%I:0%M%P";
 char config_tz_1_format[GRAPHITE_STRINGCONFIG_MAXLEN+1] = "%I:0%M%P";
 char config_tz_2_format[GRAPHITE_STRINGCONFIG_MAXLEN+1] = "%I:0%M%P";
 uint8_t config_hourly_vibrate = false;
+char config_sunrise_format[GRAPHITE_STRINGCONFIG_MAXLEN+1] = "%I:0%M";
 // -- end autogen
 
 

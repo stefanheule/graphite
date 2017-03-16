@@ -309,6 +309,13 @@ configuration = [
     'key': 'CONFIG_HOURLY_VIBRATE',
     'default': 'false',
   },
+  {
+    'key': 'CONFIG_SUNRISE_FORMAT',
+    'default': '"%I:0%M"',
+    'mydefault': '"%I:0%M%Pmmm"',
+    'type': 'string',
+    'show_only_if': 'has_widget(ALL_WEATHERSUN_WIDGET_IDS)',
+  },
 ]
 
 simple_config = [
@@ -672,31 +679,8 @@ def pre_process(config, simple_config, wdgts, groups):
     for i in k['depends']:
       lc[i]['belongs_to_simple'] = True
 
-  def resolve_widgets(x):
-    # sort to avoid problems with keys that are substrings of other keys
-    for k in sorted(clc.keys(), key=lambda x: -len(x)):
-      x = x.replace(k, str(clc[k]["id"]))
-    return x
-
-  def format_time(format):
-    res = time.strftime(format, nowt).strip('"')
-    if res[0] == "0": res = res[1:]
-    res = re.sub("([^0-9])0", "\\1", res)
-    return res
-
-  # resolve widget defaults
-  clc = to_lookup(wdgts)
-  group_ids = {}
-  for k in config:
-    k['default'] = resolve_widgets(k['default'])
-    k['jsdefault'] = resolve_widgets(k['jsdefault'])
-    k['mydefault'] = resolve_widgets(k['mydefault'])
-    k['jsmydefault'] = resolve_widgets(k['jsmydefault'])
-    if 'show_only_if' in k: k['show_only_if'] = resolve_widgets(k['show_only_if'])
-    if 'options' in k:
-      k['options'] = map(lambda x: {'desc': (format_time(x[1][0]) + ("" if x[1][1]=="" else (" (%s)" % x[1][1]))).strip(), 'id': x[0], 'format': x[1]}, enumerate(k['options']))
-
   # prepare widget groups
+  group_ids = {}
   for k in wdgts:
     if 'group' in k:
       for gid in k['group']:
@@ -711,6 +695,31 @@ def pre_process(config, simple_config, wdgts, groups):
     k['ALL_IDS'] = resolved
     for kk in k:
       k[kk] = k[kk].replace("ALL_%s_WIDGET_IDS" % (name), resolved)
+
+  def resolve_widgets(x):
+    # sort to avoid problems with keys that are substrings of other keys
+    for k in sorted(clc.keys(), key=lambda x: -len(x)):
+      x = x.replace(k, str(clc[k]["id"]))
+    for k in groups:
+      x = x.replace("ALL_%s_WIDGET_IDS" % k['name'], k['ALL_IDS'])
+    return x
+
+  def format_time(format):
+    res = time.strftime(format, nowt).strip('"')
+    if res[0] == "0": res = res[1:]
+    res = re.sub("([^0-9])0", "\\1", res)
+    return res
+
+  # resolve widget defaults
+  clc = to_lookup(wdgts)
+  for k in config:
+    k['default'] = resolve_widgets(k['default'])
+    k['jsdefault'] = resolve_widgets(k['jsdefault'])
+    k['mydefault'] = resolve_widgets(k['mydefault'])
+    k['jsmydefault'] = resolve_widgets(k['jsmydefault'])
+    if 'show_only_if' in k: k['show_only_if'] = resolve_widgets(k['show_only_if'])
+    if 'options' in k:
+      k['options'] = map(lambda x: {'desc': (format_time(x[1][0]) + ("" if x[1][1]=="" else (" (%s)" % x[1][1]))).strip(), 'id': x[0], 'format': x[1]}, enumerate(k['options']))
 
 def to_lookup(ls):
   res = {}

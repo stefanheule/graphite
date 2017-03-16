@@ -100,6 +100,7 @@ var GraphitePreview = (function () {
      var config_tz_1_format;
      var config_tz_2_format;
      var config_hourly_vibrate;
+     var config_sunrise_format;
 // -- end autogen
 
     function get(k) {
@@ -328,6 +329,7 @@ var GraphitePreview = (function () {
         config_tz_1_format = config["CONFIG_TZ_1_FORMAT"];
         config_tz_2_format = config["CONFIG_TZ_2_FORMAT"];
         config_hourly_vibrate = config["CONFIG_HOURLY_VIBRATE"];
+        config_sunrise_format = config["CONFIG_SUNRISE_FORMAT"];
 // -- end autogen
 
         weather = getWeather(platform);
@@ -648,7 +650,7 @@ function widget_weather_high_temp(fctx, draw, position, align, foreground_color,
 function widget_weather_sunrise_sunset(fctx, draw, position, align, foreground_color, icon, flip, time) {
     if (weather.sunrise == 0) return 0;
     var t = localtime(time);
-    buffer_1 = strftime("%H:0%M", t);
+    buffer_1 = strftime(config_sunrise_format, t);
   buffer_1 =
     remove_leading_zero(buffer_1, sizeof(buffer_1));
     return draw_weather(fctx, draw, icon, buffer_1, position, foreground_color, fontsize_widgets, align, flip);
@@ -1091,6 +1093,7 @@ function background_update_proc(layer, ctx) {
             CONFIG_TZ_1_FORMAT: "%I:0%M%P",
             CONFIG_TZ_2_FORMAT: "%I:0%M%P",
             CONFIG_HOURLY_VIBRATE: +false,
+            CONFIG_SUNRISE_FORMAT: "%I:0%M",
 // -- end autogen
         };
         return cloneConfig(defaults);
@@ -1159,6 +1162,7 @@ function background_update_proc(layer, ctx) {
             CONFIG_TZ_1_FORMAT: "%I:0%M%Pmmm",
             CONFIG_TZ_2_FORMAT: "%I:0%M%Pmmm",
             CONFIG_HOURLY_VIBRATE: +false,
+            CONFIG_SUNRISE_FORMAT: "%I:0%M%Pmmm",
 // -- end autogen
         };
         return cloneConfig(defaults);

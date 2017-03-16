@@ -78,11 +78,12 @@
 #define CONFIG_TZ_1_FORMAT 52
 #define CONFIG_TZ_2_FORMAT 53
 #define CONFIG_HOURLY_VIBRATE 54
+#define CONFIG_SUNRISE_FORMAT 55
 // -- end autogen
 
 // -- autogen
 // -- #define GRAPHITE_N_CONFIG {{ num_config_items }}
-#define GRAPHITE_N_CONFIG 54
+#define GRAPHITE_N_CONFIG 55
 // -- end autogen
 
 // -- autogen
@@ -170,6 +171,7 @@ extern char config_tz_0_format[GRAPHITE_STRINGCONFIG_MAXLEN+1];
 extern char config_tz_1_format[GRAPHITE_STRINGCONFIG_MAXLEN+1];
 extern char config_tz_2_format[GRAPHITE_STRINGCONFIG_MAXLEN+1];
 extern uint8_t config_hourly_vibrate;
+extern char config_sunrise_format[GRAPHITE_STRINGCONFIG_MAXLEN+1];
 // -- end autogen
 
 

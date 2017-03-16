@@ -515,6 +515,15 @@
         </div>
       </div>
 
+      <div class="item-container-content">
+        <label class="item">
+          Format for the Sunrise/Sunset Time
+          <div class="item-input-wrapper">
+            <input type="text" class="item-input" id='CONFIG_SUNRISE_FORMAT'>
+          </div>
+        </label>
+      </div>
+
 <!--
 // -- autogen
 // -- ## for i in range(num_tzs)
@@ -3790,6 +3799,7 @@
       "CONFIG_TZ_0_FORMAT",
       "CONFIG_TZ_1_FORMAT",
       "CONFIG_TZ_2_FORMAT",
+      "CONFIG_SUNRISE_FORMAT",
 // -- end autogen
   ];
 
@@ -4093,6 +4103,7 @@
         "CONFIG_TZ_1_FORMAT": 52,
         "CONFIG_TZ_2_FORMAT": 53,
         "CONFIG_HOURLY_VIBRATE": 54,
+        "CONFIG_SUNRISE_FORMAT": 55,
 // -- end autogen
     };
 
@@ -4264,6 +4275,7 @@
     showHideOption("CONFIG_TZ_0_FORMAT", has_widget([34]));
     showHideOption("CONFIG_TZ_1_FORMAT", has_widget([35]));
     showHideOption("CONFIG_TZ_2_FORMAT", has_widget([36]));
+    showHideOption("CONFIG_SUNRISE_FORMAT", has_widget([37, 38, 39, 40, 41, 42]));
     $('#tz_format_help').toggle(has_widget([34, 35, 36]));
 // -- end autogen
 

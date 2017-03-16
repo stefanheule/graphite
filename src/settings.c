@@ -280,6 +280,7 @@ ConfigKeyAddr config_ka_string[] = {
     { .key = CONFIG_TZ_0_FORMAT, .var = config_tz_0_format },
     { .key = CONFIG_TZ_1_FORMAT, .var = config_tz_1_format },
     { .key = CONFIG_TZ_2_FORMAT, .var = config_tz_2_format },
+    { .key = CONFIG_SUNRISE_FORMAT, .var = config_sunrise_format },
 // -- end autogen
 };
 
