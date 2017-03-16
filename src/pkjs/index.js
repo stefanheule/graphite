@@ -494,7 +494,7 @@ function need_weather() {
 // --     var load_sun = {{ config_groups_lookup["GROUP_WEATHERSUN"]["selector"] }};
     var load_lowhigh = has_widget([4, 5]);
     var load_cur = has_widget([1, 2, 3]);
-    var load_sun = has_widget([37]);
+    var load_sun = has_widget([37, 38, 39, 40, 41, 42]);
 // -- end autogen
     return [load_rain || load_lowhigh || load_cur || load_sun, load_rain, load_lowhigh, load_cur, load_sun];
 }
@@ -544,8 +544,8 @@ function fetchWeather(latitude, longitude) {
             data["MSG_KEY_WEATHER_SUNSET"] = sunset;
         }
 // -- build=debug
-// --         console.log('[ info/app ] weather send: temp=' + low + "/" + cur + "/" + high + ", icon=" + String.fromCharCode(icon) + ", len(rain)=" + raindata.length + ", ts=" + ts + ".");
-        console.log('[ info/app ] weather send: temp=' + low + "/" + cur + "/" + high + ", icon=" + String.fromCharCode(icon) + ", len(rain)=" + raindata.length + ", ts=" + ts + ".");
+// --         console.log('[ info/app ] weather send: temp=' + low + "/" + cur + "/" + high + ", icon=" + String.fromCharCode(icon) + ", len(rain)=" + raindata.length + ", ts=" + ts + ", sunrise=" + sunrise + ".");
+        console.log('[ info/app ] weather send: temp=' + low + "/" + cur + "/" + high + ", icon=" + String.fromCharCode(icon) + ", len(rain)=" + raindata.length + ", ts=" + ts + ", sunrise=" + sunrise + ".");
 // -- end build
         Pebble.sendAppMessage(data);
     };
@@ -583,7 +583,7 @@ function fetchWeather(latitude, longitude) {
         var url0 = !load_cur ? undefined : "http://api.wunderground.com/api/" + apikey + "/conditions/q/" + latitude + "," + longitude + ".json";
         var url1 = !load_lowhigh ? undefined : "http://api.wunderground.com/api/" + apikey + "/forecast/q/" + latitude + "," + longitude + ".json";
         var url2 = !load_rain ? undefined : "http://api.wunderground.com/api/" + apikey + "/hourly/q/" + latitude + "," + longitude + ".json";
-        var url3 = !load_rain ? undefined : "http://api.wunderground.com/api/" + apikey + "/astronomy/q/" + latitude + "," + longitude + ".json";
+        var url3 = !load_sun ? undefined : "http://api.wunderground.com/api/" + apikey + "/astronomy/q/" + latitude + "," + longitude + ".json";
         concurrentRequests([url0,url1,url2,url3], function (responses) {
 // -- build=debug
 // --             //console.log('[ info/app ] weather information: ' + JSON.stringify(response));
@@ -635,13 +635,19 @@ function fetchWeather(latitude, longitude) {
 // --             //console.log('[ info/app ] weather information: ' + JSON.stringify(response));
             //console.log('[ info/app ] weather information: ' + JSON.stringify(response));
 // -- end build
-            if (load_lowhigh) {
+            if (load_lowhigh || load_sun) {
                 for (var i in response.daily.data) {
                     var data = response.daily.data[i];
                     var date = new Date(data.time*1000);
                     if (sameDate(now, date)) {
-                        low = data.temperatureMin;
-                        high = data.temperatureMax;
+                        if (load_lowhigh) {
+                            low = data.temperatureMin;
+                            high = data.temperatureMax;
+                        }
+                        if (load_sun) {
+                            sunrise = data.sunriseTime;
+                            sunset = data.sunsetTime;
+                        }
                         break;
                     }
                 }
@@ -661,10 +667,6 @@ function fetchWeather(latitude, longitude) {
                     if (!elem.hasOwnProperty('precipProbability')) break;
                     raindata.push(Math.round(elem.precipProbability * 100));
                 }
-            }
-            if (load_sun) {
-                sunrise = response.daily.sunriseTime;
-                sunset = response.daily.sunsetTime;
             }
             success(low, high, cur, icon, raindata, raints, sunrise, sunset);
         });

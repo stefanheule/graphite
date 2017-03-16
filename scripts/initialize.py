@@ -512,26 +512,31 @@ widgets = [
   {
     'key': 'WIDGET_WEATHER_SUNRISE_ICON1',
     'desc': 'Sunrise time (icon on the left)',
+    'group': ['WEATHER', 'WEATHERSUN'],
     'sort': 450,
   },
   {
     'key': 'WIDGET_WEATHER_SUNRISE_ICON2',
     'desc': 'Sunrise time (icon on the right)',
+    'group': ['WEATHER', 'WEATHERSUN'],
     'sort': 450,
   },
   {
     'key': 'WIDGET_WEATHER_SUNSET_ICON0',
     'desc': 'Sunset time',
+    'group': ['WEATHER', 'WEATHERSUN'],
     'sort': 450,
   },
   {
     'key': 'WIDGET_WEATHER_SUNSET_ICON1',
     'desc': 'Sunset time (icon on the left)',
+    'group': ['WEATHER', 'WEATHERSUN'],
     'sort': 450,
   },
   {
     'key': 'WIDGET_WEATHER_SUNSET_ICON2',
     'desc': 'Sunset time (icon on the right)',
+    'group': ['WEATHER', 'WEATHERSUN'],
     'sort': 450,
   },
 ]

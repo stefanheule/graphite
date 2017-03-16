@@ -4235,7 +4235,7 @@
 // --     var load_sun = {{ config_groups_lookup["GROUP_WEATHERSUN"]["selector"] }};
     var load_lowhigh = has_widget([4, 5]);
     var load_cur = has_widget([1, 2, 3]);
-    var load_sun = has_widget([37]);
+    var load_sun = has_widget([37, 38, 39, 40, 41, 42]);
 // -- end autogen
       return [load_rain || load_lowhigh || load_cur || load_sun, load_rain, load_lowhigh, load_cur, load_sun];
   }
@@ -4273,7 +4273,7 @@
 // --     showHideEl("#{{ key["key"] }}", {{ key["show_only_if"] }});
 // --   ## endif
 // -- ## endfor
-    showHideEl("#GROUP_WEATHER", has_widget([1, 2, 3, 4, 5, 37]));
+    showHideEl("#GROUP_WEATHER", has_widget([1, 2, 3, 4, 5, 37, 38, 39, 40, 41, 42]));
 // -- end autogen
 
     
