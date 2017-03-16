@@ -618,8 +618,9 @@ function fetchWeather(latitude, longitude) {
             }
             if (load_sun) {
                 var d = new Date();
-                sunrise = Math.round(Date.parse(d.getMonth() + "/" + d.getDate() + "/" + d.getFullYear() + " " + responses[3].sunrise.hour + ":" + responses[3].sunrise.minute).getTime()/1000);
-                sunset = Math.round(Date.parse(d.getMonth() + "/" + d.getDate() + "/" + d.getFullYear() + " " + responses[3].sunset.hour + ":" + responses[3].sunset.minute).getTime()/1000);
+                var today = (d.getMonth()+1) + "/" + d.getDate() + "/" + d.getFullYear() + " ";
+                sunrise = Math.round(Date.parse(today + responses[3].sun_phase.sunrise.hour + ":" + responses[3].sun_phase.sunrise.minute) / 1000);
+                sunset = Math.round(Date.parse(today + responses[3].sun_phase.sunset.hour + ":" + responses[3].sun_phase.sunset.minute)/1000);
             }
             success(low, high, cur, icon, raindata, raints, sunrise, sunset);
         });
