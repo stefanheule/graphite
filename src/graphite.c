@@ -73,6 +73,12 @@ char config_tz_1_format[GRAPHITE_STRINGCONFIG_MAXLEN+1] = "%I:0%M%P";
 char config_tz_2_format[GRAPHITE_STRINGCONFIG_MAXLEN+1] = "%I:0%M%P";
 uint8_t config_hourly_vibrate = false;
 char config_sunrise_format[GRAPHITE_STRINGCONFIG_MAXLEN+1] = "%I:0%M";
+uint8_t config_widget_7 = 38;
+uint8_t config_widget_8 = 0;
+uint8_t config_widget_9 = 42;
+uint8_t config_widget_10 = 0;
+uint8_t config_widget_11 = 0;
+uint8_t config_widget_12 = 32;
 // -- end autogen
 
 
@@ -114,6 +120,12 @@ AppTimer * weather_request_timer;
 
 /** The timezone information. */
 TimeZoneInfo tzinfo;
+
+/** Timer for taps. */
+AppTimer *timer_tap;
+
+/** Should we show the secondary set of widgets? */
+bool show_secondary_widgets;
 
 
 
@@ -238,6 +250,22 @@ void handle_battery(BatteryChargeState new_state) {
     layer_mark_dirty(layer_background);
 }
 
+void end_tap(void* data) {
+    show_secondary_widgets = false;
+    layer_mark_dirty(layer_background);
+}
+
+void handle_tap(AccelAxisType axis, int32_t direction) {
+    show_secondary_widgets = true;
+    if (timer_tap) {
+        app_timer_reschedule(timer_tap, GRAPHITE_BLUETOOTH_POPUP_MS);
+    } else {
+        timer_tap = app_timer_register(GRAPHITE_BLUETOOTH_POPUP_MS, end_tap,
+                                                   NULL);
+    }
+    layer_mark_dirty(layer_background);
+}
+
 /**
  * Initialization.
  */
@@ -257,6 +285,8 @@ void init() {
     bluetooth_connection_service_subscribe(handle_bluetooth);
     battery_state_service_subscribe(handle_battery);
 
+    accel_tap_service_subscribe(handle_tap);
+
     app_message_open(GRAPHITE_INBOX_SIZE, GRAPHITE_OUTBOX_SIZE);
     app_message_register_inbox_received(inbox_received_handler);
 }
@@ -268,6 +298,7 @@ void deinit() {
     tick_timer_service_unsubscribe();
     battery_state_service_unsubscribe();
     bluetooth_connection_service_unsubscribe();
+    accel_tap_service_unsubscribe();
 
     window_destroy(window);
 

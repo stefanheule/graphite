@@ -253,6 +253,12 @@ ConfigKeyAddr config_ka_8bit[] = {
     { .key = CONFIG_UPDATE_SECOND, .var = &config_update_second },
     { .key = CONFIG_SHOW_DAYNIGHT, .var = &config_show_daynight },
     { .key = CONFIG_HOURLY_VIBRATE, .var = &config_hourly_vibrate },
+    { .key = CONFIG_WIDGET_7, .var = &config_widget_7 },
+    { .key = CONFIG_WIDGET_8, .var = &config_widget_8 },
+    { .key = CONFIG_WIDGET_9, .var = &config_widget_9 },
+    { .key = CONFIG_WIDGET_10, .var = &config_widget_10 },
+    { .key = CONFIG_WIDGET_11, .var = &config_widget_11 },
+    { .key = CONFIG_WIDGET_12, .var = &config_widget_12 },
 // -- end autogen
 };
 ConfigKeyAddr config_ka_16bit[] = {

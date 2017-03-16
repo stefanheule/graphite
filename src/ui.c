@@ -327,20 +327,35 @@ void background_update_proc(Layer *layer, GContext *ctx) {
         }
     }
 
+    uint8_t w1 = config_widget_1;
+    uint8_t w2 = config_widget_2;
+    uint8_t w3 = config_widget_3;
+    uint8_t w4 = config_widget_4;
+    uint8_t w5 = config_widget_5;
+    uint8_t w6 = config_widget_6;
+    if (show_secondary_widgets) {
+        w1 = config_widget_7;
+        w2 = config_widget_8;
+        w3 = config_widget_9;
+        w4 = config_widget_10;
+        w5 = config_widget_11;
+        w6 = config_widget_12;
+    }
+
     // top widgets
     fixed_t widgets_margin_topbottom = REM(6); // gap between watch bounds and widgets
     fixed_t widgets_margin_leftright = REM(8);
-    widgets[config_widget_1](fctx, true, FPoint(widgets_margin_leftright, widgets_margin_topbottom), GTextAlignmentLeft, config_color_widget_1, config_color_topbar_bg_local);
-    widgets[config_widget_2](fctx, true, FPoint(width/2, widgets_margin_topbottom), GTextAlignmentCenter, config_color_widget_2, config_color_topbar_bg_local);
-    widgets[config_widget_3](fctx, true, FPoint(width - widgets_margin_leftright, widgets_margin_topbottom), GTextAlignmentRight, config_color_widget_3, config_color_topbar_bg_local);
+    widgets[w1](fctx, true, FPoint(widgets_margin_leftright, widgets_margin_topbottom), GTextAlignmentLeft, config_color_widget_1, config_color_topbar_bg_local);
+    widgets[w2](fctx, true, FPoint(width / 2, widgets_margin_topbottom), GTextAlignmentCenter, config_color_widget_2, config_color_topbar_bg_local);
+    widgets[w3](fctx, true, FPoint(width - widgets_margin_leftright, widgets_margin_topbottom), GTextAlignmentRight, config_color_widget_3, config_color_topbar_bg_local);
 
     // bottom widgets
     fixed_t compl_y = height_full - fontsize_widgets;
     fixed_t compl_y2 = compl_y - progress_height + REM(1);
     bool avoid_progress;
-    widgets[config_widget_4](fctx, true, FPoint(widgets_margin_leftright, progress_no ? compl_y : compl_y2), GTextAlignmentLeft, config_color_widget_4, config_color_background);
-    widgets[config_widget_5](fctx, true, FPoint(width/2, progress_no ? compl_y : compl_y2), GTextAlignmentCenter, config_color_widget_5, config_color_background);
-    widgets[config_widget_6](fctx, true, FPoint(width - widgets_margin_leftright, progress_no ? compl_y : compl_y2), GTextAlignmentRight, config_color_widget_6, config_color_background);
+    widgets[w4](fctx, true, FPoint(widgets_margin_leftright, progress_no ? compl_y : compl_y2), GTextAlignmentLeft, config_color_widget_4, config_color_background);
+    widgets[w5](fctx, true, FPoint(width / 2, progress_no ? compl_y : compl_y2), GTextAlignmentCenter, config_color_widget_5, config_color_background);
+    widgets[w6](fctx, true, FPoint(width - widgets_margin_leftright, progress_no ? compl_y : compl_y2), GTextAlignmentRight, config_color_widget_6, config_color_background);
 
     // draw the bluetooth popup
     bool bluetooth = bluetooth_connection_service_peek();

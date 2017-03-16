@@ -48,9 +48,9 @@ Pebble.addEventListener('showConfiguration', function () {
 // --     var url = 'https://stefanheule.com/graphite/config/{{ config_version }}/index.html';
     var url = 'https://stefanheule.com/graphite/config/3/index.html';
 // -- end autogen
-//     url = 'https://rawgit.com/stefanheule/graphite/master/config/';
+    url = 'https://rawgit.com/stefanheule/graphite/master/config/';
 
-    url = 'https://local.com/graphite/config/0/index.html';
+    // url = 'https://local.com/graphite/config/0/index.html';
 
     url += '?platform=' + encodeURIComponent(getPlatform());
     url += '&wtoken=' + encodeURIComponent(getWToken());
@@ -248,6 +248,24 @@ Pebble.addEventListener('webviewclosed', function (e) {
     fullconfig["CONFIG_SUNRISE_FORMAT"] = urlconfig[55];
     config["CONFIG_SUNRISE_FORMAT"] = urlconfig[55];
     localStorage.setItem("CONFIG_SUNRISE_FORMAT", urlconfig[55]);
+    fullconfig["CONFIG_WIDGET_7"] = urlconfig[56];
+    config["CONFIG_WIDGET_7"] = +urlconfig[56];
+    localStorage.setItem("CONFIG_WIDGET_7", urlconfig[56]);
+    fullconfig["CONFIG_WIDGET_8"] = urlconfig[57];
+    config["CONFIG_WIDGET_8"] = +urlconfig[57];
+    localStorage.setItem("CONFIG_WIDGET_8", urlconfig[57]);
+    fullconfig["CONFIG_WIDGET_9"] = urlconfig[58];
+    config["CONFIG_WIDGET_9"] = +urlconfig[58];
+    localStorage.setItem("CONFIG_WIDGET_9", urlconfig[58]);
+    fullconfig["CONFIG_WIDGET_10"] = urlconfig[59];
+    config["CONFIG_WIDGET_10"] = +urlconfig[59];
+    localStorage.setItem("CONFIG_WIDGET_10", urlconfig[59]);
+    fullconfig["CONFIG_WIDGET_11"] = urlconfig[60];
+    config["CONFIG_WIDGET_11"] = +urlconfig[60];
+    localStorage.setItem("CONFIG_WIDGET_11", urlconfig[60]);
+    fullconfig["CONFIG_WIDGET_12"] = urlconfig[61];
+    config["CONFIG_WIDGET_12"] = +urlconfig[61];
+    localStorage.setItem("CONFIG_WIDGET_12", urlconfig[61]);
 // -- end autogen
 
     // don't allow really small values for refresh rate

@@ -41,6 +41,7 @@ var GraphitePreview = (function () {
     var fontsize_widgets;
     var height, width, height_full, width_full;
     var rem_is_pix = false;
+    var show_secondary_widgets = false;
 
 // -- autogen
 // -- ## for key in configuration
@@ -101,6 +102,12 @@ var GraphitePreview = (function () {
      var config_tz_2_format;
      var config_hourly_vibrate;
      var config_sunrise_format;
+     var config_widget_7;
+     var config_widget_8;
+     var config_widget_9;
+     var config_widget_10;
+     var config_widget_11;
+     var config_widget_12;
 // -- end autogen
 
     function get(k) {
@@ -330,6 +337,12 @@ var GraphitePreview = (function () {
         config_tz_2_format = config["CONFIG_TZ_2_FORMAT"];
         config_hourly_vibrate = config["CONFIG_HOURLY_VIBRATE"];
         config_sunrise_format = config["CONFIG_SUNRISE_FORMAT"];
+        config_widget_7 = config["CONFIG_WIDGET_7"];
+        config_widget_8 = config["CONFIG_WIDGET_8"];
+        config_widget_9 = config["CONFIG_WIDGET_9"];
+        config_widget_10 = config["CONFIG_WIDGET_10"];
+        config_widget_11 = config["CONFIG_WIDGET_11"];
+        config_widget_12 = config["CONFIG_WIDGET_12"];
 // -- end autogen
 
         weather = getWeather(platform);
@@ -932,17 +945,31 @@ function background_update_proc(layer, ctx) {
             draw_circle(fctx, FPoint(progress_endx2, height_full), progress_height, config_color_progress_bar2);
         }
     }
+    var w1 = config_widget_1;
+    var w2 = config_widget_2;
+    var w3 = config_widget_3;
+    var w4 = config_widget_4;
+    var w5 = config_widget_5;
+    var w6 = config_widget_6;
+    if (show_secondary_widgets) {
+        w1 = config_widget_7;
+        w2 = config_widget_8;
+        w3 = config_widget_9;
+        w4 = config_widget_10;
+        w5 = config_widget_11;
+        w6 = config_widget_12;
+    }
     var widgets_margin_topbottom = REM(6); // gap between watch bounds and widgets
     var widgets_margin_leftright = REM(8);
-    widgets[config_widget_1](fctx, true, FPoint(widgets_margin_leftright, widgets_margin_topbottom), GTextAlignmentLeft, config_color_widget_1, config_color_topbar_bg_local);
-    widgets[config_widget_2](fctx, true, FPoint(width/2, widgets_margin_topbottom), GTextAlignmentCenter, config_color_widget_2, config_color_topbar_bg_local);
-    widgets[config_widget_3](fctx, true, FPoint(width - widgets_margin_leftright, widgets_margin_topbottom), GTextAlignmentRight, config_color_widget_3, config_color_topbar_bg_local);
+    widgets[w1](fctx, true, FPoint(widgets_margin_leftright, widgets_margin_topbottom), GTextAlignmentLeft, config_color_widget_1, config_color_topbar_bg_local);
+    widgets[w2](fctx, true, FPoint(width / 2, widgets_margin_topbottom), GTextAlignmentCenter, config_color_widget_2, config_color_topbar_bg_local);
+    widgets[w3](fctx, true, FPoint(width - widgets_margin_leftright, widgets_margin_topbottom), GTextAlignmentRight, config_color_widget_3, config_color_topbar_bg_local);
     var compl_y = height_full - fontsize_widgets;
     var compl_y2 = compl_y - progress_height + REM(1);
     var avoid_progress;
-    widgets[config_widget_4](fctx, true, FPoint(widgets_margin_leftright, progress_no ? compl_y : compl_y2), GTextAlignmentLeft, config_color_widget_4, config_color_background);
-    widgets[config_widget_5](fctx, true, FPoint(width/2, progress_no ? compl_y : compl_y2), GTextAlignmentCenter, config_color_widget_5, config_color_background);
-    widgets[config_widget_6](fctx, true, FPoint(width - widgets_margin_leftright, progress_no ? compl_y : compl_y2), GTextAlignmentRight, config_color_widget_6, config_color_background);
+    widgets[w4](fctx, true, FPoint(widgets_margin_leftright, progress_no ? compl_y : compl_y2), GTextAlignmentLeft, config_color_widget_4, config_color_background);
+    widgets[w5](fctx, true, FPoint(width / 2, progress_no ? compl_y : compl_y2), GTextAlignmentCenter, config_color_widget_5, config_color_background);
+    widgets[w6](fctx, true, FPoint(width - widgets_margin_leftright, progress_no ? compl_y : compl_y2), GTextAlignmentRight, config_color_widget_6, config_color_background);
     var bluetooth = bluetooth_connection_service_peek();
     bluetooth_popup(fctx, ctx, bluetooth);
     fctx_deinit_context(fctx);
@@ -1094,6 +1121,12 @@ function background_update_proc(layer, ctx) {
             CONFIG_TZ_2_FORMAT: "%I:0%M%P",
             CONFIG_HOURLY_VIBRATE: +false,
             CONFIG_SUNRISE_FORMAT: "%I:0%M",
+            CONFIG_WIDGET_7: +38,
+            CONFIG_WIDGET_8: +0,
+            CONFIG_WIDGET_9: +42,
+            CONFIG_WIDGET_10: +0,
+            CONFIG_WIDGET_11: +0,
+            CONFIG_WIDGET_12: +32,
 // -- end autogen
         };
         return cloneConfig(defaults);
@@ -1156,13 +1189,19 @@ function background_update_proc(layer, ctx) {
             CONFIG_SHOW_DAYNIGHT: +true,
             CONFIG_STEP_GOAL: +10000,
             CONFIG_TZ_0_LOCAL: "Europe/Zurich",
-            CONFIG_TZ_1_LOCAL: "Europe/Zurich",
-            CONFIG_TZ_2_LOCAL: "Europe/Zurich",
+            CONFIG_TZ_1_LOCAL: "Asia/Shanghai",
+            CONFIG_TZ_2_LOCAL: "Asia/Shanghai",
             CONFIG_TZ_0_FORMAT: "%I:0%M%Pmmm",
             CONFIG_TZ_1_FORMAT: "%I:0%M%Pmmm",
             CONFIG_TZ_2_FORMAT: "%I:0%M%Pmmm",
             CONFIG_HOURLY_VIBRATE: +false,
             CONFIG_SUNRISE_FORMAT: "%I:0%M%Pmmm",
+            CONFIG_WIDGET_7: +38,
+            CONFIG_WIDGET_8: +0,
+            CONFIG_WIDGET_9: +42,
+            CONFIG_WIDGET_10: +35,
+            CONFIG_WIDGET_11: +0,
+            CONFIG_WIDGET_12: +32,
 // -- end autogen
         };
         return cloneConfig(defaults);

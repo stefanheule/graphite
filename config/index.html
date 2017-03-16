@@ -307,6 +307,13 @@
     <input type="text" class="hidden item-input" id='CONFIG_WIDGET_5'>
     <input type="text" class="hidden item-input" id='CONFIG_WIDGET_6'>
 
+    <input type="text" class="hidden item-input" id='CONFIG_WIDGET_7'>
+    <input type="text" class="hidden item-input" id='CONFIG_WIDGET_8'>
+    <input type="text" class="hidden item-input" id='CONFIG_WIDGET_9'>
+    <input type="text" class="hidden item-input" id='CONFIG_WIDGET_10'>
+    <input type="text" class="hidden item-input" id='CONFIG_WIDGET_11'>
+    <input type="text" class="hidden item-input" id='CONFIG_WIDGET_12'>
+
 
 
     <div class='item-container'>
@@ -3370,6 +3377,29 @@
         <a href="https://sourceware.org/newlib/libc.html#strftime">Full format information</a>.
       </div>
 
+
+      <div class='item-container-header'>Secondary Widgets</div>
+      <div class='item-container-content'>
+        <label class='item'>
+          Top
+          <span style="float:right;">
+            <canvas class="widget" id="widget7"></canvas>
+            <canvas class="widget" id="widget8"></canvas>
+            <canvas class="widget" id="widget9"></canvas>
+          </span>
+        </label>
+      </div>
+      <div class='item-container-content'>
+        <label class='item'>
+          Bottom
+          <span style="float:right;">
+            <canvas class="widget" id="widget10"></canvas>
+            <canvas class="widget" id="widget11"></canvas>
+            <canvas class="widget" id="widget12"></canvas>
+          </span>
+        </label>
+      </div>
+
     </div>
 
 
@@ -4104,6 +4134,12 @@
         "CONFIG_TZ_2_FORMAT": 53,
         "CONFIG_HOURLY_VIBRATE": 54,
         "CONFIG_SUNRISE_FORMAT": 55,
+        "CONFIG_WIDGET_7": 56,
+        "CONFIG_WIDGET_8": 57,
+        "CONFIG_WIDGET_9": 58,
+        "CONFIG_WIDGET_10": 59,
+        "CONFIG_WIDGET_11": 60,
+        "CONFIG_WIDGET_12": 61,
 // -- end autogen
     };
 
@@ -4580,7 +4616,7 @@
   }
 
   function initComplicationChooser() {
-    for (var i = 1; i < 7; i++) {
+    for (var i = 1; i < 13; i++) {
       $("#widget" + i).on("click", (function(x) { return function(ev) { openComplicationChooser(x); ev.stopPropagation(); } })(i));
     }
     $("#widget_cancel_button").on("click", closeComplicationChooser);
@@ -4889,7 +4925,7 @@
       GraphitePreview.previewComplication(27, config, 'widget-preview-27-canvas', getPlatform());
 // -- end autogen
 
-      for (var i = 1; i < 7; i++) {
+      for (var i = 1; i < 13; i++) {
         GraphitePreview.previewComplication(config["CONFIG_WIDGET_" + i], config, 'widget' + i, getPlatform());
       }
     }

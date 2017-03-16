@@ -79,11 +79,17 @@
 #define CONFIG_TZ_2_FORMAT 53
 #define CONFIG_HOURLY_VIBRATE 54
 #define CONFIG_SUNRISE_FORMAT 55
+#define CONFIG_WIDGET_7 56
+#define CONFIG_WIDGET_8 57
+#define CONFIG_WIDGET_9 58
+#define CONFIG_WIDGET_10 59
+#define CONFIG_WIDGET_11 60
+#define CONFIG_WIDGET_12 61
 // -- end autogen
 
 // -- autogen
 // -- #define GRAPHITE_N_CONFIG {{ num_config_items }}
-#define GRAPHITE_N_CONFIG 55
+#define GRAPHITE_N_CONFIG 61
 // -- end autogen
 
 // -- autogen
@@ -172,6 +178,12 @@ extern char config_tz_1_format[GRAPHITE_STRINGCONFIG_MAXLEN+1];
 extern char config_tz_2_format[GRAPHITE_STRINGCONFIG_MAXLEN+1];
 extern uint8_t config_hourly_vibrate;
 extern char config_sunrise_format[GRAPHITE_STRINGCONFIG_MAXLEN+1];
+extern uint8_t config_widget_7;
+extern uint8_t config_widget_8;
+extern uint8_t config_widget_9;
+extern uint8_t config_widget_10;
+extern uint8_t config_widget_11;
+extern uint8_t config_widget_12;
 // -- end autogen
 
 
@@ -203,6 +215,7 @@ extern fixed_t fontsize_widgets;
 
 extern bool show_bluetooth_popup;
 extern AppTimer *timer_bluetooth_popup;
+extern bool show_secondary_widgets;
 
 // this definition should be updated whenever the Weather struct, or it's semantic meaning changes.  this ensures that no outdated values are read from storage
 #define GRAPHITE_WEATHER_VERSION 3

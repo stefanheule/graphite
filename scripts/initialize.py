@@ -295,7 +295,7 @@ configuration = [
 ] + map(lambda i: {
   'key': 'CONFIG_TZ_%d_LOCAL' % i,
   'default': '"America/Los_Angeles"',
-  'mydefault': '"Europe/Zurich"',
+  'mydefault': '"Europe/Zurich"' if i == 0 else '"Asia/Shanghai"',
   'type': 'string',
   'show_only_if': 'has_widget([WIDGET_TZ_%d])' % i,
 }, range(num_tzs)) + map(lambda i: {
@@ -315,6 +315,31 @@ configuration = [
     'mydefault': '"%I:0%M%Pmmm"',
     'type': 'string',
     'show_only_if': 'has_widget(ALL_WEATHERSUN_WIDGET_IDS)',
+  },
+  {
+    'key': 'CONFIG_WIDGET_7',
+    'default': 'WIDGET_WEATHER_SUNRISE_ICON1',
+  },
+  {
+    'key': 'CONFIG_WIDGET_8',
+    'default': 'WIDGET_EMPTY',
+  },
+  {
+    'key': 'CONFIG_WIDGET_9',
+    'default': 'WIDGET_WEATHER_SUNSET_ICON2',
+  },
+  {
+    'key': 'CONFIG_WIDGET_10',
+    'default': 'WIDGET_EMPTY',
+    'mydefault': 'WIDGET_TZ_1',
+  },
+  {
+    'key': 'CONFIG_WIDGET_11',
+    'default': 'WIDGET_EMPTY',
+  },
+  {
+    'key': 'CONFIG_WIDGET_12',
+    'default': 'WIDGET_BATTERY_TEXT',
   },
 ]
 
