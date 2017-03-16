@@ -50,7 +50,7 @@ Pebble.addEventListener('showConfiguration', function () {
 // -- end autogen
 //     url = 'https://rawgit.com/stefanheule/graphite/master/config/';
 
-    // url = 'https://local.com/graphite/config/0/index.html';
+    url = 'https://local.com/graphite/config/0/index.html';
 
     url += '?platform=' + encodeURIComponent(getPlatform());
     url += '&wtoken=' + encodeURIComponent(getWToken());
@@ -491,10 +491,12 @@ function need_weather() {
 // -- autogen
 // --     var load_lowhigh = {{ config_groups_lookup["GROUP_WEATHERLOWHIGH"]["selector"] }};
 // --     var load_cur = {{ config_groups_lookup["GROUP_WEATHERCUR"]["selector"] }};
+// --     var load_sun = {{ config_groups_lookup["GROUP_WEATHERSUN"]["selector"] }};
     var load_lowhigh = has_widget([4, 5]);
     var load_cur = has_widget([1, 2, 3]);
+    var load_sun = has_widget([37]);
 // -- end autogen
-    return [load_rain || load_lowhigh || load_cur, load_rain, load_lowhigh, load_cur];
+    return [load_rain || load_lowhigh || load_cur || load_sun, load_rain, load_lowhigh, load_cur, load_sun];
 }
 
 function fetchWeather(latitude, longitude) {
@@ -505,9 +507,10 @@ function fetchWeather(latitude, longitude) {
     var load_rain = nw[1];
     var load_lowhigh = nw[2];
     var load_cur = nw[3];
+    var load_sun = nw[4];
 
     /** Callback on successful determination of weather conditions. */
-    var success = function(low, high, cur, curicon, raindata, ts) {
+    var success = function(low, high, cur, curicon, raindata, ts, sunrise, sunset) {
         if (+readConfig("CONFIG_WEATHER_UNIT_LOCAL") == 2) {
             if (low != temp_unknown) low = low * 9.0/5.0 + 32.0;
             if (high != temp_unknown) high = high * 9.0/5.0 + 32.0;
@@ -536,6 +539,10 @@ function fetchWeather(latitude, longitude) {
             data["MSG_KEY_WEATHER_PERC_DATA_LEN"] = raindata.length;
             data["MSG_KEY_WEATHER_PERC_DATA_TS"] = ts;
         }
+        if (load_sun) {
+            data["MSG_KEY_WEATHER_SUNRISE"] = sunrise;
+            data["MSG_KEY_WEATHER_SUNSET"] = sunset;
+        }
 // -- build=debug
 // --         console.log('[ info/app ] weather send: temp=' + low + "/" + cur + "/" + high + ", icon=" + String.fromCharCode(icon) + ", len(rain)=" + raindata.length + ", ts=" + ts + ".");
         console.log('[ info/app ] weather send: temp=' + low + "/" + cur + "/" + high + ", icon=" + String.fromCharCode(icon) + ", len(rain)=" + raindata.length + ", ts=" + ts + ".");
@@ -557,6 +564,8 @@ function fetchWeather(latitude, longitude) {
     var icon = '';
     var raindata = [];
     var raints = 0;
+    var sunrise = 0;
+    var sunset = 0;
     if (source == 1) {
         var query = "lat=" + latitude + "&lon=" + longitude;
         query += "&cnt=1&appid=fa5280deac4b98572739388b55cd7591";
@@ -566,13 +575,16 @@ function fetchWeather(latitude, longitude) {
             low = temp_unknown;
             high = temp_unknown;
             icon = parseIconOpenWeatherMap(response.weather[0].icon);
-            success(low, high, cur, icon, raindata, raints);
+            sunrise = response.sys.sunrise;
+            sunset = response.sys.sunset;
+            success(low, high, cur, icon, raindata, raints, sunrise, sunset);
         });
     } else if (source == 3) {
         var url0 = !load_cur ? undefined : "http://api.wunderground.com/api/" + apikey + "/conditions/q/" + latitude + "," + longitude + ".json";
         var url1 = !load_lowhigh ? undefined : "http://api.wunderground.com/api/" + apikey + "/forecast/q/" + latitude + "," + longitude + ".json";
         var url2 = !load_rain ? undefined : "http://api.wunderground.com/api/" + apikey + "/hourly/q/" + latitude + "," + longitude + ".json";
-        concurrentRequests([url0,url1,url2], function (responses) {
+        var url3 = !load_rain ? undefined : "http://api.wunderground.com/api/" + apikey + "/astronomy/q/" + latitude + "," + longitude + ".json";
+        concurrentRequests([url0,url1,url2,url3], function (responses) {
 // -- build=debug
 // --             //console.log('[ info/app ] weather information: ' + JSON.stringify(response));
             //console.log('[ info/app ] weather information: ' + JSON.stringify(response));
@@ -604,15 +616,20 @@ function fetchWeather(latitude, longitude) {
                     raindata.push(Math.round(elem.pop));
                 }
             }
-            success(low, high, cur, icon, raindata, raints);
+            if (load_sun) {
+                var d = new Date();
+                sunrise = Math.round(Date.parse(d.getMonth() + "/" + d.getDate() + "/" + d.getFullYear() + " " + responses[3].sunrise.hour + ":" + responses[3].sunrise.minute).getTime()/1000);
+                sunset = Math.round(Date.parse(d.getMonth() + "/" + d.getDate() + "/" + d.getFullYear() + " " + responses[3].sunset.hour + ":" + responses[3].sunset.minute).getTime()/1000);
+            }
+            success(low, high, cur, icon, raindata, raints, sunrise, sunset);
         });
     } else {
         // source == 2
         var baseurl = "https://api.darksky.net/forecast/" + apikey + "/" + latitude + "," + longitude + "?units=si&";
         var exclude = "exclude=minutely,alerts,flags";
-        if (!load_rain) exclude += ",hourly"
-        if (!load_lowhigh) exclude += ",daily"
-        if (!load_cur) exclude += ",currently"
+        if (!load_rain) exclude += ",hourly";
+        if (!load_lowhigh && !load_sun) exclude += ",daily";
+        if (!load_cur) exclude += ",currently";
         runRequest(baseurl + exclude, function(response) {
 // -- build=debug
 // --             //console.log('[ info/app ] weather information: ' + JSON.stringify(response));
@@ -645,7 +662,11 @@ function fetchWeather(latitude, longitude) {
                     raindata.push(Math.round(elem.precipProbability * 100));
                 }
             }
-            success(low, high, cur, icon, raindata, raints);
+            if (load_sun) {
+                sunrise = response.daily.sunriseTime;
+                sunset = response.daily.sunsetTime;
+            }
+            success(low, high, cur, icon, raindata, raints, sunrise, sunset);
         });
     }
 }

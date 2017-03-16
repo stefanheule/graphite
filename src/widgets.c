@@ -67,6 +67,7 @@ widget_render_t widgets[] = {
     widget_tz_0, // id 34
     widget_tz_1, // id 35
     widget_tz_2, // id 36
+    widget_weather_sunrise_icon0, // id 37
 // -- end autogen
 
 // -- jsalternative
@@ -81,7 +82,7 @@ widget_render_t widgets[] = {
 
 fixed_t widget_tz(FContext* fctx, bool draw, FPoint position, GTextAlignment align, uint8_t foreground_color, uint8_t background_color, uint8_t tz_id, const char* format) {
 // -- jsalternative
-// --     var dat = moment(new Date()).tz(window["config_tz_" + tz_id + "_local"]).format('YYYY-MM-DD HH:mm');
+// --     var dat = moment(new Date()).tz(eval("config_tz_" + tz_id + "_local")).format('YYYY-MM-DD HH:mm');
 // --     buffer_1 = strftime(format, new Date(dat));
 // --     buffer_1 =
     int8_t dataidx = get_current_tz_idx(&tzinfo.data[tz_id]);
@@ -114,7 +115,7 @@ fixed_t widget_tz_2(FContext* fctx, bool draw, FPoint position, GTextAlignment a
 
 typedef char* (*num_formater_t)(int num, void* data);
 
-fixed_t draw_icon_number_widget(FContext* fctx, bool draw, FPoint position, GTextAlignment align, uint8_t foreground_color, uint8_t background_color, const char* icon, const char* text, bool show_icon) {
+fixed_t draw_icon_number_widget(FContext* fctx, bool draw, FPoint position, GTextAlignment align, uint8_t foreground_color, uint8_t background_color, const char* icon, const char* text, bool show_icon, bool flip_order) {
   fixed_t fontsize_icon = (fixed_t)(fontsize_widgets * 31 / 50); // 0.62
   fixed_t w1 = !show_icon ? 0 : string_width(fctx, icon, font_icon, fontsize_icon);
   fixed_t w2 = string_width(fctx, text, font_main, fontsize_widgets);
@@ -128,15 +129,29 @@ fixed_t draw_icon_number_widget(FContext* fctx, bool draw, FPoint position, GTex
 // -- jsalternative
 // -- icon_y += REM(7);
 // -- end jsalternative
+      fixed_t offset2 = flip_order ? 0 : w1 + sep;
+      fixed_t offset1 = flip_order ? w2 + sep : 0;
       if (align == GTextAlignmentCenter) {
-          if (w1) draw_string(fctx, icon, FPoint(position.x - w/2, icon_y), font_icon, color, fontsize_icon, a);
-          draw_string(fctx, text, FPoint(position.x - w/2 + w1 + sep, position.y), font_main, color, fontsize_widgets, a);
+          if (w1) {
+              FPoint p1 = FPoint(position.x - w / 2 + offset1, icon_y);
+              draw_string(fctx, icon, p1, font_icon, color, fontsize_icon, a);
+          }
+          FPoint p2 = FPoint(position.x - w / 2 + offset2, position.y);
+          draw_string(fctx, text, p2, font_main, color, fontsize_widgets, a);
       } else if (align == GTextAlignmentLeft) {
-          if (w1) draw_string(fctx, icon, FPoint(position.x, icon_y), font_icon, color, fontsize_icon, a);
-          draw_string(fctx, text, FPoint(position.x + w1 + sep, position.y), font_main, color, fontsize_widgets, a);
+          if (w1) {
+              FPoint p1 = FPoint(position.x + offset1, icon_y);
+              draw_string(fctx, icon, p1, font_icon, color, fontsize_icon, a);
+          }
+          FPoint p2 = FPoint(position.x + offset2, position.y);
+          draw_string(fctx, text, p2, font_main, color, fontsize_widgets, a);
       } else {
-          if (w1) draw_string(fctx, icon, FPoint(position.x - w, icon_y), font_icon, color, fontsize_icon, a);
-          draw_string(fctx, text, FPoint(position.x - w + w1 + sep, position.y), font_main, color, fontsize_widgets, a);
+          if (w1) {
+              FPoint p1 = FPoint(position.x - w + offset1, icon_y);
+              draw_string(fctx, icon, p1, font_icon, color, fontsize_icon, a);
+          }
+          FPoint p2 = FPoint(position.x - w + offset2, position.y);
+          draw_string(fctx, text, p2, font_main, color, fontsize_widgets, a);
       }
   }
 
@@ -291,7 +306,7 @@ fixed_t widget_seconds(FContext* fctx, bool draw, FPoint position, GTextAlignmen
 
 fixed_t widget_day_of_week(FContext* fctx, bool draw, FPoint position, GTextAlignment align, uint8_t foreground_color, uint8_t background_color) {
   time_t now = time(NULL);
-    struct tm *t = localtime(&now);
+  struct tm *t = localtime(&now);
   strftime(buffer_1, sizeof(buffer_1), "%a", t);
   if (draw) draw_string(fctx, buffer_1, position, font_main, foreground_color, fontsize_widgets, align);
   return string_width(fctx, buffer_1, font_main, fontsize_widgets);
@@ -351,64 +366,75 @@ fixed_t widget_weather_high_temp(FContext* fctx, bool draw, FPoint position, GTe
 }
 
 
+fixed_t widget_weather_sunrise_icon0(FContext* fctx, bool draw, FPoint position, GTextAlignment align, uint8_t foreground_color, uint8_t background_color) {
+    if (weather.sunrise == 0) return 0;
+    struct tm *t = localtime(&weather.sunrise);
+    strftime(buffer_1, sizeof(buffer_1), "%I:0%M", t);
+// -- jsalternative
+// --   buffer_1 =
+// -- end jsalternative
+    remove_leading_zero(buffer_1, sizeof(buffer_1));
+    return draw_icon_number_widget(fctx, draw, position, align, foreground_color, background_color, "a", buffer_1, true, true);
+}
+
 
 
 // -- autogen
 // -- ## for key in widgets
 // -- ## if key["autogen"] == "icon_text"
 // -- fixed_t {{ key["key"] | lower }}(FContext* fctx, bool draw, FPoint position, GTextAlignment align, uint8_t foreground_color, uint8_t background_color) {
-// --   return draw_icon_number_widget(fctx, draw, position, align, foreground_color, background_color, "{{ key["icontext"] }}", {{ key["text"] }}, {{ key["icon"] }});
+// --   return draw_icon_number_widget(fctx, draw, position, align, foreground_color, background_color, "{{ key["icontext"] }}", {{ key["text"] }}, {{ key["icon"] }}, false);
 // -- }
 // -- ## endif
 // -- 
 // -- 
 // -- ## endfor
 fixed_t widget_steps_icon(FContext* fctx, bool draw, FPoint position, GTextAlignment align, uint8_t foreground_color, uint8_t background_color) {
-  return draw_icon_number_widget(fctx, draw, position, align, foreground_color, background_color, "A", format_unitless(health_service_sum_today(HealthMetricStepCount)), true);
+  return draw_icon_number_widget(fctx, draw, position, align, foreground_color, background_color, "A", format_unitless(health_service_sum_today(HealthMetricStepCount)), true, false);
 }
 fixed_t widget_steps(FContext* fctx, bool draw, FPoint position, GTextAlignment align, uint8_t foreground_color, uint8_t background_color) {
-  return draw_icon_number_widget(fctx, draw, position, align, foreground_color, background_color, "A", format_unitless(health_service_sum_today(HealthMetricStepCount)), false);
+  return draw_icon_number_widget(fctx, draw, position, align, foreground_color, background_color, "A", format_unitless(health_service_sum_today(HealthMetricStepCount)), false, false);
 }
 fixed_t widget_steps_short_icon(FContext* fctx, bool draw, FPoint position, GTextAlignment align, uint8_t foreground_color, uint8_t background_color) {
-  return draw_icon_number_widget(fctx, draw, position, align, foreground_color, background_color, "A", format_thousands(health_service_sum_today(HealthMetricStepCount)), true);
+  return draw_icon_number_widget(fctx, draw, position, align, foreground_color, background_color, "A", format_thousands(health_service_sum_today(HealthMetricStepCount)), true, false);
 }
 fixed_t widget_steps_short(FContext* fctx, bool draw, FPoint position, GTextAlignment align, uint8_t foreground_color, uint8_t background_color) {
-  return draw_icon_number_widget(fctx, draw, position, align, foreground_color, background_color, "A", format_thousands(health_service_sum_today(HealthMetricStepCount)), false);
+  return draw_icon_number_widget(fctx, draw, position, align, foreground_color, background_color, "A", format_thousands(health_service_sum_today(HealthMetricStepCount)), false, false);
 }
 fixed_t widget_calories_resting_icon(FContext* fctx, bool draw, FPoint position, GTextAlignment align, uint8_t foreground_color, uint8_t background_color) {
-  return draw_icon_number_widget(fctx, draw, position, align, foreground_color, background_color, "K", format_unitless(health_service_sum_today(HealthMetricRestingKCalories)), true);
+  return draw_icon_number_widget(fctx, draw, position, align, foreground_color, background_color, "K", format_unitless(health_service_sum_today(HealthMetricRestingKCalories)), true, false);
 }
 fixed_t widget_calories_resting(FContext* fctx, bool draw, FPoint position, GTextAlignment align, uint8_t foreground_color, uint8_t background_color) {
-  return draw_icon_number_widget(fctx, draw, position, align, foreground_color, background_color, "K", format_unitless(health_service_sum_today(HealthMetricRestingKCalories)), false);
+  return draw_icon_number_widget(fctx, draw, position, align, foreground_color, background_color, "K", format_unitless(health_service_sum_today(HealthMetricRestingKCalories)), false, false);
 }
 fixed_t widget_calories_active_icon(FContext* fctx, bool draw, FPoint position, GTextAlignment align, uint8_t foreground_color, uint8_t background_color) {
-  return draw_icon_number_widget(fctx, draw, position, align, foreground_color, background_color, "K", format_unitless(health_service_sum_today(HealthMetricActiveKCalories)), true);
+  return draw_icon_number_widget(fctx, draw, position, align, foreground_color, background_color, "K", format_unitless(health_service_sum_today(HealthMetricActiveKCalories)), true, false);
 }
 fixed_t widget_calories_active(FContext* fctx, bool draw, FPoint position, GTextAlignment align, uint8_t foreground_color, uint8_t background_color) {
-  return draw_icon_number_widget(fctx, draw, position, align, foreground_color, background_color, "K", format_unitless(health_service_sum_today(HealthMetricActiveKCalories)), false);
+  return draw_icon_number_widget(fctx, draw, position, align, foreground_color, background_color, "K", format_unitless(health_service_sum_today(HealthMetricActiveKCalories)), false, false);
 }
 fixed_t widget_calories_all_icon(FContext* fctx, bool draw, FPoint position, GTextAlignment align, uint8_t foreground_color, uint8_t background_color) {
-  return draw_icon_number_widget(fctx, draw, position, align, foreground_color, background_color, "K", format_unitless(health_service_sum_today(HealthMetricRestingKCalories)+health_service_sum_today(HealthMetricActiveKCalories)), true);
+  return draw_icon_number_widget(fctx, draw, position, align, foreground_color, background_color, "K", format_unitless(health_service_sum_today(HealthMetricRestingKCalories)+health_service_sum_today(HealthMetricActiveKCalories)), true, false);
 }
 fixed_t widget_calories_all(FContext* fctx, bool draw, FPoint position, GTextAlignment align, uint8_t foreground_color, uint8_t background_color) {
-  return draw_icon_number_widget(fctx, draw, position, align, foreground_color, background_color, "K", format_unitless(health_service_sum_today(HealthMetricRestingKCalories)+health_service_sum_today(HealthMetricActiveKCalories)), false);
+  return draw_icon_number_widget(fctx, draw, position, align, foreground_color, background_color, "K", format_unitless(health_service_sum_today(HealthMetricRestingKCalories)+health_service_sum_today(HealthMetricActiveKCalories)), false, false);
 }
 fixed_t widget_calories_resting_short_icon(FContext* fctx, bool draw, FPoint position, GTextAlignment align, uint8_t foreground_color, uint8_t background_color) {
-  return draw_icon_number_widget(fctx, draw, position, align, foreground_color, background_color, "K", format_thousands(health_service_sum_today(HealthMetricRestingKCalories)), true);
+  return draw_icon_number_widget(fctx, draw, position, align, foreground_color, background_color, "K", format_thousands(health_service_sum_today(HealthMetricRestingKCalories)), true, false);
 }
 fixed_t widget_calories_resting_short(FContext* fctx, bool draw, FPoint position, GTextAlignment align, uint8_t foreground_color, uint8_t background_color) {
-  return draw_icon_number_widget(fctx, draw, position, align, foreground_color, background_color, "K", format_thousands(health_service_sum_today(HealthMetricRestingKCalories)), false);
+  return draw_icon_number_widget(fctx, draw, position, align, foreground_color, background_color, "K", format_thousands(health_service_sum_today(HealthMetricRestingKCalories)), false, false);
 }
 fixed_t widget_calories_active_short_icon(FContext* fctx, bool draw, FPoint position, GTextAlignment align, uint8_t foreground_color, uint8_t background_color) {
-  return draw_icon_number_widget(fctx, draw, position, align, foreground_color, background_color, "K", format_thousands(health_service_sum_today(HealthMetricActiveKCalories)), true);
+  return draw_icon_number_widget(fctx, draw, position, align, foreground_color, background_color, "K", format_thousands(health_service_sum_today(HealthMetricActiveKCalories)), true, false);
 }
 fixed_t widget_calories_active_short(FContext* fctx, bool draw, FPoint position, GTextAlignment align, uint8_t foreground_color, uint8_t background_color) {
-  return draw_icon_number_widget(fctx, draw, position, align, foreground_color, background_color, "K", format_thousands(health_service_sum_today(HealthMetricActiveKCalories)), false);
+  return draw_icon_number_widget(fctx, draw, position, align, foreground_color, background_color, "K", format_thousands(health_service_sum_today(HealthMetricActiveKCalories)), false, false);
 }
 fixed_t widget_calories_all_short_icon(FContext* fctx, bool draw, FPoint position, GTextAlignment align, uint8_t foreground_color, uint8_t background_color) {
-  return draw_icon_number_widget(fctx, draw, position, align, foreground_color, background_color, "K", format_thousands(health_service_sum_today(HealthMetricRestingKCalories)+health_service_sum_today(HealthMetricActiveKCalories)), true);
+  return draw_icon_number_widget(fctx, draw, position, align, foreground_color, background_color, "K", format_thousands(health_service_sum_today(HealthMetricRestingKCalories)+health_service_sum_today(HealthMetricActiveKCalories)), true, false);
 }
 fixed_t widget_calories_all_short(FContext* fctx, bool draw, FPoint position, GTextAlignment align, uint8_t foreground_color, uint8_t background_color) {
-  return draw_icon_number_widget(fctx, draw, position, align, foreground_color, background_color, "K", format_thousands(health_service_sum_today(HealthMetricRestingKCalories)+health_service_sum_today(HealthMetricActiveKCalories)), false);
+  return draw_icon_number_widget(fctx, draw, position, align, foreground_color, background_color, "K", format_thousands(health_service_sum_today(HealthMetricRestingKCalories)+health_service_sum_today(HealthMetricActiveKCalories)), false, false);
 }
 // -- end autogen

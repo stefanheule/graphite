@@ -11,6 +11,8 @@ var GraphitePreview = (function () {
         now: 21,
         high: 26,
         icon: "a",
+        sunrise: Math.round((new Date(2017, 1, 1, 6, 22)) / 1000),
+        sunset: Math.round((new Date(2017, 1, 1, 18, 51)) / 1000),
       },
       rain: [20, 0, 10, 12, 10, 20, 40, 45, 60, 100, 100, 20, 0, 0, 0, 0, 0, 0, 0, 50, 40, 30],
       time: function() {
@@ -124,6 +126,8 @@ var GraphitePreview = (function () {
             perc_data: d,
             perc_data_len: d.length,
             perc_data_ts: tnow - (tnow % (60*60)),
+            sunrise: get('weather').sunrise,
+            sunset: get('weather').sunset,
             failed: false
         };
     }
@@ -158,12 +162,8 @@ var GraphitePreview = (function () {
     function time() {
       return get('time')
     }
-    function localtime() {
-        var d = new Date(get('time')*1000);
-        return {
-            tm_min: d.getMinutes(),
-            tm_hour: d.getHours()
-        }
+    function localtime(t) {
+        return new Date(t * 1000);
     }
     function setlocale() {}
     var LC_ALL = 0;
@@ -410,9 +410,10 @@ var widgets = [
     widget_tz_0, // id 34
     widget_tz_1, // id 35
     widget_tz_2, // id 36
+    widget_weather_sunrise_icon0, // id 37
 ];
 function widget_tz(fctx, draw, position, align, foreground_color, background_color, tz_id, format) {
-    var dat = moment(new Date()).tz(window["config_tz_" + tz_id + "_local"]).format('YYYY-MM-DD HH:mm');
+    var dat = moment(new Date()).tz(eval("config_tz_" + tz_id + "_local")).format('YYYY-MM-DD HH:mm');
     buffer_1 = strftime(format, new Date(dat));
     buffer_1 =
     remove_leading_zero(buffer_1, sizeof(buffer_1));
@@ -428,7 +429,7 @@ function widget_tz_1(fctx, draw, position, align, foreground_color, background_c
 function widget_tz_2(fctx, draw, position, align, foreground_color, background_color) {
     return widget_tz(fctx, draw, position, align, foreground_color, background_color, 2, config_tz_2_format);
 }
-function draw_icon_number_widget(fctx, draw, position, align, foreground_color, background_color, icon, text, show_icon) {
+function draw_icon_number_widget(fctx, draw, position, align, foreground_color, background_color, icon, text, show_icon, flip_order) {
   var fontsize_icon = (fontsize_widgets * 31 / 50); // 0.62
   var w1 = !show_icon ? 0 : string_width(fctx, icon, font_icon, fontsize_icon);
   var w2 = string_width(fctx, text, font_main, fontsize_widgets);
@@ -439,15 +440,29 @@ function draw_icon_number_widget(fctx, draw, position, align, foreground_color, 
   if (draw) {
       var icon_y = position.y + fontsize_icon*2/5; // 0.4
 icon_y += REM(7);
+      var offset2 = flip_order ? 0 : w1 + sep;
+      var offset1 = flip_order ? w2 + sep : 0;
       if (align == GTextAlignmentCenter) {
-          if (w1) draw_string(fctx, icon, FPoint(position.x - w/2, icon_y), font_icon, color, fontsize_icon, a);
-          draw_string(fctx, text, FPoint(position.x - w/2 + w1 + sep, position.y), font_main, color, fontsize_widgets, a);
+          if (w1) {
+              var p1 = FPoint(position.x - w / 2 + offset1, icon_y);
+              draw_string(fctx, icon, p1, font_icon, color, fontsize_icon, a);
+          }
+          var p2 = FPoint(position.x - w / 2 + offset2, position.y);
+          draw_string(fctx, text, p2, font_main, color, fontsize_widgets, a);
       } else if (align == GTextAlignmentLeft) {
-          if (w1) draw_string(fctx, icon, FPoint(position.x, icon_y), font_icon, color, fontsize_icon, a);
-          draw_string(fctx, text, FPoint(position.x + w1 + sep, position.y), font_main, color, fontsize_widgets, a);
+          if (w1) {
+              var p1 = FPoint(position.x + offset1, icon_y);
+              draw_string(fctx, icon, p1, font_icon, color, fontsize_icon, a);
+          }
+          var p2 = FPoint(position.x + offset2, position.y);
+          draw_string(fctx, text, p2, font_main, color, fontsize_widgets, a);
       } else {
-          if (w1) draw_string(fctx, icon, FPoint(position.x - w, icon_y), font_icon, color, fontsize_icon, a);
-          draw_string(fctx, text, FPoint(position.x - w + w1 + sep, position.y), font_main, color, fontsize_widgets, a);
+          if (w1) {
+              var p1 = FPoint(position.x - w + offset1, icon_y);
+              draw_string(fctx, icon, p1, font_icon, color, fontsize_icon, a);
+          }
+          var p2 = FPoint(position.x - w + offset2, position.y);
+          draw_string(fctx, text, p2, font_main, color, fontsize_widgets, a);
       }
   }
   return w;
@@ -554,21 +569,21 @@ function widget_quiet(fctx, draw, position, align, foreground_color, background_
 function widget_ampm(fctx, draw, position, align, foreground_color, background_color) {
   var now = time(NULL);
     var t = localtime(now);
-  buffer_1 = strftime("%p", new Date(now * 1000));
+  buffer_1 = strftime("%p", t);
   if (draw) draw_string(fctx, buffer_1, position, font_main, foreground_color, fontsize_widgets, align);
   return string_width(fctx, buffer_1, font_main, fontsize_widgets);
 }
 function widget_ampm_lower(fctx, draw, position, align, foreground_color, background_color) {
   var now = time(NULL);
     var t = localtime(now);
-  buffer_1 = strftime("%P", new Date(now * 1000));
+  buffer_1 = strftime("%P", t);
   if (draw) draw_string(fctx, buffer_1, position, font_main, foreground_color, fontsize_widgets, align);
   return string_width(fctx, buffer_1, font_main, fontsize_widgets);
 }
 function widget_seconds(fctx, draw, position, align, foreground_color, background_color) {
   var now = time(NULL);
     var t = localtime(now);
-  buffer_1 = strftime("%S", new Date(now * 1000));
+  buffer_1 = strftime("%S", t);
   buffer_1 = 
   remove_leading_zero(buffer_1, sizeof(buffer_1));
   if (draw) draw_string(fctx, buffer_1, position, font_main, foreground_color, fontsize_widgets, align);
@@ -576,8 +591,8 @@ function widget_seconds(fctx, draw, position, align, foreground_color, backgroun
 }
 function widget_day_of_week(fctx, draw, position, align, foreground_color, background_color) {
   var now = time(NULL);
-    var t = localtime(now);
-  buffer_1 = strftime("%a", new Date(now * 1000));
+  var t = localtime(now);
+  buffer_1 = strftime("%a", t);
   if (draw) draw_string(fctx, buffer_1, position, font_main, foreground_color, fontsize_widgets, align);
   return string_width(fctx, buffer_1, font_main, fontsize_widgets);
 }
@@ -625,53 +640,61 @@ function widget_weather_low_temp(fctx, draw, position, align, foreground_color, 
 function widget_weather_high_temp(fctx, draw, position, align, foreground_color, background_color) {
   return widget_weather_temp(fctx, draw, position, align, foreground_color, weather.temp_high);
 }
+function widget_weather_sunrise_icon0(fctx, draw, position, align, foreground_color, background_color) {
+    if (weather.sunrise == 0) return 0;
+    var t = localtime(weather.sunrise);
+    buffer_1 = strftime("%I:0%M", t);
+  buffer_1 =
+    remove_leading_zero(buffer_1, sizeof(buffer_1));
+    return draw_icon_number_widget(fctx, draw, position, align, foreground_color, background_color, "a", buffer_1, true, true);
+}
 function widget_steps_icon(fctx, draw, position, align, foreground_color, background_color) {
-  return draw_icon_number_widget(fctx, draw, position, align, foreground_color, background_color, "A", format_unitless(health_service_sum_today(HealthMetricStepCount)), true);
+  return draw_icon_number_widget(fctx, draw, position, align, foreground_color, background_color, "A", format_unitless(health_service_sum_today(HealthMetricStepCount)), true, false);
 }
 function widget_steps(fctx, draw, position, align, foreground_color, background_color) {
-  return draw_icon_number_widget(fctx, draw, position, align, foreground_color, background_color, "A", format_unitless(health_service_sum_today(HealthMetricStepCount)), false);
+  return draw_icon_number_widget(fctx, draw, position, align, foreground_color, background_color, "A", format_unitless(health_service_sum_today(HealthMetricStepCount)), false, false);
 }
 function widget_steps_short_icon(fctx, draw, position, align, foreground_color, background_color) {
-  return draw_icon_number_widget(fctx, draw, position, align, foreground_color, background_color, "A", format_thousands(health_service_sum_today(HealthMetricStepCount)), true);
+  return draw_icon_number_widget(fctx, draw, position, align, foreground_color, background_color, "A", format_thousands(health_service_sum_today(HealthMetricStepCount)), true, false);
 }
 function widget_steps_short(fctx, draw, position, align, foreground_color, background_color) {
-  return draw_icon_number_widget(fctx, draw, position, align, foreground_color, background_color, "A", format_thousands(health_service_sum_today(HealthMetricStepCount)), false);
+  return draw_icon_number_widget(fctx, draw, position, align, foreground_color, background_color, "A", format_thousands(health_service_sum_today(HealthMetricStepCount)), false, false);
 }
 function widget_calories_resting_icon(fctx, draw, position, align, foreground_color, background_color) {
-  return draw_icon_number_widget(fctx, draw, position, align, foreground_color, background_color, "K", format_unitless(health_service_sum_today(HealthMetricRestingKCalories)), true);
+  return draw_icon_number_widget(fctx, draw, position, align, foreground_color, background_color, "K", format_unitless(health_service_sum_today(HealthMetricRestingKCalories)), true, false);
 }
 function widget_calories_resting(fctx, draw, position, align, foreground_color, background_color) {
-  return draw_icon_number_widget(fctx, draw, position, align, foreground_color, background_color, "K", format_unitless(health_service_sum_today(HealthMetricRestingKCalories)), false);
+  return draw_icon_number_widget(fctx, draw, position, align, foreground_color, background_color, "K", format_unitless(health_service_sum_today(HealthMetricRestingKCalories)), false, false);
 }
 function widget_calories_active_icon(fctx, draw, position, align, foreground_color, background_color) {
-  return draw_icon_number_widget(fctx, draw, position, align, foreground_color, background_color, "K", format_unitless(health_service_sum_today(HealthMetricActiveKCalories)), true);
+  return draw_icon_number_widget(fctx, draw, position, align, foreground_color, background_color, "K", format_unitless(health_service_sum_today(HealthMetricActiveKCalories)), true, false);
 }
 function widget_calories_active(fctx, draw, position, align, foreground_color, background_color) {
-  return draw_icon_number_widget(fctx, draw, position, align, foreground_color, background_color, "K", format_unitless(health_service_sum_today(HealthMetricActiveKCalories)), false);
+  return draw_icon_number_widget(fctx, draw, position, align, foreground_color, background_color, "K", format_unitless(health_service_sum_today(HealthMetricActiveKCalories)), false, false);
 }
 function widget_calories_all_icon(fctx, draw, position, align, foreground_color, background_color) {
-  return draw_icon_number_widget(fctx, draw, position, align, foreground_color, background_color, "K", format_unitless(health_service_sum_today(HealthMetricRestingKCalories)+health_service_sum_today(HealthMetricActiveKCalories)), true);
+  return draw_icon_number_widget(fctx, draw, position, align, foreground_color, background_color, "K", format_unitless(health_service_sum_today(HealthMetricRestingKCalories)+health_service_sum_today(HealthMetricActiveKCalories)), true, false);
 }
 function widget_calories_all(fctx, draw, position, align, foreground_color, background_color) {
-  return draw_icon_number_widget(fctx, draw, position, align, foreground_color, background_color, "K", format_unitless(health_service_sum_today(HealthMetricRestingKCalories)+health_service_sum_today(HealthMetricActiveKCalories)), false);
+  return draw_icon_number_widget(fctx, draw, position, align, foreground_color, background_color, "K", format_unitless(health_service_sum_today(HealthMetricRestingKCalories)+health_service_sum_today(HealthMetricActiveKCalories)), false, false);
 }
 function widget_calories_resting_short_icon(fctx, draw, position, align, foreground_color, background_color) {
-  return draw_icon_number_widget(fctx, draw, position, align, foreground_color, background_color, "K", format_thousands(health_service_sum_today(HealthMetricRestingKCalories)), true);
+  return draw_icon_number_widget(fctx, draw, position, align, foreground_color, background_color, "K", format_thousands(health_service_sum_today(HealthMetricRestingKCalories)), true, false);
 }
 function widget_calories_resting_short(fctx, draw, position, align, foreground_color, background_color) {
-  return draw_icon_number_widget(fctx, draw, position, align, foreground_color, background_color, "K", format_thousands(health_service_sum_today(HealthMetricRestingKCalories)), false);
+  return draw_icon_number_widget(fctx, draw, position, align, foreground_color, background_color, "K", format_thousands(health_service_sum_today(HealthMetricRestingKCalories)), false, false);
 }
 function widget_calories_active_short_icon(fctx, draw, position, align, foreground_color, background_color) {
-  return draw_icon_number_widget(fctx, draw, position, align, foreground_color, background_color, "K", format_thousands(health_service_sum_today(HealthMetricActiveKCalories)), true);
+  return draw_icon_number_widget(fctx, draw, position, align, foreground_color, background_color, "K", format_thousands(health_service_sum_today(HealthMetricActiveKCalories)), true, false);
 }
 function widget_calories_active_short(fctx, draw, position, align, foreground_color, background_color) {
-  return draw_icon_number_widget(fctx, draw, position, align, foreground_color, background_color, "K", format_thousands(health_service_sum_today(HealthMetricActiveKCalories)), false);
+  return draw_icon_number_widget(fctx, draw, position, align, foreground_color, background_color, "K", format_thousands(health_service_sum_today(HealthMetricActiveKCalories)), false, false);
 }
 function widget_calories_all_short_icon(fctx, draw, position, align, foreground_color, background_color) {
-  return draw_icon_number_widget(fctx, draw, position, align, foreground_color, background_color, "K", format_thousands(health_service_sum_today(HealthMetricRestingKCalories)+health_service_sum_today(HealthMetricActiveKCalories)), true);
+  return draw_icon_number_widget(fctx, draw, position, align, foreground_color, background_color, "K", format_thousands(health_service_sum_today(HealthMetricRestingKCalories)+health_service_sum_today(HealthMetricActiveKCalories)), true, false);
 }
 function widget_calories_all_short(fctx, draw, position, align, foreground_color, background_color) {
-  return draw_icon_number_widget(fctx, draw, position, align, foreground_color, background_color, "K", format_thousands(health_service_sum_today(HealthMetricRestingKCalories)+health_service_sum_today(HealthMetricActiveKCalories)), false);
+  return draw_icon_number_widget(fctx, draw, position, align, foreground_color, background_color, "K", format_thousands(health_service_sum_today(HealthMetricRestingKCalories)+health_service_sum_today(HealthMetricActiveKCalories)), false, false);
 }
 // -- end autogen
 
@@ -848,13 +871,13 @@ function background_update_proc(layer, ctx) {
         }
     }
     var time_y_offset = PBL_DISPLAY_WIDTH != 144 ? 0 : (height_full-height) / 8;
-    buffer_1 = strftime(config_time_format, new Date(now * 1000));
+    buffer_1 = strftime(config_time_format, t);
     buffer_1 = 
     remove_leading_zero(buffer_1, sizeof(buffer_1));
     var fontsize_time = (width * 9/20); // 1/2.2
     var fontsize_time_real = find_fontsize(fctx, fontsize_time, REM(15), buffer_1);
     draw_string(fctx, buffer_1, FPoint(width / 2, height_full / 2 - fontsize_time_real / 2 - time_y_offset), font_main, config_color_time, fontsize_time_real, GTextAlignmentCenter);
-    buffer_1 = strftime(config_info_below, new Date(now * 1000));
+    buffer_1 = strftime(config_info_below, t);
     buffer_1 = 
     remove_leading_zero(buffer_1, sizeof(buffer_1));
     var fontsize_date = REM(28);

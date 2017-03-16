@@ -105,6 +105,8 @@
 #define MSG_KEY_TZ_1 113
 #define MSG_KEY_FETCH_TZ_2 114
 #define MSG_KEY_TZ_2 115
+#define MSG_KEY_WEATHER_SUNRISE 116
+#define MSG_KEY_WEATHER_SUNSET 117
 #define PERSIST_KEY_WEATHER 201
 #define PERSIST_KEY_TZ 202
 // -- end autogen
@@ -201,7 +203,7 @@ extern bool show_bluetooth_popup;
 extern AppTimer *timer_bluetooth_popup;
 
 // this definition should be updated whenever the Weather struct, or it's semantic meaning changes.  this ensures that no outdated values are read from storage
-#define GRAPHITE_WEATHER_VERSION 2
+#define GRAPHITE_WEATHER_VERSION 3
 // -- autogen
 // -- #define GRAPHITE_WEATHER_PERC_MAX_LEN {{ perc_max_len }}
 #define GRAPHITE_WEATHER_PERC_MAX_LEN 30
@@ -217,6 +219,8 @@ typedef struct {
     uint8_t perc_data[GRAPHITE_WEATHER_PERC_MAX_LEN];
     uint8_t perc_data_len; // maybe not all perc data items are valid
     time_t perc_data_ts;
+    time_t sunrise;
+    time_t sunset;
     bool failed;
 } __attribute__((__packed__)) Weather;
 

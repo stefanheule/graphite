@@ -311,6 +311,8 @@ void inbox_received_handler(DictionaryIterator *iter, void *context) {
     Tuple *perc_data_tuple = dict_find(iter, MSG_KEY_WEATHER_PERC_DATA);
     Tuple *perc_data_ts_tuple = dict_find(iter, MSG_KEY_WEATHER_PERC_DATA_TS);
     Tuple *perc_data_len_tuple = dict_find(iter, MSG_KEY_WEATHER_PERC_DATA_LEN);
+    Tuple *sunrise_tuple = dict_find(iter, MSG_KEY_WEATHER_SUNRISE);
+    Tuple *sunset_tuple = dict_find(iter, MSG_KEY_WEATHER_SUNSET);
     if (icon_tuple && tempcur_tuple && templow_tuple && temphigh_tuple) {
         weather.version = GRAPHITE_WEATHER_VERSION;
         weather.timestamp = time(NULL);
@@ -328,6 +330,14 @@ void inbox_received_handler(DictionaryIterator *iter, void *context) {
         } else {
             weather.perc_data_len = 0;
             weather.perc_data_ts = 0;
+        }
+
+        if (sunrise_tuple && sunset_tuple) {
+            weather.sunrise = sunrise_tuple->value->int32;
+            weather.sunset = sunset_tuple->value->int32;
+        } else {
+            weather.sunrise = 0;
+            weather.sunset = 0;
         }
 
         weather.failed = false;

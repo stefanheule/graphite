@@ -502,7 +502,39 @@ widgets = [
   'desc': 'Additional timezone %d' % (i+1),
   'group': ['TZ'],
   'sort': 500,
-}, range(num_tzs))
+}, range(num_tzs)) + [
+  {
+    'key': 'WIDGET_WEATHER_SUNRISE_ICON0',
+    'desc': 'Sunrise time',
+    'group': ['WEATHER', 'WEATHERSUN'],
+    'sort': 450,
+  },
+  # {
+  #   'key': 'WIDGET_WEATHER_SUNRISE_ICON1',
+  #   'desc': 'Sunrise time (icon on the left)',
+  #   'sort': 450,
+  # },
+  # {
+  #   'key': 'WIDGET_WEATHER_SUNRISE_ICON2',
+  #   'desc': 'Sunrise time (icon on the right)',
+  #   'sort': 450,
+  # },
+  # {
+  #   'key': 'WIDGET_WEATHER_SUNSET_ICON0',
+  #   'desc': 'Sunset time',
+  #   'sort': 450,
+  # },
+  # {
+  #   'key': 'WIDGET_WEATHER_SUNSET_ICON1',
+  #   'desc': 'Sunset time (icon on the left)',
+  #   'sort': 450,
+  # },
+  # {
+  #   'key': 'WIDGET_WEATHER_SUNSET_ICON2',
+  #   'desc': 'Sunset time (icon on the right)',
+  #   'sort': 450,
+  # },
+]
   # {
   #   'key': 'WIDGET_DISTANCE_KM',
   #   'desc': 'Distance walked (km)',
@@ -532,6 +564,10 @@ config_groups = [
   {
     'name': 'TZ',
   },
+  {
+    'name': 'WEATHERSUN',
+    'selector': 'has_widget(ALL_WEATHERSUN_WIDGET_IDS)',
+  },
 ]
 
 msg_keys = [
@@ -545,7 +581,10 @@ msg_keys = [
   'FETCH_WEATHER',
   'WEATHER_FAILED',
   'JS_READY',
-] + [item for sublist in map(lambda i: ['FETCH_TZ_%d' % i, 'TZ_%d' % i], range(num_tzs)) for item in sublist]
+] + [item for sublist in map(lambda i: ['FETCH_TZ_%d' % i, 'TZ_%d' % i], range(num_tzs)) for item in sublist] + [
+  'WEATHER_SUNRISE',
+  'WEATHER_SUNSET',
+]
 
 persist_keys = [
   'WEATHER',
@@ -909,7 +948,7 @@ def c_to_js(f):
       what = rstrformat.group("what")
       fun = rstrformat.group("fun")
       if fun == "strftime":
-        newcontents.append("%s%s = strftime(%s, new Date(now * 1000));" % (indent, target, form))
+        newcontents.append("%s%s = strftime(%s, %s);" % (indent, target, form, what))
       else:
         newcontents.append("%s%s = sprintf(%s, %s);" % (indent, target, form, what))
       continue

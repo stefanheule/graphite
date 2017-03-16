@@ -176,6 +176,10 @@
         <p>Quiet time indicator (two icons for on/off)</p>
         <canvas class="widget" id="widget-preview-11-canvas"></canvas>
       </div>
+      <div class="widget-preview" id="widget-preview-37">
+        <p>Sunrise time</p>
+        <canvas class="widget" id="widget-preview-37-canvas"></canvas>
+      </div>
       <div class="widget-preview" id="widget-preview-34">
         <p>Additional timezone 1</p>
         <canvas class="widget" id="widget-preview-34-canvas"></canvas>
@@ -4204,14 +4208,16 @@
   }
 
   function need_weather() {
-    var load_rain = +readConfig("CONFIG_WEATHER_RAIN_LOCAL");
+      var load_rain = +readConfig("CONFIG_WEATHER_RAIN_LOCAL");
 // -- autogen
 // --     var load_lowhigh = {{ config_groups_lookup["GROUP_WEATHERLOWHIGH"]["selector"] }};
 // --     var load_cur = {{ config_groups_lookup["GROUP_WEATHERCUR"]["selector"] }};
+// --     var load_sun = {{ config_groups_lookup["GROUP_WEATHERSUN"]["selector"] }};
     var load_lowhigh = has_widget([4, 5]);
     var load_cur = has_widget([1, 2, 3]);
+    var load_sun = has_widget([37]);
 // -- end autogen
-    return [load_rain || load_lowhigh || load_cur, load_rain, load_lowhigh, load_cur];
+      return [load_rain || load_lowhigh || load_cur || load_sun, load_rain, load_lowhigh, load_cur, load_sun];
   }
 
   /** Some rules are run every time */
@@ -4247,7 +4253,7 @@
 // --     showHideEl("#{{ key["key"] }}", {{ key["show_only_if"] }});
 // --   ## endif
 // -- ## endfor
-    showHideEl("#GROUP_WEATHER", has_widget([1, 2, 3, 4, 5]));
+    showHideEl("#GROUP_WEATHER", has_widget([1, 2, 3, 4, 5, 37]));
 // -- end autogen
 
     
@@ -4569,6 +4575,7 @@
       $("#widget-preview-33").on("click", function(){ pickComplication(33); });
       $("#widget-preview-10").on("click", function(){ pickComplication(10); });
       $("#widget-preview-11").on("click", function(){ pickComplication(11); });
+      $("#widget-preview-37").on("click", function(){ pickComplication(37); });
       $("#widget-preview-34").on("click", function(){ pickComplication(34); });
       $("#widget-preview-35").on("click", function(){ pickComplication(35); });
       $("#widget-preview-36").on("click", function(){ pickComplication(36); });
@@ -4814,6 +4821,7 @@
       GraphitePreview.previewComplication(33, config, 'widget-preview-33-canvas', getPlatform());
       GraphitePreview.previewComplication(10, config, 'widget-preview-10-canvas', getPlatform());
       GraphitePreview.previewComplication(11, config, 'widget-preview-11-canvas', getPlatform());
+      GraphitePreview.previewComplication(37, config, 'widget-preview-37-canvas', getPlatform());
       GraphitePreview.previewComplication(34, config, 'widget-preview-34-canvas', getPlatform());
       GraphitePreview.previewComplication(35, config, 'widget-preview-35-canvas', getPlatform());
       GraphitePreview.previewComplication(36, config, 'widget-preview-36-canvas', getPlatform());
