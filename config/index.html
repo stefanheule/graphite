@@ -180,6 +180,26 @@
         <p>Sunrise time</p>
         <canvas class="widget" id="widget-preview-37-canvas"></canvas>
       </div>
+      <div class="widget-preview" id="widget-preview-38">
+        <p>Sunrise time (icon on the left)</p>
+        <canvas class="widget" id="widget-preview-38-canvas"></canvas>
+      </div>
+      <div class="widget-preview" id="widget-preview-39">
+        <p>Sunrise time (icon on the right)</p>
+        <canvas class="widget" id="widget-preview-39-canvas"></canvas>
+      </div>
+      <div class="widget-preview" id="widget-preview-40">
+        <p>Sunset time</p>
+        <canvas class="widget" id="widget-preview-40-canvas"></canvas>
+      </div>
+      <div class="widget-preview" id="widget-preview-41">
+        <p>Sunset time (icon on the left)</p>
+        <canvas class="widget" id="widget-preview-41-canvas"></canvas>
+      </div>
+      <div class="widget-preview" id="widget-preview-42">
+        <p>Sunset time (icon on the right)</p>
+        <canvas class="widget" id="widget-preview-42-canvas"></canvas>
+      </div>
       <div class="widget-preview" id="widget-preview-34">
         <p>Additional timezone 1</p>
         <canvas class="widget" id="widget-preview-34-canvas"></canvas>
@@ -4576,6 +4596,11 @@
       $("#widget-preview-10").on("click", function(){ pickComplication(10); });
       $("#widget-preview-11").on("click", function(){ pickComplication(11); });
       $("#widget-preview-37").on("click", function(){ pickComplication(37); });
+      $("#widget-preview-38").on("click", function(){ pickComplication(38); });
+      $("#widget-preview-39").on("click", function(){ pickComplication(39); });
+      $("#widget-preview-40").on("click", function(){ pickComplication(40); });
+      $("#widget-preview-41").on("click", function(){ pickComplication(41); });
+      $("#widget-preview-42").on("click", function(){ pickComplication(42); });
       $("#widget-preview-34").on("click", function(){ pickComplication(34); });
       $("#widget-preview-35").on("click", function(){ pickComplication(35); });
       $("#widget-preview-36").on("click", function(){ pickComplication(36); });
@@ -4822,6 +4847,11 @@
       GraphitePreview.previewComplication(10, config, 'widget-preview-10-canvas', getPlatform());
       GraphitePreview.previewComplication(11, config, 'widget-preview-11-canvas', getPlatform());
       GraphitePreview.previewComplication(37, config, 'widget-preview-37-canvas', getPlatform());
+      GraphitePreview.previewComplication(38, config, 'widget-preview-38-canvas', getPlatform());
+      GraphitePreview.previewComplication(39, config, 'widget-preview-39-canvas', getPlatform());
+      GraphitePreview.previewComplication(40, config, 'widget-preview-40-canvas', getPlatform());
+      GraphitePreview.previewComplication(41, config, 'widget-preview-41-canvas', getPlatform());
+      GraphitePreview.previewComplication(42, config, 'widget-preview-42-canvas', getPlatform());
       GraphitePreview.previewComplication(34, config, 'widget-preview-34-canvas', getPlatform());
       GraphitePreview.previewComplication(35, config, 'widget-preview-35-canvas', getPlatform());
       GraphitePreview.previewComplication(36, config, 'widget-preview-36-canvas', getPlatform());

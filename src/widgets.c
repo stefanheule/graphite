@@ -68,6 +68,11 @@ widget_render_t widgets[] = {
     widget_tz_1, // id 35
     widget_tz_2, // id 36
     widget_weather_sunrise_icon0, // id 37
+    widget_weather_sunrise_icon1, // id 38
+    widget_weather_sunrise_icon2, // id 39
+    widget_weather_sunset_icon0, // id 40
+    widget_weather_sunset_icon1, // id 41
+    widget_weather_sunset_icon2, // id 42
 // -- end autogen
 
 // -- jsalternative
@@ -338,7 +343,7 @@ fixed_t widget_weather_cur_icon(FContext* fctx, bool draw, FPoint position, GTex
 // -- buffer_2 = "";
       buffer_2[0] = 0;
 // -- end jsalternative
-    return draw_weather(fctx, draw, buffer_1, buffer_2, position, foreground_color, fontsize_widgets, align);
+    return draw_weather(fctx, draw, buffer_1, buffer_2, position, foreground_color, fontsize_widgets, align, false);
   }
   return 0;
 }
@@ -352,7 +357,7 @@ fixed_t widget_weather_cur_temp_icon(FContext* fctx, bool draw, FPoint position,
     } else {
         snprintf(buffer_2, 10, "%d°", weather.temp_cur);
     }
-    return draw_weather(fctx, draw, buffer_1, buffer_2, position, foreground_color, fontsize_widgets, align);
+    return draw_weather(fctx, draw, buffer_1, buffer_2, position, foreground_color, fontsize_widgets, align, false);
   }
   return 0;
 }
@@ -366,15 +371,34 @@ fixed_t widget_weather_high_temp(FContext* fctx, bool draw, FPoint position, GTe
 }
 
 
-fixed_t widget_weather_sunrise_icon0(FContext* fctx, bool draw, FPoint position, GTextAlignment align, uint8_t foreground_color, uint8_t background_color) {
+
+fixed_t widget_weather_sunrise_sunset(FContext* fctx, bool draw, FPoint position, GTextAlignment align, uint8_t foreground_color, const char* icon, bool flip, time_t time) {
     if (weather.sunrise == 0) return 0;
-    struct tm *t = localtime(&weather.sunrise);
-    strftime(buffer_1, sizeof(buffer_1), "%I:0%M", t);
+    struct tm *t = localtime(&time);
+    strftime(buffer_1, sizeof(buffer_1), "%H:0%M", t);
 // -- jsalternative
 // --   buffer_1 =
 // -- end jsalternative
     remove_leading_zero(buffer_1, sizeof(buffer_1));
-    return draw_icon_number_widget(fctx, draw, position, align, foreground_color, background_color, "a", buffer_1, true, true);
+    return draw_weather(fctx, draw, icon, buffer_1, position, foreground_color, fontsize_widgets, align, flip);
+}
+fixed_t widget_weather_sunrise_icon0(FContext* fctx, bool draw, FPoint position, GTextAlignment align, uint8_t foreground_color, uint8_t background_color) {
+    return widget_weather_sunrise_sunset(fctx, draw, position, align, foreground_color, "", false, weather.sunrise);
+}
+fixed_t widget_weather_sunrise_icon1(FContext* fctx, bool draw, FPoint position, GTextAlignment align, uint8_t foreground_color, uint8_t background_color) {
+    return widget_weather_sunrise_sunset(fctx, draw, position, align, foreground_color, "a", false, weather.sunrise);
+}
+fixed_t widget_weather_sunrise_icon2(FContext* fctx, bool draw, FPoint position, GTextAlignment align, uint8_t foreground_color, uint8_t background_color) {
+    return widget_weather_sunrise_sunset(fctx, draw, position, align, foreground_color, "a", true, weather.sunrise);
+}
+fixed_t widget_weather_sunset_icon0(FContext* fctx, bool draw, FPoint position, GTextAlignment align, uint8_t foreground_color, uint8_t background_color) {
+    return widget_weather_sunrise_sunset(fctx, draw, position, align, foreground_color, "", false, weather.sunset);
+}
+fixed_t widget_weather_sunset_icon1(FContext* fctx, bool draw, FPoint position, GTextAlignment align, uint8_t foreground_color, uint8_t background_color) {
+    return widget_weather_sunrise_sunset(fctx, draw, position, align, foreground_color, "A", false, weather.sunset);
+}
+fixed_t widget_weather_sunset_icon2(FContext* fctx, bool draw, FPoint position, GTextAlignment align, uint8_t foreground_color, uint8_t background_color) {
+    return widget_weather_sunrise_sunset(fctx, draw, position, align, foreground_color, "A", true, weather.sunset);
 }
 
 

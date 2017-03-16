@@ -91,7 +91,7 @@ void remove_leading_zero(char *buffer, size_t length) {
 }
 // -- end jsalternative
 
-fixed_t draw_weather(FContext* fctx, bool draw, const char* icon, const char* temp, FPoint position, uint8_t color, fixed_t fontsize, GTextAlignment align) {
+fixed_t draw_weather(FContext* fctx, bool draw, const char* icon, const char* temp, FPoint position, uint8_t color, fixed_t fontsize, GTextAlignment align, bool flip_order) {
     fixed_t weather_fontsize = (fixed_t)(fontsize * 23 / 20); // 1.15
     fixed_t w1 = string_width(fctx, icon, font_weather, weather_fontsize);
     fixed_t w2 = string_width(fctx, temp, font_main, fontsize);
@@ -99,17 +99,19 @@ fixed_t draw_weather(FContext* fctx, bool draw, const char* icon, const char* te
     fixed_t w = w1 + w2 + sep;
     GTextAlignment a = GTextAlignmentLeft;
 
+    fixed_t offset1 = flip_order ? w2 + sep : 0;
+    fixed_t offset2 = flip_order ? 0 : w1 + sep;
     if (draw) {
         fixed_t icon_y = position.y + weather_fontsize/8;
         if (align == GTextAlignmentCenter) {
-            draw_string(fctx, icon, FPoint(position.x - w/2, icon_y), font_weather, color, weather_fontsize, a);
-            draw_string(fctx, temp, FPoint(position.x - w/2 + w1 + sep, position.y), font_main, color, fontsize, a);
+            draw_string(fctx, icon, FPoint(position.x - w/2 + offset1, icon_y), font_weather, color, weather_fontsize, a);
+            draw_string(fctx, temp, FPoint(position.x - w/2 + offset2, position.y), font_main, color, fontsize, a);
         } else if (align == GTextAlignmentLeft) {
-            draw_string(fctx, icon, FPoint(position.x, icon_y), font_weather, color, weather_fontsize, a);
-            draw_string(fctx, temp, FPoint(position.x + w1 + sep, position.y), font_main, color, fontsize, a);
+            draw_string(fctx, icon, FPoint(position.x + offset1, icon_y), font_weather, color, weather_fontsize, a);
+            draw_string(fctx, temp, FPoint(position.x + offset2, position.y), font_main, color, fontsize, a);
         } else {
-            draw_string(fctx, icon, FPoint(position.x - w, icon_y), font_weather, color, weather_fontsize, a);
-            draw_string(fctx, temp, FPoint(position.x - w + w1 + sep, position.y), font_main, color, fontsize, a);
+            draw_string(fctx, icon, FPoint(position.x - w + offset1, icon_y), font_weather, color, weather_fontsize, a);
+            draw_string(fctx, temp, FPoint(position.x - w + offset2, position.y), font_main, color, fontsize, a);
         }
     }
 

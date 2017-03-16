@@ -11,8 +11,8 @@ var GraphitePreview = (function () {
         now: 21,
         high: 26,
         icon: "a",
-        sunrise: Math.round((new Date(2017, 1, 1, 6, 22)) / 1000),
-        sunset: Math.round((new Date(2017, 1, 1, 18, 51)) / 1000),
+        sunrise: Math.round((new Date(2017, 1, 1, 6, 51)) / 1000),
+        sunset: Math.round((new Date(2017, 1, 1, 19, 22)) / 1000),
       },
       rain: [20, 0, 10, 12, 10, 20, 40, 45, 60, 100, 100, 20, 0, 0, 0, 0, 0, 0, 0, 50, 40, 30],
       time: function() {
@@ -411,6 +411,11 @@ var widgets = [
     widget_tz_1, // id 35
     widget_tz_2, // id 36
     widget_weather_sunrise_icon0, // id 37
+    widget_weather_sunrise_icon1, // id 38
+    widget_weather_sunrise_icon2, // id 39
+    widget_weather_sunset_icon0, // id 40
+    widget_weather_sunset_icon1, // id 41
+    widget_weather_sunset_icon2, // id 42
 ];
 function widget_tz(fctx, draw, position, align, foreground_color, background_color, tz_id, format) {
     var dat = moment(new Date()).tz(eval("config_tz_" + tz_id + "_local")).format('YYYY-MM-DD HH:mm');
@@ -617,7 +622,7 @@ function widget_weather_cur_icon(fctx, draw, position, align, foreground_color, 
     if (weather.temp_cur == GRAPHITE_UNKNOWN_WEATHER) return 0;
     buffer_1 = sprintf("%c", weather.icon);
 buffer_2 = "";
-    return draw_weather(fctx, draw, buffer_1, buffer_2, position, foreground_color, fontsize_widgets, align);
+    return draw_weather(fctx, draw, buffer_1, buffer_2, position, foreground_color, fontsize_widgets, align, false);
   }
   return 0;
 }
@@ -630,7 +635,7 @@ function widget_weather_cur_temp_icon(fctx, draw, position, align, foreground_co
     } else {
         buffer_2 = sprintf("%d°", weather.temp_cur);
     }
-    return draw_weather(fctx, draw, buffer_1, buffer_2, position, foreground_color, fontsize_widgets, align);
+    return draw_weather(fctx, draw, buffer_1, buffer_2, position, foreground_color, fontsize_widgets, align, false);
   }
   return 0;
 }
@@ -640,13 +645,31 @@ function widget_weather_low_temp(fctx, draw, position, align, foreground_color, 
 function widget_weather_high_temp(fctx, draw, position, align, foreground_color, background_color) {
   return widget_weather_temp(fctx, draw, position, align, foreground_color, weather.temp_high);
 }
-function widget_weather_sunrise_icon0(fctx, draw, position, align, foreground_color, background_color) {
+function widget_weather_sunrise_sunset(fctx, draw, position, align, foreground_color, icon, flip, time) {
     if (weather.sunrise == 0) return 0;
-    var t = localtime(weather.sunrise);
-    buffer_1 = strftime("%I:0%M", t);
+    var t = localtime(time);
+    buffer_1 = strftime("%H:0%M", t);
   buffer_1 =
     remove_leading_zero(buffer_1, sizeof(buffer_1));
-    return draw_icon_number_widget(fctx, draw, position, align, foreground_color, background_color, "a", buffer_1, true, true);
+    return draw_weather(fctx, draw, icon, buffer_1, position, foreground_color, fontsize_widgets, align, flip);
+}
+function widget_weather_sunrise_icon0(fctx, draw, position, align, foreground_color, background_color) {
+    return widget_weather_sunrise_sunset(fctx, draw, position, align, foreground_color, "", false, weather.sunrise);
+}
+function widget_weather_sunrise_icon1(fctx, draw, position, align, foreground_color, background_color) {
+    return widget_weather_sunrise_sunset(fctx, draw, position, align, foreground_color, "a", false, weather.sunrise);
+}
+function widget_weather_sunrise_icon2(fctx, draw, position, align, foreground_color, background_color) {
+    return widget_weather_sunrise_sunset(fctx, draw, position, align, foreground_color, "a", true, weather.sunrise);
+}
+function widget_weather_sunset_icon0(fctx, draw, position, align, foreground_color, background_color) {
+    return widget_weather_sunrise_sunset(fctx, draw, position, align, foreground_color, "", false, weather.sunset);
+}
+function widget_weather_sunset_icon1(fctx, draw, position, align, foreground_color, background_color) {
+    return widget_weather_sunrise_sunset(fctx, draw, position, align, foreground_color, "A", false, weather.sunset);
+}
+function widget_weather_sunset_icon2(fctx, draw, position, align, foreground_color, background_color) {
+    return widget_weather_sunrise_sunset(fctx, draw, position, align, foreground_color, "A", true, weather.sunset);
 }
 function widget_steps_icon(fctx, draw, position, align, foreground_color, background_color) {
   return draw_icon_number_widget(fctx, draw, position, align, foreground_color, background_color, "A", format_unitless(health_service_sum_today(HealthMetricStepCount)), true, false);
@@ -733,24 +756,26 @@ function remove_leading_zero(buffer, length) {
     if (buffer.substring(0, 1) == "0") buffer = buffer.substring(1);
     return buffer.replace(new RegExp("([^0-9])0", 'g'), "$1");
 }
-function draw_weather(fctx, draw, icon, temp, position, color, fontsize, align) {
+function draw_weather(fctx, draw, icon, temp, position, color, fontsize, align, flip_order) {
     var weather_fontsize = (fontsize * 23 / 20); // 1.15
     var w1 = string_width(fctx, icon, font_weather, weather_fontsize);
     var w2 = string_width(fctx, temp, font_main, fontsize);
     var sep = w1 == 0 || w2 == 0 ? REM(0) : REM(2);
     var w = w1 + w2 + sep;
     var a = GTextAlignmentLeft;
+    var offset1 = flip_order ? w2 + sep : 0;
+    var offset2 = flip_order ? 0 : w1 + sep;
     if (draw) {
         var icon_y = position.y + weather_fontsize/8;
         if (align == GTextAlignmentCenter) {
-            draw_string(fctx, icon, FPoint(position.x - w/2, icon_y), font_weather, color, weather_fontsize, a);
-            draw_string(fctx, temp, FPoint(position.x - w/2 + w1 + sep, position.y), font_main, color, fontsize, a);
+            draw_string(fctx, icon, FPoint(position.x - w/2 + offset1, icon_y), font_weather, color, weather_fontsize, a);
+            draw_string(fctx, temp, FPoint(position.x - w/2 + offset2, position.y), font_main, color, fontsize, a);
         } else if (align == GTextAlignmentLeft) {
-            draw_string(fctx, icon, FPoint(position.x, icon_y), font_weather, color, weather_fontsize, a);
-            draw_string(fctx, temp, FPoint(position.x + w1 + sep, position.y), font_main, color, fontsize, a);
+            draw_string(fctx, icon, FPoint(position.x + offset1, icon_y), font_weather, color, weather_fontsize, a);
+            draw_string(fctx, temp, FPoint(position.x + offset2, position.y), font_main, color, fontsize, a);
         } else {
-            draw_string(fctx, icon, FPoint(position.x - w, icon_y), font_weather, color, weather_fontsize, a);
-            draw_string(fctx, temp, FPoint(position.x - w + w1 + sep, position.y), font_main, color, fontsize, a);
+            draw_string(fctx, icon, FPoint(position.x - w + offset1, icon_y), font_weather, color, weather_fontsize, a);
+            draw_string(fctx, temp, FPoint(position.x - w + offset2, position.y), font_main, color, fontsize, a);
         }
     }
     return w;
