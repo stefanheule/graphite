@@ -500,7 +500,7 @@ function concurrentRequests(urls, succ) {
 }
 
 function has_widget(ids) {
-    for (var i = 1; i < 7; i++) {
+    for (var i = 1; i < 13; i++) {
         var id = +readConfig("CONFIG_WIDGET_" + i);
         if (ids.indexOf(id) !== -1) return true;
     }
