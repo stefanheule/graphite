@@ -336,19 +336,11 @@ void background_update_proc(Layer *layer, GContext *ctx) {
 
     // bottom widgets
     fixed_t compl_y = height_full - fontsize_widgets;
-    fixed_t compl_y2 = compl_y - progress_height;
-    fixed_t compl_w;
+    fixed_t compl_y2 = compl_y - progress_height + REM(1);
     bool avoid_progress;
-    // widget 4 (always higher)
     widgets[config_widget_4](fctx, true, FPoint(widgets_margin_leftright, progress_no ? compl_y : compl_y2), GTextAlignmentLeft, config_color_widget_4, config_color_background);
-    // widget 5 (sometimes higher)
-    compl_w = widgets[config_widget_5](fctx, false, FPoint(0,0), GTextAlignmentLeft, config_color_widget_5, config_color_background);
-    avoid_progress = width/2 - compl_w/2 < progress_endx + REM(5);
-    widgets[config_widget_5](fctx, true, FPoint(width/2, avoid_progress ? compl_y2 : compl_y), GTextAlignmentCenter, config_color_widget_5, config_color_background);
-    // widget 6 (sometimes higher)
-    compl_w = widgets[config_widget_6](fctx, false, FPoint(0,0), GTextAlignmentLeft, config_color_widget_6, config_color_background);
-    avoid_progress = width - widgets_margin_leftright - compl_w < progress_endx + REM(5);
-    widgets[config_widget_6](fctx, true, FPoint(width - widgets_margin_leftright, avoid_progress ? compl_y2 : compl_y), GTextAlignmentRight, config_color_widget_6, config_color_background);
+    widgets[config_widget_5](fctx, true, FPoint(width/2, progress_no ? compl_y : compl_y2), GTextAlignmentCenter, config_color_widget_5, config_color_background);
+    widgets[config_widget_6](fctx, true, FPoint(width - widgets_margin_leftright, progress_no ? compl_y : compl_y2), GTextAlignmentRight, config_color_widget_6, config_color_background);
 
     // draw the bluetooth popup
     bool bluetooth = bluetooth_connection_service_peek();
