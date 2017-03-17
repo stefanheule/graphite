@@ -285,14 +285,35 @@ Pebble.addEventListener('webviewclosed', function (e) {
 // -- autogen
 // -- ## for i in range(num_tzs)
 // --     if (has_widget([{{ widgets_lookup["WIDGET_TZ_" + i|string]["id"] }}])) sendTzUpdate({{ i }});
-// --     else delete config["CONFIG_TZ_{{ i }}_FORMAT"];
 // -- ## endfor
     if (has_widget([34])) sendTzUpdate(0);
-    else delete config["CONFIG_TZ_0_FORMAT"];
     if (has_widget([35])) sendTzUpdate(1);
-    else delete config["CONFIG_TZ_1_FORMAT"];
     if (has_widget([36])) sendTzUpdate(2);
-    else delete config["CONFIG_TZ_2_FORMAT"];
+// -- end autogen
+
+    // remove config data that we don't need
+// -- autogen
+// -- ## for key in configuration
+// -- ##   if "show_only_if" in key
+// --     if (!({{ key["show_only_if"] }})) delete config["{{ key["key"] }}"];
+// -- ##   endif
+// -- ## endfor
+    if (!(+readConfig("CONFIG_PROGRESS") != 0)) delete config["CONFIG_COLOR_PROGRESS_BAR"];
+    if (!(+readConfig("CONFIG_PROGRESS") != 0)) delete config["CONFIG_COLOR_PROGRESS_BAR2"];
+    if (!(readConfig("CONFIG_WEATHER_RAIN_LOCAL") == 1 && readConfig("CONFIG_SHOW_DAYNIGHT") == 1)) delete config["CONFIG_COLOR_DAY"];
+    if (!(readConfig("CONFIG_WEATHER_RAIN_LOCAL") == 1 && readConfig("CONFIG_SHOW_DAYNIGHT") == 1)) delete config["CONFIG_COLOR_NIGHT"];
+    if (!(readConfig("CONFIG_LOWBAT_COL") != 0)) delete config["CONFIG_COLOR_BAT_30"];
+    if (!(readConfig("CONFIG_LOWBAT_COL") != 0)) delete config["CONFIG_COLOR_BAT_20"];
+    if (!(readConfig("CONFIG_LOWBAT_COL") != 0)) delete config["CONFIG_COLOR_BAT_10"];
+    if (!(readConfig("CONFIG_WEATHER_RAIN_LOCAL") == 1)) delete config["CONFIG_SHOW_DAYNIGHT"];
+    if (!(readConfig("CONFIG_PROGRESS") == 1)) delete config["CONFIG_STEP_GOAL"];
+    if (!(has_widget([34]))) delete config["CONFIG_TZ_0_LOCAL"];
+    if (!(has_widget([35]))) delete config["CONFIG_TZ_1_LOCAL"];
+    if (!(has_widget([36]))) delete config["CONFIG_TZ_2_LOCAL"];
+    if (!(has_widget([34]))) delete config["CONFIG_TZ_0_FORMAT"];
+    if (!(has_widget([35]))) delete config["CONFIG_TZ_1_FORMAT"];
+    if (!(has_widget([36]))) delete config["CONFIG_TZ_2_FORMAT"];
+    if (!(has_widget([37, 38, 39, 40, 41, 42]))) delete config["CONFIG_SUNRISE_FORMAT"];
 // -- end autogen
 
     Pebble.sendAppMessage(config, function () {
