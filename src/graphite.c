@@ -251,6 +251,7 @@ void handle_battery(BatteryChargeState new_state) {
 }
 
 void end_tap(void* data) {
+    timer_tap = NULL;
     show_secondary_widgets = false;
     layer_mark_dirty(layer_background);
 }
@@ -258,9 +259,9 @@ void end_tap(void* data) {
 void handle_tap(AccelAxisType axis, int32_t direction) {
     show_secondary_widgets = true;
     if (timer_tap) {
-        app_timer_reschedule(timer_tap, GRAPHITE_BLUETOOTH_POPUP_MS);
+        app_timer_reschedule(timer_tap, 2500);
     } else {
-        timer_tap = app_timer_register(GRAPHITE_BLUETOOTH_POPUP_MS, end_tap,
+        timer_tap = app_timer_register(2500, end_tap,
                                                    NULL);
     }
     layer_mark_dirty(layer_background);
