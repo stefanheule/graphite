@@ -3395,7 +3395,7 @@
           </span>
         </label>
       </div>
-      <div class='item-container-content'>
+      <div class='item-container-content' id="widgets_2nd2">
         <label class='item'>
           Bottom
           <span style="float:right;">
@@ -4344,7 +4344,8 @@
 // -- end autogen
 
     showHideEl("#weather-warning", need_weather()[0] && +readConfig("CONFIG_WEATHER_SOURCE_LOCAL") == 1);
-    showHideEl("#widgets_2nd", readConfig("CONFIG_2ND_WIDGETS"))
+    showHideEl("#widgets_2nd", readConfig("CONFIG_2ND_WIDGETS"));
+    showHideEl("#widgets_2nd2", readConfig("CONFIG_2ND_WIDGETS"));
   }
 
   function allSame(array) {
