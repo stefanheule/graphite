@@ -108,6 +108,8 @@ var GraphitePreview = (function () {
      var config_widget_10;
      var config_widget_11;
      var config_widget_12;
+     var config_timeout_2nd_widgets;
+     var config_2nd_widgets;
 // -- end autogen
 
     function get(k) {
@@ -343,6 +345,8 @@ var GraphitePreview = (function () {
         config_widget_10 = config["CONFIG_WIDGET_10"];
         config_widget_11 = config["CONFIG_WIDGET_11"];
         config_widget_12 = config["CONFIG_WIDGET_12"];
+        config_timeout_2nd_widgets = config["CONFIG_TIMEOUT_2ND_WIDGETS"];
+        config_2nd_widgets = config["CONFIG_2ND_WIDGETS"];
 // -- end autogen
 
         weather = getWeather(platform);
@@ -951,7 +955,7 @@ function background_update_proc(layer, ctx) {
     var w4 = config_widget_4;
     var w5 = config_widget_5;
     var w6 = config_widget_6;
-    if (show_secondary_widgets) {
+    if (show_secondary_widgets && config_2nd_widgets) {
         w1 = config_widget_7;
         w2 = config_widget_8;
         w3 = config_widget_9;
@@ -966,7 +970,6 @@ function background_update_proc(layer, ctx) {
     widgets[w3](fctx, true, FPoint(width - widgets_margin_leftright, widgets_margin_topbottom), GTextAlignmentRight, config_color_widget_3, config_color_topbar_bg_local);
     var compl_y = height_full - fontsize_widgets;
     var compl_y2 = compl_y - progress_height + REM(1);
-    var avoid_progress;
     widgets[w4](fctx, true, FPoint(widgets_margin_leftright, progress_no ? compl_y : compl_y2), GTextAlignmentLeft, config_color_widget_4, config_color_background);
     widgets[w5](fctx, true, FPoint(width / 2, progress_no ? compl_y : compl_y2), GTextAlignmentCenter, config_color_widget_5, config_color_background);
     widgets[w6](fctx, true, FPoint(width - widgets_margin_leftright, progress_no ? compl_y : compl_y2), GTextAlignmentRight, config_color_widget_6, config_color_background);
@@ -1127,6 +1130,8 @@ function background_update_proc(layer, ctx) {
             CONFIG_WIDGET_10: +0,
             CONFIG_WIDGET_11: +0,
             CONFIG_WIDGET_12: +32,
+            CONFIG_TIMEOUT_2ND_WIDGETS: +3000,
+            CONFIG_2ND_WIDGETS: +true,
 // -- end autogen
         };
         return cloneConfig(defaults);
@@ -1202,6 +1207,8 @@ function background_update_proc(layer, ctx) {
             CONFIG_WIDGET_10: +35,
             CONFIG_WIDGET_11: +0,
             CONFIG_WIDGET_12: +32,
+            CONFIG_TIMEOUT_2ND_WIDGETS: +3000,
+            CONFIG_2ND_WIDGETS: +true,
 // -- end autogen
         };
         return cloneConfig(defaults);

@@ -3379,7 +3379,13 @@
 
 
       <div class='item-container-header'>Secondary Widgets</div>
-      <div class='item-container-content'>
+      <div class="item-container-content">
+        <label class="item">
+          Activate secondary widgets after shaking the Pebble
+          <input id='CONFIG_2ND_WIDGETS' type='checkbox' class='item-toggle'>
+        </label>
+      </div>
+      <div class='item-container-content' id="widgets_2nd">
         <label class='item'>
           Top
           <span style="float:right;">
@@ -3397,6 +3403,15 @@
             <canvas class="widget" id="widget11"></canvas>
             <canvas class="widget" id="widget12"></canvas>
           </span>
+        </label>
+      </div>
+
+      <div class="item-container-content">
+        <label class="item">
+          Secondary widget timeout (milliseconds)
+          <div class="item-input-wrapper">
+            <input type="text" class="item-input" id='CONFIG_TIMEOUT_2ND_WIDGETS'>
+          </div>
         </label>
       </div>
 
@@ -3924,6 +3939,7 @@
   function has_widget(ids) {
     for (var i = 1; i < 13; i++) {
       var id = +readConfig("CONFIG_WIDGET_" + i);
+      if (id > 6 && !readConfig("CONFIG_2ND_WIDGETS")) return false;
       if (ids.indexOf(id) !== -1) return true;
     }
     return false;
@@ -4140,6 +4156,8 @@
         "CONFIG_WIDGET_10": 59,
         "CONFIG_WIDGET_11": 60,
         "CONFIG_WIDGET_12": 61,
+        "CONFIG_TIMEOUT_2ND_WIDGETS": 62,
+        "CONFIG_2ND_WIDGETS": 63,
 // -- end autogen
     };
 
@@ -4312,6 +4330,7 @@
     showHideOption("CONFIG_TZ_1_FORMAT", has_widget([35]));
     showHideOption("CONFIG_TZ_2_FORMAT", has_widget([36]));
     showHideOption("CONFIG_SUNRISE_FORMAT", has_widget([37, 38, 39, 40, 41, 42]));
+    showHideOption("CONFIG_TIMEOUT_2ND_WIDGETS", readConfig("CONFIG_2ND_WIDGETS"));
     $('#tz_format_help').toggle(has_widget([34, 35, 36]));
 // -- end autogen
 
@@ -4324,8 +4343,8 @@
     showHideEl("#GROUP_WEATHER", has_widget([1, 2, 3, 4, 5, 37, 38, 39, 40, 41, 42]));
 // -- end autogen
 
-    
     showHideEl("#weather-warning", need_weather()[0] && +readConfig("CONFIG_WEATHER_SOURCE_LOCAL") == 1);
+    showHideEl("#widgets_2nd", readConfig("CONFIG_2ND_WIDGETS"))
   }
 
   function allSame(array) {

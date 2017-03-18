@@ -259,6 +259,7 @@ ConfigKeyAddr config_ka_8bit[] = {
     { .key = CONFIG_WIDGET_10, .var = &config_widget_10 },
     { .key = CONFIG_WIDGET_11, .var = &config_widget_11 },
     { .key = CONFIG_WIDGET_12, .var = &config_widget_12 },
+    { .key = CONFIG_2ND_WIDGETS, .var = &config_2nd_widgets },
 // -- end autogen
 };
 ConfigKeyAddr config_ka_16bit[] = {
@@ -272,6 +273,7 @@ ConfigKeyAddr config_ka_16bit[] = {
     { .key = CONFIG_WEATHER_EXPIRATION, .var = &config_weather_expiration },
     { .key = CONFIG_WEATHER_REFRESH_FAILED, .var = &config_weather_refresh_failed },
     { .key = CONFIG_STEP_GOAL, .var = &config_step_goal },
+    { .key = CONFIG_TIMEOUT_2ND_WIDGETS, .var = &config_timeout_2nd_widgets },
 // -- end autogen
 };
 ConfigKeyAddr config_ka_string[] = {
@@ -381,6 +383,7 @@ void inbox_received_handler(DictionaryIterator *iter, void *context) {
     if (dirty) {
         // make sure we update tick frequency if necessary
         subscribe_tick(true);
+        subscribe_tap();
         layer_mark_dirty(layer_background);
     }
     if (ask_for_weather_update) {

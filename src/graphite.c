@@ -79,6 +79,8 @@ uint8_t config_widget_9 = 42;
 uint8_t config_widget_10 = 0;
 uint8_t config_widget_11 = 0;
 uint8_t config_widget_12 = 32;
+uint16_t config_timeout_2nd_widgets = 3000;
+uint8_t config_2nd_widgets = true;
 // -- end autogen
 
 
@@ -123,6 +125,7 @@ TimeZoneInfo tzinfo;
 
 /** Timer for taps. */
 AppTimer *timer_tap;
+bool tap_subscribed = false;
 
 /** Should we show the secondary set of widgets? */
 bool show_secondary_widgets;
@@ -259,12 +262,22 @@ void end_tap(void* data) {
 void handle_tap(AccelAxisType axis, int32_t direction) {
     show_secondary_widgets = true;
     if (timer_tap) {
-        app_timer_reschedule(timer_tap, 2500);
+        app_timer_reschedule(timer_tap, config_timeout_2nd_widgets);
     } else {
-        timer_tap = app_timer_register(2500, end_tap,
+        timer_tap = app_timer_register(config_timeout_2nd_widgets, end_tap,
                                                    NULL);
     }
     layer_mark_dirty(layer_background);
+}
+
+void subscribe_tap() {
+    if (tap_subscribed) {
+        accel_tap_service_unsubscribe();
+        tap_subscribed = false;
+    }
+    if (!config_2nd_widgets) return;
+    accel_tap_service_subscribe(handle_tap);
+    tap_subscribed = true;
 }
 
 /**
@@ -285,8 +298,7 @@ void init() {
     subscribe_tick(false);
     bluetooth_connection_service_subscribe(handle_bluetooth);
     battery_state_service_subscribe(handle_battery);
-
-    accel_tap_service_subscribe(handle_tap);
+    subscribe_tap();
 
     app_message_open(GRAPHITE_INBOX_SIZE, GRAPHITE_OUTBOX_SIZE);
     app_message_register_inbox_received(inbox_received_handler);

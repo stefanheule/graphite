@@ -341,6 +341,16 @@ configuration = [
     'key': 'CONFIG_WIDGET_12',
     'default': 'WIDGET_BATTERY_TEXT',
   },
+  {
+    'key': 'CONFIG_TIMEOUT_2ND_WIDGETS',
+    'default': '3000',
+    'type': 'uint16_t',
+    'show_only_if': 'readConfig("CONFIG_2ND_WIDGETS")',
+  },
+  {
+    'key': 'CONFIG_2ND_WIDGETS',
+    'default': 'true',
+  },
 ]
 
 simple_config = [

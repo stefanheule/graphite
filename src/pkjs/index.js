@@ -50,7 +50,7 @@ Pebble.addEventListener('showConfiguration', function () {
 // -- end autogen
     url = 'https://rawgit.com/stefanheule/graphite/master/config/';
 
-    // url = 'https://local.com/graphite/config/0/index.html';
+    url = 'https://local.com/graphite/config/0/index.html';
 
     url += '?platform=' + encodeURIComponent(getPlatform());
     url += '&wtoken=' + encodeURIComponent(getWToken());
@@ -266,6 +266,12 @@ Pebble.addEventListener('webviewclosed', function (e) {
     fullconfig["CONFIG_WIDGET_12"] = urlconfig[61];
     config["CONFIG_WIDGET_12"] = +urlconfig[61];
     localStorage.setItem("CONFIG_WIDGET_12", urlconfig[61]);
+    fullconfig["CONFIG_TIMEOUT_2ND_WIDGETS"] = urlconfig[62];
+    config["CONFIG_TIMEOUT_2ND_WIDGETS"] = +urlconfig[62];
+    localStorage.setItem("CONFIG_TIMEOUT_2ND_WIDGETS", urlconfig[62]);
+    fullconfig["CONFIG_2ND_WIDGETS"] = urlconfig[63];
+    config["CONFIG_2ND_WIDGETS"] = +urlconfig[63];
+    localStorage.setItem("CONFIG_2ND_WIDGETS", urlconfig[63]);
 // -- end autogen
 
     // don't allow really small values for refresh rate
@@ -314,6 +320,7 @@ Pebble.addEventListener('webviewclosed', function (e) {
     if (!(has_widget([35]))) delete config["CONFIG_TZ_1_FORMAT"];
     if (!(has_widget([36]))) delete config["CONFIG_TZ_2_FORMAT"];
     if (!(has_widget([37, 38, 39, 40, 41, 42]))) delete config["CONFIG_SUNRISE_FORMAT"];
+    if (!(readConfig("CONFIG_2ND_WIDGETS"))) delete config["CONFIG_TIMEOUT_2ND_WIDGETS"];
 // -- end autogen
 
     Pebble.sendAppMessage(config, function () {
@@ -527,6 +534,7 @@ function concurrentRequests(urls, succ) {
 function has_widget(ids) {
     for (var i = 1; i < 13; i++) {
         var id = +readConfig("CONFIG_WIDGET_" + i);
+        if (id > 6 && !readConfig("CONFIG_2ND_WIDGETS")) return false;
         if (ids.indexOf(id) !== -1) return true;
     }
     return false;

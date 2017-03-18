@@ -333,7 +333,7 @@ void background_update_proc(Layer *layer, GContext *ctx) {
     uint8_t w4 = config_widget_4;
     uint8_t w5 = config_widget_5;
     uint8_t w6 = config_widget_6;
-    if (show_secondary_widgets) {
+    if (show_secondary_widgets && config_2nd_widgets) {
         w1 = config_widget_7;
         w2 = config_widget_8;
         w3 = config_widget_9;
@@ -352,7 +352,6 @@ void background_update_proc(Layer *layer, GContext *ctx) {
     // bottom widgets
     fixed_t compl_y = height_full - fontsize_widgets;
     fixed_t compl_y2 = compl_y - progress_height + REM(1);
-    bool avoid_progress;
     widgets[w4](fctx, true, FPoint(widgets_margin_leftright, progress_no ? compl_y : compl_y2), GTextAlignmentLeft, config_color_widget_4, config_color_background);
     widgets[w5](fctx, true, FPoint(width / 2, progress_no ? compl_y : compl_y2), GTextAlignmentCenter, config_color_widget_5, config_color_background);
     widgets[w6](fctx, true, FPoint(width - widgets_margin_leftright, progress_no ? compl_y : compl_y2), GTextAlignmentRight, config_color_widget_6, config_color_background);

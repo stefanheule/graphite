@@ -85,11 +85,13 @@
 #define CONFIG_WIDGET_10 59
 #define CONFIG_WIDGET_11 60
 #define CONFIG_WIDGET_12 61
+#define CONFIG_TIMEOUT_2ND_WIDGETS 62
+#define CONFIG_2ND_WIDGETS 63
 // -- end autogen
 
 // -- autogen
 // -- #define GRAPHITE_N_CONFIG {{ num_config_items }}
-#define GRAPHITE_N_CONFIG 61
+#define GRAPHITE_N_CONFIG 63
 // -- end autogen
 
 // -- autogen
@@ -184,6 +186,8 @@ extern uint8_t config_widget_9;
 extern uint8_t config_widget_10;
 extern uint8_t config_widget_11;
 extern uint8_t config_widget_12;
+extern uint16_t config_timeout_2nd_widgets;
+extern uint8_t config_2nd_widgets;
 // -- end autogen
 
 
