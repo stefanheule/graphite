@@ -136,8 +136,8 @@ font_build:
 	node_modules/pebble-fctx-compiler/fctx-compiler.js -r "." resources/fonts/fasubset.svg
 
 library_dl:
-	wget http://momentjs.com/downloads/moment.min.js -O src/pkjs/moment.js
-	wget http://momentjs.com/downloads/moment-timezone-with-data-2010-2020.min.js -O src/pkjs/moment-timezone.js
+	wget https://momentjs.com/downloads/moment.min.js -O src/pkjs/moment.js
+	wget https://momentjs.com/downloads/moment-timezone-with-data-2012-2022.min.js -O src/pkjs/moment-timezone.js
 
 coverity_scan:
 	make clean
