@@ -351,6 +351,11 @@ configuration = [
     'key': 'CONFIG_2ND_WIDGETS',
     'default': 'true',
   },
+  {
+    'key': 'CONFIG_WEATHER_SUNRISE_EXPIRATION',
+    'default': '48*60',
+    'type': 'uint16_t',
+  },
 ]
 
 simple_config = [

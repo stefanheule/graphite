@@ -373,7 +373,9 @@ fixed_t widget_weather_high_temp(FContext* fctx, bool draw, FPoint position, GTe
 
 
 fixed_t widget_weather_sunrise_sunset(FContext* fctx, bool draw, FPoint position, GTextAlignment align, uint8_t foreground_color, const char* icon, bool flip, time_t time) {
+    if (!show_weather_impl(config_weather_sunrise_expiration)) return 0;
     if (weather.sunrise == 0) return 0;
+
     struct tm *t = localtime(&time);
     strftime(buffer_1, sizeof(buffer_1), config_sunrise_format, t);
 // -- jsalternative

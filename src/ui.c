@@ -120,9 +120,12 @@ fixed_t draw_weather(FContext* fctx, bool draw, const char* icon, const char* te
 
 /** Should the weather information be shown (based on whether it's enabled, available and up-to-date). */
 bool show_weather() {
+    return show_weather_impl(config_weather_expiration);
+}
+bool show_weather_impl(uint16_t timeout) {
     bool weather_is_on = config_weather_refresh > 0;
     bool weather_is_available = weather.timestamp > 0;
-    bool weather_is_outdated = (time(NULL) - weather.timestamp) > (config_weather_expiration * 60);
+    bool weather_is_outdated = (time(NULL) - weather.timestamp) > (timeout * 60);
     bool show_weather = weather_is_on && weather_is_available && !weather_is_outdated;
     return show_weather;
 }

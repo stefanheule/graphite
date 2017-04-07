@@ -274,6 +274,7 @@ ConfigKeyAddr config_ka_16bit[] = {
     { .key = CONFIG_WEATHER_REFRESH_FAILED, .var = &config_weather_refresh_failed },
     { .key = CONFIG_STEP_GOAL, .var = &config_step_goal },
     { .key = CONFIG_TIMEOUT_2ND_WIDGETS, .var = &config_timeout_2nd_widgets },
+    { .key = CONFIG_WEATHER_SUNRISE_EXPIRATION, .var = &config_weather_sunrise_expiration },
 // -- end autogen
 };
 ConfigKeyAddr config_ka_string[] = {

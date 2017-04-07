@@ -110,6 +110,7 @@ var GraphitePreview = (function () {
      var config_widget_12;
      var config_timeout_2nd_widgets;
      var config_2nd_widgets;
+     var config_weather_sunrise_expiration;
 // -- end autogen
 
     function get(k) {
@@ -347,6 +348,7 @@ var GraphitePreview = (function () {
         config_widget_12 = config["CONFIG_WIDGET_12"];
         config_timeout_2nd_widgets = config["CONFIG_TIMEOUT_2ND_WIDGETS"];
         config_2nd_widgets = config["CONFIG_2ND_WIDGETS"];
+        config_weather_sunrise_expiration = config["CONFIG_WEATHER_SUNRISE_EXPIRATION"];
 // -- end autogen
 
         weather = getWeather(platform);
@@ -666,6 +668,10 @@ function widget_weather_high_temp(fctx, draw, position, align, foreground_color,
 }
 function widget_weather_sunrise_sunset(fctx, draw, position, align, foreground_color, icon, flip, time) {
     if (weather.sunrise == 0) return 0;
+    var weather_is_on = config_weather_refresh > 0;
+    var weather_is_available = weather.timestamp > 0;
+    var weather_is_outdated = (time(NULL) - weather.timestamp) > (config_weather_sunrise_expiration * 60);
+    var show_weather = weather_is_on && weather_is_available && !weather_is_outdated;
     var t = localtime(time);
     buffer_1 = strftime(config_sunrise_format, t);
   buffer_1 =
@@ -1132,6 +1138,7 @@ function background_update_proc(layer, ctx) {
             CONFIG_WIDGET_12: +32,
             CONFIG_TIMEOUT_2ND_WIDGETS: +3000,
             CONFIG_2ND_WIDGETS: +true,
+            CONFIG_WEATHER_SUNRISE_EXPIRATION: +48*60,
 // -- end autogen
         };
         return cloneConfig(defaults);
@@ -1209,6 +1216,7 @@ function background_update_proc(layer, ctx) {
             CONFIG_WIDGET_12: +32,
             CONFIG_TIMEOUT_2ND_WIDGETS: +3000,
             CONFIG_2ND_WIDGETS: +true,
+            CONFIG_WEATHER_SUNRISE_EXPIRATION: +48*60,
 // -- end autogen
         };
         return cloneConfig(defaults);

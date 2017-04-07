@@ -272,6 +272,9 @@ Pebble.addEventListener('webviewclosed', function (e) {
     fullconfig["CONFIG_2ND_WIDGETS"] = urlconfig[63];
     config["CONFIG_2ND_WIDGETS"] = +urlconfig[63];
     localStorage.setItem("CONFIG_2ND_WIDGETS", urlconfig[63]);
+    fullconfig["CONFIG_WEATHER_SUNRISE_EXPIRATION"] = urlconfig[64];
+    config["CONFIG_WEATHER_SUNRISE_EXPIRATION"] = +urlconfig[64];
+    localStorage.setItem("CONFIG_WEATHER_SUNRISE_EXPIRATION", urlconfig[64]);
 // -- end autogen
 
     // don't allow really small values for refresh rate

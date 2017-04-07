@@ -87,11 +87,12 @@
 #define CONFIG_WIDGET_12 61
 #define CONFIG_TIMEOUT_2ND_WIDGETS 62
 #define CONFIG_2ND_WIDGETS 63
+#define CONFIG_WEATHER_SUNRISE_EXPIRATION 64
 // -- end autogen
 
 // -- autogen
 // -- #define GRAPHITE_N_CONFIG {{ num_config_items }}
-#define GRAPHITE_N_CONFIG 63
+#define GRAPHITE_N_CONFIG 64
 // -- end autogen
 
 // -- autogen
@@ -188,6 +189,7 @@ extern uint8_t config_widget_11;
 extern uint8_t config_widget_12;
 extern uint16_t config_timeout_2nd_widgets;
 extern uint8_t config_2nd_widgets;
+extern uint16_t config_weather_sunrise_expiration;
 // -- end autogen
 
 
