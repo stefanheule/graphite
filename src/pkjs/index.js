@@ -50,7 +50,7 @@ Pebble.addEventListener('showConfiguration', function () {
 // -- end autogen
     url = 'https://rawgit.com/stefanheule/graphite/master/config/';
 
-    url = 'https://local.com/graphite/config/0/index.html';
+    // url = 'https://local.com/graphite/config/0/index.html';
 
     url += '?platform=' + encodeURIComponent(getPlatform());
     url += '&wtoken=' + encodeURIComponent(getWToken());

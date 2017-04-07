@@ -17,8 +17,6 @@ VERSION=$(shell cat package.json | grep version | grep -o "[0-9][0-9]*\.[0-9][0-
 
 all: build install_emulator
 
-deploy: install_deploy
-
 release:
 	@status=$$(git status --porcelain -uno); \
 	if test "x$${status}" = x; then \
@@ -76,6 +74,7 @@ log:
 install_emulator:
 	pebble install --emulator $(P)
 
+deploy: install_deploy
 install_deploy:
 	pebble install --phone $(GRAPHITE_PHONE_IP)
 
