@@ -138,6 +138,8 @@ font_build:
 library_dl:
 	wget https://momentjs.com/downloads/moment.min.js -O src/pkjs/moment.js
 	wget https://momentjs.com/downloads/moment-timezone-with-data-2012-2022.min.js -O src/pkjs/moment-timezone.js
+	sed -i -e 's/require("moment")/require(".\/moment")/g' src/pkjs/moment-timezone.js
+	sed -i -e 's/define(\["moment"\],b)/define([".\/moment"],b)/g' src/pkjs/moment-timezone.js
 
 coverity_scan:
 	make clean
