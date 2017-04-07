@@ -353,7 +353,7 @@ configuration = [
   },
   {
     'key': 'CONFIG_WEATHER_SUNRISE_EXPIRATION',
-    'default': '48*60',
+    'default': '48',
     'type': 'uint16_t',
   },
   {
