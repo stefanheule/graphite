@@ -201,9 +201,11 @@ void background_update_proc(Layer *layer, GContext *ctx) {
             override_col = config_color_bat_30;
         }
     }
+// -- jsalternative
     if (config_quiet_col && quiet_time_is_active()) {
         override_col = config_color_quiet_mode;
     }
+// -- end jsalternative
     if (override_col != -1) {
 // -- autogen
 // -- ## for dep in simple_config_lookup["SIMPLECONFIG_COLOR_ACCENT"]["depends"]

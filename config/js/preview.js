@@ -866,9 +866,6 @@ function background_update_proc(layer, ctx) {
             override_col = config_color_bat_30;
         }
     }
-    if (config_quiet_col && quiet_time_is_active()) {
-        override_col = config_color_quiet_mode;
-    }
     if (override_col != -1) {
           config_color_topbar_bg_local = override_col;
           config_color_info_below_local = override_col;
