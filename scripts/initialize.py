@@ -356,6 +356,18 @@ configuration = [
     'default': '48*60',
     'type': 'uint16_t',
   },
+  {
+    'key': 'CONFIG_COLOR_QUIET_MODE',
+    'default': 'GColorLavenderIndigo',
+    'desc': '',
+    'show_only_if': 'readConfig("CONFIG_QUIET_COL") != 0',
+    'dont_show_in_main_color_section': True,
+  },
+  {
+    'key': 'CONFIG_QUIET_COL',
+    'default': 'false',
+    'mydefault': 'true',
+  },
 ]
 
 simple_config = [

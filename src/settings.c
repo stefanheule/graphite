@@ -260,6 +260,8 @@ ConfigKeyAddr config_ka_8bit[] = {
     { .key = CONFIG_WIDGET_11, .var = &config_widget_11 },
     { .key = CONFIG_WIDGET_12, .var = &config_widget_12 },
     { .key = CONFIG_2ND_WIDGETS, .var = &config_2nd_widgets },
+    { .key = CONFIG_COLOR_QUIET_MODE, .var = &config_color_quiet_mode },
+    { .key = CONFIG_QUIET_COL, .var = &config_quiet_col },
 // -- end autogen
 };
 ConfigKeyAddr config_ka_16bit[] = {

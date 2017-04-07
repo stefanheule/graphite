@@ -3783,6 +3783,26 @@
     </div>
 
 
+    <div class='item-container'>
+      <div class='item-container-header'>Quiet Mode</div>
+
+      <div class='item-container-content'>
+        <label class='item'>
+          Change accent color at when quiet mode is on
+          <input id='CONFIG_QUIET_COL' type='checkbox' class='item-toggle'>
+        </label>
+      </div>
+
+      <div class="item-container-content">
+        <label class='item'>
+          Accent color during quiet mode
+          <input id='CONFIG_COLOR_QUIET_MODE' type='text' class='item-color item-color-normal'>
+        </label>
+      </div>
+
+    </div>
+
+
 
     <div class='item-container'>
       <div class='button-container'>
@@ -4168,6 +4188,8 @@
         "CONFIG_TIMEOUT_2ND_WIDGETS": 62,
         "CONFIG_2ND_WIDGETS": 63,
         "CONFIG_WEATHER_SUNRISE_EXPIRATION": 64,
+        "CONFIG_COLOR_QUIET_MODE": 65,
+        "CONFIG_QUIET_COL": 66,
 // -- end autogen
     };
 
@@ -4341,6 +4363,7 @@
     showHideOption("CONFIG_TZ_2_FORMAT", has_widget([36]));
     showHideOption("CONFIG_SUNRISE_FORMAT", has_widget([37, 38, 39, 40, 41, 42]));
     showHideOption("CONFIG_TIMEOUT_2ND_WIDGETS", readConfig("CONFIG_2ND_WIDGETS"));
+    showHideOption("CONFIG_COLOR_QUIET_MODE", readConfig("CONFIG_QUIET_COL") != 0);
     $('#tz_format_help').toggle(has_widget([34, 35, 36]));
 // -- end autogen
 

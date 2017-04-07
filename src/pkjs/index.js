@@ -275,6 +275,12 @@ Pebble.addEventListener('webviewclosed', function (e) {
     fullconfig["CONFIG_WEATHER_SUNRISE_EXPIRATION"] = urlconfig[64];
     config["CONFIG_WEATHER_SUNRISE_EXPIRATION"] = +urlconfig[64];
     localStorage.setItem("CONFIG_WEATHER_SUNRISE_EXPIRATION", urlconfig[64]);
+    fullconfig["CONFIG_COLOR_QUIET_MODE"] = urlconfig[65];
+    config["CONFIG_COLOR_QUIET_MODE"] = +urlconfig[65];
+    localStorage.setItem("CONFIG_COLOR_QUIET_MODE", urlconfig[65]);
+    fullconfig["CONFIG_QUIET_COL"] = urlconfig[66];
+    config["CONFIG_QUIET_COL"] = +urlconfig[66];
+    localStorage.setItem("CONFIG_QUIET_COL", urlconfig[66]);
 // -- end autogen
 
     // don't allow really small values for refresh rate
@@ -324,6 +330,7 @@ Pebble.addEventListener('webviewclosed', function (e) {
     if (!(has_widget([36]))) delete config["CONFIG_TZ_2_FORMAT"];
     if (!(has_widget([37, 38, 39, 40, 41, 42]))) delete config["CONFIG_SUNRISE_FORMAT"];
     if (!(readConfig("CONFIG_2ND_WIDGETS"))) delete config["CONFIG_TIMEOUT_2ND_WIDGETS"];
+    if (!(readConfig("CONFIG_QUIET_COL") != 0)) delete config["CONFIG_COLOR_QUIET_MODE"];
 // -- end autogen
 
     Pebble.sendAppMessage(config, function () {

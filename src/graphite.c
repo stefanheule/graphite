@@ -82,6 +82,8 @@ uint8_t config_widget_12 = 32;
 uint16_t config_timeout_2nd_widgets = 3000;
 uint8_t config_2nd_widgets = true;
 uint16_t config_weather_sunrise_expiration = 48*60;
+uint8_t config_color_quiet_mode = GColorLavenderIndigo;
+uint8_t config_quiet_col = false;
 // -- end autogen
 
 

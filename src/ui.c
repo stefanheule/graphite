@@ -191,35 +191,28 @@ void background_update_proc(Layer *layer, GContext *ctx) {
     uint8_t config_color_info_below_local = config_color_info_below;
     uint8_t config_color_progress_bar_local = config_color_progress_bar;
 // -- end autogen
+    int16_t override_col = -1;
     if (config_lowbat_col) {
         if (battery_state.charge_percent <= 10) {
-// -- autogen
-// -- ## for dep in simple_config_lookup["SIMPLECONFIG_COLOR_ACCENT"]["depends"]
-// --           {{ dep | lower }}_local = config_color_bat_10;
-// -- ## endfor
-          config_color_topbar_bg_local = config_color_bat_10;
-          config_color_info_below_local = config_color_bat_10;
-          config_color_progress_bar_local = config_color_bat_10;
-// -- end autogen
+            override_col = config_color_bat_10;
         } else if (battery_state.charge_percent <= 20) {
-// -- autogen
-// -- ## for dep in simple_config_lookup["SIMPLECONFIG_COLOR_ACCENT"]["depends"]
-// --           {{ dep | lower }}_local = config_color_bat_20;
-// -- ## endfor
-          config_color_topbar_bg_local = config_color_bat_20;
-          config_color_info_below_local = config_color_bat_20;
-          config_color_progress_bar_local = config_color_bat_20;
-// -- end autogen
+            override_col = config_color_bat_20;
         } else if (battery_state.charge_percent <= 30) {
+            override_col = config_color_bat_30;
+        }
+    }
+    if (config_quiet_col && quiet_time_is_active()) {
+        override_col = config_color_quiet_mode;
+    }
+    if (override_col != -1) {
 // -- autogen
 // -- ## for dep in simple_config_lookup["SIMPLECONFIG_COLOR_ACCENT"]["depends"]
-// --           {{ dep | lower }}_local = config_color_bat_30;
+// --           {{ dep | lower }}_local = override_col;
 // -- ## endfor
-          config_color_topbar_bg_local = config_color_bat_30;
-          config_color_info_below_local = config_color_bat_30;
-          config_color_progress_bar_local = config_color_bat_30;
+          config_color_topbar_bg_local = override_col;
+          config_color_info_below_local = override_col;
+          config_color_progress_bar_local = override_col;
 // -- end autogen
-        }
     }
 
     // background

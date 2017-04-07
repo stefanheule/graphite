@@ -88,11 +88,13 @@
 #define CONFIG_TIMEOUT_2ND_WIDGETS 62
 #define CONFIG_2ND_WIDGETS 63
 #define CONFIG_WEATHER_SUNRISE_EXPIRATION 64
+#define CONFIG_COLOR_QUIET_MODE 65
+#define CONFIG_QUIET_COL 66
 // -- end autogen
 
 // -- autogen
 // -- #define GRAPHITE_N_CONFIG {{ num_config_items }}
-#define GRAPHITE_N_CONFIG 64
+#define GRAPHITE_N_CONFIG 66
 // -- end autogen
 
 // -- autogen
@@ -190,6 +192,8 @@ extern uint8_t config_widget_12;
 extern uint16_t config_timeout_2nd_widgets;
 extern uint8_t config_2nd_widgets;
 extern uint16_t config_weather_sunrise_expiration;
+extern uint8_t config_color_quiet_mode;
+extern uint8_t config_quiet_col;
 // -- end autogen
 
 
