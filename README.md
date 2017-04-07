@@ -13,6 +13,8 @@ See [stefanheule.com/graphite/](https://stefanheule.com/graphite/).
 **Version 1.3** ()
 
 - Size optimizations
+- Add option to change accent color when in quiet mode.
+- Add sunrise/sunset widgets.
 
 
 **Version 1.2** (2017-03-04)
