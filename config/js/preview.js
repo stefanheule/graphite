@@ -1146,7 +1146,7 @@ function background_update_proc(layer, ctx) {
             CONFIG_TIMEOUT_2ND_WIDGETS: +3000,
             CONFIG_2ND_WIDGETS: +true,
             CONFIG_WEATHER_SUNRISE_EXPIRATION: +48,
-            CONFIG_COLOR_QUIET_MODE: +GColorLavenderIndigo,
+            CONFIG_COLOR_QUIET_MODE: +GColor.LavenderIndigo,
             CONFIG_QUIET_COL: +false,
 // -- end autogen
         };
@@ -1226,7 +1226,7 @@ function background_update_proc(layer, ctx) {
             CONFIG_TIMEOUT_2ND_WIDGETS: +3000,
             CONFIG_2ND_WIDGETS: +true,
             CONFIG_WEATHER_SUNRISE_EXPIRATION: +48,
-            CONFIG_COLOR_QUIET_MODE: +GColorLavenderIndigo,
+            CONFIG_COLOR_QUIET_MODE: +GColor.LavenderIndigo,
             CONFIG_QUIET_COL: +true,
 // -- end autogen
         };

@@ -358,7 +358,7 @@ configuration = [
   },
   {
     'key': 'CONFIG_COLOR_QUIET_MODE',
-    'default': 'GColorLavenderIndigo',
+    'default': 'GColorLavenderIndigoARGB8',
     'desc': '',
     'show_only_if': 'readConfig("CONFIG_QUIET_COL") != 0',
     'dont_show_in_main_color_section': True,
