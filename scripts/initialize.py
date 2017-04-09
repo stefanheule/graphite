@@ -339,7 +339,8 @@ configuration = [
   },
   {
     'key': 'CONFIG_WIDGET_12',
-    'default': 'WIDGET_BATTERY_TEXT',
+    'default': 'WIDGET_EMPTY',
+    'mydefault': 'WIDGET_PHONE_BATTERY_TEXT',
   },
   {
     'key': 'CONFIG_TIMEOUT_2ND_WIDGETS',
