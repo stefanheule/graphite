@@ -13,8 +13,9 @@ See [stefanheule.com/graphite/](https://stefanheule.com/graphite/).
 **Version 1.3** ()
 
 - Secondary widgets: shake your watch for 6 additional widgets.
-- Add option to change accent color when in quiet mode.
 - Add sunrise/sunset widgets.
+- Add phone battery widgets (only on Android).
+- Add option to change accent color when in quiet mode.
 - Improve usage of bluetooth.
 - Size optimizations.
 - UTC as an explicit option (available as of 2017-03-08 through config page update).

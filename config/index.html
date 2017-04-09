@@ -4958,6 +4958,25 @@
 // -- ## endfor
 
 // -- end autogen
+    var isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+    if (isIOS) {
+// -- autogen
+// -- ## for key in widgets
+// -- ##   if 'notoniphone' in key
+// --       $("#widget-preview-{{ key["id"] }}").hide();
+// -- ##   endif
+// -- ## endfor
+      $("#widget-preview-43").hide();
+      $("#widget-preview-44").hide();
+      $("#widget-preview-45").hide();
+      $("#widget-preview-46").hide();
+      $("#widget-preview-47").hide();
+      $("#widget-preview-48").hide();
+      $("#widget-preview-49").hide();
+      $("#widget-preview-50").hide();
+      $("#widget-preview-51").hide();
+// -- end autogen
+    }
 
     // update version information
     document.getElementById("version-info").innerHTML = getVersion();
@@ -4968,7 +4987,7 @@
       var old = readConfig("CONFIG_WEATHER_APIKEY_LOCAL");
       applyValues(GraphitePreview.myDefaultConfig(getPlatform()));
       applyValue($("#CONFIG_WEATHER_APIKEY_LOCAL"), old);
-      $("#CONFIG_WEATHER_APIKEY_LOCAL").focus();
+      if (old == "") $("#CONFIG_WEATHER_APIKEY_LOCAL").focus();
     });
 
     // draw preview
