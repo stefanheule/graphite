@@ -818,7 +818,7 @@ function sendTzUpdate(idx) {
 
 
 function sendBatteryLevel() {
-    if (!navigator.battery) {
+    if (!navigator.getBattery) {
         var data = {
             "MSG_KEY_PHONEBAT": 101
         };
@@ -836,8 +836,8 @@ function sendBatteryLevel() {
             "MSG_KEY_PHONEBAT": level
         };
 // -- build=debug
-// --             console.log('[ info/app ] phone battery = ' + battery  + ".");
-            console.log('[ info/app ] phone battery = ' + battery  + ".");
+// --             console.log('[ info/app ] phone battery = ' + battery.level  + ".");
+            console.log('[ info/app ] phone battery = ' + battery.level  + ".");
 // -- end build
         Pebble.sendAppMessage(data);
     });
