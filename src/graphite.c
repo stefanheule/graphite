@@ -34,7 +34,7 @@ uint8_t config_vibrate_disconnect = true;
 uint8_t config_vibrate_reconnect = true;
 uint8_t config_message_disconnect = true;
 uint8_t config_message_reconnect = true;
-uint16_t config_weather_refresh = 60;
+uint16_t config_weather_refresh = 30;
 uint16_t config_weather_expiration = 3*60;
 uint16_t config_weather_refresh_failed = 30;
 uint8_t config_color_topbar_bg = GColorVividCeruleanARGB8;
@@ -84,6 +84,8 @@ uint8_t config_2nd_widgets = true;
 uint16_t config_weather_sunrise_expiration = 48;
 uint8_t config_color_quiet_mode = GColorLavenderIndigoARGB8;
 uint8_t config_quiet_col = false;
+uint16_t config_phone_battery_expiration = 30;
+uint16_t config_phone_battery_refresh = 1;
 // -- end autogen
 
 
@@ -116,6 +118,10 @@ AppTimer *timer_bluetooth_popup;
 
 /** The current weather information. */
 Weather weather;
+
+/** The current phone battery information. */
+PhoneBattery phonebat;
+AppTimer * phone_battery_request_timer;
 
 /** Is the JS runtime ready? */
 bool js_ready;

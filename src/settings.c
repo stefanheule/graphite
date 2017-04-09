@@ -18,16 +18,44 @@
 
 
 static void update_weather_helper(void *unused);
+static void update_phonebat_helper(void *unused);
 
-void set_weather_timer(int timeout_min) {
+void set_timer_impl(AppTimer** timer, int timeout_min, AppTimerCallback callback) {
     const uint32_t timeout_ms = timeout_min * 1000 * 60;
-    if (weather_request_timer) {
-        if (!app_timer_reschedule(weather_request_timer, timeout_ms)) {
-            weather_request_timer = app_timer_register(timeout_ms, update_weather_helper, NULL);
+    if (*timer) {
+        if (!app_timer_reschedule(*timer, timeout_ms)) {
+            *timer = app_timer_register(timeout_ms, callback, NULL);
         }
     } else {
-        weather_request_timer = app_timer_register(timeout_ms, update_weather_helper, NULL);
+        *timer = app_timer_register(timeout_ms, callback, NULL);
     }
+}
+
+void set_weather_timer(int timeout_min) {
+    set_timer_impl(&weather_request_timer, timeout_min, update_weather_helper);
+}
+
+bool update_helper(bool force, time_t ts, AppTimer** timer, int timeout_min, AppTimerCallback callback, uint8_t key) {
+    bool need = false;
+    if (ts == 0) {
+        need = true;
+    } else {
+        need = (time(NULL) - ts) > (timeout_min * 60);
+        if (!need) {
+            timeout_min = timeout_min - (time(NULL) - ts) / 60;
+            if (timeout_min == 0) timeout_min = 1;
+        }
+    }
+    set_timer_impl(timer, timeout_min, callback);
+    if (!need && !force) return false;
+
+    // actually update the weather by sending a request
+    DictionaryIterator *iter;
+    app_message_outbox_begin(&iter);
+    dict_write_uint8(iter, key, 1);
+    app_message_outbox_send();
+
+    return true;
 }
 
 /**
@@ -37,27 +65,22 @@ void update_weather(bool force) {
     // return if we don't want weather information
     if (config_weather_refresh == 0) return;
 
-    bool need_weather = false;
-    uint32_t timeout_min = config_weather_refresh;
-    if (weather.timestamp == 0) {
-        need_weather = true;
-    } else {
-        need_weather = (time(NULL) - weather.timestamp) > (config_weather_refresh * 60);
-        if (!need_weather) {
-            timeout_min = (time(NULL) - weather.timestamp) / 60;
-        }
-    }
-    set_weather_timer(timeout_min);
-    if (!need_weather && !force) return;
+    bool done = update_helper(force, weather.timestamp, &weather_request_timer, config_weather_refresh, update_weather_helper, MSG_KEY_FETCH_WEATHER);
 
-    // actually update the weather by sending a request
-    DictionaryIterator *iter;
-    app_message_outbox_begin(&iter);
-    dict_write_uint8(iter, MSG_KEY_FETCH_WEATHER, 1);
-    app_message_outbox_send();
 // -- build=debug
-// --     APP_LOG(APP_LOG_LEVEL_INFO, "requesting weather update");
-    APP_LOG(APP_LOG_LEVEL_INFO, "requesting weather update");
+// --     if (done) APP_LOG(APP_LOG_LEVEL_INFO, "requesting weather update");
+    if (done) APP_LOG(APP_LOG_LEVEL_INFO, "requesting weather update");
+// -- end build
+}
+
+void update_phonebat(bool force) {
+    if (config_phone_battery_refresh == 0) return;
+
+    bool done = update_helper(force, phonebat.timestamp, &phone_battery_request_timer, config_phone_battery_refresh, update_phonebat_helper, MSG_KEY_FETCH_PHONEBAT);
+
+// -- build=debug
+// --     if (done) APP_LOG(APP_LOG_LEVEL_INFO, "requesting phone battery update");
+    if (done) APP_LOG(APP_LOG_LEVEL_INFO, "requesting phone battery update");
 // -- end build
 }
 
@@ -67,6 +90,11 @@ void update_weather(bool force) {
 static void update_weather_helper(void *unused) {
     weather_request_timer = NULL;
     update_weather(false);
+}
+
+static void update_phonebat_helper(void *unused) {
+    phone_battery_request_timer = NULL;
+    update_phonebat(false);
 }
 
 int8_t get_current_tz_idx(TZData* data) {
@@ -277,6 +305,8 @@ ConfigKeyAddr config_ka_16bit[] = {
     { .key = CONFIG_STEP_GOAL, .var = &config_step_goal },
     { .key = CONFIG_TIMEOUT_2ND_WIDGETS, .var = &config_timeout_2nd_widgets },
     { .key = CONFIG_WEATHER_SUNRISE_EXPIRATION, .var = &config_weather_sunrise_expiration },
+    { .key = CONFIG_PHONE_BATTERY_EXPIRATION, .var = &config_phone_battery_expiration },
+    { .key = CONFIG_PHONE_BATTERY_REFRESH, .var = &config_phone_battery_refresh },
 // -- end autogen
 };
 ConfigKeyAddr config_ka_string[] = {
@@ -314,7 +344,9 @@ void inbox_received_handler(DictionaryIterator *iter, void *context) {
     }
 
     bool ask_for_weather_update = true;
+    bool ask_for_phonebat_update = true;
     bool force_weather_update = true;
+    bool force_phonebat_update = true;
 
     Tuple *icon_tuple = dict_find(iter, MSG_KEY_WEATHER_ICON_CUR);
     Tuple *tempcur_tuple = dict_find(iter, MSG_KEY_WEATHER_TEMP_CUR);
@@ -356,11 +388,21 @@ void inbox_received_handler(DictionaryIterator *iter, void *context) {
         persist_write_data(PERSIST_KEY_WEATHER, &weather, sizeof(Weather));
         dirty = true;
         ask_for_weather_update = false;
+        ask_for_phonebat_update= false;
+    }
+    Tuple *phonebat_tuple = dict_find(iter, MSG_KEY_PHONEBAT);
+    if (phonebat_tuple) {
+        phonebat.timestamp = time(NULL);
+        phonebat.level = phonebat_tuple->value->uint8;
+        dirty = true;
+        ask_for_phonebat_update= false;
+        ask_for_weather_update = false;
     }
     if (dict_find(iter, MSG_KEY_WEATHER_FAILED)) {
         // retry early when weather update failed
         set_weather_timer(config_weather_refresh_failed);
         ask_for_weather_update = false;
+        ask_for_phonebat_update= false;
         weather.failed = true;
     }
 
@@ -377,11 +419,15 @@ void inbox_received_handler(DictionaryIterator *iter, void *context) {
     | sync_tz(2, MSG_KEY_TZ_2, iter)
     ) { dirty = true; ask_for_tz_update = false; }
 // -- end autogen
-    if (!ask_for_tz_update) ask_for_weather_update = false;
+    if (!ask_for_tz_update) {
+        ask_for_weather_update = false;
+        ask_for_phonebat_update = false;
+    }
 
     if (dict_find(iter, MSG_KEY_JS_READY)) {
         js_ready = true;
         force_weather_update = false;
+        force_phonebat_update = false;
     }
     if (dirty) {
         // make sure we update tick frequency if necessary
@@ -391,6 +437,9 @@ void inbox_received_handler(DictionaryIterator *iter, void *context) {
     }
     if (ask_for_weather_update) {
         update_weather(force_weather_update);
+    }
+    if (ask_for_phonebat_update) {
+        update_phonebat(force_phonebat_update);
     }
     if (ask_for_tz_update) {
         check_update_tz();
@@ -449,6 +498,19 @@ void read_config_all() {
         }
     } else {
         weather.timestamp = 0;
+    }
+
+    if (persist_exists(PERSIST_KEY_PHONEBAT) && persist_get_size(PERSIST_KEY_PHONEBAT) == sizeof(PhoneBattery)) {
+        PhoneBattery tmp;
+        persist_read_data(PERSIST_KEY_PHONEBAT, &tmp, sizeof(PhoneBattery));
+        // make sure we are reading phonebat info that's consistent with the current version number
+        if (tmp.version == GRAPHITE_PHONE_BATTERY_VERSION) {
+            phonebat = tmp;
+        } else {
+            phonebat.timestamp = 0;
+        }
+    } else {
+        phonebat.timestamp = 0;
     }
 
     if (persist_exists(PERSIST_KEY_TZ) && persist_get_size(PERSIST_KEY_TZ) == sizeof(TimeZoneInfo)) {

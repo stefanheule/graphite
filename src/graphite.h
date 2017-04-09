@@ -90,11 +90,13 @@
 #define CONFIG_WEATHER_SUNRISE_EXPIRATION 64
 #define CONFIG_COLOR_QUIET_MODE 65
 #define CONFIG_QUIET_COL 66
+#define CONFIG_PHONE_BATTERY_EXPIRATION 67
+#define CONFIG_PHONE_BATTERY_REFRESH 68
 // -- end autogen
 
 // -- autogen
 // -- #define GRAPHITE_N_CONFIG {{ num_config_items }}
-#define GRAPHITE_N_CONFIG 66
+#define GRAPHITE_N_CONFIG 68
 // -- end autogen
 
 // -- autogen
@@ -119,8 +121,11 @@
 #define MSG_KEY_TZ_2 115
 #define MSG_KEY_WEATHER_SUNRISE 116
 #define MSG_KEY_WEATHER_SUNSET 117
+#define MSG_KEY_PHONEBAT 118
+#define MSG_KEY_FETCH_PHONEBAT 119
 #define PERSIST_KEY_WEATHER 201
 #define PERSIST_KEY_TZ 202
+#define PERSIST_KEY_PHONEBAT 203
 // -- end autogen
 
 
@@ -194,6 +199,8 @@ extern uint8_t config_2nd_widgets;
 extern uint16_t config_weather_sunrise_expiration;
 extern uint8_t config_color_quiet_mode;
 extern uint8_t config_quiet_col;
+extern uint16_t config_phone_battery_expiration;
+extern uint16_t config_phone_battery_refresh;
 // -- end autogen
 
 
@@ -252,6 +259,16 @@ typedef struct {
 extern Weather weather;
 extern bool js_ready;
 extern AppTimer * weather_request_timer;
+
+// this definition should be updated whenever the Weather struct, or it's semantic meaning changes.  this ensures that no outdated values are read from storage
+#define GRAPHITE_PHONE_BATTERY_VERSION 1
+typedef struct {
+    uint8_t version;
+    uint8_t level;
+    time_t timestamp;
+} __attribute__((__packed__)) PhoneBattery;
+extern PhoneBattery phonebat;
+extern AppTimer * phone_battery_request_timer;
 
 // -- autogen
 // -- #define GRAPHITE_NUM_TZS {{ num_tzs }}

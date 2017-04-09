@@ -281,6 +281,12 @@ Pebble.addEventListener('webviewclosed', function (e) {
     fullconfig["CONFIG_QUIET_COL"] = urlconfig[66];
     config["CONFIG_QUIET_COL"] = +urlconfig[66];
     localStorage.setItem("CONFIG_QUIET_COL", urlconfig[66]);
+    fullconfig["CONFIG_PHONE_BATTERY_EXPIRATION"] = urlconfig[67];
+    config["CONFIG_PHONE_BATTERY_EXPIRATION"] = +urlconfig[67];
+    localStorage.setItem("CONFIG_PHONE_BATTERY_EXPIRATION", urlconfig[67]);
+    fullconfig["CONFIG_PHONE_BATTERY_REFRESH"] = urlconfig[68];
+    config["CONFIG_PHONE_BATTERY_REFRESH"] = +urlconfig[68];
+    localStorage.setItem("CONFIG_PHONE_BATTERY_REFRESH", urlconfig[68]);
 // -- end autogen
 
     // don't allow really small values for refresh rate
@@ -331,6 +337,8 @@ Pebble.addEventListener('webviewclosed', function (e) {
     if (!(has_widget([37, 38, 39, 40, 41, 42]))) delete config["CONFIG_SUNRISE_FORMAT"];
     if (!(readConfig("CONFIG_2ND_WIDGETS"))) delete config["CONFIG_TIMEOUT_2ND_WIDGETS"];
     if (!(readConfig("CONFIG_QUIET_COL") != 0)) delete config["CONFIG_COLOR_QUIET_MODE"];
+    if (!(has_widget([43, 44, 45]))) delete config["CONFIG_PHONE_BATTERY_EXPIRATION"];
+    if (!(has_widget([43, 44, 45]))) delete config["CONFIG_PHONE_BATTERY_REFRESH"];
 // -- end autogen
 
     Pebble.sendAppMessage(config, function () {
@@ -809,6 +817,32 @@ function sendTzUpdate(idx) {
 }
 
 
+function sendBatteryLevel() {
+    if (!navigator.battery) {
+        var data = {
+            "MSG_KEY_PHONEBAT": 101
+        };
+// -- build=debug
+// --         console.log('[ info/app ] phone battery not supported.');
+        console.log('[ info/app ] phone battery not supported.');
+// -- end build
+        Pebble.sendAppMessage(data);
+        return;
+    }
+
+    navigator.getBattery().then(function(battery) {
+        var level = Math.round(battery.level * 100);
+        var data = {
+            "MSG_KEY_PHONEBAT": level
+        };
+// -- build=debug
+// --             console.log('[ info/app ] phone battery = ' + battery  + ".");
+            console.log('[ info/app ] phone battery = ' + battery  + ".");
+// -- end build
+        Pebble.sendAppMessage(data);
+    });
+}
+
 Pebble.addEventListener('appmessage',
     function (e) {
 // -- build=debug
@@ -833,6 +867,9 @@ Pebble.addEventListener('appmessage',
                     {timeout: 15000, maximumAge: 60000}
                 );
             }
+        }
+        if (dict["MSG_KEY_FETCH_PHONEBAT"]) {
+            sendBatteryLevel();
         }
 // -- autogen
 // -- ## for i in range(num_tzs)

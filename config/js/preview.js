@@ -20,6 +20,7 @@ var GraphitePreview = (function () {
       },
       bluetooth: false,
       battery: 70,
+      phone_battery: 30,
       quiet_time: true,
       steps: 7123,
       steps_daily: 8546,
@@ -32,6 +33,7 @@ var GraphitePreview = (function () {
     var platform;
     var tnow = time(NULL);
     var weather;
+    var phonebat;
     var buffer_1, buffer_2, buffer_3, buffer_4;
     var font_main = 'Open Sans Condensed';
     var font_weather = 'nupe2';
@@ -113,6 +115,8 @@ var GraphitePreview = (function () {
      var config_weather_sunrise_expiration;
      var config_color_quiet_mode;
      var config_quiet_col;
+     var config_phone_battery_expiration;
+     var config_phone_battery_refresh;
 // -- end autogen
 
     function get(k) {
@@ -142,6 +146,13 @@ var GraphitePreview = (function () {
             sunrise: get('weather').sunrise,
             sunset: get('weather').sunset,
             failed: false
+        };
+    }
+    function getPhoneBat() {
+        return {
+            version: 0,
+            timestamp: time(NULL),
+            level: get('phone_battery')
         };
     }
 
@@ -353,9 +364,12 @@ var GraphitePreview = (function () {
         config_weather_sunrise_expiration = config["CONFIG_WEATHER_SUNRISE_EXPIRATION"];
         config_color_quiet_mode = config["CONFIG_COLOR_QUIET_MODE"];
         config_quiet_col = config["CONFIG_QUIET_COL"];
+        config_phone_battery_expiration = config["CONFIG_PHONE_BATTERY_EXPIRATION"];
+        config_phone_battery_refresh = config["CONFIG_PHONE_BATTERY_REFRESH"];
 // -- end autogen
 
         weather = getWeather(platform);
+        phonebat = getPhoneBat(platform);
     }
 
     function drawComplication(canvasId) {
@@ -441,6 +455,9 @@ var widgets = [
     widget_weather_sunset_icon0, // id 40
     widget_weather_sunset_icon1, // id 41
     widget_weather_sunset_icon2, // id 42
+    widget_phone_battery_icon, // id 43
+    widget_phone_battery_text, // id 44
+    widget_phone_battery_text2, // id 45
 ];
 function widget_tz(fctx, draw, position, align, foreground_color, background_color, tz_id, format) {
     var dat = moment(new Date()).tz(eval("config_tz_" + tz_id + "_local")).format('YYYY-MM-DD HH:mm');
@@ -521,38 +538,62 @@ function format_thousands(num) {
 function widget_empty(fctx, draw, position, align, foreground_color, background_color) {
   return 0;
 }
-function widget_battery_text(fctx, draw, position, align, foreground_color, background_color) {
-    var battery_state = battery_state_service_peek();
-    buffer_1 = sprintf("%d%%", battery_state.charge_percent);
+function drawBatText(fctx, draw, position, align, foreground_color, perc, level) {
+    buffer_1 = sprintf(perc ? "%d%%" : "%d", level);
     if (draw) draw_string(fctx, buffer_1, position, font_main, foreground_color, fontsize_widgets, align);
     return string_width(fctx, buffer_1, font_main, fontsize_widgets);
+}
+function drawBatText2(fctx, draw, position, align, foreground_color, level, level2) {
+    buffer_1 = sprintf("%d %d", level, level2);
+    if (draw) draw_string(fctx, buffer_1, position, font_main, foreground_color, fontsize_widgets, align);
+    return string_width(fctx, buffer_1, font_main, fontsize_widgets);
+}
+function drawBat(fctx, draw, position, align, foreground_color, background_color, level) {
+    var bat_thickness = PIX(1);
+    var bat_gap_thickness = PIX(1);
+    var bat_height = PIX(15);
+    var bat_width = PIX(9);
+    var bat_top = PIX(2);
+    var bat_inner_height = bat_height - 2 * bat_thickness - 2 * bat_gap_thickness;
+    var bat_inner_width = bat_width - 2 * bat_thickness - 2 * bat_gap_thickness;
+    if (!draw) return bat_width;
+    var offset = 0;
+    if (align == GTextAlignmentCenter) offset = bat_width / 2;
+    if (align == GTextAlignmentRight) offset = bat_width;
+    var bat_origin = FPoint(FIXED_ROUND(position.x - offset), FIXED_ROUND(
+            position.y + (REM(21) - bat_height) / 2));
+    draw_rect(fctx, FRect(bat_origin, FSize(bat_width, bat_height)), foreground_color);
+    draw_rect(fctx, FRect(FPoint(bat_origin.x + bat_thickness, bat_origin.y + bat_thickness), FSize(bat_width - 2*bat_thickness, bat_height - 2*bat_thickness)), background_color);
+    draw_rect(fctx, FRect(FPoint(bat_origin.x + bat_thickness + bat_gap_thickness, bat_origin.y + bat_thickness + bat_gap_thickness + (100 - level) * bat_inner_height / 100), FSize(
+            bat_inner_width, level * bat_inner_height / 100)), foreground_color);
+    draw_rect(fctx, FRect(FPoint(bat_origin.x + bat_thickness + bat_gap_thickness, bat_origin.y - bat_top), FSize(bat_inner_width, bat_top)), foreground_color);
+    return bat_width;
+}
+function widget_battery_text(fctx, draw, position, align, foreground_color, background_color) {
+    return drawBatText(fctx, draw, position, align, foreground_color, true, battery_state_service_peek().charge_percent);
 }
 function widget_battery_text2(fctx, draw, position, align, foreground_color, background_color) {
-    var battery_state = battery_state_service_peek();
-    buffer_1 = sprintf("%d", battery_state.charge_percent);
-    if (draw) draw_string(fctx, buffer_1, position, font_main, foreground_color, fontsize_widgets, align);
-    return string_width(fctx, buffer_1, font_main, fontsize_widgets);
+    return drawBatText(fctx, draw, position, align, foreground_color, false, battery_state_service_peek().charge_percent);
 }
 function widget_battery_icon(fctx, draw, position, align, foreground_color, background_color) {
-  var bat_thickness = PIX(1);
-  var bat_gap_thickness = PIX(1);
-  var bat_height = PIX(15);
-  var bat_width = PIX(9);
-  var bat_top = PIX(2);
-  var bat_inner_height = bat_height - 2 * bat_thickness - 2 * bat_gap_thickness;
-  var bat_inner_width = bat_width - 2 * bat_thickness - 2 * bat_gap_thickness;
-  if (!draw) return bat_width;
-  var offset = 0;
-  if (align == GTextAlignmentCenter) offset = bat_width / 2;
-  if (align == GTextAlignmentRight) offset = bat_width;
-  var battery_state = battery_state_service_peek();
-  var bat_origin = FPoint(FIXED_ROUND(position.x - offset), FIXED_ROUND(position.y + (REM(21)-bat_height)/2));
-  draw_rect(fctx, FRect(bat_origin, FSize(bat_width, bat_height)), foreground_color);
-  draw_rect(fctx, FRect(FPoint(bat_origin.x + bat_thickness, bat_origin.y + bat_thickness), FSize(bat_width - 2*bat_thickness, bat_height - 2*bat_thickness)), background_color);
-  draw_rect(fctx, FRect(FPoint(bat_origin.x + bat_thickness + bat_gap_thickness, bat_origin.y + bat_thickness + bat_gap_thickness + (100 - battery_state.charge_percent) * bat_inner_height / 100), FSize(
-          bat_inner_width, battery_state.charge_percent * bat_inner_height / 100)), foreground_color);
-  draw_rect(fctx, FRect(FPoint(bat_origin.x + bat_thickness + bat_gap_thickness, bat_origin.y - bat_top), FSize(bat_inner_width, bat_top)), foreground_color);
-  return bat_width;
+    return drawBat(fctx, draw, position, align, foreground_color, background_color, battery_state_service_peek().charge_percent);
+}
+function showPhoneBattery() {
+    var battery_is_outdated = (time(NULL) - phonebat.timestamp) > (config_phone_battery_expiration * 60);
+    var invalid_bat_level = phonebat.level > 100;
+    return !battery_is_outdated && !invalid_bat_level;
+}
+function widget_phone_battery_text(fctx, draw, position, align, foreground_color, background_color) {
+    if (!showPhoneBattery()) return 0;
+    return drawBatText(fctx, draw, position, align, foreground_color, true, phonebat.level);
+}
+function widget_phone_battery_text2(fctx, draw, position, align, foreground_color, background_color) {
+    if (!showPhoneBattery()) return 0;
+    return drawBatText(fctx, draw, position, align, foreground_color, false, phonebat.level);
+}
+function widget_phone_battery_icon(fctx, draw, position, align, foreground_color, background_color) {
+    if (!showPhoneBattery()) return 0;
+    return drawBat(fctx, draw, position, align, foreground_color, background_color, phonebat.level);
 }
 function widget_bluetooth_disconly(fctx, draw, position, align, foreground_color, background_color) {
   if (!bluetooth_connection_service_peek()) {
@@ -1088,7 +1129,7 @@ function background_update_proc(layer, ctx) {
             CONFIG_WEATHER_SOURCE_LOCAL: +1,
             CONFIG_WEATHER_APIKEY_LOCAL: "",
             CONFIG_WEATHER_LOCATION_LOCAL: "",
-            CONFIG_WEATHER_REFRESH: +60,
+            CONFIG_WEATHER_REFRESH: +30,
             CONFIG_WEATHER_EXPIRATION: +3*60,
             CONFIG_WEATHER_REFRESH_FAILED: +30,
             CONFIG_COLOR_TOPBAR_BG: +GColor.VividCerulean,
@@ -1145,6 +1186,8 @@ function background_update_proc(layer, ctx) {
             CONFIG_WEATHER_SUNRISE_EXPIRATION: +48,
             CONFIG_COLOR_QUIET_MODE: +GColor.LavenderIndigo,
             CONFIG_QUIET_COL: +false,
+            CONFIG_PHONE_BATTERY_EXPIRATION: +30,
+            CONFIG_PHONE_BATTERY_REFRESH: +1,
 // -- end autogen
         };
         return cloneConfig(defaults);
@@ -1165,10 +1208,10 @@ function background_update_proc(layer, ctx) {
             CONFIG_MESSAGE_RECONNECT: +true,
             CONFIG_WEATHER_UNIT_LOCAL: +1,
             CONFIG_WEATHER_RAIN_LOCAL: +true,
-            CONFIG_WEATHER_SOURCE_LOCAL: +2,
+            CONFIG_WEATHER_SOURCE_LOCAL: +3,
             CONFIG_WEATHER_APIKEY_LOCAL: "",
             CONFIG_WEATHER_LOCATION_LOCAL: "",
-            CONFIG_WEATHER_REFRESH: +60,
+            CONFIG_WEATHER_REFRESH: +30,
             CONFIG_WEATHER_EXPIRATION: +3*60,
             CONFIG_WEATHER_REFRESH_FAILED: +30,
             CONFIG_COLOR_TOPBAR_BG: +GColor.VividCerulean,
@@ -1225,6 +1268,8 @@ function background_update_proc(layer, ctx) {
             CONFIG_WEATHER_SUNRISE_EXPIRATION: +48,
             CONFIG_COLOR_QUIET_MODE: +GColor.LavenderIndigo,
             CONFIG_QUIET_COL: +true,
+            CONFIG_PHONE_BATTERY_EXPIRATION: +30,
+            CONFIG_PHONE_BATTERY_REFRESH: +1,
 // -- end autogen
         };
         return cloneConfig(defaults);

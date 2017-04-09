@@ -75,7 +75,7 @@ configuration = [
   {
     'key': 'CONFIG_WEATHER_SOURCE_LOCAL',
     'default': '1',
-    'mydefault': '2',
+    'mydefault': '3',
   },
   {
     'key': 'CONFIG_WEATHER_APIKEY_LOCAL',
@@ -89,7 +89,7 @@ configuration = [
   },
   {
     'key': 'CONFIG_WEATHER_REFRESH',
-    'default': '60',
+    'default': '30',
     'type': 'uint16_t',
   },
   {
@@ -368,6 +368,18 @@ configuration = [
     'default': 'false',
     'mydefault': 'true',
   },
+  {
+    'key': 'CONFIG_PHONE_BATTERY_EXPIRATION',
+    'default': '30',
+    'show_only_if': 'has_widget(ALL_PHONEBAT_WIDGET_IDS)',
+    'type': 'uint16_t',
+  },
+  {
+    'key': 'CONFIG_PHONE_BATTERY_REFRESH',
+    'default': '1',
+    'show_only_if': 'has_widget(ALL_PHONEBAT_WIDGET_IDS)',
+    'type': 'uint16_t',
+  },
 ]
 
 simple_config = [
@@ -598,6 +610,48 @@ widgets = [
     'group': ['WEATHER', 'WEATHERSUN'],
     'sort': 450,
   },
+  {
+    'key': 'WIDGET_PHONE_BATTERY_ICON',
+    'desc': 'Phone battery (icon)',
+    'group': ['PHONEBAT'],
+    'sort': 300,
+  },
+  {
+    'key': 'WIDGET_PHONE_BATTERY_TEXT',
+    'desc': 'Phone battery (text)',
+    'group': ['PHONEBAT'],
+    'sort': 300,
+  },
+  {
+    'key': 'WIDGET_PHONE_BATTERY_TEXT2',
+    'desc': 'Phone battery (text, no percent sign)',
+    'group': ['PHONEBAT'],
+    'sort': 300,
+  },
+  # {
+  #   'key': 'WIDGET_BOTH_BATTERY_ICON',
+  #   'desc': 'Phone and Pebble battery (text)',
+  #   'group': ['PHONEBAT'],
+  #   'sort': 300,
+  # },
+  # {
+  #   'key': 'WIDGET_BOTH_BATTERY_FLIPPED_ICON',
+  #   'desc': 'Pebble and Phone battery (text)',
+  #   'group': ['PHONEBAT'],
+  #   'sort': 300,
+  # },
+  # {
+  #   'key': 'WIDGET_BOTH_BATTERY_TEXT',
+  #   'desc': 'Phone and Pebble battery (text)',
+  #   'group': ['PHONEBAT'],
+  #   'sort': 300,
+  # },
+  # {
+  #   'key': 'WIDGET_BOTH_BATTERY_FLIPPED_TEXT',
+  #   'desc': 'Pebble and Phone battery (text)',
+  #   'group': ['PHONEBAT'],
+  #   'sort': 300,
+  # },
 ]
   # {
   #   'key': 'WIDGET_DISTANCE_KM',
@@ -632,6 +686,10 @@ config_groups = [
     'name': 'WEATHERSUN',
     'selector': 'has_widget(ALL_WEATHERSUN_WIDGET_IDS)',
   },
+  {
+    'name': 'PHONEBAT',
+    'selector': 'has_widget(ALL_PHONEBAT_WIDGET_IDS)',
+  },
 ]
 
 msg_keys = [
@@ -648,11 +706,14 @@ msg_keys = [
 ] + [item for sublist in map(lambda i: ['FETCH_TZ_%d' % i, 'TZ_%d' % i], range(num_tzs)) for item in sublist] + [
   'WEATHER_SUNRISE',
   'WEATHER_SUNSET',
+  'PHONEBAT',
+  'FETCH_PHONEBAT',
 ]
 
 persist_keys = [
   'WEATHER',
   'TZ',
+  'PHONEBAT',
 ]
 
 perc_max_len = 30
