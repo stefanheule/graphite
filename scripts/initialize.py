@@ -635,30 +635,42 @@ widgets = [
     'group': ['PHONEBAT'],
     'sort': 300,
   },
-  # {
-  #   'key': 'WIDGET_BOTH_BATTERY_ICON',
-  #   'desc': 'Phone and Pebble battery (text)',
-  #   'group': ['PHONEBAT'],
-  #   'sort': 300,
-  # },
-  # {
-  #   'key': 'WIDGET_BOTH_BATTERY_FLIPPED_ICON',
-  #   'desc': 'Pebble and Phone battery (text)',
-  #   'group': ['PHONEBAT'],
-  #   'sort': 300,
-  # },
-  # {
-  #   'key': 'WIDGET_BOTH_BATTERY_TEXT',
-  #   'desc': 'Phone and Pebble battery (text)',
-  #   'group': ['PHONEBAT'],
-  #   'sort': 300,
-  # },
-  # {
-  #   'key': 'WIDGET_BOTH_BATTERY_FLIPPED_TEXT',
-  #   'desc': 'Pebble and Phone battery (text)',
-  #   'group': ['PHONEBAT'],
-  #   'sort': 300,
-  # },
+  {
+    'key': 'WIDGET_BOTH_BATTERY_ICON',
+    'desc': 'Pebble and Phone battery (icons)',
+    'group': ['PHONEBAT'],
+    'sort': 300,
+  },
+  {
+    'key': 'WIDGET_BOTH_BATTERY_FLIPPED_ICON',
+    'desc': 'Phone and Pebble battery (icons)',
+    'group': ['PHONEBAT'],
+    'sort': 300,
+  },
+  {
+    'key': 'WIDGET_BOTH_BATTERY_TEXT',
+    'desc': 'Pebble and Phone battery (text)',
+    'group': ['PHONEBAT'],
+    'sort': 300,
+  },
+  {
+    'key': 'WIDGET_BOTH_BATTERY_FLIPPED_TEXT',
+    'desc': 'Phone and Pebble battery (text)',
+    'group': ['PHONEBAT'],
+    'sort': 300,
+  },
+  {
+    'key': 'WIDGET_BOTH_BATTERY_TEXT2',
+    'desc': 'Pebble and Phone battery (text, no percent sign)',
+    'group': ['PHONEBAT'],
+    'sort': 300,
+  },
+  {
+    'key': 'WIDGET_BOTH_BATTERY_FLIPPED_TEXT2',
+    'desc': 'Phone and Pebble battery (text, no percent sign)',
+    'group': ['PHONEBAT'],
+    'sort': 300,
+  },
 ]
   # {
   #   'key': 'WIDGET_DISTANCE_KM',

@@ -180,6 +180,30 @@
         <p>Phone battery (text, no percent sign)</p>
         <canvas class="widget" id="widget-preview-45-canvas"></canvas>
       </div>
+      <div class="widget-preview" id="widget-preview-46">
+        <p>Pebble and Phone battery (icons)</p>
+        <canvas class="widget" id="widget-preview-46-canvas"></canvas>
+      </div>
+      <div class="widget-preview" id="widget-preview-47">
+        <p>Phone and Pebble battery (icons)</p>
+        <canvas class="widget" id="widget-preview-47-canvas"></canvas>
+      </div>
+      <div class="widget-preview" id="widget-preview-48">
+        <p>Pebble and Phone battery (text)</p>
+        <canvas class="widget" id="widget-preview-48-canvas"></canvas>
+      </div>
+      <div class="widget-preview" id="widget-preview-49">
+        <p>Phone and Pebble battery (text)</p>
+        <canvas class="widget" id="widget-preview-49-canvas"></canvas>
+      </div>
+      <div class="widget-preview" id="widget-preview-50">
+        <p>Pebble and Phone battery (text, no percent sign)</p>
+        <canvas class="widget" id="widget-preview-50-canvas"></canvas>
+      </div>
+      <div class="widget-preview" id="widget-preview-51">
+        <p>Phone and Pebble battery (text, no percent sign)</p>
+        <canvas class="widget" id="widget-preview-51-canvas"></canvas>
+      </div>
       <div class="widget-preview" id="widget-preview-10">
         <p>Quiet time enabled (only when on)</p>
         <canvas class="widget" id="widget-preview-10-canvas"></canvas>
@@ -4402,9 +4426,9 @@
     showHideOption("CONFIG_SUNRISE_FORMAT", has_widget([37, 38, 39, 40, 41, 42]));
     showHideOption("CONFIG_TIMEOUT_2ND_WIDGETS", readConfig("CONFIG_2ND_WIDGETS"));
     showHideOption("CONFIG_COLOR_QUIET_MODE", readConfig("CONFIG_QUIET_COL") != 0);
-    showHideOption("CONFIG_PHONE_BATTERY_EXPIRATION", has_widget([43, 44, 45]));
-    showHideOption("CONFIG_PHONE_BATTERY_REFRESH", has_widget([43, 44, 45]));
-    showHideOption("CONFIG_UPDATE_PHONEBAT_ON_SHAKE", has_widget([43, 44, 45]));
+    showHideOption("CONFIG_PHONE_BATTERY_EXPIRATION", has_widget([43, 44, 45, 46, 47, 48, 49, 50, 51]));
+    showHideOption("CONFIG_PHONE_BATTERY_REFRESH", has_widget([43, 44, 45, 46, 47, 48, 49, 50, 51]));
+    showHideOption("CONFIG_UPDATE_PHONEBAT_ON_SHAKE", has_widget([43, 44, 45, 46, 47, 48, 49, 50, 51]));
     $('#tz_format_help').toggle(has_widget([34, 35, 36]));
 // -- end autogen
 
@@ -4738,6 +4762,12 @@
       $("#widget-preview-43").on("click", function(){ pickComplication(43); });
       $("#widget-preview-44").on("click", function(){ pickComplication(44); });
       $("#widget-preview-45").on("click", function(){ pickComplication(45); });
+      $("#widget-preview-46").on("click", function(){ pickComplication(46); });
+      $("#widget-preview-47").on("click", function(){ pickComplication(47); });
+      $("#widget-preview-48").on("click", function(){ pickComplication(48); });
+      $("#widget-preview-49").on("click", function(){ pickComplication(49); });
+      $("#widget-preview-50").on("click", function(){ pickComplication(50); });
+      $("#widget-preview-51").on("click", function(){ pickComplication(51); });
       $("#widget-preview-10").on("click", function(){ pickComplication(10); });
       $("#widget-preview-11").on("click", function(){ pickComplication(11); });
       $("#widget-preview-37").on("click", function(){ pickComplication(37); });
@@ -4992,6 +5022,12 @@
       GraphitePreview.previewComplication(43, config, 'widget-preview-43-canvas', getPlatform());
       GraphitePreview.previewComplication(44, config, 'widget-preview-44-canvas', getPlatform());
       GraphitePreview.previewComplication(45, config, 'widget-preview-45-canvas', getPlatform());
+      GraphitePreview.previewComplication(46, config, 'widget-preview-46-canvas', getPlatform());
+      GraphitePreview.previewComplication(47, config, 'widget-preview-47-canvas', getPlatform());
+      GraphitePreview.previewComplication(48, config, 'widget-preview-48-canvas', getPlatform());
+      GraphitePreview.previewComplication(49, config, 'widget-preview-49-canvas', getPlatform());
+      GraphitePreview.previewComplication(50, config, 'widget-preview-50-canvas', getPlatform());
+      GraphitePreview.previewComplication(51, config, 'widget-preview-51-canvas', getPlatform());
       GraphitePreview.previewComplication(10, config, 'widget-preview-10-canvas', getPlatform());
       GraphitePreview.previewComplication(11, config, 'widget-preview-11-canvas', getPlatform());
       GraphitePreview.previewComplication(37, config, 'widget-preview-37-canvas', getPlatform());

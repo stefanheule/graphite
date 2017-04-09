@@ -460,6 +460,12 @@ var widgets = [
     widget_phone_battery_icon, // id 43
     widget_phone_battery_text, // id 44
     widget_phone_battery_text2, // id 45
+    widget_both_battery_icon, // id 46
+    widget_both_battery_flipped_icon, // id 47
+    widget_both_battery_text, // id 48
+    widget_both_battery_flipped_text, // id 49
+    widget_both_battery_text2, // id 50
+    widget_both_battery_flipped_text2, // id 51
 ];
 function widget_tz(fctx, draw, position, align, foreground_color, background_color, tz_id, format) {
     var dat = moment(new Date()).tz(eval("config_tz_" + tz_id + "_local")).format('YYYY-MM-DD HH:mm');
@@ -545,8 +551,8 @@ function drawBatText(fctx, draw, position, align, foreground_color, perc, level)
     if (draw) draw_string(fctx, buffer_1, position, font_main, foreground_color, fontsize_widgets, align);
     return string_width(fctx, buffer_1, font_main, fontsize_widgets);
 }
-function drawBatText2(fctx, draw, position, align, foreground_color, level, level2) {
-    buffer_1 = sprintf("%d %d", level, level2);
+function drawBatText2(fctx, draw, position, align, foreground_color, perc, level, level2) {
+    buffer_1 = sprintf(perc ? "%d%% %d%%" : "%d %d", level, level2);
     if (draw) draw_string(fctx, buffer_1, position, font_main, foreground_color, fontsize_widgets, align);
     return string_width(fctx, buffer_1, font_main, fontsize_widgets);
 }
@@ -596,6 +602,46 @@ function widget_phone_battery_text2(fctx, draw, position, align, foreground_colo
 function widget_phone_battery_icon(fctx, draw, position, align, foreground_color, background_color) {
     if (!showPhoneBattery()) return 0;
     return drawBat(fctx, draw, position, align, foreground_color, background_color, phonebat.level);
+}
+function widget_both_battery_text(fctx, draw, position, align, foreground_color, background_color) {
+    if (!showPhoneBattery()) return drawBatText(fctx, draw, position, align, foreground_color, false, battery_state_service_peek().charge_percent);
+    return drawBatText2(fctx, draw, position, align, foreground_color, true, battery_state_service_peek().charge_percent, phonebat.level);
+}
+function widget_both_battery_text2(fctx, draw, position, align, foreground_color, background_color) {
+    if (!showPhoneBattery()) return drawBatText(fctx, draw, position, align, foreground_color, false, battery_state_service_peek().charge_percent);
+    return drawBatText2(fctx, draw, position, align, foreground_color, false, battery_state_service_peek().charge_percent, phonebat.level);
+}
+function widget_both_battery_flipped_text(fctx, draw, position, align, foreground_color, background_color) {
+    if (!showPhoneBattery()) return drawBatText(fctx, draw, position, align, foreground_color, false, battery_state_service_peek().charge_percent);
+    return drawBatText2(fctx, draw, position, align, foreground_color, true, phonebat.level, battery_state_service_peek().charge_percent);
+}
+function widget_both_battery_flipped_text2(fctx, draw, position, align, foreground_color, background_color) {
+    if (!showPhoneBattery()) return drawBatText(fctx, draw, position, align, foreground_color, false, battery_state_service_peek().charge_percent);
+    return drawBatText2(fctx, draw, position, align, foreground_color, false, phonebat.level, battery_state_service_peek().charge_percent);
+}
+function widget_both_battery_icon(fctx, draw, position, align, foreground_color, background_color) {
+    if (!showPhoneBattery()) return drawBat(fctx, draw, position, align, foreground_color, background_color, battery_state_service_peek().charge_percent);
+    var bat_icon_sep = PIX(2);
+    var w = PIX(9) * 2 + bat_icon_sep;
+    if (!draw) return w;
+    if (align == GTextAlignmentCenter) position.x -= w/2;
+    if (align == GTextAlignmentRight) position.x -= w;
+    drawBat(fctx, draw, position, GTextAlignmentLeft, foreground_color, background_color, battery_state_service_peek().charge_percent);
+    position.x += w/2;
+    drawBat(fctx, draw, position, GTextAlignmentLeft, foreground_color, background_color, phonebat.level);
+    return w;
+}
+function widget_both_battery_flipped_icon(fctx, draw, position, align, foreground_color, background_color) {
+    if (!showPhoneBattery()) return drawBat(fctx, draw, position, align, foreground_color, background_color, battery_state_service_peek().charge_percent);
+    var bat_icon_sep = PIX(2);
+    var w = PIX(9) * 2 + bat_icon_sep;
+    if (!draw) return w;
+    if (align == GTextAlignmentCenter) position.x -= w/2;
+    if (align == GTextAlignmentRight) position.x -= w;
+    drawBat(fctx, draw, position, GTextAlignmentLeft, foreground_color, background_color, phonebat.level);
+    position.x += w/2;
+    drawBat(fctx, draw, position, GTextAlignmentLeft, foreground_color, background_color, battery_state_service_peek().charge_percent);
+    return w;
 }
 function widget_bluetooth_disconly(fctx, draw, position, align, foreground_color, background_color) {
   if (!bluetooth_connection_service_peek()) {

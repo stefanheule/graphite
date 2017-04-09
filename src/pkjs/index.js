@@ -340,9 +340,9 @@ Pebble.addEventListener('webviewclosed', function (e) {
     if (!(has_widget([37, 38, 39, 40, 41, 42]))) delete config["CONFIG_SUNRISE_FORMAT"];
     if (!(readConfig("CONFIG_2ND_WIDGETS"))) delete config["CONFIG_TIMEOUT_2ND_WIDGETS"];
     if (!(readConfig("CONFIG_QUIET_COL") != 0)) delete config["CONFIG_COLOR_QUIET_MODE"];
-    if (!(has_widget([43, 44, 45]))) delete config["CONFIG_PHONE_BATTERY_EXPIRATION"];
-    if (!(has_widget([43, 44, 45]))) delete config["CONFIG_PHONE_BATTERY_REFRESH"];
-    if (!(has_widget([43, 44, 45]))) delete config["CONFIG_UPDATE_PHONEBAT_ON_SHAKE"];
+    if (!(has_widget([43, 44, 45, 46, 47, 48, 49, 50, 51]))) delete config["CONFIG_PHONE_BATTERY_EXPIRATION"];
+    if (!(has_widget([43, 44, 45, 46, 47, 48, 49, 50, 51]))) delete config["CONFIG_PHONE_BATTERY_REFRESH"];
+    if (!(has_widget([43, 44, 45, 46, 47, 48, 49, 50, 51]))) delete config["CONFIG_UPDATE_PHONEBAT_ON_SHAKE"];
 // -- end autogen
 
     Pebble.sendAppMessage(config, function () {
