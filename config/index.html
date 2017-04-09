@@ -559,6 +559,12 @@
           </div>
         </label>
       </div>
+      <div class='item-container-content'>
+        <label class='item'>
+          Update phone battery when shaking the Pebble
+          <input id='CONFIG_UPDATE_PHONEBAT_ON_SHAKE' type='checkbox' class='item-toggle'>
+        </label>
+      </div>
 
 <!--
 // -- autogen
@@ -4221,6 +4227,7 @@
         "CONFIG_QUIET_COL": 66,
         "CONFIG_PHONE_BATTERY_EXPIRATION": 67,
         "CONFIG_PHONE_BATTERY_REFRESH": 68,
+        "CONFIG_UPDATE_PHONEBAT_ON_SHAKE": 69,
 // -- end autogen
     };
 
@@ -4397,6 +4404,7 @@
     showHideOption("CONFIG_COLOR_QUIET_MODE", readConfig("CONFIG_QUIET_COL") != 0);
     showHideOption("CONFIG_PHONE_BATTERY_EXPIRATION", has_widget([43, 44, 45]));
     showHideOption("CONFIG_PHONE_BATTERY_REFRESH", has_widget([43, 44, 45]));
+    showHideOption("CONFIG_UPDATE_PHONEBAT_ON_SHAKE", has_widget([43, 44, 45]));
     $('#tz_format_help').toggle(has_widget([34, 35, 36]));
 // -- end autogen
 

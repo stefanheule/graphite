@@ -23,5 +23,6 @@ void inbox_received_handler(DictionaryIterator *iter, void *context);
 void read_config_all();
 void subscribe_tick(bool also_unsubscribe);
 void subscribe_tap();
+void ask_for_update(uint8_t key);
 
 #endif //GRAPHITE_SETTINGS_H

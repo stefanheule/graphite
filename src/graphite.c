@@ -85,7 +85,8 @@ uint16_t config_weather_sunrise_expiration = 48;
 uint8_t config_color_quiet_mode = GColorLavenderIndigoARGB8;
 uint8_t config_quiet_col = false;
 uint16_t config_phone_battery_expiration = 30;
-uint16_t config_phone_battery_refresh = 1;
+uint16_t config_phone_battery_refresh = 30;
+uint8_t config_update_phonebat_on_shake = false;
 // -- end autogen
 
 
@@ -277,6 +278,7 @@ void handle_tap(AccelAxisType axis, int32_t direction) {
                                                    NULL);
     }
     layer_mark_dirty(layer_background);
+    if (config_update_phonebat_on_shake) ask_for_update(MSG_KEY_FETCH_PHONEBAT);
 }
 
 void subscribe_tap() {

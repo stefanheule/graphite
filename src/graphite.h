@@ -92,11 +92,12 @@
 #define CONFIG_QUIET_COL 66
 #define CONFIG_PHONE_BATTERY_EXPIRATION 67
 #define CONFIG_PHONE_BATTERY_REFRESH 68
+#define CONFIG_UPDATE_PHONEBAT_ON_SHAKE 69
 // -- end autogen
 
 // -- autogen
 // -- #define GRAPHITE_N_CONFIG {{ num_config_items }}
-#define GRAPHITE_N_CONFIG 68
+#define GRAPHITE_N_CONFIG 69
 // -- end autogen
 
 // -- autogen
@@ -201,6 +202,7 @@ extern uint8_t config_color_quiet_mode;
 extern uint8_t config_quiet_col;
 extern uint16_t config_phone_battery_expiration;
 extern uint16_t config_phone_battery_refresh;
+extern uint8_t config_update_phonebat_on_shake;
 // -- end autogen
 
 

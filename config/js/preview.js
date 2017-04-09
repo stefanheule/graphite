@@ -117,6 +117,7 @@ var GraphitePreview = (function () {
      var config_quiet_col;
      var config_phone_battery_expiration;
      var config_phone_battery_refresh;
+     var config_update_phonebat_on_shake;
 // -- end autogen
 
     function get(k) {
@@ -366,6 +367,7 @@ var GraphitePreview = (function () {
         config_quiet_col = config["CONFIG_QUIET_COL"];
         config_phone_battery_expiration = config["CONFIG_PHONE_BATTERY_EXPIRATION"];
         config_phone_battery_refresh = config["CONFIG_PHONE_BATTERY_REFRESH"];
+        config_update_phonebat_on_shake = config["CONFIG_UPDATE_PHONEBAT_ON_SHAKE"];
 // -- end autogen
 
         weather = getWeather(platform);
@@ -1187,7 +1189,8 @@ function background_update_proc(layer, ctx) {
             CONFIG_COLOR_QUIET_MODE: +GColor.LavenderIndigo,
             CONFIG_QUIET_COL: +false,
             CONFIG_PHONE_BATTERY_EXPIRATION: +30,
-            CONFIG_PHONE_BATTERY_REFRESH: +1,
+            CONFIG_PHONE_BATTERY_REFRESH: +30,
+            CONFIG_UPDATE_PHONEBAT_ON_SHAKE: +false,
 // -- end autogen
         };
         return cloneConfig(defaults);
@@ -1269,7 +1272,8 @@ function background_update_proc(layer, ctx) {
             CONFIG_COLOR_QUIET_MODE: +GColor.LavenderIndigo,
             CONFIG_QUIET_COL: +true,
             CONFIG_PHONE_BATTERY_EXPIRATION: +30,
-            CONFIG_PHONE_BATTERY_REFRESH: +1,
+            CONFIG_PHONE_BATTERY_REFRESH: +30,
+            CONFIG_UPDATE_PHONEBAT_ON_SHAKE: +true,
 // -- end autogen
         };
         return cloneConfig(defaults);

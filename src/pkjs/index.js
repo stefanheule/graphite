@@ -287,6 +287,9 @@ Pebble.addEventListener('webviewclosed', function (e) {
     fullconfig["CONFIG_PHONE_BATTERY_REFRESH"] = urlconfig[68];
     config["CONFIG_PHONE_BATTERY_REFRESH"] = +urlconfig[68];
     localStorage.setItem("CONFIG_PHONE_BATTERY_REFRESH", urlconfig[68]);
+    fullconfig["CONFIG_UPDATE_PHONEBAT_ON_SHAKE"] = urlconfig[69];
+    config["CONFIG_UPDATE_PHONEBAT_ON_SHAKE"] = +urlconfig[69];
+    localStorage.setItem("CONFIG_UPDATE_PHONEBAT_ON_SHAKE", urlconfig[69]);
 // -- end autogen
 
     // don't allow really small values for refresh rate
@@ -339,6 +342,7 @@ Pebble.addEventListener('webviewclosed', function (e) {
     if (!(readConfig("CONFIG_QUIET_COL") != 0)) delete config["CONFIG_COLOR_QUIET_MODE"];
     if (!(has_widget([43, 44, 45]))) delete config["CONFIG_PHONE_BATTERY_EXPIRATION"];
     if (!(has_widget([43, 44, 45]))) delete config["CONFIG_PHONE_BATTERY_REFRESH"];
+    if (!(has_widget([43, 44, 45]))) delete config["CONFIG_UPDATE_PHONEBAT_ON_SHAKE"];
 // -- end autogen
 
     Pebble.sendAppMessage(config, function () {

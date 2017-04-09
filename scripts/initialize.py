@@ -376,9 +376,15 @@ configuration = [
   },
   {
     'key': 'CONFIG_PHONE_BATTERY_REFRESH',
-    'default': '1',
+    'default': '30',
     'show_only_if': 'has_widget(ALL_PHONEBAT_WIDGET_IDS)',
     'type': 'uint16_t',
+  },
+  {
+    'key': 'CONFIG_UPDATE_PHONEBAT_ON_SHAKE',
+    'default': 'false',
+    'mydefault': 'true',
+    'show_only_if': 'has_widget(ALL_PHONEBAT_WIDGET_IDS)',
   },
 ]
 

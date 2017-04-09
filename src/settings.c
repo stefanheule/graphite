@@ -20,6 +20,13 @@
 static void update_weather_helper(void *unused);
 static void update_phonebat_helper(void *unused);
 
+void ask_for_update(uint8_t key) {
+    DictionaryIterator *iter;
+    app_message_outbox_begin(&iter);
+    dict_write_uint8(iter, key, 1);
+    app_message_outbox_send();
+}
+
 void set_timer_impl(AppTimer** timer, int timeout_min, AppTimerCallback callback) {
     const uint32_t timeout_ms = timeout_min * 1000 * 60;
     if (*timer) {
@@ -50,10 +57,7 @@ bool update_helper(bool force, time_t ts, AppTimer** timer, int timeout_min, App
     if (!need && !force) return false;
 
     // actually update the weather by sending a request
-    DictionaryIterator *iter;
-    app_message_outbox_begin(&iter);
-    dict_write_uint8(iter, key, 1);
-    app_message_outbox_send();
+    ask_for_update(key);
 
     return true;
 }
@@ -290,6 +294,7 @@ ConfigKeyAddr config_ka_8bit[] = {
     { .key = CONFIG_2ND_WIDGETS, .var = &config_2nd_widgets },
     { .key = CONFIG_COLOR_QUIET_MODE, .var = &config_color_quiet_mode },
     { .key = CONFIG_QUIET_COL, .var = &config_quiet_col },
+    { .key = CONFIG_UPDATE_PHONEBAT_ON_SHAKE, .var = &config_update_phonebat_on_shake },
 // -- end autogen
 };
 ConfigKeyAddr config_ka_16bit[] = {
