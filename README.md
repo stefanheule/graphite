@@ -10,7 +10,7 @@ See [stefanheule.com/graphite/](https://stefanheule.com/graphite/).
 
 ## Changelog
 
-**Version 1.3** ()
+**Version 1.3** (2017-04-10)
 
 - Secondary widgets: shake your watch for 6 additional widgets.
 - Add sunrise/sunset widgets.
@@ -18,7 +18,7 @@ See [stefanheule.com/graphite/](https://stefanheule.com/graphite/).
 - Add option to change accent color when in quiet mode.
 - Improve usage of bluetooth.
 - Size optimizations.
-- UTC as an explicit option (available as of 2017-03-08 through config page update).
+- UTC as an explicit option (available as of 2017-03-08 through server-side configuration page update).
 
 
 **Version 1.2** (2017-03-04)
@@ -58,7 +58,8 @@ The watchface itself uses relatively arbitrary version numbers of MAJOR.MINOR.  
 | Watchface version | Configuration version |
 |------------------:|----------------------:|
 |     1.0 until 1.1 |                     1 |
-|     1.2 until now |                     2 |
+|               1.2 |                     2 |
+|     1.3 until now |                     3 |
 
 ## Contributing
 
