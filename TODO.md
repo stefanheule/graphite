@@ -8,3 +8,5 @@ Ideas, in no particular order.
 - Average steps at a given time
 - Current location
 - More fonts (e.g. system font)
+- Second info line
+- Back button on widget config should close the widget chooser
