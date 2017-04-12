@@ -4709,14 +4709,23 @@
     updateShowHideStatus();
   }
 
-  function closeComplicationChooser() {
+  window.addEventListener('hashchange', function (event) {
+      var idx = event.oldURL.indexOf("#");
+      if (idx != -1 && event.oldURL.substring(idx+1) == "widget-picker") {
+          closeComplicationChooser(true);
+      }
+  });
+
+  function closeComplicationChooser(noBack) {
     var chooser = $("#widgets-preview");
     if (chooser.css("display") == "none") return;
     chooser.css("display", "none");
     document.body.classList.toggle('noscroll', false);
+    if (!noBack) window.history.back();
   }
 
   function openComplicationChooser(nr) {
+    window.history.pushState(null, null, '#widget-picker');
     var id = "widget" + nr;
     _current_widget_slot_nr = nr;
 
