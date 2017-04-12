@@ -9,3 +9,5 @@ Ideas, in no particular order.
 - Current location
 - More fonts (e.g. system font)
 - Second info line
+- Minute-by-minute rain forecast
+- Widget for sleep
