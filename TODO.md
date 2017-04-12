@@ -11,3 +11,4 @@ Ideas, in no particular order.
 - Second info line
 - Minute-by-minute rain forecast
 - Widget for sleep
+- Language that's different from system language
