@@ -295,8 +295,6 @@ void subscribe_tap() {
  * Initialization.
  */
 void init() {
-    setlocale(LC_ALL, "");
-
     read_config_all();
 
     window = window_create();

@@ -1014,6 +1014,7 @@ function background_update_proc(layer, ctx) {
         }
     }
     var time_y_offset = PBL_DISPLAY_WIDTH != 144 ? 0 : (height_full-height) / 8;
+    setlocale(LC_ALL, "");
     buffer_1 = strftime(config_time_format, t);
     buffer_1 = 
     remove_leading_zero(buffer_1, sizeof(buffer_1));

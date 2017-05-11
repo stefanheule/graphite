@@ -10,6 +10,11 @@ See [stefanheule.com/graphite/](https://stefanheule.com/graphite/).
 
 ## Changelog
 
+**Version 1.4** (2017-05-11)
+
+- Fix localized date issue.  Dates should show up in the local language again.
+
+
 **Version 1.3** (2017-04-10)
 
 - Secondary widgets: shake your watch for 6 additional widgets.

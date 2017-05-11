@@ -38,7 +38,7 @@ def enum_widget(compl, m):
 # --- configuration
 # ------------------------------------------------------------------------------
 
-version = '1.3'
+version = '1.4'
 config_version = '3'
 
 # number of timezone widgets

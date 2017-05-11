@@ -281,6 +281,7 @@ void background_update_proc(Layer *layer, GContext *ctx) {
 
     // time
     fixed_t time_y_offset = PBL_DISPLAY_WIDTH != 144 ? 0 : (height_full-height) / 8;
+    setlocale(LC_ALL, "");
     strftime(buffer_1, sizeof(buffer_1), config_time_format, t);
 // -- jsalternative
 // --     buffer_1 = 
