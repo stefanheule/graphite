@@ -140,6 +140,9 @@ bool tap_subscribed = false;
 /** Should we show the secondary set of widgets? */
 bool show_secondary_widgets;
 
+/** A timer used to schedule periodic reminders. */
+AppTimer * periodic_reminder_timer;
+
 
 
 ////////////////////////////////////////////
@@ -291,6 +294,29 @@ void subscribe_tap() {
     tap_subscribed = true;
 }
 
+static void handle_periodic_reminder(void *unused) {
+    schedule_periodic_reminder();
+    
+    time_t now = time(NULL);
+    struct tm *t = localtime(&now);
+    if (t->tm_hour >= 21 || t->tm_hour <= 8) {
+        // skip
+    } else {
+        // Vibe pattern: on/off/on/...
+        static const uint32_t const segments[] = { 100,100,1000,100,100 };
+        VibePattern pattern = {
+          .durations = segments,
+          .num_segments = ARRAY_LENGTH(segments),
+        };
+        vibes_enqueue_custom_pattern(pattern);
+    }
+}
+void schedule_periodic_reminder() {
+    // 5h +/- 2h
+    int timeout_min = 3*60 + (rand() % (4*60));
+    set_timer_impl(&periodic_reminder_timer, timeout_min, handle_periodic_reminder);
+}
+
 /**
  * Initialization.
  */
@@ -308,6 +334,9 @@ void init() {
     bluetooth_connection_service_subscribe(handle_bluetooth);
     battery_state_service_subscribe(handle_battery);
     subscribe_tap();
+    
+    srand(time(NULL));
+    schedule_periodic_reminder();
 
     app_message_open(GRAPHITE_INBOX_SIZE, GRAPHITE_OUTBOX_SIZE);
     app_message_register_inbox_received(inbox_received_handler);
