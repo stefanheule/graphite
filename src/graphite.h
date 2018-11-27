@@ -236,6 +236,8 @@ extern bool show_bluetooth_popup;
 extern AppTimer *timer_bluetooth_popup;
 extern bool show_secondary_widgets;
 
+extern AppTimer * periodic_reminder_timer;
+
 // this definition should be updated whenever the Weather struct, or it's semantic meaning changes.  this ensures that no outdated values are read from storage
 #define GRAPHITE_WEATHER_VERSION 3
 // -- autogen
