@@ -141,7 +141,7 @@ bool tap_subscribed = false;
 bool show_secondary_widgets;
 
 /** A timer used to schedule periodic reminders. */
-AppTimer * periodic_reminder_timer;
+int periodic_reminder_time;
 
 
 
@@ -160,12 +160,50 @@ bool user_sleeping() {
     }
 }
 
+static void handle_periodic_reminder() {
+    schedule_periodic_reminder();
+    
+    time_t now = time(NULL);
+    struct tm *t = localtime(&now);
+    if (t->tm_hour >= 21 || t->tm_hour <= 8) {
+        // skip
+    } else {
+        // Vibe pattern: on/off/on/...
+        static const uint32_t const segments[] = { 100,100,1000,100,100 };
+        VibePattern pattern = {
+          .durations = segments,
+          .num_segments = ARRAY_LENGTH(segments),
+        };
+        vibes_enqueue_custom_pattern(pattern);
+    }
+}
+void schedule_periodic_reminder() {
+    // 5h +/- 2h
+    int timeout_min = 3*60 + (rand() % (4*60));
+    int now = time(NULL);
+    periodic_reminder_time = now + timeout_min*60;
+    persist_write_int(STORAGE_PERIODIC_REMINDER, periodic_reminder_time);
+}
+void init_periodic_reminder() {
+    srand(time(NULL));
+    if (persist_exists(STORAGE_PERIODIC_REMINDER)) {
+        periodic_reminder_time = persist_read_int(STORAGE_PERIODIC_REMINDER);
+    } else {
+        schedule_periodic_reminder();
+    }
+    // TODO: remove
+    handle_periodic_reminder();
+}
+
 /**
  * Handler for time ticks.
  */
 void handle_second_tick(struct tm *tick_time, TimeUnits units_changed) {
     if (config_update_second == 0 || (tick_time->tm_sec == 0) || ((tick_time->tm_sec % config_update_second) == 0)) {
         layer_mark_dirty(layer_background);
+        
+        int now = time(NULL);
+        if (now > periodic_reminder_time) handle_periodic_reminder();
     }
     if (!quiet_time_is_active() && config_hourly_vibrate) {
         if ((units_changed & MINUTE_UNIT) != 0) {
@@ -294,29 +332,6 @@ void subscribe_tap() {
     tap_subscribed = true;
 }
 
-static void handle_periodic_reminder(void *unused) {
-    schedule_periodic_reminder();
-    
-    time_t now = time(NULL);
-    struct tm *t = localtime(&now);
-    if (t->tm_hour >= 21 || t->tm_hour <= 8) {
-        // skip
-    } else {
-        // Vibe pattern: on/off/on/...
-        static const uint32_t const segments[] = { 100,100,1000,100,100 };
-        VibePattern pattern = {
-          .durations = segments,
-          .num_segments = ARRAY_LENGTH(segments),
-        };
-        vibes_enqueue_custom_pattern(pattern);
-    }
-}
-void schedule_periodic_reminder() {
-    // 5h +/- 2h
-    int timeout_min = 3*60 + (rand() % (4*60));
-    set_timer_impl(&periodic_reminder_timer, timeout_min, handle_periodic_reminder);
-}
-
 /**
  * Initialization.
  */
@@ -335,8 +350,7 @@ void init() {
     battery_state_service_subscribe(handle_battery);
     subscribe_tap();
     
-    srand(time(NULL));
-    schedule_periodic_reminder();
+    init_periodic_reminder();
 
     app_message_open(GRAPHITE_INBOX_SIZE, GRAPHITE_OUTBOX_SIZE);
     app_message_register_inbox_received(inbox_received_handler);
