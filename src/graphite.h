@@ -101,6 +101,11 @@
 // -- end autogen
 
 // -- autogen
+// -- #define STORAGE_PERIODIC_REMINDER ({{ num_config_items }}+1)
+#define STORAGE_PERIODIC_REMINDER (69+1)
+// -- end autogen
+
+// -- autogen
 // -- ## for key in message_keys
 // -- #define {{ key["key"] }} {{ key["id"] }}
 // -- ## endfor
