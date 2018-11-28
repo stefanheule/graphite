@@ -161,8 +161,8 @@ bool user_sleeping() {
 }
 
 void schedule_periodic_reminder() {
-    // 5h +/- 2h
-    int timeout_min = 3*60 + (rand() % (4*60));
+    // 3h +/- 2h
+    int timeout_min = 1*60 + (rand() % (4*60));
     int now = time(NULL);
     periodic_reminder_time = now + timeout_min*60;
     persist_write_int(STORAGE_PERIODIC_REMINDER, periodic_reminder_time);
@@ -193,7 +193,15 @@ void init_periodic_reminder() {
         schedule_periodic_reminder();
     }
     // TODO: remove
-    handle_periodic_reminder();
+    static const uint32_t const segments[] = {
+        0,3000,
+        80,100,80,100,80,100,80,
+    };
+    VibePattern pattern = {
+      .durations = segments,
+      .num_segments = ARRAY_LENGTH(segments),
+    };
+    vibes_enqueue_custom_pattern(pattern);
 }
 
 /**
