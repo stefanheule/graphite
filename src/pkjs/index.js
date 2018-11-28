@@ -35,7 +35,6 @@ function getUToken() {
 Pebble.addEventListener('ready', function () {
 // -- build=debug
 // --     console.log('[ info/app ] PebbleKit JS ready!');
-    console.log('[ info/app ] PebbleKit JS ready!');
 // -- end build
     var data = {
         "MSG_KEY_JS_READY": 1
@@ -63,7 +62,6 @@ Pebble.addEventListener('showConfiguration', function () {
 
 // -- build=debug
 // --     console.log('[ info/app ] Showing configuration page: ' + url);
-    console.log('[ info/app ] Showing configuration page: ' + url);
 // -- end build
     Pebble.openURL(url);
 });
@@ -303,7 +301,6 @@ Pebble.addEventListener('webviewclosed', function (e) {
 
 // -- build=debug
 // --     console.log('[ info/app ] Configuration page returned: ' + JSON.stringify(fullconfig));
-    console.log('[ info/app ] Configuration page returned: ' + JSON.stringify(fullconfig));
 // -- end build
 
 // -- autogen
@@ -348,14 +345,11 @@ Pebble.addEventListener('webviewclosed', function (e) {
     Pebble.sendAppMessage(config, function () {
 // -- build=debug
 // --         console.log('[ info/app ] Send successful: ' + JSON.stringify(config));
-        console.log('[ info/app ] Send successful: ' + JSON.stringify(config));
 // -- end build
     }, function(e) {
 // -- build=debug
 // --         console.log(JSON.stringify(config));
 // --         console.log('Message failed: ' + JSON.stringify(e));
-        console.log(JSON.stringify(config));
-        console.log('Message failed: ' + JSON.stringify(e));
 // -- end build
     });
 });
@@ -488,7 +482,6 @@ function sameDate(a, b) {
 function failedWeatherCheck(err) {
 // -- build=debug
 // --     console.log('[ info/app ] weather request failed: ' + err);
-    console.log('[ info/app ] weather request failed: ' + err);
 // -- end build
     var data = {
         "MSG_KEY_WEATHER_FAILED": 1
@@ -518,7 +511,6 @@ function concurrentRequests(urls, succ) {
         }
 // -- build=debug
 // --         console.log("[ info/app ] loading from " + url);
-        console.log("[ info/app ] loading from " + url);
 // -- end build
         var req = new XMLHttpRequest();
         req.open("GET", url, true);
@@ -621,7 +613,6 @@ function fetchWeather(latitude, longitude) {
         }
 // -- build=debug
 // --         console.log('[ info/app ] weather send: temp=' + low + "/" + cur + "/" + high + ", icon=" + String.fromCharCode(icon) + ", len(rain)=" + raindata.length + ", ts=" + ts + ", sunrise=" + sunrise + ".");
-        console.log('[ info/app ] weather send: temp=' + low + "/" + cur + "/" + high + ", icon=" + String.fromCharCode(icon) + ", len(rain)=" + raindata.length + ", ts=" + ts + ", sunrise=" + sunrise + ".");
 // -- end build
         Pebble.sendAppMessage(data);
     };
@@ -663,7 +654,6 @@ function fetchWeather(latitude, longitude) {
         concurrentRequests([url0,url1,url2,url3], function (responses) {
 // -- build=debug
 // --             //console.log('[ info/app ] weather information: ' + JSON.stringify(response));
-            //console.log('[ info/app ] weather information: ' + JSON.stringify(response));
 // -- end build
             if (load_lowhigh) {
                 for (var i in responses[1].forecast.simpleforecast.forecastday) {
@@ -710,7 +700,6 @@ function fetchWeather(latitude, longitude) {
         runRequest(baseurl + exclude, function(response) {
 // -- build=debug
 // --             //console.log('[ info/app ] weather information: ' + JSON.stringify(response));
-            //console.log('[ info/app ] weather information: ' + JSON.stringify(response));
 // -- end build
             if (load_lowhigh || load_sun) {
                 for (var i in response.daily.data) {
@@ -797,7 +786,6 @@ function sendTzUpdate(idx) {
 
 // -- build=debug
 // --     console.log('[ info/app ] tzdata:');
-    console.log('[ info/app ] tzdata:');
 // -- end build
     while (id < untils.length && i < max_tzdata) {
         var until = !isFinite(untils[id]) ? 2147483647 : toTimestamp(untils[id]);
@@ -809,8 +797,6 @@ function sendTzUpdate(idx) {
 // -- build=debug
 // --         console.log('    until  = ' + until);
 // --         console.log('    offset = ' + offset);
-        console.log('    until  = ' + until);
-        console.log('    offset = ' + offset);
 // -- end build
     }
 
@@ -828,7 +814,6 @@ function sendBatteryLevel() {
         };
 // -- build=debug
 // --         console.log('[ info/app ] phone battery not supported.');
-        console.log('[ info/app ] phone battery not supported.');
 // -- end build
         Pebble.sendAppMessage(data);
         return;
@@ -841,7 +826,6 @@ function sendBatteryLevel() {
         };
 // -- build=debug
 // --             console.log('[ info/app ] phone battery = ' + battery.level  + ".");
-            console.log('[ info/app ] phone battery = ' + battery.level  + ".");
 // -- end build
         Pebble.sendAppMessage(data);
     });
@@ -851,7 +835,6 @@ Pebble.addEventListener('appmessage',
     function (e) {
 // -- build=debug
 // --         console.log('[ info/app ] app message received: ' + JSON.stringify(e));
-        console.log('[ info/app ] app message received: ' + JSON.stringify(e));
 // -- end build
         var dict = e.payload;
         if (dict["MSG_KEY_FETCH_WEATHER"]) {

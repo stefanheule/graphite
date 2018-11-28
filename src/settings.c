@@ -73,7 +73,6 @@ void update_weather(bool force) {
 
 // -- build=debug
 // --     if (done) APP_LOG(APP_LOG_LEVEL_INFO, "requesting weather update");
-    if (done) APP_LOG(APP_LOG_LEVEL_INFO, "requesting weather update");
 // -- end build
 }
 
@@ -84,7 +83,6 @@ void update_phonebat(bool force) {
 
 // -- build=debug
 // --     if (done) APP_LOG(APP_LOG_LEVEL_INFO, "requesting phone battery update");
-    if (done) APP_LOG(APP_LOG_LEVEL_INFO, "requesting phone battery update");
 // -- end build
 }
 
@@ -147,7 +145,6 @@ void check_update_tz_helper(uint8_t idx, uint32_t key) {
 
 // -- build=debug
 // --     APP_LOG(APP_LOG_LEVEL_INFO, "requesting tz update for %d", idx);
-    APP_LOG(APP_LOG_LEVEL_INFO, "requesting tz update for %d", idx);
 // -- end build
 }
 void check_update_tz() {
@@ -212,7 +209,6 @@ bool sync_tz(uint8_t idx, const uint32_t key, DictionaryIterator *iter) {
         int i = 0;
 // -- build=debug
 // --             APP_LOG(APP_LOG_LEVEL_DEBUG, "received tz data:");
-            APP_LOG(APP_LOG_LEVEL_DEBUG, "received tz data:");
 // -- end build
         while (i < GRAPHITE_TZ_MAX_DATAPOINTS) {
             tzinfo.data[idx].untils[i] = decode_bytes_to_int(tz_data->value->data + i * 6, 4);
@@ -224,8 +220,6 @@ bool sync_tz(uint8_t idx, const uint32_t key, DictionaryIterator *iter) {
 // -- build=debug
 // --             APP_LOG(APP_LOG_LEVEL_DEBUG, "  until  = %d", tzinfo.data[idx].untils[i]);
 // --             APP_LOG(APP_LOG_LEVEL_DEBUG, "  offset = %d", tzinfo.data[idx].offsets[i]);
-            APP_LOG(APP_LOG_LEVEL_DEBUG, "  until  = %d", tzinfo.data[idx].untils[i]);
-            APP_LOG(APP_LOG_LEVEL_DEBUG, "  offset = %d", tzinfo.data[idx].offsets[i]);
 // -- end build
             i += 1;
         }
@@ -334,7 +328,6 @@ ConfigKeyAddr config_ka_string[] = {
 void inbox_received_handler(DictionaryIterator *iter, void *context) {
 // -- build=debug
 // --     APP_LOG(APP_LOG_LEVEL_DEBUG, "received message");
-    APP_LOG(APP_LOG_LEVEL_DEBUG, "received message");
 // -- end build
 
     bool dirty = false;

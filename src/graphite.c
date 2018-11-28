@@ -160,29 +160,30 @@ bool user_sleeping() {
     }
 }
 
-static void handle_periodic_reminder() {
-    schedule_periodic_reminder();
-    
-    time_t now = time(NULL);
-    struct tm *t = localtime(&now);
-    if (t->tm_hour >= 21 || t->tm_hour <= 8) {
-        // skip
-    } else {
-        // Vibe pattern: on/off/on/...
-        static const uint32_t const segments[] = { 100,100,1000,100,100 };
-        VibePattern pattern = {
-          .durations = segments,
-          .num_segments = ARRAY_LENGTH(segments),
-        };
-        vibes_enqueue_custom_pattern(pattern);
-    }
-}
 void schedule_periodic_reminder() {
     // 5h +/- 2h
     int timeout_min = 3*60 + (rand() % (4*60));
     int now = time(NULL);
     periodic_reminder_time = now + timeout_min*60;
     persist_write_int(STORAGE_PERIODIC_REMINDER, periodic_reminder_time);
+}
+static void handle_periodic_reminder() {
+    schedule_periodic_reminder();
+    
+    time_t now = time(NULL);
+    struct tm *t = localtime(&now);
+    if ((t->tm_hour >= 21 || t->tm_hour <= 8 || user_sleeping())) {
+        // skip
+    } else {
+        // Vibe pattern: on/off/on/...
+        // static const uint32_t const segments[] = { 100,100,500,100,100,100,500 };
+        static const uint32_t const segments[] = { 80,100,80,100,80,100,80 };
+        VibePattern pattern = {
+          .durations = segments,
+          .num_segments = ARRAY_LENGTH(segments),
+        };
+        vibes_enqueue_custom_pattern(pattern);
+    }
 }
 void init_periodic_reminder() {
     srand(time(NULL));

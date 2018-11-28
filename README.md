@@ -1,8 +1,6 @@
 # Graphite
 
-Available in the Pebble App Store:
-
-[![Available on the Pebble App Store](http://pblweb.com/badge/58a64c9c6ca3877261000466/black/small)](https://apps.getpebble.com/applications/58a64c9c6ca3877261000466)
+The Pebble app store is long gone, but the project is still alive and available at [stefanheule.com/graphite/](https://stefanheule.com/graphite/).
 
 ## Overview
 
@@ -48,13 +46,17 @@ See [stefanheule.com/graphite/](https://stefanheule.com/graphite/).
 
 To build the project in a release configuration, run
 
-    ./configure
+    ./configure --release
     make release
 
 For development, you can build a debug build by running
 
     ./configure
     make build
+
+### Dependencies
+
+    sudo pip install jinja2
 
 ### Versioning
 
