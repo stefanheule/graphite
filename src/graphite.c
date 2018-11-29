@@ -176,8 +176,7 @@ static void handle_periodic_reminder() {
         // skip
     } else {
         // Vibe pattern: on/off/on/...
-        // static const uint32_t const segments[] = { 100,100,500,100,100,100,500 };
-        static const uint32_t const segments[] = { 80,100,80,100,80,100,80 };
+        static const uint32_t const segments[] = { 60,100,60,100,60,100,60,100,60,100,60,100,60,100,60, };
         VibePattern pattern = {
           .durations = segments,
           .num_segments = ARRAY_LENGTH(segments),
@@ -192,16 +191,6 @@ void init_periodic_reminder() {
     } else {
         schedule_periodic_reminder();
     }
-    // TODO: remove
-    static const uint32_t const segments[] = {
-        0,3000,
-        80,100,80,100,80,100,80,
-    };
-    VibePattern pattern = {
-      .durations = segments,
-      .num_segments = ARRAY_LENGTH(segments),
-    };
-    vibes_enqueue_custom_pattern(pattern);
 }
 
 /**
