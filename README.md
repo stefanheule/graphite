@@ -10,6 +10,11 @@ See [stefanheule.com/graphite/](https://stefanheule.com/graphite/).
 
 ## Changelog
 
+**Version 1.4** (2020-02-18) (no version change, since only the config changed)
+
+- Fix "Celsius" typo in config page.  Thanks @crazyquark.
+
+
 **Version 1.4** (2017-05-11)
 
 - Fix localized date issue.  Dates should show up in the local language again.
