@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python2
 
 from jinja2 import Template
 from jinja2 import Environment, FileSystemLoader
@@ -292,19 +292,19 @@ configuration = [
     'type': 'uint16_t',
     'show_only_if': 'readConfig("CONFIG_PROGRESS") == 1',
   },
-] + map(lambda i: {
+] + list(map(lambda i: {
   'key': 'CONFIG_TZ_%d_LOCAL' % i,
   'default': '"America/Los_Angeles"',
   'mydefault': '"Europe/Zurich"' if i == 0 else '"Asia/Shanghai"',
   'type': 'string',
   'show_only_if': 'has_widget([WIDGET_TZ_%d])' % i,
-}, range(num_tzs)) + map(lambda i: {
+}, range(num_tzs))) + list(map(lambda i: {
   'key': 'CONFIG_TZ_%d_FORMAT' % i,
   'default': '"%I:0%M%P"',
   'mydefault': '"%I:0%M%Pmmm"',
   'type': 'string',
   'show_only_if': 'has_widget([WIDGET_TZ_%d])' % i,
-}, range(num_tzs)) + [
+}, range(num_tzs))) + [
   {
     'key': 'CONFIG_HOURLY_VIBRATE',
     'default': 'false',
@@ -575,12 +575,12 @@ widgets = [
     'desc': 'Battery (text, no percent sign)',
     'sort': 300,
   },
-] + map(lambda i: {
+] + list(map(lambda i: {
   'key': 'WIDGET_TZ_%d' % i,
   'desc': 'Additional timezone %d' % (i+1),
   'group': ['TZ'],
   'sort': 500,
-}, range(num_tzs)) + [
+}, range(num_tzs))) + [
   {
     'key': 'WIDGET_WEATHER_SUNRISE_ICON0',
     'desc': 'Sunrise time',
@@ -800,7 +800,7 @@ def get_context():
       'simple_config_lookup': to_lookup(sc),
       'config_groups': config_groups,
       'config_groups_lookup': to_lookup(config_groups),
-      'widgets': sorted(wdgts, lambda a, b: cmp((a['sort'], a['id']), (b['sort'], b['id']))),
+      'widgets': sorted(wdgts, key=lambda a: (a['sort'], a['id'])),
       'widgets_idsorted': wdgts,
       'widgets_lookup': to_lookup(wdgts),
       'num_config_items': len(config),
@@ -905,7 +905,7 @@ def add_key_id(keys, prefix, start_id):
   res = []
   i = start_id
   for k in keys:
-    if type(k) in [str, unicode]:
+    if type(k) in [str]:
       res.append({'key': "%s%s" % (prefix, k), 'id': i})
     else:
       name = k['key']
@@ -938,7 +938,7 @@ def write_file(name, content):
 
 def error(msg):
   """Exit program with an error message"""
-  print "ERROR: %s" % (msg)
+  print("ERROR: %s" % (msg))
   sys.exit(1)
 
 def render(file):
@@ -1133,7 +1133,7 @@ def main():
   if len(sys.argv) == 3 and sys.argv[1] == "inline":
     env = Environment()
     template = env.from_string(sys.argv[2])
-    print template.render(get_context()).strip("\n")
+    print(template.render(get_context()).strip("\n"))
     return
   for f in files_to_render:
     render(f)

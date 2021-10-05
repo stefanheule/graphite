@@ -644,15 +644,39 @@ function fetchWeather(latitude, longitude) {
     var sunset = 0;
     if (source == 1) {
         var query = "lat=" + latitude + "&lon=" + longitude;
-        query += "&cnt=1&appid=fa5280deac4b98572739388b55cd7591";
-        query = "http://api.openweathermap.org/data/2.5/weather?" + query;
+        var exclude = ['alerts', 'minutely'];
+        if (!load_cur && !load_sun) exclude.push('current');
+        if (!load_lowhigh) exclude.push('daily');
+        if (!load_rain) exclude.push('hourly');
+        query += "&appid=fa5280deac4b98572739388b55cd7591";
+        query += "&exclude=" + exclude.join(',');
+        query = "http://api.openweathermap.org/data/2.5/onecall?" + query;
         runRequest(query, function (response) {
-            cur = response.main.temp - 273.15;
-            low = temp_unknown;
-            high = temp_unknown;
-            icon = parseIconOpenWeatherMap(response.weather[0].icon);
-            sunrise = response.sys.sunrise;
-            sunset = response.sys.sunset;
+            if (load_cur || load_sun) {
+                cur = response.current.temp - 273.15;
+                icon = parseIconOpenWeatherMap(response.current.weather[0].icon);
+
+                sunrise = response.current.sunrise;
+                sunset = response.current.sunset;
+            }
+            if (load_lowhigh) {
+                for (var i in response.daily) {
+                    var data = response.daily[i];
+                    var date = new Date(data.dt*1000);
+                    if (sameDate(now, date)) {
+                        high = data.temp.max - 273.15;
+                        low = data.temp.min - 273.15;
+                        break;
+                    }
+                }
+            }
+            if (load_rain) {
+                for (var i in response.hourly) {
+                    var elem = response.hourly[i];
+                    if (raints == 0) raints = elem.dt;
+                    raindata.push(Math.round(elem.pop * 100));
+                }
+            }
             success(low, high, cur, icon, raindata, raints, sunrise, sunset);
         });
     } else if (source == 3) {
