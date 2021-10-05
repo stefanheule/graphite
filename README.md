@@ -1,14 +1,17 @@
 # Graphite
 
-Available in the Pebble App Store:
-
-[![Available on the Pebble App Store](http://pblweb.com/badge/58a64c9c6ca3877261000466/black/small)](https://apps.getpebble.com/applications/58a64c9c6ca3877261000466)
+Download at https://stefanheule.com/graphite/.
 
 ## Overview
 
 See [stefanheule.com/graphite/](https://stefanheule.com/graphite/).
 
 ## Changelog
+
+**Version 1.5** (2021-10-04)
+
+- Add support for hourly rain forcast from openweathermap.org.
+
 
 **Version 1.4** (2020-02-18) (no version change, since only the config changed)
 
