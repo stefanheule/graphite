@@ -7,3 +7,4 @@ cmake-build-debug
 node_modules/
 tz-data
 **/__pycache__/
+.lock-waf_linux_build
