@@ -6,3 +6,4 @@ package.json
 cmake-build-debug
 node_modules/
 tz-data
+**/__pycache__/
