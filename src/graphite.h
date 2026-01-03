@@ -278,7 +278,7 @@ extern AppTimer * phone_battery_request_timer;
 #define GRAPHITE_NUM_TZS 3
 #define GRAPHITE_TZ_MAX_DATAPOINTS 3
 // -- end autogen
-#define GRAPHITE_TZ_DATA_VERSION 1
+#define GRAPHITE_TZ_DATA_VERSION 2
 
 typedef struct {
     bool valid;
