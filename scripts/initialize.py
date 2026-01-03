@@ -1,4 +1,4 @@
-#!/usr/bin/env python2
+#!/usr/bin/env python3
 
 from jinja2 import Template
 from jinja2 import Environment, FileSystemLoader
@@ -17,7 +17,7 @@ def flatten(l): return [x for y in l for x in y]
 def enum_widget(compl, m):
   if isinstance(compl, list): return flatten(map(lambda x: enum_widget(x, m), compl))
   res = []
-  for element in itertools.product(*[map(lambda v: (k, v), m[k]) for k in reversed(m.keys())]):
+  for element in itertools.product(*[map(lambda v: (k, v), m[k]) for k in reversed(list(m.keys()))]):
     tmp = copy.copy(compl)
     iden = compl["key"]
     info = []
@@ -831,7 +831,7 @@ def pre_process(config, simple_config, wdgts, groups):
   for k in groups:
     name = k['name']
     k['key'] = "GROUP_%s" % (name)
-    ids = map(lambda x: str(x), group_ids[name])
+    ids = list(map(lambda x: str(x), group_ids[name]))
     resolved = "[%s]" % (", ".join(ids))
     k['ALL_IDS'] = resolved
     for kk in k:
@@ -860,7 +860,7 @@ def pre_process(config, simple_config, wdgts, groups):
     k['jsmydefault'] = resolve_widgets(k['jsmydefault'])
     if 'show_only_if' in k: k['show_only_if'] = resolve_widgets(k['show_only_if'])
     if 'options' in k:
-      k['options'] = map(lambda x: {'desc': (format_time(x[1][0]) + ("" if x[1][1]=="" else (" (%s)" % x[1][1]))).strip(), 'id': x[0], 'format': x[1]}, enumerate(k['options']))
+      k['options'] = list(map(lambda x: {'desc': (format_time(x[1][0]) + ("" if x[1][1]=="" else (" (%s)" % x[1][1]))).strip(), 'id': x[0], 'format': x[1]}, enumerate(k['options'])))
 
 def to_lookup(ls):
   res = {}
@@ -1069,7 +1069,7 @@ def c_to_js(f):
     if rfundecl is not None:
       name = rfundecl.group("name")
       arglist = rfundecl.group("arglist")
-      arglist = ", ".join(map(lambda x: x.strip().split(" ")[-1].strip("*"), arglist.split(",")))
+      arglist = ", ".join(list(map(lambda x: x.strip().split(" ")[-1].strip("*"), arglist.split(","))))
       newcontents.append("function %s(%s) {" % (name, arglist))
       continue
 

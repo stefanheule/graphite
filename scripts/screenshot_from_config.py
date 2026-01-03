@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 
 import sys
@@ -37,7 +37,7 @@ def main():
   for s in sshots:
     name = s[0]
     f = "%s/%s.png" % (screenshotdir, name)
-    if s[0] == "": print s[1]
+    if s[0] == "": print(s[1])
     img = base64.b64decode(s[1])
     write_file(f, img)
 
@@ -47,13 +47,13 @@ def main():
   shutil.rmtree(tmp)
 
 def write_file(f, contents):
-  f = open(f,'w')
+  f = open(f,'wb')
   f.write(contents)
   f.close()
 
 
 def read_file(f):
-  data = open(f)
+  data = open(f, 'r')
   r = data.read()
   data.close()
   return r

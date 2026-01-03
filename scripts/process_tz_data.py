@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 import sys
 import re
@@ -30,15 +30,15 @@ def main():
   for country in sorted(countries):
     if country[1] not in country_id_2_zone: continue # not sure why this can happen
 
-    print '<optgroup label="%s">' % (country[0])
+    print('<optgroup label="%s">' % (country[0]))
     for zone in country_id_2_zone[country[1]]:
-      print  '  <option value="%s">%s</option>' % (zone, zone)
-    print '</optgroup>'
+      print('  <option value="%s">%s</option>' % (zone, zone))
+    print('</optgroup>')
 
   ## add utc timezone
-  print '<optgroup label="Coordinated Universal Time">'
-  print  '  <option value="Etc/UCT">Coordinated Universal Time</option>'
-  print '</optgroup>'
+  print('<optgroup label="Coordinated Universal Time">')
+  print('  <option value="Etc/UCT">Coordinated Universal Time</option>')
+  print('</optgroup>')
 
 if __name__ == "__main__":
   main()

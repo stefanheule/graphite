@@ -15,8 +15,8 @@ function error {
 
 ## Now do some parsing, look for options
 
-DEFAULT_PLATFORM="basalt"
-SUPPORTED_PLATFORMS="basalt"
+DEFAULT_PLATFORM="emery"
+SUPPORTED_PLATFORMS="basalt emery"
 BUILD="debug"
 
 while :; do
