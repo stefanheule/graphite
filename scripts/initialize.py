@@ -17,7 +17,7 @@ def flatten(l): return [x for y in l for x in y]
 def enum_widget(compl, m):
   if isinstance(compl, list): return flatten(map(lambda x: enum_widget(x, m), compl))
   res = []
-  for element in itertools.product(*[map(lambda v: (k, v), m[k]) for k in reversed(list(m.keys()))]):
+  for element in itertools.product(*[map(lambda v, k=k: (k, v), m[k]) for k in reversed(list(m.keys()))]):
     tmp = copy.copy(compl)
     iden = compl["key"]
     info = []
