@@ -8,6 +8,14 @@ See [stefanheule.com/graphite/](https://stefanheule.com/graphite/).
 
 ## Changelog
 
+**Version 1.6** (2026-05-03)
+
+- Replace dead weather providers.  Dark Sky was retired in March 2023 and Weather Underground's free public API has been gone since 2018, so requests to both have been failing with 503 errors.  The provider list is now Open-Meteo (default, no API key required), OpenWeatherMap (One Call API 3.0, requires user key), and Weatherbit (requires user key).
+    - Existing users at the default source will auto-migrate to Open-Meteo and keep working with no action needed.
+    - Users who previously selected Dark Sky or Weather Underground will need to pick a new provider and supply a new API key.
+    - Note: Weatherbit's free tier does not include the hourly forecast endpoint, so the rain bars stay empty when this provider is selected.
+
+
 **Version 1.5** (2021-10-04)
 
 - Add support for hourly rain forcast from openweathermap.org.
@@ -72,7 +80,8 @@ The watchface itself uses relatively arbitrary version numbers of MAJOR.MINOR.  
 |------------------:|----------------------:|
 |     1.0 until 1.1 |                     1 |
 |               1.2 |                     2 |
-|     1.3 until now |                     3 |
+|     1.3 until 1.5 |                     3 |
+|     1.6 until now |                     4 |
 
 ## Contributing
 
