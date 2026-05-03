@@ -104,10 +104,9 @@
     <div id="body-container">
 
     <div id="weather-warning">
-      <p>Warning: OpenWeatherMap does not provide hourly rain forecasts or low/high
-      temperature information, so these will not work with OpenWeatherMap as the
-      weather provider.  You can use darksky.net or Weather Underground instead
-      by changing the setting below (requires a free API key).</p>
+      <p>Warning: Weatherbit's free tier does not provide hourly rain forecasts,
+      so the rain bars will not show when this provider is selected. Use
+      Open-Meteo or OpenWeatherMap if you need the hourly rain preview.</p>
     </div>
 
     <div id="widgets-preview">
@@ -3670,13 +3669,13 @@
         <label class="item">
           Source
           <select id='CONFIG_WEATHER_SOURCE_LOCAL' dir='rtl' class="item-select">
-            <option class="item-select-option" value="1">OpenWeatherMap</option>
-            <option class="item-select-option" value="2">DarkSky.net</option>
-            <option class="item-select-option" value="3">Weather Underground</option>
+            <option class="item-select-option" value="1">Open-Meteo (recommended, no API key)</option>
+            <option class="item-select-option" value="2">OpenWeatherMap</option>
+            <option class="item-select-option" value="3">Weatherbit</option>
           </select>
         </label>
         <div class="item-container-footer">
-          DarkSky.net and Weather Underground require an API key (see below).
+          OpenWeatherMap and Weatherbit require an API key (see below). Open-Meteo works without one.
         </div>
       </div>
 
@@ -3688,9 +3687,10 @@
           </div>
         </label>
         <div class="item-container-footer">
-          Only required for DarkSky.net and Weather Underground weather source.  Register for free at
-          <a href="https://darksky.net/dev/register">darksky.net</a> or
-          <a href="https://www.wunderground.com/weather/api/">www.wunderground.com</a>.
+          Only required for OpenWeatherMap and Weatherbit. Register for free at
+          <a href="https://openweathermap.org/api">openweathermap.org</a> or
+          <a href="https://www.weatherbit.io/account/create">weatherbit.io</a>.
+          OpenWeatherMap requires the One Call API 3.0 subscription (1000 free calls/day).
         </div>
       </div>
 
@@ -4266,9 +4266,11 @@
 //      var real = 'apikey';
 //      console.log('secret = ' + xor(real, key));
       if (source == 2) {
-        config["CONFIG_WEATHER_APIKEY_LOCAL"] = xor("3059a73b073bdf16a05f2858f1665c1a", key);
+        // OpenWeatherMap key (replace placeholder with the encrypted ciphertext).
+        config["CONFIG_WEATHER_APIKEY_LOCAL"] = xor("REPLACE_WITH_ENCRYPTED_OWM_KEY", key);
       } else if (source == 3) {
-        config["CONFIG_WEATHER_APIKEY_LOCAL"] = xor("933bea170da0229a", key);
+        // Weatherbit key (replace placeholder with the encrypted ciphertext).
+        config["CONFIG_WEATHER_APIKEY_LOCAL"] = xor("REPLACE_WITH_ENCRYPTED_WEATHERBIT_KEY", key);
       }
     }
 
@@ -4434,7 +4436,7 @@
     showHideEl("#GROUP_WEATHER", has_widget([1, 2, 3, 4, 5, 37, 38, 39, 40, 41, 42]));
 // -- end autogen
 
-    showHideEl("#weather-warning", need_weather()[0] && +readConfig("CONFIG_WEATHER_SOURCE_LOCAL") == 1);
+    showHideEl("#weather-warning", need_weather()[1] && +readConfig("CONFIG_WEATHER_SOURCE_LOCAL") == 3);
     showHideEl("#widgets_2nd", readConfig("CONFIG_2ND_WIDGETS"));
     showHideEl("#widgets_2nd2", readConfig("CONFIG_2ND_WIDGETS"));
   }

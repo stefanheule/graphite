@@ -428,55 +428,75 @@ var OWM_ICONS = {
     "50n": "i"
 };
 
-var FORECAST_ICONS = {
-    "clear-day": "a",
-    "clear-night": "A",
-    "rain": "f",
-    "snow": "h",
-    "sleet": "h",
-    "wind": "j",
-    "fog": "i",
-    "cloudy": "d",
-    "partly-cloudy-day": "b",
-    "partly-cloudy-night": "B",
-    "hail": "h",
-    "thunderstorm": "g",
-    "tornado": "j"
+// WMO weather interpretation codes used by Open-Meteo. Day/night variants
+// only exist for clear/partly-cloudy; everything else is condition-driven.
+// See https://open-meteo.com/en/docs (WMO Weather interpretation codes).
+var WMO_ICONS_DAY = {
+    0: "a",  // clear sky
+    1: "a",  // mainly clear
+    2: "b",  // partly cloudy
+    3: "d",  // overcast
+    45: "i", // fog
+    48: "i", // depositing rime fog
+    51: "f", 53: "f", 55: "f",     // drizzle
+    56: "f", 57: "f",              // freezing drizzle
+    61: "f", 63: "f", 65: "f",     // rain
+    66: "f", 67: "f",              // freezing rain
+    71: "h", 73: "h", 75: "h",     // snowfall
+    77: "h",                       // snow grains
+    80: "f", 81: "f", 82: "f",     // rain showers
+    85: "h", 86: "h",              // snow showers
+    95: "g",                       // thunderstorm
+    96: "g", 99: "g"               // thunderstorm with hail
+};
+var WMO_ICONS_NIGHT = {
+    0: "A",
+    1: "A",
+    2: "B"
+    // all other codes fall through to the day table (no day/night variant)
 };
 
-var WU_ICONS = {
-    // see https://www.wunderground.com/weather/api/d/docs?d=resources/icon-sets for details
-    "chanceflurries": "h",
-    "chancerain": "f",
-    "chancesleet": "h",
-    "chancesnow": "h",
-    "chancetstorms": "f",
-    "clear": "a",
-    "cloudy": "d",
-    "flurries": "h",
-    "fog": "i",
-    "hazy": "i",
-    "mostlycloudy": "d",
-    "mostlysunny": "b",
-    "partlycloudy": "d",
-    "partlysunny": "b",
-    "rain": "f",
-    "sleet": "h",
-    "snow": "h",
-    "sunny": "a",
-    "tstorms": "g"
-};
-
-function parseIconWU(icon) {
-    return WU_ICONS[icon];
+function parseIconWMO(code, isDay) {
+    if (!isDay && WMO_ICONS_NIGHT.hasOwnProperty(code)) return WMO_ICONS_NIGHT[code];
+    return WMO_ICONS_DAY[code];
 }
 
 function parseIconOpenWeatherMap(icon) {
     return OWM_ICONS[icon];
 }
 
-function parseIconForecastIO(icon) {
-    return FORECAST_ICONS[icon];
+// Weatherbit weather codes. The `pod` field on the response distinguishes
+// day ("d") from night ("n"). See https://www.weatherbit.io/api/codes.
+// Codes are grouped by leading digit; we map them to icon-font characters.
+var WEATHERBIT_ICONS = {
+    // 2xx thunderstorm
+    200: "g", 201: "g", 202: "g", 230: "g", 231: "g", 232: "g", 233: "g",
+    // 3xx drizzle
+    300: "f", 301: "f", 302: "f",
+    // 5xx rain
+    500: "f", 501: "f", 502: "f", 511: "f", 520: "f", 521: "f", 522: "f",
+    // 6xx snow / sleet
+    600: "h", 601: "h", 602: "h", 610: "h", 611: "h", 612: "h", 621: "h", 622: "h", 623: "h",
+    // 7xx mist / fog / haze / sand / smoke
+    700: "i", 711: "i", 721: "i", 731: "i", 741: "i", 751: "i",
+    // 8xx clouds
+    800: "a", // clear sky (day variant; night handled in parser)
+    801: "b", // few clouds
+    802: "b", // scattered clouds
+    803: "d", // broken clouds
+    804: "d", // overcast clouds
+    // 9xx unknown precipitation
+    900: "f"
+};
+var WEATHERBIT_ICONS_NIGHT = {
+    800: "A",
+    801: "B",
+    802: "B"
+};
+
+function parseIconWeatherbit(code, pod) {
+    if (pod === "n" && WEATHERBIT_ICONS_NIGHT.hasOwnProperty(code)) return WEATHERBIT_ICONS_NIGHT[code];
+    return WEATHERBIT_ICONS[code];
 }
 
 /** Returns true iff a and b represent the same day (ignoring time). */
@@ -643,130 +663,110 @@ function fetchWeather(latitude, longitude) {
     var sunrise = 0;
     var sunset = 0;
     if (source == 1) {
-        var query = "lat=" + latitude + "&lon=" + longitude;
+        // Open-Meteo: free, no API key required. One request returns
+        // current/hourly/daily; we always ask for all three to keep the URL
+        // and the parsing simple. timezone=auto returns daily/hourly data
+        // aligned to the location's local day, so daily index 0 is "today".
+        var query = "latitude=" + latitude + "&longitude=" + longitude
+            + "&current=temperature_2m,weather_code,is_day"
+            + "&hourly=precipitation_probability"
+            + "&daily=temperature_2m_max,temperature_2m_min,sunrise,sunset"
+            + "&timezone=auto"
+            + "&forecast_hours=30"
+            + "&forecast_days=2"
+            + "&timeformat=unixtime";
+        runRequest("https://api.open-meteo.com/v1/forecast?" + query, function (response) {
+            if (load_cur) {
+                cur = response.current.temperature_2m;
+                icon = parseIconWMO(response.current.weather_code, response.current.is_day === 1);
+            }
+            if (load_lowhigh) {
+                high = response.daily.temperature_2m_max[0];
+                low = response.daily.temperature_2m_min[0];
+            }
+            if (load_sun) {
+                sunrise = response.daily.sunrise[0];
+                sunset = response.daily.sunset[0];
+            }
+            if (load_rain) {
+                var times = response.hourly.time;
+                var probs = response.hourly.precipitation_probability;
+                if (times.length > 0) raints = times[0];
+                for (var i = 0; i < probs.length; i++) {
+                    raindata.push(probs[i] == null ? 0 : Math.round(probs[i]));
+                }
+            }
+            success(low, high, cur, icon, raindata, raints, sunrise, sunset);
+        });
+    } else if (source == 2) {
+        // OpenWeatherMap One Call API 3.0. Requires user API key.
+        // Sunrise/sunset are inside `current`, so we keep the `current`
+        // section any time either cur or sun widgets are needed.
+        var query = "lat=" + latitude + "&lon=" + longitude
+            + "&appid=" + apikey
+            + "&units=metric";
         var exclude = ['alerts', 'minutely'];
         if (!load_cur && !load_sun) exclude.push('current');
         if (!load_lowhigh) exclude.push('daily');
         if (!load_rain) exclude.push('hourly');
-        query += "&appid=fa5280deac4b98572739388b55cd7591";
         query += "&exclude=" + exclude.join(',');
-        query = "http://api.openweathermap.org/data/2.5/onecall?" + query;
-        runRequest(query, function (response) {
+        runRequest("https://api.openweathermap.org/data/3.0/onecall?" + query, function (response) {
             if (load_cur || load_sun) {
-                cur = response.current.temp - 273.15;
-                icon = parseIconOpenWeatherMap(response.current.weather[0].icon);
-
-                sunrise = response.current.sunrise;
-                sunset = response.current.sunset;
+                if (load_cur) {
+                    cur = response.current.temp;
+                    icon = parseIconOpenWeatherMap(response.current.weather[0].icon);
+                }
+                if (load_sun) {
+                    sunrise = response.current.sunrise;
+                    sunset = response.current.sunset;
+                }
             }
             if (load_lowhigh) {
                 for (var i in response.daily) {
                     var data = response.daily[i];
-                    var date = new Date(data.dt*1000);
+                    var date = new Date(data.dt * 1000);
                     if (sameDate(now, date)) {
-                        high = data.temp.max - 273.15;
-                        low = data.temp.min - 273.15;
+                        high = data.temp.max;
+                        low = data.temp.min;
                         break;
                     }
                 }
             }
             if (load_rain) {
-                for (var i in response.hourly) {
-                    var elem = response.hourly[i];
+                for (var j in response.hourly) {
+                    var elem = response.hourly[j];
                     if (raints == 0) raints = elem.dt;
                     raindata.push(Math.round(elem.pop * 100));
                 }
             }
             success(low, high, cur, icon, raindata, raints, sunrise, sunset);
         });
-    } else if (source == 3) {
-        var url0 = !load_cur ? undefined : "http://api.wunderground.com/api/" + apikey + "/conditions/q/" + latitude + "," + longitude + ".json";
-        var url1 = !load_lowhigh ? undefined : "http://api.wunderground.com/api/" + apikey + "/forecast/q/" + latitude + "," + longitude + ".json";
-        var url2 = !load_rain ? undefined : "http://api.wunderground.com/api/" + apikey + "/hourly/q/" + latitude + "," + longitude + ".json";
-        var url3 = !load_sun ? undefined : "http://api.wunderground.com/api/" + apikey + "/astronomy/q/" + latitude + "," + longitude + ".json";
-        concurrentRequests([url0,url1,url2,url3], function (responses) {
-// -- build=debug
-// --             //console.log('[ info/app ] weather information: ' + JSON.stringify(response));
-            //console.log('[ info/app ] weather information: ' + JSON.stringify(response));
-// -- end build
-            if (load_lowhigh) {
-                for (var i in responses[1].forecast.simpleforecast.forecastday) {
-                    var data = responses[1].forecast.simpleforecast.forecastday[i];
-                    var date = new Date(data.date.epoch*1000);
-                    if (sameDate(now, date)) {
-                        high = +data.high.celsius;
-                        low = +data.low.celsius;
-                        break;
-                    }
-                }
-            }
-            if (load_cur) {
-                cur = responses[0].current_observation.temp_c;
-                icon = parseIconWU(responses[0].current_observation.icon);
-            }
-            if (load_rain) {
-                for (var i in responses[2].hourly_forecast) {
-                    var elem = responses[2].hourly_forecast[i];
-                    if (raints == 0) {
-                        // we don't get any data for the current hour from wunderground (why???)
-                        // so we just pretend the current hour is the same as the next hour
-                        raints = elem.FCTTIME.epoch - 3600;
-                        raindata.push(Math.round(elem.pop));
-                    }
-                    raindata.push(Math.round(elem.pop));
-                }
-            }
-            if (load_sun) {
-                var d = new Date();
-                var today = (d.getMonth()+1) + "/" + d.getDate() + "/" + d.getFullYear() + " ";
-                sunrise = Math.round(Date.parse(today + responses[3].sun_phase.sunrise.hour + ":" + responses[3].sun_phase.sunrise.minute) / 1000);
-                sunset = Math.round(Date.parse(today + responses[3].sun_phase.sunset.hour + ":" + responses[3].sun_phase.sunset.minute)/1000);
-            }
-            success(low, high, cur, icon, raindata, raints, sunrise, sunset);
-        });
     } else {
-        // source == 2
-        var baseurl = "https://api.darksky.net/forecast/" + apikey + "/" + latitude + "," + longitude + "?units=si&";
-        var exclude = "exclude=minutely,alerts,flags";
-        if (!load_rain) exclude += ",hourly";
-        if (!load_lowhigh && !load_sun) exclude += ",daily";
-        if (!load_cur) exclude += ",currently";
-        runRequest(baseurl + exclude, function(response) {
+        // source == 3
+        // Weatherbit. Requires user API key. The free tier exposes the
+        // current observation and daily forecast, but NOT the hourly
+        // forecast, so rain bars stay empty when this provider is used.
+        var url0 = !load_cur ? undefined : "https://api.weatherbit.io/v2.0/current?lat=" + latitude + "&lon=" + longitude + "&key=" + apikey;
+        var url1 = (!load_lowhigh && !load_sun) ? undefined : "https://api.weatherbit.io/v2.0/forecast/daily?lat=" + latitude + "&lon=" + longitude + "&key=" + apikey + "&days=2";
 // -- build=debug
-// --             //console.log('[ info/app ] weather information: ' + JSON.stringify(response));
-            //console.log('[ info/app ] weather information: ' + JSON.stringify(response));
+// --         if (load_rain) console.log('[ info/app ] note: Weatherbit free tier does not provide hourly rain forecasts; rain bars will be empty');
+        if (load_rain) console.log('[ info/app ] note: Weatherbit free tier does not provide hourly rain forecasts; rain bars will be empty');
 // -- end build
-            if (load_lowhigh || load_sun) {
-                for (var i in response.daily.data) {
-                    var data = response.daily.data[i];
-                    var date = new Date(data.time*1000);
-                    if (sameDate(now, date)) {
-                        if (load_lowhigh) {
-                            low = data.temperatureMin;
-                            high = data.temperatureMax;
-                        }
-                        if (load_sun) {
-                            sunrise = data.sunriseTime;
-                            sunset = data.sunsetTime;
-                        }
-                        break;
-                    }
-                }
-                if (low === temp_unknown) {
-                    failedWeatherCheck("could not find current date");
-                    return;
-                }
-            }
+        concurrentRequests([url0, url1], function (responses) {
             if (load_cur) {
-                cur = response.currently.temperature;
-                icon = parseIconForecastIO(response.currently.icon);
+                var observation = responses[0].data[0];
+                cur = observation.temp;
+                icon = parseIconWeatherbit(observation.weather.code, observation.pod);
             }
-            if (load_rain) {
-                for (var i in response.hourly.data) {
-                    var elem = response.hourly.data[i];
-                    if (raints == 0) raints = elem.time;
-                    if (!elem.hasOwnProperty('precipProbability')) break;
-                    raindata.push(Math.round(elem.precipProbability * 100));
+            if (load_lowhigh || load_sun) {
+                var today = responses[1].data[0];
+                if (load_lowhigh) {
+                    low = today.min_temp;
+                    high = today.max_temp;
+                }
+                if (load_sun) {
+                    sunrise = today.sunrise_ts;
+                    sunset = today.sunset_ts;
                 }
             }
             success(low, high, cur, icon, raindata, raints, sunrise, sunset);
