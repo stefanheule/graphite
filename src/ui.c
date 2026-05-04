@@ -229,13 +229,15 @@ void background_update_proc(Layer *layer, GContext *ctx) {
     if (show_weather() && show_secondary_widgets && weather.location[0]) {
         // Location text replaces the rain bars while secondary widgets are
         // visible. Centered if it fits the screen width, otherwise drawn
-        // left-aligned and allowed to clip on the right edge.
+        // left-aligned and allowed to clip on the right edge. A small gap
+        // below the top bar keeps the text from touching the divider.
         fixed_t fontsize_loc = REM(20);
+        fixed_t loc_y = topbar_height + REM(4);
         fixed_t loc_width = string_width(fctx, weather.location, font_main, fontsize_loc);
         if (loc_width <= width) {
-            draw_string(fctx, weather.location, FPoint(width / 2, topbar_height), font_main, config_color_perc, fontsize_loc, GTextAlignmentCenter);
+            draw_string(fctx, weather.location, FPoint(width / 2, loc_y), font_main, config_color_perc, fontsize_loc, GTextAlignmentCenter);
         } else {
-            draw_string(fctx, weather.location, FPoint(0, topbar_height), font_main, config_color_perc, fontsize_loc, GTextAlignmentLeft);
+            draw_string(fctx, weather.location, FPoint(0, loc_y), font_main, config_color_perc, fontsize_loc, GTextAlignmentLeft);
         }
     } else if (show_weather()) {
         int first_perc_index = -1;

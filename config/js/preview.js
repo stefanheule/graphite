@@ -987,11 +987,12 @@ function background_update_proc(layer, ctx) {
     draw_rect(fctx, FRect(bounds.origin, FSize(width, topbar_height)), config_color_topbar_bg_local);
     if (show_weather() && show_secondary_widgets && weather.location[0]) {
         var fontsize_loc = REM(20);
+        var loc_y = topbar_height + REM(4);
         var loc_width = string_width(fctx, weather.location, font_main, fontsize_loc);
         if (loc_width <= width) {
-            draw_string(fctx, weather.location, FPoint(width / 2, topbar_height), font_main, config_color_perc, fontsize_loc, GTextAlignmentCenter);
+            draw_string(fctx, weather.location, FPoint(width / 2, loc_y), font_main, config_color_perc, fontsize_loc, GTextAlignmentCenter);
         } else {
-            draw_string(fctx, weather.location, FPoint(0, topbar_height), font_main, config_color_perc, fontsize_loc, GTextAlignmentLeft);
+            draw_string(fctx, weather.location, FPoint(0, loc_y), font_main, config_color_perc, fontsize_loc, GTextAlignmentLeft);
         }
     } else if (show_weather()) {
         var first_perc_index = -1;

@@ -8,7 +8,7 @@ endif
 GRAPHITE_CONFIG=""
 GRAPHITE_FILE="out"
 
-GRAPHITE_PHONE_IP="10.0.0.100"
+GRAPHITE_PHONE_IP="10.11.92.96"
 
 # platform
 P=$(DEFAULT_PLATFORM)
@@ -106,10 +106,13 @@ clean: clean_header
 clean_header:
 	echo "" > src/config.h
 
-updated_config:
+# SSH to server and delete the baked config/version dir so the next request re-pulls.
+clear_remote_config_cache:
 	scripts/updated_config.sh
 
-push_config:
+# Push current branch to origin, fast-forward config-N onto it (N from index.js),
+# push config-N, then clear_remote_config_cache. For config-only web updates.
+deploy_config_online:
 	@scripts/push_config.sh
 
 encrypt_apikey:
@@ -160,4 +163,4 @@ coverity_scan:
       https://scan.coverity.com/builds?project=stefanheule%2Fgraphite
 	rm -f graphite-coverity.tgz
 
-.PHONY: all deploy build build_quiet config log resources install_emulator install_deploy menu_icon screenshots screenshot screenshot_config write_header clean clean_header encrypt_apikey push_config updated_config
+.PHONY: all deploy build build_quiet config log resources install_emulator install_deploy menu_icon screenshots screenshot screenshot_config write_header clean clean_header encrypt_apikey deploy_config_online clear_remote_config_cache
