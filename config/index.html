@@ -167,41 +167,41 @@
         <p>Battery (text, no percent sign)</p>
         <canvas class="widget" id="widget-preview-33-canvas"></canvas>
       </div>
-      <div class="widget-preview" id="widget-preview-43">
-        <p>Phone battery (icon)</p>
-        <canvas class="widget" id="widget-preview-43-canvas"></canvas>
-      </div>
-      <div class="widget-preview" id="widget-preview-44">
-        <p>Phone battery (text)</p>
-        <canvas class="widget" id="widget-preview-44-canvas"></canvas>
-      </div>
-      <div class="widget-preview" id="widget-preview-45">
-        <p>Phone battery (text, no percent sign)</p>
-        <canvas class="widget" id="widget-preview-45-canvas"></canvas>
-      </div>
       <div class="widget-preview" id="widget-preview-46">
-        <p>Pebble and Phone battery (icons)</p>
+        <p>Phone battery (icon)</p>
         <canvas class="widget" id="widget-preview-46-canvas"></canvas>
       </div>
       <div class="widget-preview" id="widget-preview-47">
-        <p>Phone and Pebble battery (icons)</p>
+        <p>Phone battery (text)</p>
         <canvas class="widget" id="widget-preview-47-canvas"></canvas>
       </div>
       <div class="widget-preview" id="widget-preview-48">
-        <p>Pebble and Phone battery (text)</p>
+        <p>Phone battery (text, no percent sign)</p>
         <canvas class="widget" id="widget-preview-48-canvas"></canvas>
       </div>
       <div class="widget-preview" id="widget-preview-49">
-        <p>Phone and Pebble battery (text)</p>
+        <p>Pebble and Phone battery (icons)</p>
         <canvas class="widget" id="widget-preview-49-canvas"></canvas>
       </div>
       <div class="widget-preview" id="widget-preview-50">
-        <p>Pebble and Phone battery (text, no percent sign)</p>
+        <p>Phone and Pebble battery (icons)</p>
         <canvas class="widget" id="widget-preview-50-canvas"></canvas>
       </div>
       <div class="widget-preview" id="widget-preview-51">
-        <p>Phone and Pebble battery (text, no percent sign)</p>
+        <p>Pebble and Phone battery (text)</p>
         <canvas class="widget" id="widget-preview-51-canvas"></canvas>
+      </div>
+      <div class="widget-preview" id="widget-preview-52">
+        <p>Phone and Pebble battery (text)</p>
+        <canvas class="widget" id="widget-preview-52-canvas"></canvas>
+      </div>
+      <div class="widget-preview" id="widget-preview-53">
+        <p>Pebble and Phone battery (text, no percent sign)</p>
+        <canvas class="widget" id="widget-preview-53-canvas"></canvas>
+      </div>
+      <div class="widget-preview" id="widget-preview-54">
+        <p>Phone and Pebble battery (text, no percent sign)</p>
+        <canvas class="widget" id="widget-preview-54-canvas"></canvas>
       </div>
       <div class="widget-preview" id="widget-preview-10">
         <p>Quiet time enabled (only when on)</p>
@@ -278,6 +278,18 @@
       <div class="widget-preview" id="widget-preview-15">
         <p>Steps abbreviated (no icon)</p>
         <canvas class="widget" id="widget-preview-15-canvas"></canvas>
+      </div>
+      <div class="widget-preview" id="widget-preview-43">
+        <p>Heart rate</p>
+        <canvas class="widget" id="widget-preview-43-canvas"></canvas>
+      </div>
+      <div class="widget-preview" id="widget-preview-44">
+        <p>Heart rate (icon on the left)</p>
+        <canvas class="widget" id="widget-preview-44-canvas"></canvas>
+      </div>
+      <div class="widget-preview" id="widget-preview-45">
+        <p>Heart rate (icon on the right)</p>
+        <canvas class="widget" id="widget-preview-45-canvas"></canvas>
       </div>
       <div class="widget-preview" id="widget-preview-16">
         <p>Calories burned, resting</p>
@@ -4421,9 +4433,9 @@
     showHideOption("CONFIG_SUNRISE_FORMAT", has_widget([37, 38, 39, 40, 41, 42]));
     showHideOption("CONFIG_TIMEOUT_2ND_WIDGETS", readConfig("CONFIG_2ND_WIDGETS"));
     showHideOption("CONFIG_COLOR_QUIET_MODE", readConfig("CONFIG_QUIET_COL") != 0);
-    showHideOption("CONFIG_PHONE_BATTERY_EXPIRATION", has_widget([43, 44, 45, 46, 47, 48, 49, 50, 51]));
-    showHideOption("CONFIG_PHONE_BATTERY_REFRESH", has_widget([43, 44, 45, 46, 47, 48, 49, 50, 51]));
-    showHideOption("CONFIG_UPDATE_PHONEBAT_ON_SHAKE", has_widget([43, 44, 45, 46, 47, 48, 49, 50, 51]));
+    showHideOption("CONFIG_PHONE_BATTERY_EXPIRATION", has_widget([46, 47, 48, 49, 50, 51, 52, 53, 54]));
+    showHideOption("CONFIG_PHONE_BATTERY_REFRESH", has_widget([46, 47, 48, 49, 50, 51, 52, 53, 54]));
+    showHideOption("CONFIG_UPDATE_PHONEBAT_ON_SHAKE", has_widget([46, 47, 48, 49, 50, 51, 52, 53, 54]));
     $('#tz_format_help').toggle(has_widget([34, 35, 36]));
 // -- end autogen
 
@@ -4763,15 +4775,15 @@
       $("#widget-preview-9").on("click", function(){ pickComplication(9); });
       $("#widget-preview-32").on("click", function(){ pickComplication(32); });
       $("#widget-preview-33").on("click", function(){ pickComplication(33); });
-      $("#widget-preview-43").on("click", function(){ pickComplication(43); });
-      $("#widget-preview-44").on("click", function(){ pickComplication(44); });
-      $("#widget-preview-45").on("click", function(){ pickComplication(45); });
       $("#widget-preview-46").on("click", function(){ pickComplication(46); });
       $("#widget-preview-47").on("click", function(){ pickComplication(47); });
       $("#widget-preview-48").on("click", function(){ pickComplication(48); });
       $("#widget-preview-49").on("click", function(){ pickComplication(49); });
       $("#widget-preview-50").on("click", function(){ pickComplication(50); });
       $("#widget-preview-51").on("click", function(){ pickComplication(51); });
+      $("#widget-preview-52").on("click", function(){ pickComplication(52); });
+      $("#widget-preview-53").on("click", function(){ pickComplication(53); });
+      $("#widget-preview-54").on("click", function(){ pickComplication(54); });
       $("#widget-preview-10").on("click", function(){ pickComplication(10); });
       $("#widget-preview-11").on("click", function(){ pickComplication(11); });
       $("#widget-preview-37").on("click", function(){ pickComplication(37); });
@@ -4791,6 +4803,9 @@
       $("#widget-preview-13").on("click", function(){ pickComplication(13); });
       $("#widget-preview-14").on("click", function(){ pickComplication(14); });
       $("#widget-preview-15").on("click", function(){ pickComplication(15); });
+      $("#widget-preview-43").on("click", function(){ pickComplication(43); });
+      $("#widget-preview-44").on("click", function(){ pickComplication(44); });
+      $("#widget-preview-45").on("click", function(){ pickComplication(45); });
       $("#widget-preview-16").on("click", function(){ pickComplication(16); });
       $("#widget-preview-17").on("click", function(){ pickComplication(17); });
       $("#widget-preview-18").on("click", function(){ pickComplication(18); });
@@ -4960,7 +4975,9 @@
 // --       if (getPlatform() == "{{ platform }}") $("#widget-preview-{{ key["id"] }}").hide();
 // -- ##   endfor
 // -- ## endfor
-
+      if (getPlatform() == "basalt") $("#widget-preview-43").hide();
+      if (getPlatform() == "basalt") $("#widget-preview-44").hide();
+      if (getPlatform() == "basalt") $("#widget-preview-45").hide();
 // -- end autogen
     var isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
     if (isIOS) {
@@ -4970,15 +4987,15 @@
 // --       $("#widget-preview-{{ key["id"] }}").hide();
 // -- ##   endif
 // -- ## endfor
-      $("#widget-preview-43").hide();
-      $("#widget-preview-44").hide();
-      $("#widget-preview-45").hide();
       $("#widget-preview-46").hide();
       $("#widget-preview-47").hide();
       $("#widget-preview-48").hide();
       $("#widget-preview-49").hide();
       $("#widget-preview-50").hide();
       $("#widget-preview-51").hide();
+      $("#widget-preview-52").hide();
+      $("#widget-preview-53").hide();
+      $("#widget-preview-54").hide();
 // -- end autogen
     }
 
@@ -5042,15 +5059,15 @@
       GraphitePreview.previewComplication(9, config, 'widget-preview-9-canvas', getPlatform());
       GraphitePreview.previewComplication(32, config, 'widget-preview-32-canvas', getPlatform());
       GraphitePreview.previewComplication(33, config, 'widget-preview-33-canvas', getPlatform());
-      GraphitePreview.previewComplication(43, config, 'widget-preview-43-canvas', getPlatform());
-      GraphitePreview.previewComplication(44, config, 'widget-preview-44-canvas', getPlatform());
-      GraphitePreview.previewComplication(45, config, 'widget-preview-45-canvas', getPlatform());
       GraphitePreview.previewComplication(46, config, 'widget-preview-46-canvas', getPlatform());
       GraphitePreview.previewComplication(47, config, 'widget-preview-47-canvas', getPlatform());
       GraphitePreview.previewComplication(48, config, 'widget-preview-48-canvas', getPlatform());
       GraphitePreview.previewComplication(49, config, 'widget-preview-49-canvas', getPlatform());
       GraphitePreview.previewComplication(50, config, 'widget-preview-50-canvas', getPlatform());
       GraphitePreview.previewComplication(51, config, 'widget-preview-51-canvas', getPlatform());
+      GraphitePreview.previewComplication(52, config, 'widget-preview-52-canvas', getPlatform());
+      GraphitePreview.previewComplication(53, config, 'widget-preview-53-canvas', getPlatform());
+      GraphitePreview.previewComplication(54, config, 'widget-preview-54-canvas', getPlatform());
       GraphitePreview.previewComplication(10, config, 'widget-preview-10-canvas', getPlatform());
       GraphitePreview.previewComplication(11, config, 'widget-preview-11-canvas', getPlatform());
       GraphitePreview.previewComplication(37, config, 'widget-preview-37-canvas', getPlatform());
@@ -5070,6 +5087,9 @@
       GraphitePreview.previewComplication(13, config, 'widget-preview-13-canvas', getPlatform());
       GraphitePreview.previewComplication(14, config, 'widget-preview-14-canvas', getPlatform());
       GraphitePreview.previewComplication(15, config, 'widget-preview-15-canvas', getPlatform());
+      GraphitePreview.previewComplication(43, config, 'widget-preview-43-canvas', getPlatform());
+      GraphitePreview.previewComplication(44, config, 'widget-preview-44-canvas', getPlatform());
+      GraphitePreview.previewComplication(45, config, 'widget-preview-45-canvas', getPlatform());
       GraphitePreview.previewComplication(16, config, 'widget-preview-16-canvas', getPlatform());
       GraphitePreview.previewComplication(17, config, 'widget-preview-17-canvas', getPlatform());
       GraphitePreview.previewComplication(18, config, 'widget-preview-18-canvas', getPlatform());

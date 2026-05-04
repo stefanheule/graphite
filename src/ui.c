@@ -225,8 +225,19 @@ void background_update_proc(Layer *layer, GContext *ctx) {
     fixed_t topbar_height = FIXED_ROUND(fontsize_weather + REM(4));
     draw_rect(fctx, FRect(bounds.origin, FSize(width, topbar_height)), config_color_topbar_bg_local);
 
-    // rain preview
-    if (show_weather()) {
+    // rain preview, OR location text when the user shakes their wrist
+    if (show_weather() && show_secondary_widgets && weather.location[0]) {
+        // Location text replaces the rain bars while secondary widgets are
+        // visible. Centered if it fits the screen width, otherwise drawn
+        // left-aligned and allowed to clip on the right edge.
+        fixed_t fontsize_loc = REM(20);
+        fixed_t loc_width = string_width(fctx, weather.location, font_main, fontsize_loc);
+        if (loc_width <= width) {
+            draw_string(fctx, weather.location, FPoint(width / 2, topbar_height), font_main, config_color_perc, fontsize_loc, GTextAlignmentCenter);
+        } else {
+            draw_string(fctx, weather.location, FPoint(0, topbar_height), font_main, config_color_perc, fontsize_loc, GTextAlignmentLeft);
+        }
+    } else if (show_weather()) {
         int first_perc_index = -1;
         const int sec_in_hour = 60*60;
         time_t cur_h_ts = time(NULL);

@@ -1,7 +1,7 @@
 <?xml version="1.0" standalone="no"?>
 <!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
 <svg xmlns="http://www.w3.org/2000/svg">
-<metadata>Copyright (C) 2017 by original authors @ fontello.com</metadata>
+<metadata>Copyright (C) 2026 by original authors @ fontello.com</metadata>
 <defs>
 <font id="fasubset" horiz-adv-x="1000" >
 <font-face font-family="fasubset" font-weight="400" font-stretch="normal" units-per-em="1000" ascent="850" descent="-150" />
@@ -19,6 +19,8 @@
 <glyph glyph-name="bluetooth" unicode="&#x48;" d="M469 262l83-82-83-83z m0 341l83-83-83-82z m-73-683l259 259-171 171 171 171-259 259v-341l-142 142-52-52 179-179-179-179 52-52 142 142v-341z m401 430q0-117-17-204t-49-143-79-91-101-48-122-14-123 14-101 48-79 91-48 143-18 204 18 204 48 143 79 91 101 48 123 14 122-14 101-48 79-91 49-143 17-204z" horiz-adv-x="857.1" />
 
 <glyph glyph-name="bluetooth-b" unicode="&#x49;" d="M333 56l96 96-96 96v-192z m0 396l96 96-96 96v-192z m17-102l199-199-301-301v397l-165-165-61 60 208 208-208 208 61 60 165-165v397l301-301z" horiz-adv-x="571.4" />
+
+<glyph glyph-name="heart" unicode="&#x4a;" d="M948 746q0-19-24-43l-353-353v-429h179q15 0 25-10t11-25-11-25-25-11h-500q-14 0-25 11t-11 25 11 25 25 10h179v429l-353 353q-24 24-24 43 0 13 10 21t21 9 24 3h786q13 0 24-3t21-9 10-21z" horiz-adv-x="1000" />
 
 <glyph glyph-name="fire" unicode="&#x4b;" d="M7 238q10 41 50 131t44 146q39-72 45-145 148 184 154 428 10-6 25-17t58-45 74-74 61-96 34-118q15 36 19 79t-9 80q15-12 41-39t56-75 56-99 31-118-9-127-72-127-152-120q64 129 25 278t-154 229q10-43-11-141t-65-150q7 63 4 102t-12 59l-10 17q-12-70-60-140-26-38-39-69t-9-80 30-105q-135 76-181 154t-24 182z" horiz-adv-x="748" />
 </font>

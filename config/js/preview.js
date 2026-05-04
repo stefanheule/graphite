@@ -134,6 +134,10 @@ var GraphitePreview = (function () {
             return config_weather_unit_local == 1 ? t : 9/5 * t + 32;
         };
         if (!config_weather_rain_local) d = [];
+        // Open-Meteo cannot supply a location; mirror that in the preview
+        // by leaving the field empty when source 1 is selected so users
+        // see the actual behavior they would get on the watch.
+        var location = config_weather_source_local == 1 ? '' : 'Sample City, US';
         return {
             version: 0,
             timestamp: time(NULL),
@@ -146,6 +150,7 @@ var GraphitePreview = (function () {
             perc_data_ts: tnow - (tnow % (60*60)),
             sunrise: get('weather').sunrise,
             sunset: get('weather').sunset,
+            location: location,
             failed: false
         };
     }
@@ -457,15 +462,18 @@ var widgets = [
     widget_weather_sunset_icon0, // id 40
     widget_weather_sunset_icon1, // id 41
     widget_weather_sunset_icon2, // id 42
-    widget_phone_battery_icon, // id 43
-    widget_phone_battery_text, // id 44
-    widget_phone_battery_text2, // id 45
-    widget_both_battery_icon, // id 46
-    widget_both_battery_flipped_icon, // id 47
-    widget_both_battery_text, // id 48
-    widget_both_battery_flipped_text, // id 49
-    widget_both_battery_text2, // id 50
-    widget_both_battery_flipped_text2, // id 51
+    widget_heartrate_cur_icon0, // id 43
+    widget_heartrate_cur_icon1, // id 44
+    widget_heartrate_cur_icon2, // id 45
+    widget_phone_battery_icon, // id 46
+    widget_phone_battery_text, // id 47
+    widget_phone_battery_text2, // id 48
+    widget_both_battery_icon, // id 49
+    widget_both_battery_flipped_icon, // id 50
+    widget_both_battery_text, // id 51
+    widget_both_battery_flipped_text, // id 52
+    widget_both_battery_text2, // id 53
+    widget_both_battery_flipped_text2, // id 54
 ];
 function widget_tz(fctx, draw, position, align, foreground_color, background_color, tz_id, format) {
     var dat = moment(new Date()).tz(eval("config_tz_" + tz_id + "_local")).format('YYYY-MM-DD HH:mm');
@@ -786,6 +794,20 @@ function widget_weather_sunset_icon1(fctx, draw, position, align, foreground_col
 function widget_weather_sunset_icon2(fctx, draw, position, align, foreground_color, background_color) {
     return widget_weather_sunrise_sunset(fctx, draw, position, align, foreground_color, "A", true, weather.sunset);
 }
+function widget_heartrate_cur_impl(fctx, draw, position, align, foreground_color, background_color, show_icon, flip_order) {
+    var v = health_service_peek_current_value(HealthMetricHeartRateBPM);
+    if (v <= 0) return 0;
+    return draw_icon_number_widget(fctx, draw, position, align, foreground_color, background_color, "J", format_unitless(v), show_icon, flip_order);
+}
+function widget_heartrate_cur_icon0(fctx, draw, position, align, foreground_color, background_color) {
+    return widget_heartrate_cur_impl(fctx, draw, position, align, foreground_color, background_color, false, false);
+}
+function widget_heartrate_cur_icon1(fctx, draw, position, align, foreground_color, background_color) {
+    return widget_heartrate_cur_impl(fctx, draw, position, align, foreground_color, background_color, true, false);
+}
+function widget_heartrate_cur_icon2(fctx, draw, position, align, foreground_color, background_color) {
+    return widget_heartrate_cur_impl(fctx, draw, position, align, foreground_color, background_color, true, true);
+}
 function widget_steps_icon(fctx, draw, position, align, foreground_color, background_color) {
   return draw_icon_number_widget(fctx, draw, position, align, foreground_color, background_color, "A", format_unitless(health_service_sum_today(HealthMetricStepCount)), true, false);
 }
@@ -964,7 +986,15 @@ function background_update_proc(layer, ctx) {
     var fontsize_weather = fontsize_widgets;
     var topbar_height = FIXED_ROUND(fontsize_weather + REM(4));
     draw_rect(fctx, FRect(bounds.origin, FSize(width, topbar_height)), config_color_topbar_bg_local);
-    if (show_weather()) {
+    if (show_weather() && show_secondary_widgets && weather.location[0]) {
+        var fontsize_loc = REM(20);
+        var loc_width = string_width(fctx, weather.location, font_main, fontsize_loc);
+        if (loc_width <= width) {
+            draw_string(fctx, weather.location, FPoint(width / 2, topbar_height), font_main, config_color_perc, fontsize_loc, GTextAlignmentCenter);
+        } else {
+            draw_string(fctx, weather.location, FPoint(0, topbar_height), font_main, config_color_perc, fontsize_loc, GTextAlignmentLeft);
+        }
+    } else if (show_weather()) {
         var first_perc_index = -1;
         var sec_in_hour = 60*60;
         var cur_h_ts = time(NULL);
@@ -1230,7 +1260,7 @@ function background_update_proc(layer, ctx) {
             CONFIG_WIDGET_10: +0,
             CONFIG_WIDGET_11: +0,
             CONFIG_WIDGET_12: +0,
-            CONFIG_TIMEOUT_2ND_WIDGETS: +3000,
+            CONFIG_TIMEOUT_2ND_WIDGETS: +5000,
             CONFIG_2ND_WIDGETS: +true,
             CONFIG_WEATHER_SUNRISE_EXPIRATION: +48,
             CONFIG_COLOR_QUIET_MODE: +GColor.LavenderIndigo,
@@ -1312,8 +1342,8 @@ function background_update_proc(layer, ctx) {
             CONFIG_WIDGET_9: +42,
             CONFIG_WIDGET_10: +35,
             CONFIG_WIDGET_11: +0,
-            CONFIG_WIDGET_12: +44,
-            CONFIG_TIMEOUT_2ND_WIDGETS: +3000,
+            CONFIG_WIDGET_12: +47,
+            CONFIG_TIMEOUT_2ND_WIDGETS: +5000,
             CONFIG_2ND_WIDGETS: +true,
             CONFIG_WEATHER_SUNRISE_EXPIRATION: +48,
             CONFIG_COLOR_QUIET_MODE: +GColor.LavenderIndigo,

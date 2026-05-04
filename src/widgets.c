@@ -73,15 +73,18 @@ widget_render_t widgets[] = {
     widget_weather_sunset_icon0, // id 40
     widget_weather_sunset_icon1, // id 41
     widget_weather_sunset_icon2, // id 42
-    widget_phone_battery_icon, // id 43
-    widget_phone_battery_text, // id 44
-    widget_phone_battery_text2, // id 45
-    widget_both_battery_icon, // id 46
-    widget_both_battery_flipped_icon, // id 47
-    widget_both_battery_text, // id 48
-    widget_both_battery_flipped_text, // id 49
-    widget_both_battery_text2, // id 50
-    widget_both_battery_flipped_text2, // id 51
+    widget_heartrate_cur_icon0, // id 43
+    widget_heartrate_cur_icon1, // id 44
+    widget_heartrate_cur_icon2, // id 45
+    widget_phone_battery_icon, // id 46
+    widget_phone_battery_text, // id 47
+    widget_phone_battery_text2, // id 48
+    widget_both_battery_icon, // id 49
+    widget_both_battery_flipped_icon, // id 50
+    widget_both_battery_text, // id 51
+    widget_both_battery_flipped_text, // id 52
+    widget_both_battery_text2, // id 53
+    widget_both_battery_flipped_text2, // id 54
 // -- end autogen
 
 // -- jsalternative
@@ -488,6 +491,21 @@ fixed_t widget_weather_sunset_icon1(FContext* fctx, bool draw, FPoint position, 
 }
 fixed_t widget_weather_sunset_icon2(FContext* fctx, bool draw, FPoint position, GTextAlignment align, uint8_t foreground_color, uint8_t background_color) {
     return widget_weather_sunrise_sunset(fctx, draw, position, align, foreground_color, "A", true, weather.sunset);
+}
+
+fixed_t widget_heartrate_cur_impl(FContext* fctx, bool draw, FPoint position, GTextAlignment align, uint8_t foreground_color, uint8_t background_color, bool show_icon, bool flip_order) {
+    HealthValue v = health_service_peek_current_value(HealthMetricHeartRateBPM);
+    if (v <= 0) return 0;
+    return draw_icon_number_widget(fctx, draw, position, align, foreground_color, background_color, "J", format_unitless((int)v), show_icon, flip_order);
+}
+fixed_t widget_heartrate_cur_icon0(FContext* fctx, bool draw, FPoint position, GTextAlignment align, uint8_t foreground_color, uint8_t background_color) {
+    return widget_heartrate_cur_impl(fctx, draw, position, align, foreground_color, background_color, false, false);
+}
+fixed_t widget_heartrate_cur_icon1(FContext* fctx, bool draw, FPoint position, GTextAlignment align, uint8_t foreground_color, uint8_t background_color) {
+    return widget_heartrate_cur_impl(fctx, draw, position, align, foreground_color, background_color, true, false);
+}
+fixed_t widget_heartrate_cur_icon2(FContext* fctx, bool draw, FPoint position, GTextAlignment align, uint8_t foreground_color, uint8_t background_color) {
+    return widget_heartrate_cur_impl(fctx, draw, position, align, foreground_color, background_color, true, true);
 }
 
 

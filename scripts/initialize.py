@@ -344,7 +344,7 @@ configuration = [
   },
   {
     'key': 'CONFIG_TIMEOUT_2ND_WIDGETS',
-    'default': '3000',
+    'default': '5000',
     'type': 'uint16_t',
     'show_only_if': 'readConfig("CONFIG_2ND_WIDGETS")',
   },
@@ -476,13 +476,6 @@ widgets = [
   },
 ] + enum_widget(
   [
-    # {
-    #   'key': 'WIDGET_HEARTRATE_CUR',
-    #   'desc': 'Heart rate',
-    #   'noton': ['basalt'],
-    #   'icontext': 'J',
-    #   'text': 'format_unitless((int)health_service_peek_current_value(HealthMetricHeartRateBPM))',
-    # },
     {
       'key': 'WIDGET_STEPS',
       'desc': 'Steps',
@@ -618,6 +611,24 @@ widgets = [
     'sort': 450,
   },
   {
+    'key': 'WIDGET_HEARTRATE_CUR_ICON0',
+    'desc': 'Heart rate',
+    'noton': ['basalt'],
+    'sort': 750,
+  },
+  {
+    'key': 'WIDGET_HEARTRATE_CUR_ICON1',
+    'desc': 'Heart rate (icon on the left)',
+    'noton': ['basalt'],
+    'sort': 750,
+  },
+  {
+    'key': 'WIDGET_HEARTRATE_CUR_ICON2',
+    'desc': 'Heart rate (icon on the right)',
+    'noton': ['basalt'],
+    'sort': 750,
+  },
+  {
     'key': 'WIDGET_PHONE_BATTERY_ICON',
     'desc': 'Phone battery (icon)',
     'notoniphone': True,
@@ -736,6 +747,7 @@ msg_keys = [
   'WEATHER_SUNSET',
   'PHONEBAT',
   'FETCH_PHONEBAT',
+  'WEATHER_LOCATION',
 ]
 
 persist_keys = [

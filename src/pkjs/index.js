@@ -340,9 +340,9 @@ Pebble.addEventListener('webviewclosed', function (e) {
     if (!(has_widget([37, 38, 39, 40, 41, 42]))) delete config["CONFIG_SUNRISE_FORMAT"];
     if (!(readConfig("CONFIG_2ND_WIDGETS"))) delete config["CONFIG_TIMEOUT_2ND_WIDGETS"];
     if (!(readConfig("CONFIG_QUIET_COL") != 0)) delete config["CONFIG_COLOR_QUIET_MODE"];
-    if (!(has_widget([43, 44, 45, 46, 47, 48, 49, 50, 51]))) delete config["CONFIG_PHONE_BATTERY_EXPIRATION"];
-    if (!(has_widget([43, 44, 45, 46, 47, 48, 49, 50, 51]))) delete config["CONFIG_PHONE_BATTERY_REFRESH"];
-    if (!(has_widget([43, 44, 45, 46, 47, 48, 49, 50, 51]))) delete config["CONFIG_UPDATE_PHONEBAT_ON_SHAKE"];
+    if (!(has_widget([46, 47, 48, 49, 50, 51, 52, 53, 54]))) delete config["CONFIG_PHONE_BATTERY_EXPIRATION"];
+    if (!(has_widget([46, 47, 48, 49, 50, 51, 52, 53, 54]))) delete config["CONFIG_PHONE_BATTERY_REFRESH"];
+    if (!(has_widget([46, 47, 48, 49, 50, 51, 52, 53, 54]))) delete config["CONFIG_UPDATE_PHONEBAT_ON_SHAKE"];
 // -- end autogen
 
     Pebble.sendAppMessage(config, function () {
@@ -605,8 +605,11 @@ function fetchWeather(latitude, longitude) {
     var load_cur = nw[3];
     var load_sun = nw[4];
 
-    /** Callback on successful determination of weather conditions. */
-    var success = function(low, high, cur, curicon, raindata, ts, sunrise, sunset) {
+    /** Callback on successful determination of weather conditions.
+     * `location` is the human-readable place name shown in the rain-bar area
+     * when secondary widgets are visible. Pass '' if the provider cannot
+     * supply one (e.g. Open-Meteo). */
+    var success = function(low, high, cur, curicon, raindata, ts, sunrise, sunset, location) {
         if (+readConfig("CONFIG_WEATHER_UNIT_LOCAL") == 2) {
             if (low != temp_unknown) low = low * 9.0/5.0 + 32.0;
             if (high != temp_unknown) high = high * 9.0/5.0 + 32.0;
@@ -628,7 +631,10 @@ function fetchWeather(latitude, longitude) {
             "MSG_KEY_WEATHER_ICON_CUR": icon,
             "MSG_KEY_WEATHER_TEMP_CUR": cur,
             "MSG_KEY_WEATHER_TEMP_LOW": low,
-            "MSG_KEY_WEATHER_TEMP_HIGH": high
+            "MSG_KEY_WEATHER_TEMP_HIGH": high,
+            // Always send a string (possibly empty) so the C handler clears
+            // any stale value when switching providers or moving location.
+            "MSG_KEY_WEATHER_LOCATION": (location || '').substring(0, 59)
         };
         if (load_rain) {
             data["MSG_KEY_WEATHER_PERC_DATA"] = raindata;
@@ -640,10 +646,30 @@ function fetchWeather(latitude, longitude) {
             data["MSG_KEY_WEATHER_SUNSET"] = sunset;
         }
 // -- build=debug
-// --         console.log('[ info/app ] weather send: temp=' + low + "/" + cur + "/" + high + ", icon=" + String.fromCharCode(icon) + ", len(rain)=" + raindata.length + ", ts=" + ts + ", sunrise=" + sunrise + ".");
-        console.log('[ info/app ] weather send: temp=' + low + "/" + cur + "/" + high + ", icon=" + String.fromCharCode(icon) + ", len(rain)=" + raindata.length + ", ts=" + ts + ", sunrise=" + sunrise + ".");
+// --         console.log('[ info/app ] weather send: temp=' + low + "/" + cur + "/" + high + ", icon=" + String.fromCharCode(icon) + ", len(rain)=" + raindata.length + ", ts=" + ts + ", sunrise=" + sunrise + ", location=" + data["MSG_KEY_WEATHER_LOCATION"] + ".");
+        console.log('[ info/app ] weather send: temp=' + low + "/" + cur + "/" + high + ", icon=" + String.fromCharCode(icon) + ", len(rain)=" + raindata.length + ", ts=" + ts + ", sunrise=" + sunrise + ", location=" + data["MSG_KEY_WEATHER_LOCATION"] + ".");
 // -- end build
         Pebble.sendAppMessage(data);
+    };
+
+    /** Best-effort GET that calls back with parsed JSON or null on any
+     * failure (non-200, network error, parse error). Used for fetching the
+     * OpenWeatherMap location name in parallel with the weather call so
+     * that geocoding flakiness never breaks weather. */
+    var tryFetchJson = function (url, callback) {
+        var req = new XMLHttpRequest();
+        req.open("GET", url, true);
+        req.onload = function () {
+            if (req.readyState !== 4) return;
+            if (req.status === 200) {
+                try { callback(JSON.parse(req.responseText)); }
+                catch (e) { callback(null); }
+            } else { callback(null); }
+        };
+        req.onerror = function () { callback(null); };
+        req.ontimeout = function () { callback(null); };
+        try { req.send(null); }
+        catch (e) { callback(null); }
     };
 
     var runRequest = function (url, parse) {
@@ -696,12 +722,17 @@ function fetchWeather(latitude, longitude) {
                     raindata.push(probs[i] == null ? 0 : Math.round(probs[i]));
                 }
             }
-            success(low, high, cur, icon, raindata, raints, sunrise, sunset);
+            // Open-Meteo has no reverse geocoding endpoint, so we always
+            // pass an empty location and the rain bars stay visible even
+            // when secondary widgets are active.
+            success(low, high, cur, icon, raindata, raints, sunrise, sunset, '');
         });
     } else if (source == 2) {
         // OpenWeatherMap One Call API 3.0. Requires user API key.
         // Sunrise/sunset are inside `current`, so we keep the `current`
         // section any time either cur or sun widgets are needed.
+        // The location name is fetched in parallel from the free /geo/1.0
+        // reverse endpoint; failures there don't block the weather send.
         var query = "lat=" + latitude + "&lon=" + longitude
             + "&appid=" + apikey
             + "&units=metric";
@@ -710,6 +741,22 @@ function fetchWeather(latitude, longitude) {
         if (!load_lowhigh) exclude.push('daily');
         if (!load_rain) exclude.push('hourly');
         query += "&exclude=" + exclude.join(',');
+
+        // Co-ordinate weather + geocoding: only call success() once both
+        // requests have resolved (geocoding via best-effort, so it always
+        // resolves to either a string or '').
+        var weatherDone = false;
+        var locationDone = false;
+        var weatherArgs = null;
+        var owmLocation = '';
+        var tryFinish = function () {
+            if (weatherDone && locationDone) {
+                success(weatherArgs[0], weatherArgs[1], weatherArgs[2], weatherArgs[3],
+                        weatherArgs[4], weatherArgs[5], weatherArgs[6], weatherArgs[7],
+                        owmLocation);
+            }
+        };
+
         runRequest("https://api.openweathermap.org/data/3.0/onecall?" + query, function (response) {
             if (load_cur || load_sun) {
                 if (load_cur) {
@@ -739,7 +786,21 @@ function fetchWeather(latitude, longitude) {
                     raindata.push(Math.round(elem.pop * 100));
                 }
             }
-            success(low, high, cur, icon, raindata, raints, sunrise, sunset);
+            weatherArgs = [low, high, cur, icon, raindata, raints, sunrise, sunset];
+            weatherDone = true;
+            tryFinish();
+        });
+
+        var geoUrl = "https://api.openweathermap.org/geo/1.0/reverse?lat=" + latitude
+            + "&lon=" + longitude + "&limit=1&appid=" + apikey;
+        tryFetchJson(geoUrl, function (arr) {
+            if (arr && arr.length > 0) {
+                var place = arr[0];
+                owmLocation = (place.name || '');
+                if (place.country) owmLocation += (owmLocation ? ", " : "") + place.country;
+            }
+            locationDone = true;
+            tryFinish();
         });
     } else {
         // source == 3
@@ -769,7 +830,22 @@ function fetchWeather(latitude, longitude) {
                     sunset = today.sunset_ts;
                 }
             }
-            success(low, high, cur, icon, raindata, raints, sunrise, sunset);
+            // Pull the location from whichever response we actually fetched.
+            // The current observation has city_name on data[0]; the daily
+            // forecast has it at the top level of the response object.
+            var location = '';
+            var locSource = null;
+            if (responses[0] && responses[0].data && responses[0].data[0] && responses[0].data[0].city_name) {
+                locSource = responses[0].data[0];
+            } else if (responses[1] && responses[1].city_name) {
+                locSource = responses[1];
+            }
+            if (locSource) {
+                location = locSource.city_name || '';
+                if (locSource.state_code) location += (location ? ", " : "") + locSource.state_code;
+                if (locSource.country_code) location += (location ? ", " : "") + locSource.country_code;
+            }
+            success(low, high, cur, icon, raindata, raints, sunrise, sunset, location);
         });
     }
 }

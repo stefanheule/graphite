@@ -124,6 +124,7 @@
 #define MSG_KEY_WEATHER_SUNSET 117
 #define MSG_KEY_PHONEBAT 118
 #define MSG_KEY_FETCH_PHONEBAT 119
+#define MSG_KEY_WEATHER_LOCATION 120
 #define PERSIST_KEY_WEATHER 201
 #define PERSIST_KEY_TZ 202
 #define PERSIST_KEY_PHONEBAT 203
@@ -237,12 +238,13 @@ extern AppTimer *timer_bluetooth_popup;
 extern bool show_secondary_widgets;
 
 // this definition should be updated whenever the Weather struct, or it's semantic meaning changes.  this ensures that no outdated values are read from storage
-#define GRAPHITE_WEATHER_VERSION 3
+#define GRAPHITE_WEATHER_VERSION 4
 // -- autogen
 // -- #define GRAPHITE_WEATHER_PERC_MAX_LEN {{ perc_max_len }}
 #define GRAPHITE_WEATHER_PERC_MAX_LEN 30
 // -- end autogen
 #define GRAPHITE_UNKNOWN_WEATHER 32767
+#define GRAPHITE_WEATHER_LOCATION_MAXLEN 60
 typedef struct {
     uint8_t version;
     time_t timestamp;
@@ -256,6 +258,7 @@ typedef struct {
     time_t sunrise;
     time_t sunset;
     bool failed;
+    char location[GRAPHITE_WEATHER_LOCATION_MAXLEN]; // empty when provider does not supply a name (e.g. Open-Meteo)
 } __attribute__((__packed__)) Weather;
 
 extern Weather weather;

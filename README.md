@@ -14,6 +14,9 @@ See [stefanheule.com/graphite/](https://stefanheule.com/graphite/).
     - Existing users at the default source will auto-migrate to Open-Meteo and keep working with no action needed.
     - Users who previously selected Dark Sky or Weather Underground will need to pick a new provider and supply a new API key.
     - Note: Weatherbit's free tier does not include the hourly forecast endpoint, so the rain bars stay empty when this provider is selected.
+- Show the current location (city) where the rain bars normally are while secondary widgets are visible (i.e. for a few seconds after shaking your wrist).  The text is centered when it fits and left-aligned with right-side clipping otherwise.
+    - Available with OpenWeatherMap (uses the free Geocoding API in parallel with the weather call) and Weatherbit (city name comes back in the existing response).
+    - Not available with Open-Meteo, which does not provide reverse geocoding; rain bars stay visible after shaking when this provider is selected.
 
 
 **Version 1.5** (2021-10-04)
