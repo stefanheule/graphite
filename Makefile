@@ -110,10 +110,13 @@ clean_header:
 clear_remote_config_cache:
 	scripts/updated_config.sh
 
-# Push current branch to origin, fast-forward config-N onto it (N from index.js),
-# push config-N, then clear_remote_config_cache. For config-only web updates.
+# Push current branch + fast-forward/push config-N (N from index.js), then
+# invalidate the server's baked config/version directory (SSH rm, same script as
+# clear_remote_config_cache). For config-only web updates without a new .pbw.
 deploy_config_online:
 	@scripts/push_config.sh
+	@$(MAKE) clear_remote_config_cache
+	@echo "Done. Server cache cleared; users pick up HTML/JS on next settings open."
 
 encrypt_apikey:
 	@scripts/encrypt_apikey.py

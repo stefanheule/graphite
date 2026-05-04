@@ -1,6 +1,7 @@
 #!/bin/bash
-# Sync the config-N branch with the current branch and refresh the server
-# cache. N is the config_version baked into src/pkjs/index.js.
+# Sync the config-N branch with the current branch (N from index.js).
+# Intended to be run via `make deploy_config_online`, which also clears the
+# server cache afterward; running this script alone does not invalidate cache.
 #
 # Use this for config-only updates that don't require shipping a new .pbw.
 # For changes that DO require a new release (new CONFIG keys, changed wire
@@ -68,10 +69,5 @@ echo
 git checkout "$source_branch"
 trap - EXIT
 
-# 6. Clear the server's cached copy so the next request re-pulls.
 echo
-echo "==> Clearing server cache"
-./scripts/updated_config.sh
-
-echo
-echo "==> Done. Users will see the updated config on next settings open."
+echo "==> Git branches synced."
