@@ -62,8 +62,7 @@
     }
   },
   "devDependencies": {
-    "pebble-fctx-compiler": "^1.2.2",
-    "fontello-cli": "^0.4.0"
+    "pebble-fctx-compiler": "^1.2.2"
   },
   "dependencies": {
     "pebble-fctx": "^1.6.2"

@@ -132,8 +132,7 @@ stats:
 	ssh linode "cat /home/stefan/www/pages/common/data/graphite/analytics.json | sed "s/,/\\\\n/g" | grep wtoken | sort | uniq | wc -l"
 
 font_dl:
-	./node_modules/fontello-cli/bin/fontello-cli install --config resources/fonts/fontello-config.json --font resources/fonts --css resources/fonts
-	rm -rf resources/fonts/animation.css resources/fonts/fasubset-codes.css resources/fonts/fasubset-embedded.css resources/fonts/fasubset-ie7-codes.css resources/fonts/fasubset-ie7.css resources/fonts/fasubset.css resources/fonts/fasubset.eot resources/fonts/fasubset.woff resources/fonts/fasubset.woff2
+	@scripts/font_dl.sh
 
 font_build:
 	node_modules/pebble-fctx-compiler/fctx-compiler.js -r "[ABabdfghij]" resources/fonts/nupe2.svg

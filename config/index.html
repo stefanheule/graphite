@@ -4279,10 +4279,10 @@
 //      console.log('secret = ' + xor(real, key));
       if (source == 2) {
         // OpenWeatherMap key (replace placeholder with the encrypted ciphertext).
-        config["CONFIG_WEATHER_APIKEY_LOCAL"] = xor("REPLACE_WITH_ENCRYPTED_OWM_KEY", key);
+        config["CONFIG_WEATHER_APIKEY_LOCAL"] = xor("d310eeae323b05cf2a333efdf4721f9c", key);
       } else if (source == 3) {
         // Weatherbit key (replace placeholder with the encrypted ciphertext).
-        config["CONFIG_WEATHER_APIKEY_LOCAL"] = xor("REPLACE_WITH_ENCRYPTED_WEATHERBIT_KEY", key);
+        config["CONFIG_WEATHER_APIKEY_LOCAL"] = xor("72d984c53aa4df1bb6763312839bad22", key);
       }
     }
 

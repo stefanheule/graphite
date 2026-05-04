@@ -693,6 +693,9 @@ function fetchWeather(latitude, longitude) {
         // current/hourly/daily; we always ask for all three to keep the URL
         // and the parsing simple. timezone=auto returns daily/hourly data
         // aligned to the location's local day, so daily index 0 is "today".
+        // Open-Meteo has no reverse-geocoding endpoint of its own, so we
+        // call BigDataCloud's free client-side endpoint in parallel for
+        // the location name (best-effort; never blocks the weather send).
         var query = "latitude=" + latitude + "&longitude=" + longitude
             + "&current=temperature_2m,weather_code,is_day"
             + "&hourly=precipitation_probability"
@@ -701,6 +704,19 @@ function fetchWeather(latitude, longitude) {
             + "&forecast_hours=30"
             + "&forecast_days=2"
             + "&timeformat=unixtime";
+
+        var omWeatherDone = false;
+        var omLocationDone = false;
+        var omWeatherArgs = null;
+        var omLocation = '';
+        var omTryFinish = function () {
+            if (omWeatherDone && omLocationDone) {
+                success(omWeatherArgs[0], omWeatherArgs[1], omWeatherArgs[2], omWeatherArgs[3],
+                        omWeatherArgs[4], omWeatherArgs[5], omWeatherArgs[6], omWeatherArgs[7],
+                        omLocation);
+            }
+        };
+
         runRequest("https://api.open-meteo.com/v1/forecast?" + query, function (response) {
             if (load_cur) {
                 cur = response.current.temperature_2m;
@@ -722,10 +738,23 @@ function fetchWeather(latitude, longitude) {
                     raindata.push(probs[i] == null ? 0 : Math.round(probs[i]));
                 }
             }
-            // Open-Meteo has no reverse geocoding endpoint, so we always
-            // pass an empty location and the rain bars stay visible even
-            // when secondary widgets are active.
-            success(low, high, cur, icon, raindata, raints, sunrise, sunset, '');
+            omWeatherArgs = [low, high, cur, icon, raindata, raints, sunrise, sunset];
+            omWeatherDone = true;
+            omTryFinish();
+        });
+
+        var bdcUrl = "https://api.bigdatacloud.net/data/reverse-geocode-client?latitude="
+            + latitude + "&longitude=" + longitude + "&localityLanguage=en";
+        tryFetchJson(bdcUrl, function (data) {
+            if (data) {
+                var city = data.city || data.locality || '';
+                if (city) {
+                    omLocation = city;
+                    if (data.countryCode) omLocation += ", " + data.countryCode;
+                }
+            }
+            omLocationDone = true;
+            omTryFinish();
         });
     } else if (source == 2) {
         // OpenWeatherMap One Call API 3.0. Requires user API key.

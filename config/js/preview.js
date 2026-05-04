@@ -134,10 +134,9 @@ var GraphitePreview = (function () {
             return config_weather_unit_local == 1 ? t : 9/5 * t + 32;
         };
         if (!config_weather_rain_local) d = [];
-        // Open-Meteo cannot supply a location; mirror that in the preview
-        // by leaving the field empty when source 1 is selected so users
-        // see the actual behavior they would get on the watch.
-        var location = config_weather_source_local == 1 ? '' : 'Sample City, US';
+        // All three providers now supply a location: Weatherbit and OWM
+        // from their own APIs, Open-Meteo via a parallel BigDataCloud call.
+        var location = 'Sample City, US';
         return {
             version: 0,
             timestamp: time(NULL),
