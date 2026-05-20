@@ -8,3 +8,4 @@ node_modules/
 tz-data
 **/__pycache__/
 .lock-waf_linux_build
+.lock-waf_darwin_build

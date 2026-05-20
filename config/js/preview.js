@@ -927,7 +927,8 @@ function show_weather_impl(timeout) {
     var show_weather = weather_is_on && weather_is_available && !weather_is_outdated;
     return show_weather;
 }
-function show_rain_forecast() {
+/** Should the 24h rain forecast (bars and day/night strip) be shown. */
+function show_rain_forecast(void) {
     return show_weather()
         && weather.perc_data_len > 0
         && weather.perc_data_ts > 0;
@@ -1010,8 +1011,8 @@ function background_update_proc(layer, ctx) {
                 break;
             }
         }
+    if (weather.perc_data_len > 0) first_perc_index = 0;
         var nHours = 24;
-        if (weather.perc_data_len > 0) first_perc_index = 0;
         if (first_perc_index != -1) {
             var perc_ti_h = config_show_daynight ? FIXED_ROUND(REM(3)) : 0;
             var perc_sep = REM(2); // space between two bars
