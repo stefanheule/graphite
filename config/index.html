@@ -106,7 +106,7 @@
     <div id="weather-warning">
       <p>Warning: Weatherbit's free tier does not provide hourly rain forecasts,
       so the rain bars will not show when this provider is selected. Use
-      Open-Meteo or OpenWeatherMap if you need the hourly rain preview.</p>
+      Open-Meteo or OpenWeatherMap if you need the 24h rain preview.</p>
     </div>
 
     <div id="widgets-preview">
@@ -3496,6 +3496,10 @@
           Show 24h rain forecast
           <input id='CONFIG_WEATHER_RAIN_LOCAL' type='checkbox' class='item-toggle'>
         </label>
+        <div class="item-container-footer">
+          Requires Open-Meteo or OpenWeatherMap as the weather source below.
+          Weatherbit's free tier does not include hourly data.
+        </div>
       </div>
 
       <div class="item-container-content">
@@ -3682,12 +3686,14 @@
           Source
           <select id='CONFIG_WEATHER_SOURCE_LOCAL' dir='rtl' class="item-select">
             <option class="item-select-option" value="1">Open-Meteo (recommended, no API key)</option>
-            <option class="item-select-option" value="2">OpenWeatherMap</option>
-            <option class="item-select-option" value="3">Weatherbit</option>
+            <option class="item-select-option" value="2">OpenWeatherMap (API key required)</option>
+            <option class="item-select-option" value="3">Weatherbit (API key required)</option>
           </select>
         </label>
         <div class="item-container-footer">
-          OpenWeatherMap and Weatherbit require an API key (see below). Open-Meteo works without one.
+          Open-Meteo is free and needs no API key. OpenWeatherMap and Weatherbit
+          require one (see below). For the 24h rain bars, use Open-Meteo or
+          OpenWeatherMap&mdash;Weatherbit's free tier has no hourly forecast.
         </div>
       </div>
 
@@ -3702,7 +3708,8 @@
           Only required for OpenWeatherMap and Weatherbit. Register for free at
           <a href="https://openweathermap.org/api">openweathermap.org</a> or
           <a href="https://www.weatherbit.io/account/create">weatherbit.io</a>.
-          OpenWeatherMap requires the One Call API 3.0 subscription (1000 free calls/day).
+          For OpenWeatherMap, enable the One Call API 3.0 subscription in your
+          account after signing up (1000 free calls/day).
         </div>
       </div>
 
