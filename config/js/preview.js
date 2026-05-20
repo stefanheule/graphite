@@ -927,6 +927,11 @@ function show_weather_impl(timeout) {
     var show_weather = weather_is_on && weather_is_available && !weather_is_outdated;
     return show_weather;
 }
+function show_rain_forecast() {
+    return show_weather()
+        && weather.perc_data_len > 0
+        && weather.perc_data_ts > 0;
+}
 function find_fontsize(fctx, target, min, str) {
     var l = min;
     var h = target;
@@ -994,7 +999,7 @@ function background_update_proc(layer, ctx) {
         } else {
             draw_string(fctx, weather.location, FPoint(0, loc_y), font_main, config_color_perc, fontsize_loc, GTextAlignmentLeft);
         }
-    } else if (show_weather()) {
+    } else if (show_rain_forecast()) {
         var first_perc_index = -1;
         var sec_in_hour = 60*60;
         var cur_h_ts = time(NULL);
@@ -1006,19 +1011,8 @@ function background_update_proc(layer, ctx) {
             }
         }
         var nHours = 24;
-        var all_zero = true;
-        for(var i = 0; i < nHours + 1; i++) {
-            var i_percip_prob = 0;
-            if (first_perc_index + i < weather.perc_data_len) {
-                i_percip_prob = weather.perc_data[first_perc_index + i];
-            }
-            if (i_percip_prob != 0) {
-                all_zero = false;
-                break;
-            }
-        }
-    first_perc_index = 0;
-        if (first_perc_index != -1 && !all_zero) {
+        if (weather.perc_data_len > 0) first_perc_index = 0;
+        if (first_perc_index != -1) {
             var perc_ti_h = config_show_daynight ? FIXED_ROUND(REM(3)) : 0;
             var perc_sep = REM(2); // space between two bars
             var perc_bar = (width - (nHours + 1) * perc_sep) / nHours; // width of a single bar (without space)

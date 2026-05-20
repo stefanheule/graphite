@@ -130,6 +130,13 @@ bool show_weather_impl(uint16_t timeout) {
     return show_weather;
 }
 
+/** Should the 24h rain forecast (bars and day/night strip) be shown. */
+bool show_rain_forecast(void) {
+    return show_weather()
+        && weather.perc_data_len > 0
+        && weather.perc_data_ts > 0;
+}
+
 fixed_t find_fontsize(FContext* fctx, fixed_t target, fixed_t min, const char* str) {
     fixed_t l = min;
     fixed_t h = target;
@@ -239,7 +246,7 @@ void background_update_proc(Layer *layer, GContext *ctx) {
         } else {
             draw_string(fctx, weather.location, FPoint(0, loc_y), font_main, config_color_perc, fontsize_loc, GTextAlignmentLeft);
         }
-    } else if (show_weather()) {
+    } else if (show_rain_forecast()) {
         int first_perc_index = -1;
         const int sec_in_hour = 60*60;
         time_t cur_h_ts = time(NULL);
@@ -250,22 +257,11 @@ void background_update_proc(Layer *layer, GContext *ctx) {
                 break;
             }
         }
-        int nHours = 24;
-        bool all_zero = true;
-        for (int i = 0; i < nHours + 1; i++) {
-            uint8_t i_percip_prob = 0;
-            if (first_perc_index + i < weather.perc_data_len) {
-                i_percip_prob = weather.perc_data[first_perc_index + i];
-            }
-            if (i_percip_prob != 0) {
-                all_zero = false;
-                break;
-            }
-        }
 // -- jsalternative
-// --     first_perc_index = 0;
+// --     if (weather.perc_data_len > 0) first_perc_index = 0;
 // -- end jsalternative
-        if (first_perc_index != -1 && !all_zero) {
+        int nHours = 24;
+        if (first_perc_index != -1) {
             fixed_t perc_ti_h = config_show_daynight ? FIXED_ROUND(REM(3)) : 0;
             fixed_t perc_sep = REM(2); // space between two bars
             fixed_t perc_bar = (width - (nHours + 1) * perc_sep) / nHours; // width of a single bar (without space)

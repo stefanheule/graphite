@@ -74,8 +74,8 @@ log:
 install_emulator:
 	pebble install --emulator $(P)
 
-deploy: install_deploy
-install_deploy:
+deploy: install-phone
+install-phone: build
 	pebble install --phone $(GRAPHITE_PHONE_IP)
 
 phone_log:
@@ -166,4 +166,4 @@ coverity_scan:
       https://scan.coverity.com/builds?project=stefanheule%2Fgraphite
 	rm -f graphite-coverity.tgz
 
-.PHONY: all deploy build build_quiet config log resources install_emulator install_deploy menu_icon screenshots screenshot screenshot_config write_header clean clean_header encrypt_apikey deploy_config_online clear_remote_config_cache
+.PHONY: all deploy build build_quiet config log resources install_emulator install-phone menu_icon screenshots screenshot screenshot_config write_header clean clean_header encrypt_apikey deploy_config_online clear_remote_config_cache
