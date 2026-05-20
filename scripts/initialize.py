@@ -75,7 +75,7 @@ configuration = [
   {
     'key': 'CONFIG_WEATHER_SOURCE_LOCAL',
     'default': '1',
-    'mydefault': '3',
+    'mydefault': '2',
   },
   {
     'key': 'CONFIG_WEATHER_APIKEY_LOCAL',

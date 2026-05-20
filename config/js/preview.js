@@ -1288,7 +1288,7 @@ function background_update_proc(layer, ctx) {
             CONFIG_MESSAGE_RECONNECT: +true,
             CONFIG_WEATHER_UNIT_LOCAL: +1,
             CONFIG_WEATHER_RAIN_LOCAL: +true,
-            CONFIG_WEATHER_SOURCE_LOCAL: +3,
+            CONFIG_WEATHER_SOURCE_LOCAL: +2,
             CONFIG_WEATHER_APIKEY_LOCAL: "",
             CONFIG_WEATHER_LOCATION_LOCAL: "",
             CONFIG_WEATHER_REFRESH: +30,
