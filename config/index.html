@@ -573,7 +573,7 @@
         <label class="item">
           Format for the Sunrise/Sunset Time
           <div class="item-input-wrapper">
-            <input type="text" class="item-input" id='CONFIG_SUNRISE_FORMAT'>
+            <input type="text" class="item-input" maxlength="50" id='CONFIG_SUNRISE_FORMAT'>
           </div>
         </label>
       </div>
@@ -3588,7 +3588,7 @@
         <label class="item">
           Time Format
           <div class="item-input-wrapper">
-            <input type="text" class="item-input" id='CONFIG_TIME_FORMAT'>
+            <input type="text" class="item-input" maxlength="50" id='CONFIG_TIME_FORMAT'>
           </div>
         </label>
         <div class="item-container-footer">
@@ -3617,7 +3617,7 @@
         <label class="item">
           Information Below Time
           <div class="item-input-wrapper">
-            <input type="text" class="item-input" id='CONFIG_INFO_BELOW'>
+            <input type="text" class="item-input" maxlength="50" id='CONFIG_INFO_BELOW'>
           </div>
         </label>
         <div class="item-container-footer">
@@ -4038,8 +4038,10 @@
 
   function has_widget(ids) {
     for (var i = 1; i < 13; i++) {
+      // slots 7-12 are the secondary widgets; ignore them if the secondary
+      // widgets are disabled
+      if (i > 6 && !+readConfig("CONFIG_2ND_WIDGETS")) continue;
       var id = +readConfig("CONFIG_WIDGET_" + i);
-      if (id > 6 && !readConfig("CONFIG_2ND_WIDGETS")) return false;
       if (ids.indexOf(id) !== -1) return true;
     }
     return false;
@@ -4271,8 +4273,8 @@
     writeToStorage(config);
 
     var xor = function(a, b) {
-      c = '';
-      for(i = 0; i < a.length; i++) {
+      var c = '';
+      for(var i = 0; i < a.length; i++) {
         c += (parseInt(a[i], 16) ^ parseInt(b[i], 16)).toString(16);
       }
       return c;
@@ -4298,7 +4300,12 @@
       urlconfig[keys[k]] = config[k];
     }
 
-    var url = return_to + encodeURIComponent(JSON.stringify(urlconfig).replace(/%/g, "@"));
+    // '%' is transported as '@' to survive double URL-decoding in some phone
+    // apps.  To keep that mapping lossless, any literal '@' in user values is
+    // first turned into its JSON unicode escape \u0040 (which older phone-side
+    // decoders also handle correctly, since JSON.parse restores it).
+    var json = JSON.stringify(urlconfig).replace(/@/g, "\\u0040").replace(/%/g, "@");
+    var url = return_to + encodeURIComponent(json);
     console.log('[ info ] config: ');
     console.log(config);
     console.log('[ info ] return url: ' + url);
@@ -4438,7 +4445,7 @@
     showHideOption("CONFIG_TZ_1_FORMAT", has_widget([35]));
     showHideOption("CONFIG_TZ_2_FORMAT", has_widget([36]));
     showHideOption("CONFIG_SUNRISE_FORMAT", has_widget([37, 38, 39, 40, 41, 42]));
-    showHideOption("CONFIG_TIMEOUT_2ND_WIDGETS", readConfig("CONFIG_2ND_WIDGETS"));
+    showHideOption("CONFIG_TIMEOUT_2ND_WIDGETS", +readConfig("CONFIG_2ND_WIDGETS") != 0);
     showHideOption("CONFIG_COLOR_QUIET_MODE", readConfig("CONFIG_QUIET_COL") != 0);
     showHideOption("CONFIG_PHONE_BATTERY_EXPIRATION", has_widget([46, 47, 48, 49, 50, 51, 52, 53, 54]));
     showHideOption("CONFIG_PHONE_BATTERY_REFRESH", has_widget([46, 47, 48, 49, 50, 51, 52, 53, 54]));

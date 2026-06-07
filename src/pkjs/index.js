@@ -69,16 +69,18 @@ Pebble.addEventListener('showConfiguration', function () {
 });
 
 Pebble.addEventListener('webviewclosed', function (e) {
-    var urlconfig = JSON.parse(decodeURIComponent(e.response).replace(/@/g, "%"));
-
-// -- autogen
-// -- ## for i in range(num_tzs)
-// --     var previous_tz_{{ i }} = readConfig("CONFIG_TZ_{{ i }}_LOCAL");
-// -- ## endfor
-    var previous_tz_0 = readConfig("CONFIG_TZ_0_LOCAL");
-    var previous_tz_1 = readConfig("CONFIG_TZ_1_LOCAL");
-    var previous_tz_2 = readConfig("CONFIG_TZ_2_LOCAL");
-// -- end autogen
+    // the user may close the configuration page without saving, in which
+    // case there is nothing to decode
+    if (!e || !e.response) return;
+    var urlconfig;
+    try {
+        // '%' is transported as '@' (and literal '@' as the JSON escape
+        // \u0040), see submit() on the configuration page
+        urlconfig = JSON.parse(decodeURIComponent(e.response).replace(/@/g, "%"));
+    } catch (err) {
+        console.log('[ info/app ] could not parse configuration response: ' + err);
+        return;
+    }
 
     // decode config
     var config = {};
@@ -292,8 +294,8 @@ Pebble.addEventListener('webviewclosed', function (e) {
     localStorage.setItem("CONFIG_UPDATE_PHONEBAT_ON_SHAKE", urlconfig[69]);
 // -- end autogen
 
-    // don't allow really small values for refresh rate
-    if (config["CONFIG_WEATHER_REFRESH"] < 10) {
+    // don't allow really small (or non-numeric) values for refresh rate
+    if (!(config["CONFIG_WEATHER_REFRESH"] >= 10)) {
         config["CONFIG_WEATHER_REFRESH"] = 10;
     }
     // set refresh to 0 to indicate that weather information is off
@@ -338,7 +340,7 @@ Pebble.addEventListener('webviewclosed', function (e) {
     if (!(has_widget([35]))) delete config["CONFIG_TZ_1_FORMAT"];
     if (!(has_widget([36]))) delete config["CONFIG_TZ_2_FORMAT"];
     if (!(has_widget([37, 38, 39, 40, 41, 42]))) delete config["CONFIG_SUNRISE_FORMAT"];
-    if (!(readConfig("CONFIG_2ND_WIDGETS"))) delete config["CONFIG_TIMEOUT_2ND_WIDGETS"];
+    if (!(+readConfig("CONFIG_2ND_WIDGETS") != 0)) delete config["CONFIG_TIMEOUT_2ND_WIDGETS"];
     if (!(readConfig("CONFIG_QUIET_COL") != 0)) delete config["CONFIG_COLOR_QUIET_MODE"];
     if (!(has_widget([46, 47, 48, 49, 50, 51, 52, 53, 54]))) delete config["CONFIG_PHONE_BATTERY_EXPIRATION"];
     if (!(has_widget([46, 47, 48, 49, 50, 51, 52, 53, 54]))) delete config["CONFIG_PHONE_BATTERY_REFRESH"];
@@ -359,6 +361,26 @@ Pebble.addEventListener('webviewclosed', function (e) {
 // -- end build
     });
 });
+
+// Defaults for the non-local configuration keys that are read before the
+// configuration page has been saved for the first time.  These must match
+// the compiled-in defaults in src/graphite.c, otherwise need_weather() and
+// has_widget() disagree with what the watch actually displays out of the box.
+var NONLOCAL_DEFAULTS = {
+    "CONFIG_WIDGET_1": 4,
+    "CONFIG_WIDGET_2": 1,
+    "CONFIG_WIDGET_3": 5,
+    "CONFIG_WIDGET_4": 14,
+    "CONFIG_WIDGET_5": 6,
+    "CONFIG_WIDGET_6": 9,
+    "CONFIG_WIDGET_7": 38,
+    "CONFIG_WIDGET_8": 0,
+    "CONFIG_WIDGET_9": 42,
+    "CONFIG_WIDGET_10": 0,
+    "CONFIG_WIDGET_11": 0,
+    "CONFIG_WIDGET_12": 0,
+    "CONFIG_2ND_WIDGETS": 1
+};
 
 /** Read a configuration element (handles defaults) */
 function readConfig(key) {
@@ -398,6 +420,9 @@ function readConfig(key) {
         } else if (key == "CONFIG_TZ_2_LOCAL") {
             return "America/Los_Angeles";
 // -- end autogen
+        }
+        if (NONLOCAL_DEFAULTS.hasOwnProperty(key)) {
+            return NONLOCAL_DEFAULTS[key];
         }
     }
     return res;
@@ -501,7 +526,7 @@ function parseIconWeatherbit(code, pod) {
 
 /** Returns true iff a and b represent the same day (ignoring time). */
 function sameDate(a, b) {
-    return a.getDay() == b.getDay() && a.getFullYear() == b.getFullYear() && a.getMonth() == b.getMonth();
+    return a.getDate() == b.getDate() && a.getFullYear() == b.getFullYear() && a.getMonth() == b.getMonth();
 }
 
 /** Callback if determining weather conditions failed. */
@@ -523,10 +548,29 @@ function concurrentRequests(urls, succ) {
     var done = ids.map(function() { return false });
     var doneCount = 0;
     var answers = ids.map(function() { return false });
+    var finished = false;
+    var myTimeout = null;
     var reqs;
     var quit = function() {
         for (var i = 0; i < n; i++) {
-            if (!done[i]) reqs[i].abort();
+            if (!done[i] && reqs[i]) reqs[i].abort();
+        }
+    }
+    var fail = function(msg) {
+        if (finished) return;
+        finished = true;
+        if (myTimeout !== null) clearTimeout(myTimeout);
+        quit();
+        failedWeatherCheck(msg);
+    }
+    var maybeFinish = function() {
+        if (finished || doneCount != n) return;
+        finished = true;
+        if (myTimeout !== null) clearTimeout(myTimeout);
+        try {
+            succ(answers);
+        } catch (e) {
+            failedWeatherCheck("exception: " + e)
         }
     }
     reqs = ids.map(function(i){
@@ -545,38 +589,45 @@ function concurrentRequests(urls, succ) {
         req.onload = function () {
             if (req.readyState === 4) {
                 if (req.status === 200) {
-                    answers[i] = JSON.parse(req.responseText);
+                    try {
+                        answers[i] = JSON.parse(req.responseText);
+                    } catch (e) {
+                        fail("invalid response: " + e);
+                        return;
+                    }
                     done[i] = true;
                     doneCount += 1;
-                    if (doneCount == n) {
-                        try {
-                            succ(answers);
-                        } catch (e) {
-                            failedWeatherCheck("exception: " + e)
-                        }
-                        clearTimeout(myTimeout);
-                    }
+                    maybeFinish();
                 } else {
-                    quit();
-                    failedWeatherCheck("non-200 status: " + req.status + " / " + req.statusText)
+                    fail("non-200 status: " + req.status + " / " + req.statusText)
                 }
             }
+        };
+        req.onerror = function () {
+            fail("network error");
         };
         req.send(null);
         return req;
     });
 
+    // all requests may have been skipped (undefined urls); finish right away
+    if (doneCount == n) {
+        maybeFinish();
+        return;
+    }
+
     // try for 30 seconds to get weather, then time out
-    var myTimeout = setTimeout(function(){
-        failedWeatherCheck("timeout");
-        quit();
+    myTimeout = setTimeout(function(){
+        fail("timeout");
     }, 30000);
 }
 
 function has_widget(ids) {
     for (var i = 1; i < 13; i++) {
+        // slots 7-12 are the secondary widgets; ignore them if the
+        // secondary widgets are disabled
+        if (i > 6 && !+readConfig("CONFIG_2ND_WIDGETS")) continue;
         var id = +readConfig("CONFIG_WIDGET_" + i);
-        if (id > 6 && !readConfig("CONFIG_2ND_WIDGETS")) return false;
         if (ids.indexOf(id) !== -1) return true;
     }
     return false;
@@ -659,6 +710,10 @@ function fetchWeather(latitude, longitude) {
     var tryFetchJson = function (url, callback) {
         var req = new XMLHttpRequest();
         req.open("GET", url, true);
+        // the weather result is only delivered once this callback has
+        // resolved, so make sure a hanging geocode request cannot block
+        // the weather update indefinitely
+        req.timeout = 10000;
         req.onload = function () {
             if (req.readyState !== 4) return;
             if (req.status === 200) {
@@ -943,6 +998,12 @@ function sendTzUpdate(idx) {
 // -- end build
     }
 
+    // always send max_tzdata entries (zero-padded), so the watch never reads
+    // beyond the data that was actually sent
+    while (data.length < max_tzdata * 6) {
+        data.push(0);
+    }
+
     var pebbledata = {};
     var key = "MSG_KEY_TZ_" + idx;
     pebbledata[key] = data;
@@ -987,7 +1048,13 @@ Pebble.addEventListener('appmessage',
             var location = readConfig("CONFIG_WEATHER_LOCATION_LOCAL");
             if (location) {
                 var loc = location.split(",");
-                fetchWeather(loc[0], loc[1]);
+                var lat = parseFloat(loc[0]);
+                var lon = parseFloat(loc[1]);
+                if (isNaN(lat) || isNaN(lon)) {
+                    failedWeatherCheck("invalid custom location: " + location);
+                } else {
+                    fetchWeather(lat, lon);
+                }
             } else {
                 navigator.geolocation.getCurrentPosition(
                     function (pos) {

@@ -124,9 +124,6 @@ Weather weather;
 PhoneBattery phonebat;
 AppTimer * phone_battery_request_timer;
 
-/** Is the JS runtime ready? */
-bool js_ready;
-
 /** A timer used to schedule weather updates. */
 AppTimer * weather_request_timer;
 
@@ -311,6 +308,8 @@ void init() {
 
     app_message_open(GRAPHITE_INBOX_SIZE, GRAPHITE_OUTBOX_SIZE);
     app_message_register_inbox_received(inbox_received_handler);
+    app_message_register_outbox_sent(outbox_sent_handler);
+    app_message_register_outbox_failed(outbox_failed_handler);
 }
 
 /**

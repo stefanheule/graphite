@@ -54,7 +54,7 @@ void bluetooth_popup(FContext* fctx, GContext *ctx, bool connected) {
  */
 // -- jsalternative
 // -- function remove_leading_zero(buffer, length) {
-// --     buffer = buffer.replace("mmmm", "");
+// --     buffer = buffer.replace(new RegExp("mmmm", 'g'), "");
 // --     if (buffer.substring(0, 1) == "0") buffer = buffer.substring(1);
 // --     return buffer.replace(new RegExp("([^0-9])0", 'g'), "$1");
 // -- }
@@ -68,14 +68,17 @@ void remove_leading_zero(char *buffer, size_t length) {
         if (buffer[i] == 'm') {
             ms += 1;
             if (start_m == -1) start_m = i;
+            if (ms == 4) {
+                memmove(&buffer[start_m], &buffer[start_m + 4], length - (start_m + 4));
+                // re-examine from the removal point, so consecutive runs of
+                // 'm's are handled correctly
+                i = start_m;
+                start_m = -1;
+                ms = 0;
+                continue;
+            }
         } else {
             start_m = -1; ms = 0;
-        }
-        if (ms == 4) {
-            memmove(&buffer[start_m], &buffer[start_m + 4], length - (start_m + 4));
-            i = start_m;
-            start_m = -1;
-            ms = 0;
         }
         i += 1;
     }
@@ -122,7 +125,9 @@ fixed_t draw_weather(FContext* fctx, bool draw, const char* icon, const char* te
 bool show_weather() {
     return show_weather_impl(config_weather_expiration);
 }
-bool show_weather_impl(uint16_t timeout) {
+// timeout is in minutes; int32_t so that values like
+// config_weather_sunrise_expiration * 60 cannot wrap around
+bool show_weather_impl(int32_t timeout) {
     bool weather_is_on = config_weather_refresh > 0;
     bool weather_is_available = weather.timestamp > 0;
     bool weather_is_outdated = (time(NULL) - weather.timestamp) > (timeout * 60);
@@ -131,7 +136,7 @@ bool show_weather_impl(uint16_t timeout) {
 }
 
 /** Should the 24h rain forecast (bars and day/night strip) be shown. */
-bool show_rain_forecast(void) {
+bool show_rain_forecast() {
     return show_weather()
         && weather.perc_data_len > 0
         && weather.perc_data_ts > 0;
@@ -247,18 +252,23 @@ void background_update_proc(Layer *layer, GContext *ctx) {
             draw_string(fctx, weather.location, FPoint(0, loc_y), font_main, config_color_perc, fontsize_loc, GTextAlignmentLeft);
         }
     } else if (show_rain_forecast()) {
+        // find the forecast slot for the current hour.  the slots are aligned
+        // to the grid of perc_data_ts (which may not be a full UTC hour, e.g.
+        // in half-hour timezones), so compute the index by distance instead
+        // of requiring an exact hour-aligned match
         int first_perc_index = -1;
+        int perc_min_into_hour = 0;
         const int sec_in_hour = 60*60;
-        time_t cur_h_ts = time(NULL);
-        cur_h_ts -= cur_h_ts % sec_in_hour; // align with hour
-        for (int i = 0; i < weather.perc_data_len; i++) {
-            if (cur_h_ts == weather.perc_data_ts + i * sec_in_hour) {
-                first_perc_index = i;
-                break;
+        time_t now_ts = time(NULL);
+        if (now_ts >= weather.perc_data_ts) {
+            time_t into = now_ts - weather.perc_data_ts;
+            if (into / sec_in_hour < weather.perc_data_len) {
+                first_perc_index = into / sec_in_hour;
+                perc_min_into_hour = (into % sec_in_hour) / 60;
             }
         }
 // -- jsalternative
-// --     if (weather.perc_data_len > 0) first_perc_index = 0;
+// --     if (weather.perc_data_len > 0) { first_perc_index = 0; perc_min_into_hour = 0; }
 // -- end jsalternative
         int nHours = 24;
         if (first_perc_index != -1) {
@@ -267,7 +277,7 @@ void background_update_proc(Layer *layer, GContext *ctx) {
             fixed_t perc_bar = (width - (nHours + 1) * perc_sep) / nHours; // width of a single bar (without space)
             fixed_t perc_w = perc_sep + perc_bar; // total width occupied by a single hour
             fixed_t perc_maxheight = REM(20); // max height of the precipitation bar
-            fixed_t perc_minoffset = - perc_w * (t->tm_min % 60) / 60; // x axis offset into the current hour
+            fixed_t perc_minoffset = - perc_w * perc_min_into_hour / 60; // x axis offset into the current hour
             for (int i = 0; i < nHours + 1; i++) {
                 uint8_t i_percip_prob = 0;
                 if (first_perc_index + i < weather.perc_data_len) {

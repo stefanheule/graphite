@@ -346,7 +346,9 @@ configuration = [
     'key': 'CONFIG_TIMEOUT_2ND_WIDGETS',
     'default': '5000',
     'type': 'uint16_t',
-    'show_only_if': 'readConfig("CONFIG_2ND_WIDGETS")',
+    # note: numeric coercion, since the phone-side readConfig may return the
+    # value as a string from localStorage (where "0" would be truthy)
+    'show_only_if': '+readConfig("CONFIG_2ND_WIDGETS") != 0',
   },
   {
     'key': 'CONFIG_2ND_WIDGETS',
@@ -1081,7 +1083,11 @@ def c_to_js(f):
     if rfundecl is not None:
       name = rfundecl.group("name")
       arglist = rfundecl.group("arglist")
-      arglist = ", ".join(list(map(lambda x: x.strip().split(" ")[-1].strip("*"), arglist.split(","))))
+      if arglist.strip() in ("", "void"):
+        # C functions without parameters ("()" or "(void)") have an empty JS parameter list
+        arglist = ""
+      else:
+        arglist = ", ".join(list(map(lambda x: x.strip().split(" ")[-1].strip("*"), arglist.split(","))))
       newcontents.append("function %s(%s) {" % (name, arglist))
       continue
 

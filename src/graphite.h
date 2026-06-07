@@ -262,7 +262,6 @@ typedef struct {
 } __attribute__((__packed__)) Weather;
 
 extern Weather weather;
-extern bool js_ready;
 extern AppTimer * weather_request_timer;
 
 // this definition should be updated whenever the Weather struct, or it's semantic meaning changes.  this ensures that no outdated values are read from storage
@@ -281,7 +280,10 @@ extern AppTimer * phone_battery_request_timer;
 #define GRAPHITE_NUM_TZS 3
 #define GRAPHITE_TZ_MAX_DATAPOINTS 3
 // -- end autogen
-#define GRAPHITE_TZ_DATA_VERSION 2
+// bumped to 3 when the bundled moment-timezone data was refreshed (the old
+// 2012-2022 data produced wrong offsets from 2023 on); this invalidates
+// stale persisted offsets and forces a re-fetch from the phone
+#define GRAPHITE_TZ_DATA_VERSION 3
 
 typedef struct {
     bool valid;
@@ -308,8 +310,12 @@ extern TimeZoneInfo tzinfo;
 #define GRAPHITE_OUTBOX_SIZE 100
 #define GRAPHITE_WEATHER_N_INTS 6 // 3 temps + 1 icon + data len + data timestamp
 #define GRAPHITE_WEATHER_HOURS 30
-// 100 + an upper bound for all the configuration items we have OR the amount of data sent as weather update
-#define GRAPHITE_INBOX_SIZE (100 + MAX(1 + (GRAPHITE_N_CONFIG) * (7+4), GRAPHITE_WEATHER_N_INTS * 4 + GRAPHITE_WEATHER_HOURS * 4))
+// number of string configuration items (see config_ka_string in settings.c)
+#define GRAPHITE_N_STRING_CONFIG 6
+// 100 + an upper bound for all the configuration items we have (string items can
+// carry up to GRAPHITE_STRINGCONFIG_MAXLEN+1 bytes of payload instead of 4) OR
+// the amount of data sent as weather update
+#define GRAPHITE_INBOX_SIZE (100 + MAX(1 + (GRAPHITE_N_CONFIG) * (7+4) + (GRAPHITE_N_STRING_CONFIG) * (GRAPHITE_STRINGCONFIG_MAXLEN+1-4), GRAPHITE_WEATHER_N_INTS * 4 + GRAPHITE_WEATHER_HOURS * 4))
 
 #define PIX(x) (INT_TO_FIXED(x))
 // returns a fixed_t value that corresponds to a relatively scaled version, where 1 rem is 1/200 of the screen width

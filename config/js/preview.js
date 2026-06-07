@@ -611,7 +611,7 @@ function widget_phone_battery_icon(fctx, draw, position, align, foreground_color
     return drawBat(fctx, draw, position, align, foreground_color, background_color, phonebat.level);
 }
 function widget_both_battery_text(fctx, draw, position, align, foreground_color, background_color) {
-    if (!showPhoneBattery()) return drawBatText(fctx, draw, position, align, foreground_color, false, battery_state_service_peek().charge_percent);
+    if (!showPhoneBattery()) return drawBatText(fctx, draw, position, align, foreground_color, true, battery_state_service_peek().charge_percent);
     return drawBatText2(fctx, draw, position, align, foreground_color, true, battery_state_service_peek().charge_percent, phonebat.level);
 }
 function widget_both_battery_text2(fctx, draw, position, align, foreground_color, background_color) {
@@ -619,7 +619,7 @@ function widget_both_battery_text2(fctx, draw, position, align, foreground_color
     return drawBatText2(fctx, draw, position, align, foreground_color, false, battery_state_service_peek().charge_percent, phonebat.level);
 }
 function widget_both_battery_flipped_text(fctx, draw, position, align, foreground_color, background_color) {
-    if (!showPhoneBattery()) return drawBatText(fctx, draw, position, align, foreground_color, false, battery_state_service_peek().charge_percent);
+    if (!showPhoneBattery()) return drawBatText(fctx, draw, position, align, foreground_color, true, battery_state_service_peek().charge_percent);
     return drawBatText2(fctx, draw, position, align, foreground_color, true, phonebat.level, battery_state_service_peek().charge_percent);
 }
 function widget_both_battery_flipped_text2(fctx, draw, position, align, foreground_color, background_color) {
@@ -634,7 +634,7 @@ function widget_both_battery_icon(fctx, draw, position, align, foreground_color,
     if (align == GTextAlignmentCenter) position.x -= w/2;
     if (align == GTextAlignmentRight) position.x -= w;
     drawBat(fctx, draw, position, GTextAlignmentLeft, foreground_color, background_color, battery_state_service_peek().charge_percent);
-    position.x += w/2;
+    position.x += PIX(9) + bat_icon_sep;
     drawBat(fctx, draw, position, GTextAlignmentLeft, foreground_color, background_color, phonebat.level);
     return w;
 }
@@ -646,7 +646,7 @@ function widget_both_battery_flipped_icon(fctx, draw, position, align, foregroun
     if (align == GTextAlignmentCenter) position.x -= w/2;
     if (align == GTextAlignmentRight) position.x -= w;
     drawBat(fctx, draw, position, GTextAlignmentLeft, foreground_color, background_color, phonebat.level);
-    position.x += w/2;
+    position.x += PIX(9) + bat_icon_sep;
     drawBat(fctx, draw, position, GTextAlignmentLeft, foreground_color, background_color, battery_state_service_peek().charge_percent);
     return w;
 }
@@ -654,7 +654,7 @@ function widget_bluetooth_disconly(fctx, draw, position, align, foreground_color
   if (!bluetooth_connection_service_peek()) {
     var fontsize_bt_icon = REM(25);
     if (draw) draw_string(fctx, "H", FPoint(position.x, position.y + REM(11)), font_icon, foreground_color, fontsize_bt_icon, align);
-    return string_width(fctx, "H", font_icon, fontsize_widgets);
+    return string_width(fctx, "H", font_icon, fontsize_bt_icon);
   }
   return 0;
 }
@@ -662,7 +662,7 @@ function widget_bluetooth_disconly_alt(fctx, draw, position, align, foreground_c
   if (!bluetooth_connection_service_peek()) {
     var fontsize_bt_icon = REM(25);
     if (draw) draw_string(fctx, "I", FPoint(position.x, position.y + REM(11)), font_icon, foreground_color, fontsize_bt_icon, align);
-    return string_width(fctx, "I", font_icon, fontsize_widgets);
+    return string_width(fctx, "I", font_icon, fontsize_bt_icon);
   }
   return 0;
 }
@@ -888,7 +888,7 @@ function bluetooth_popup(fctx, ctx, connected) {
  * Remove all leading zeros in a string.
  */
 function remove_leading_zero(buffer, length) {
-    buffer = buffer.replace("mmmm", "");
+    buffer = buffer.replace(new RegExp("mmmm", 'g'), "");
     if (buffer.substring(0, 1) == "0") buffer = buffer.substring(1);
     return buffer.replace(new RegExp("([^0-9])0", 'g'), "$1");
 }
@@ -928,7 +928,7 @@ function show_weather_impl(timeout) {
     return show_weather;
 }
 /** Should the 24h rain forecast (bars and day/night strip) be shown. */
-function show_rain_forecast(void) {
+function show_rain_forecast() {
     return show_weather()
         && weather.perc_data_len > 0
         && weather.perc_data_ts > 0;
@@ -1002,16 +1002,17 @@ function background_update_proc(layer, ctx) {
         }
     } else if (show_rain_forecast()) {
         var first_perc_index = -1;
+        var perc_min_into_hour = 0;
         var sec_in_hour = 60*60;
-        var cur_h_ts = time(NULL);
-        cur_h_ts -= cur_h_ts % sec_in_hour; // align with hour
-        for(var i = 0; i < weather.perc_data_len; i++) {
-            if (cur_h_ts == weather.perc_data_ts + i * sec_in_hour) {
-                first_perc_index = i;
-                break;
+        var now_ts = time(NULL);
+        if (now_ts >= weather.perc_data_ts) {
+            var into = now_ts - weather.perc_data_ts;
+            if (into / sec_in_hour < weather.perc_data_len) {
+                first_perc_index = into / sec_in_hour;
+                perc_min_into_hour = (into % sec_in_hour) / 60;
             }
         }
-    if (weather.perc_data_len > 0) first_perc_index = 0;
+    if (weather.perc_data_len > 0) { first_perc_index = 0; perc_min_into_hour = 0; }
         var nHours = 24;
         if (first_perc_index != -1) {
             var perc_ti_h = config_show_daynight ? FIXED_ROUND(REM(3)) : 0;
@@ -1019,7 +1020,7 @@ function background_update_proc(layer, ctx) {
             var perc_bar = (width - (nHours + 1) * perc_sep) / nHours; // width of a single bar (without space)
             var perc_w = perc_sep + perc_bar; // total width occupied by a single hour
             var perc_maxheight = REM(20); // max height of the precipitation bar
-            var perc_minoffset = - perc_w * (t.tm_min % 60) / 60; // x axis offset into the current hour
+            var perc_minoffset = - perc_w * perc_min_into_hour / 60; // x axis offset into the current hour
             for(var i = 0; i < nHours + 1; i++) {
                 var i_percip_prob = 0;
                 if (first_perc_index + i < weather.perc_data_len) {
@@ -1172,7 +1173,7 @@ function background_update_proc(layer, ctx) {
 
     /** Is this configuration a default configuration? */
     function isDefaultLook(platform, config) {
-        return sameLook(platform, defaultConfig(platform), b);
+        return sameLook(platform, defaultConfig(platform), config);
     }
 
     /** Do these two configurations look the same? */

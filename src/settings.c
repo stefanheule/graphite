@@ -20,15 +20,60 @@
 static void update_weather_helper(void *unused);
 static void update_phonebat_helper(void *unused);
 
-void ask_for_update(uint8_t key) {
+// Only one outbox message can be in flight at a time, but a single inbox
+// event can trigger several update requests (weather, phone battery and up
+// to three timezones).  Collect the requested keys in a bitmask and send
+// them in a single message; if the outbox is busy, flush again once the
+// current message has been sent.
+static uint8_t pending_requests = 0;
+
+static uint8_t request_bit(uint8_t key) {
+    switch (key) {
+        case MSG_KEY_FETCH_WEATHER:  return 1 << 0;
+        case MSG_KEY_FETCH_PHONEBAT: return 1 << 1;
+        case MSG_KEY_FETCH_TZ_0:     return 1 << 2;
+        case MSG_KEY_FETCH_TZ_1:     return 1 << 3;
+        case MSG_KEY_FETCH_TZ_2:     return 1 << 4;
+    }
+    return 0;
+}
+
+static void flush_pending_requests() {
+    if (pending_requests == 0) return;
     DictionaryIterator *iter;
-    app_message_outbox_begin(&iter);
-    dict_write_uint8(iter, key, 1);
-    app_message_outbox_send();
+    if (app_message_outbox_begin(&iter) != APP_MSG_OK || iter == NULL) {
+        // outbox is busy; we retry from the outbox sent/failed callbacks
+        return;
+    }
+    if (pending_requests & request_bit(MSG_KEY_FETCH_WEATHER))  dict_write_uint8(iter, MSG_KEY_FETCH_WEATHER, 1);
+    if (pending_requests & request_bit(MSG_KEY_FETCH_PHONEBAT)) dict_write_uint8(iter, MSG_KEY_FETCH_PHONEBAT, 1);
+    if (pending_requests & request_bit(MSG_KEY_FETCH_TZ_0))     dict_write_uint8(iter, MSG_KEY_FETCH_TZ_0, 1);
+    if (pending_requests & request_bit(MSG_KEY_FETCH_TZ_1))     dict_write_uint8(iter, MSG_KEY_FETCH_TZ_1, 1);
+    if (pending_requests & request_bit(MSG_KEY_FETCH_TZ_2))     dict_write_uint8(iter, MSG_KEY_FETCH_TZ_2, 1);
+    if (app_message_outbox_send() == APP_MSG_OK) {
+        pending_requests = 0;
+    }
+}
+
+void outbox_sent_handler(DictionaryIterator *iter, void *context) {
+    flush_pending_requests();
+}
+
+void outbox_failed_handler(DictionaryIterator *iter, AppMessageResult reason, void *context) {
+    // drop the pending requests instead of retrying immediately (the
+    // periodic update timers will ask again later); this avoids a retry
+    // storm while bluetooth is disconnected
+    pending_requests = 0;
+}
+
+void ask_for_update(uint8_t key) {
+    pending_requests |= request_bit(key);
+    flush_pending_requests();
 }
 
 void set_timer_impl(AppTimer** timer, int timeout_min, AppTimerCallback callback) {
-    const uint32_t timeout_ms = timeout_min * 1000 * 60;
+    // cast to uint32_t to avoid signed overflow for large refresh intervals
+    const uint32_t timeout_ms = (uint32_t)timeout_min * 1000 * 60;
     if (*timer) {
         if (!app_timer_reschedule(*timer, timeout_ms)) {
             *timer = app_timer_register(timeout_ms, callback, NULL);
@@ -117,7 +162,7 @@ int8_t get_current_tz_idx(TZData* data) {
 /**
  * Check if we need to update the timezone.
  */
-void check_update_tz_helper(uint8_t idx, uint32_t key) {
+void check_update_tz_helper(uint8_t idx, uint8_t key) {
     // return if we don't use the timezone widget
     // TODO
 
@@ -140,10 +185,7 @@ void check_update_tz_helper(uint8_t idx, uint32_t key) {
     }
 
     // actually request a tz update
-    DictionaryIterator *iter;
-    app_message_outbox_begin(&iter);
-    dict_write_uint8(iter, key, 1);
-    app_message_outbox_send();
+    ask_for_update(key);
 
 // -- build=debug
 // --     APP_LOG(APP_LOG_LEVEL_INFO, "requesting tz update for %d", idx);
@@ -209,12 +251,15 @@ bool sync_tz(uint8_t idx, const uint32_t key, DictionaryIterator *iter) {
     tz_data = dict_find(iter, key);
     if (tz_data) {
         tzinfo.data[idx].valid = true;
+        // don't read beyond the data that was actually sent (the phone may
+        // send fewer than GRAPHITE_TZ_MAX_DATAPOINTS entries)
+        int sent_datapoints = tz_data->length / 6;
         int i = 0;
 // -- build=debug
 // --             APP_LOG(APP_LOG_LEVEL_DEBUG, "received tz data:");
             APP_LOG(APP_LOG_LEVEL_DEBUG, "received tz data:");
 // -- end build
-        while (i < GRAPHITE_TZ_MAX_DATAPOINTS) {
+        while (i < GRAPHITE_TZ_MAX_DATAPOINTS && i < sent_datapoints) {
             tzinfo.data[idx].untils[i] = decode_bytes_to_int(tz_data->value->data + i * 6, 4);
             if (tzinfo.data[idx].untils[i] != 0) {
                 tzinfo.data[idx].offsets[i] = decode_bytes_to_int(tz_data->value->data + i * 6 + 4, 2);
@@ -405,8 +450,10 @@ void inbox_received_handler(DictionaryIterator *iter, void *context) {
     }
     Tuple *phonebat_tuple = dict_find(iter, MSG_KEY_PHONEBAT);
     if (phonebat_tuple) {
+        phonebat.version = GRAPHITE_PHONE_BATTERY_VERSION;
         phonebat.timestamp = time(NULL);
         phonebat.level = phonebat_tuple->value->uint8;
+        persist_write_data(PERSIST_KEY_PHONEBAT, &phonebat, sizeof(PhoneBattery));
         dirty = true;
         ask_for_phonebat_update= false;
         ask_for_weather_update = false;
@@ -438,7 +485,6 @@ void inbox_received_handler(DictionaryIterator *iter, void *context) {
     }
 
     if (dict_find(iter, MSG_KEY_JS_READY)) {
-        js_ready = true;
         force_weather_update = false;
         force_phonebat_update = false;
     }
@@ -478,7 +524,9 @@ void read_config_uint16_t(const uint32_t key, uint16_t *value) {
 }
 void read_config_string(const uint32_t key, char *buffer) {
     if (persist_exists(key)) {
-        persist_read_string(key, buffer, GRAPHITE_STRINGCONFIG_MAXLEN);
+        // buffer is GRAPHITE_STRINGCONFIG_MAXLEN+1 bytes, so a string of
+        // exactly GRAPHITE_STRINGCONFIG_MAXLEN characters fits
+        persist_read_string(key, buffer, GRAPHITE_STRINGCONFIG_MAXLEN+1);
     } else {
         persist_write_string(key, buffer);
     }
@@ -552,6 +600,4 @@ void read_config_all() {
         tzinfo.data[2].valid = false;
 // -- end autogen
     }
-
-    js_ready = false;
 }

@@ -277,7 +277,7 @@ fixed_t widget_phone_battery_icon(FContext* fctx, bool draw, FPoint position, GT
 }
 
 fixed_t widget_both_battery_text(FContext* fctx, bool draw, FPoint position, GTextAlignment align, uint8_t foreground_color, uint8_t background_color) {
-    if (!showPhoneBattery()) return drawBatText(fctx, draw, position, align, foreground_color, false, battery_state_service_peek().charge_percent);
+    if (!showPhoneBattery()) return drawBatText(fctx, draw, position, align, foreground_color, true, battery_state_service_peek().charge_percent);
     return drawBatText2(fctx, draw, position, align, foreground_color, true, battery_state_service_peek().charge_percent, phonebat.level);
 }
 
@@ -287,7 +287,7 @@ fixed_t widget_both_battery_text2(FContext* fctx, bool draw, FPoint position, GT
 }
 
 fixed_t widget_both_battery_flipped_text(FContext* fctx, bool draw, FPoint position, GTextAlignment align, uint8_t foreground_color, uint8_t background_color) {
-    if (!showPhoneBattery()) return drawBatText(fctx, draw, position, align, foreground_color, false, battery_state_service_peek().charge_percent);
+    if (!showPhoneBattery()) return drawBatText(fctx, draw, position, align, foreground_color, true, battery_state_service_peek().charge_percent);
     return drawBatText2(fctx, draw, position, align, foreground_color, true, phonebat.level, battery_state_service_peek().charge_percent);
 }
 
@@ -305,7 +305,7 @@ fixed_t widget_both_battery_icon(FContext* fctx, bool draw, FPoint position, GTe
     if (align == GTextAlignmentCenter) position.x -= w/2;
     if (align == GTextAlignmentRight) position.x -= w;
     drawBat(fctx, draw, position, GTextAlignmentLeft, foreground_color, background_color, battery_state_service_peek().charge_percent);
-    position.x += w/2;
+    position.x += PIX(9) + bat_icon_sep;
     drawBat(fctx, draw, position, GTextAlignmentLeft, foreground_color, background_color, phonebat.level);
     return w;
 }
@@ -319,7 +319,7 @@ fixed_t widget_both_battery_flipped_icon(FContext* fctx, bool draw, FPoint posit
     if (align == GTextAlignmentCenter) position.x -= w/2;
     if (align == GTextAlignmentRight) position.x -= w;
     drawBat(fctx, draw, position, GTextAlignmentLeft, foreground_color, background_color, phonebat.level);
-    position.x += w/2;
+    position.x += PIX(9) + bat_icon_sep;
     drawBat(fctx, draw, position, GTextAlignmentLeft, foreground_color, background_color, battery_state_service_peek().charge_percent);
     return w;
 }
@@ -328,7 +328,7 @@ fixed_t widget_bluetooth_disconly(FContext* fctx, bool draw, FPoint position, GT
   if (!bluetooth_connection_service_peek()) {
     fixed_t fontsize_bt_icon = REM(25);
     if (draw) draw_string(fctx, "H", FPoint(position.x, position.y + REM(11)), font_icon, foreground_color, fontsize_bt_icon, align);
-    return string_width(fctx, "H", font_icon, fontsize_widgets);
+    return string_width(fctx, "H", font_icon, fontsize_bt_icon);
   }
   return 0;
 }
@@ -337,7 +337,7 @@ fixed_t widget_bluetooth_disconly_alt(FContext* fctx, bool draw, FPoint position
   if (!bluetooth_connection_service_peek()) {
     fixed_t fontsize_bt_icon = REM(25);
     if (draw) draw_string(fctx, "I", FPoint(position.x, position.y + REM(11)), font_icon, foreground_color, fontsize_bt_icon, align);
-    return string_width(fctx, "I", font_icon, fontsize_widgets);
+    return string_width(fctx, "I", font_icon, fontsize_bt_icon);
   }
   return 0;
 }

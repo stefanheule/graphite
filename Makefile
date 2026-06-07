@@ -145,11 +145,15 @@ font_build:
 	node_modules/pebble-fctx-compiler/fctx-compiler.js -r "[0-9a-zA-Z.:\-/° ,%]" resources/fonts/OpenSans-CondensedBold.svg
 	node_modules/pebble-fctx-compiler/fctx-compiler.js -r "." resources/fonts/fasubset.svg
 
+# Note: the 10-year-range bundle only contains timezone data for roughly the
+# current year +/- 5 years, so this needs to be re-run (and
+# GRAPHITE_TZ_DATA_VERSION bumped) every few years to keep offsets correct.
 library_dl:
 	wget https://momentjs.com/downloads/moment.min.js -O src/pkjs/moment.js
-	wget https://momentjs.com/downloads/moment-timezone-with-data-2012-2022.min.js -O src/pkjs/moment-timezone.js
+	wget https://momentjs.com/downloads/moment-timezone-with-data-10-year-range.min.js -O src/pkjs/moment-timezone.js
 	sed -i -e 's/require("moment")/require(".\/moment")/g' src/pkjs/moment-timezone.js
-	sed -i -e 's/define(\["moment"\],b)/define([".\/moment"],b)/g' src/pkjs/moment-timezone.js
+	sed -i -e 's/define(\["moment"\]/define([".\/moment"]/g' src/pkjs/moment-timezone.js
+	cp src/pkjs/moment-timezone.js config/js/moment-timezone.js
 
 coverity_scan:
 	make clean
