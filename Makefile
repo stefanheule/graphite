@@ -10,6 +10,10 @@ GRAPHITE_FILE="out"
 
 GRAPHITE_PHONE_IP="10.0.0.5"
 
+GOOGLE_DRIVE ?= $(HOME)/Library/CloudStorage/GoogleDrive-stefanheule@gmail.com/My Drive
+GOOGLE_DRIVE_PEBBLE_DIR ?= $(GOOGLE_DRIVE)/Pebble
+GOOGLE_DRIVE_PBW ?= $(GOOGLE_DRIVE_PEBBLE_DIR)/graphite.pbw
+
 # platform
 P=$(DEFAULT_PLATFORM)
 
@@ -86,6 +90,11 @@ install_emulator:
 deploy: install-phone
 install-phone: build
 	pebble install --phone $(GRAPHITE_PHONE_IP)
+
+google-drive-copy: build
+	@mkdir -p "$(GOOGLE_DRIVE_PEBBLE_DIR)"
+	cp -f build/graphite.pbw "$(GOOGLE_DRIVE_PBW)"
+	@echo "Copied build/graphite.pbw -> $(GOOGLE_DRIVE_PBW)"
 
 phone_log:
 	pebble logs --phone $(GRAPHITE_PHONE_IP)
@@ -179,4 +188,4 @@ coverity_scan:
       https://scan.coverity.com/builds?project=stefanheule%2Fgraphite
 	rm -f graphite-coverity.tgz
 
-.PHONY: all deploy build build_quiet config log resources install_emulator install-phone menu_icon screenshots screenshot screenshot_config write_header clean clean_header encrypt_apikey deploy_config_online clear_remote_config_cache
+.PHONY: all deploy build build_quiet config log resources install_emulator install-phone google-drive-copy menu_icon screenshots screenshot screenshot_config write_header clean clean_header encrypt_apikey deploy_config_online clear_remote_config_cache
