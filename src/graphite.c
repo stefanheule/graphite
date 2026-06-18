@@ -181,6 +181,9 @@ void timer_callback_bluetooth_popup(void *data) {
 void handle_bluetooth(bool connected) {
     // redraw background (to turn on/off the logo)
     layer_mark_dirty(layer_background);
+    if (connected) {
+        retry_pending_requests();
+    }
 
     bool show_popup = false;
     bool vibrate = false;

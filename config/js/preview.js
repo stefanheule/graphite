@@ -859,6 +859,9 @@ function widget_calories_all_short(fctx, draw, position, align, foreground_color
 
 // -- autogen
 // -- c_to_js src/ui.c
+function safe_widget_id(widget_id) {
+    return widget_id >= 0 && widget_id < widgets.length ? widget_id : 0;
+}
 /**
  * Is something obstructing our layer?
  */
@@ -1089,6 +1092,12 @@ function background_update_proc(layer, ctx) {
         w5 = config_widget_11;
         w6 = config_widget_12;
     }
+    w1 = safe_widget_id(w1);
+    w2 = safe_widget_id(w2);
+    w3 = safe_widget_id(w3);
+    w4 = safe_widget_id(w4);
+    w5 = safe_widget_id(w5);
+    w6 = safe_widget_id(w6);
     var widgets_margin_topbottom = REM(6); // gap between watch bounds and widgets
     var widgets_margin_leftright = REM(8);
     widgets[w1](fctx, true, FPoint(widgets_margin_leftright, widgets_margin_topbottom), GTextAlignmentLeft, config_color_widget_1, config_color_topbar_bg_local);

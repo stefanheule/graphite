@@ -26,5 +26,6 @@ void read_config_all();
 void subscribe_tick(bool also_unsubscribe);
 void subscribe_tap();
 void ask_for_update(uint8_t key);
+void retry_pending_requests();
 
 #endif //GRAPHITE_SETTINGS_H

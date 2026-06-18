@@ -19,13 +19,20 @@
 
 static void update_weather_helper(void *unused);
 static void update_phonebat_helper(void *unused);
+static void flush_pending_requests();
 
 // Only one outbox message can be in flight at a time, but a single inbox
 // event can trigger several update requests (weather, phone battery and up
 // to three timezones).  Collect the requested keys in a bitmask and send
-// them in a single message; if the outbox is busy, flush again once the
-// current message has been sent.
+// them in a single message. Keep the in-flight snapshot separate so a
+// failed delivery can be restored without losing newer queued requests.
 static uint8_t pending_requests = 0;
+static uint8_t in_flight_requests = 0;
+static AppTimer *request_retry_timer = NULL;
+static uint32_t request_retry_delay_ms = 5000;
+
+#define REQUEST_RETRY_INITIAL_MS 5000
+#define REQUEST_RETRY_MAX_MS (5 * 60 * 1000)
 
 static uint8_t request_bit(uint8_t key) {
     switch (key) {
@@ -38,36 +45,66 @@ static uint8_t request_bit(uint8_t key) {
     return 0;
 }
 
+static void request_retry_handler(void *unused) {
+    request_retry_timer = NULL;
+    flush_pending_requests();
+}
+
+static void schedule_request_retry() {
+    if (request_retry_timer == NULL) {
+        request_retry_timer = app_timer_register(request_retry_delay_ms, request_retry_handler, NULL);
+        if (request_retry_delay_ms < REQUEST_RETRY_MAX_MS / 2) {
+            request_retry_delay_ms *= 2;
+        } else {
+            request_retry_delay_ms = REQUEST_RETRY_MAX_MS;
+        }
+    }
+}
+
 static void flush_pending_requests() {
-    if (pending_requests == 0) return;
+    if (pending_requests == 0 || in_flight_requests != 0 || request_retry_timer != NULL) return;
     DictionaryIterator *iter;
     if (app_message_outbox_begin(&iter) != APP_MSG_OK || iter == NULL) {
-        // outbox is busy; we retry from the outbox sent/failed callbacks
+        schedule_request_retry();
         return;
     }
-    if (pending_requests & request_bit(MSG_KEY_FETCH_WEATHER))  dict_write_uint8(iter, MSG_KEY_FETCH_WEATHER, 1);
-    if (pending_requests & request_bit(MSG_KEY_FETCH_PHONEBAT)) dict_write_uint8(iter, MSG_KEY_FETCH_PHONEBAT, 1);
-    if (pending_requests & request_bit(MSG_KEY_FETCH_TZ_0))     dict_write_uint8(iter, MSG_KEY_FETCH_TZ_0, 1);
-    if (pending_requests & request_bit(MSG_KEY_FETCH_TZ_1))     dict_write_uint8(iter, MSG_KEY_FETCH_TZ_1, 1);
-    if (pending_requests & request_bit(MSG_KEY_FETCH_TZ_2))     dict_write_uint8(iter, MSG_KEY_FETCH_TZ_2, 1);
+    uint8_t requests = pending_requests;
+    if (requests & request_bit(MSG_KEY_FETCH_WEATHER))  dict_write_uint8(iter, MSG_KEY_FETCH_WEATHER, 1);
+    if (requests & request_bit(MSG_KEY_FETCH_PHONEBAT)) dict_write_uint8(iter, MSG_KEY_FETCH_PHONEBAT, 1);
+    if (requests & request_bit(MSG_KEY_FETCH_TZ_0))     dict_write_uint8(iter, MSG_KEY_FETCH_TZ_0, 1);
+    if (requests & request_bit(MSG_KEY_FETCH_TZ_1))     dict_write_uint8(iter, MSG_KEY_FETCH_TZ_1, 1);
+    if (requests & request_bit(MSG_KEY_FETCH_TZ_2))     dict_write_uint8(iter, MSG_KEY_FETCH_TZ_2, 1);
     if (app_message_outbox_send() == APP_MSG_OK) {
-        pending_requests = 0;
+        in_flight_requests = requests;
+        pending_requests &= ~requests;
+    } else {
+        schedule_request_retry();
     }
 }
 
 void outbox_sent_handler(DictionaryIterator *iter, void *context) {
+    in_flight_requests = 0;
+    request_retry_delay_ms = REQUEST_RETRY_INITIAL_MS;
     flush_pending_requests();
 }
 
 void outbox_failed_handler(DictionaryIterator *iter, AppMessageResult reason, void *context) {
-    // drop the pending requests instead of retrying immediately (the
-    // periodic update timers will ask again later); this avoids a retry
-    // storm while bluetooth is disconnected
-    pending_requests = 0;
+    pending_requests |= in_flight_requests;
+    in_flight_requests = 0;
+    schedule_request_retry();
 }
 
 void ask_for_update(uint8_t key) {
     pending_requests |= request_bit(key);
+    flush_pending_requests();
+}
+
+void retry_pending_requests() {
+    if (request_retry_timer != NULL) {
+        app_timer_cancel(request_retry_timer);
+        request_retry_timer = NULL;
+    }
+    request_retry_delay_ms = REQUEST_RETRY_INITIAL_MS;
     flush_pending_requests();
 }
 
@@ -206,9 +243,35 @@ void check_update_tz() {
 /**
  * Helpers to process new configuration.
  */
+static bool tuple_is_integer(const Tuple *tuple, uint16_t min_length) {
+    return tuple != NULL
+        && (tuple->type == TUPLE_UINT || tuple->type == TUPLE_INT)
+        && tuple->length >= min_length;
+}
+
+static bool is_widget_config_key(const uint32_t key) {
+    switch (key) {
+        case CONFIG_WIDGET_1:
+        case CONFIG_WIDGET_2:
+        case CONFIG_WIDGET_3:
+        case CONFIG_WIDGET_4:
+        case CONFIG_WIDGET_5:
+        case CONFIG_WIDGET_6:
+        case CONFIG_WIDGET_7:
+        case CONFIG_WIDGET_8:
+        case CONFIG_WIDGET_9:
+        case CONFIG_WIDGET_10:
+        case CONFIG_WIDGET_11:
+        case CONFIG_WIDGET_12:
+            return true;
+    }
+    return false;
+}
+
 bool sync_helper_uint8_t(const uint32_t key, DictionaryIterator *iter, uint8_t *value) {
     Tuple *new_tuple = dict_find(iter, key);
-    if (new_tuple == NULL) return false;
+    if (!tuple_is_integer(new_tuple, sizeof(uint8_t))) return false;
+    if (is_widget_config_key(key) && new_tuple->value->uint8 >= GRAPHITE_WIDGET_COUNT) return false;
     if ((*value) != new_tuple->value->uint8) {
         (*value) = new_tuple->value->uint8;
         persist_write_int(key, *value);
@@ -218,7 +281,7 @@ bool sync_helper_uint8_t(const uint32_t key, DictionaryIterator *iter, uint8_t *
 }
 bool sync_helper_uint16_t(const uint32_t key, DictionaryIterator *iter, uint16_t *value) {
     Tuple *new_tuple = dict_find(iter, key);
-    if (new_tuple == NULL) return false;
+    if (!tuple_is_integer(new_tuple, sizeof(uint16_t))) return false;
     if ((*value) != new_tuple->value->uint16) {
         (*value) = new_tuple->value->uint16;
         persist_write_int(key, *value);
@@ -229,9 +292,17 @@ bool sync_helper_uint16_t(const uint32_t key, DictionaryIterator *iter, uint16_t
 bool sync_helper_string(const uint32_t key, DictionaryIterator *iter, char *buffer) {
     int maxlen = GRAPHITE_STRINGCONFIG_MAXLEN;
     Tuple *new_tuple = dict_find(iter, key);
-    if (new_tuple == NULL) return false;
-    if (strncmp(buffer, new_tuple->value->cstring, maxlen) != 0) {
-        strncpy(buffer, new_tuple->value->cstring, maxlen);
+    if (new_tuple == NULL || new_tuple->type != TUPLE_CSTRING || new_tuple->length == 0) return false;
+    char new_value[GRAPHITE_STRINGCONFIG_MAXLEN + 1];
+    const char *tuple_string = (const char *)new_tuple->value;
+    int length = 0;
+    while (length < maxlen && length < new_tuple->length && tuple_string[length] != '\0') {
+        new_value[length] = tuple_string[length];
+        length++;
+    }
+    new_value[length] = '\0';
+    if (strcmp(buffer, new_value) != 0) {
+        strcpy(buffer, new_value);
         persist_write_string(key, buffer);
         return true;
     }
@@ -249,7 +320,7 @@ uint32_t decode_bytes_to_int(uint8_t *bytes, uint8_t nbytes) {
 bool sync_tz(uint8_t idx, const uint32_t key, DictionaryIterator *iter) {
     Tuple *tz_data;
     tz_data = dict_find(iter, key);
-    if (tz_data) {
+    if (tz_data && tz_data->type == TUPLE_BYTE_ARRAY && tz_data->length >= 6) {
         tzinfo.data[idx].valid = true;
         // don't read beyond the data that was actually sent (the phone may
         // send fewer than GRAPHITE_TZ_MAX_DATAPOINTS entries)
@@ -408,7 +479,10 @@ void inbox_received_handler(DictionaryIterator *iter, void *context) {
     Tuple *sunrise_tuple = dict_find(iter, MSG_KEY_WEATHER_SUNRISE);
     Tuple *sunset_tuple = dict_find(iter, MSG_KEY_WEATHER_SUNSET);
     Tuple *location_tuple = dict_find(iter, MSG_KEY_WEATHER_LOCATION);
-    if (icon_tuple && tempcur_tuple && templow_tuple && temphigh_tuple) {
+    if (tuple_is_integer(icon_tuple, sizeof(int8_t))
+        && tuple_is_integer(tempcur_tuple, sizeof(int16_t))
+        && tuple_is_integer(templow_tuple, sizeof(int16_t))
+        && tuple_is_integer(temphigh_tuple, sizeof(int16_t))) {
         weather.version = GRAPHITE_WEATHER_VERSION;
         weather.timestamp = time(NULL);
         weather.icon = icon_tuple->value->int8;
@@ -416,18 +490,25 @@ void inbox_received_handler(DictionaryIterator *iter, void *context) {
         weather.temp_low = templow_tuple->value->int16;
         weather.temp_high = temphigh_tuple->value->int16;
 
-        if (perc_data_tuple && perc_data_ts_tuple && perc_data_len_tuple) {
-            weather.perc_data_len = perc_data_len_tuple->value->uint8;
+        if (perc_data_tuple && perc_data_tuple->type == TUPLE_BYTE_ARRAY
+            && tuple_is_integer(perc_data_ts_tuple, sizeof(int32_t))
+            && tuple_is_integer(perc_data_len_tuple, sizeof(uint8_t))) {
+            uint8_t perc_data_len = perc_data_len_tuple->value->uint8;
+            if (perc_data_len > perc_data_tuple->length) perc_data_len = perc_data_tuple->length;
+            if (perc_data_len > GRAPHITE_WEATHER_PERC_MAX_LEN) perc_data_len = GRAPHITE_WEATHER_PERC_MAX_LEN;
+            weather.perc_data_len = perc_data_len;
             weather.perc_data_ts = perc_data_ts_tuple->value->int32;
-            for (int i = 0; i < weather.perc_data_len && i < GRAPHITE_WEATHER_PERC_MAX_LEN; i++) {
-                weather.perc_data[i] = perc_data_tuple->value->data[i];
+            const uint8_t *perc_data = (const uint8_t *)perc_data_tuple->value;
+            for (int i = 0; i < weather.perc_data_len; i++) {
+                weather.perc_data[i] = perc_data[i];
             }
         } else {
             weather.perc_data_len = 0;
             weather.perc_data_ts = 0;
         }
 
-        if (sunrise_tuple && sunset_tuple) {
+        if (tuple_is_integer(sunrise_tuple, sizeof(int32_t))
+            && tuple_is_integer(sunset_tuple, sizeof(int32_t))) {
             weather.sunrise = sunrise_tuple->value->int32;
             weather.sunset = sunset_tuple->value->int32;
         } else {
@@ -435,9 +516,16 @@ void inbox_received_handler(DictionaryIterator *iter, void *context) {
             weather.sunset = 0;
         }
 
-        if (location_tuple) {
-            strncpy(weather.location, location_tuple->value->cstring, GRAPHITE_WEATHER_LOCATION_MAXLEN - 1);
-            weather.location[GRAPHITE_WEATHER_LOCATION_MAXLEN - 1] = '\0';
+        if (location_tuple && location_tuple->type == TUPLE_CSTRING && location_tuple->length > 0) {
+            const char *location = (const char *)location_tuple->value;
+            int location_length = 0;
+            while (location_length < GRAPHITE_WEATHER_LOCATION_MAXLEN - 1
+                && location_length < location_tuple->length
+                && location[location_length] != '\0') {
+                weather.location[location_length] = location[location_length];
+                location_length++;
+            }
+            weather.location[location_length] = '\0';
         } else {
             weather.location[0] = '\0';
         }
@@ -449,7 +537,7 @@ void inbox_received_handler(DictionaryIterator *iter, void *context) {
         ask_for_phonebat_update= false;
     }
     Tuple *phonebat_tuple = dict_find(iter, MSG_KEY_PHONEBAT);
-    if (phonebat_tuple) {
+    if (tuple_is_integer(phonebat_tuple, sizeof(uint8_t))) {
         phonebat.version = GRAPHITE_PHONE_BATTERY_VERSION;
         phonebat.timestamp = time(NULL);
         phonebat.level = phonebat_tuple->value->uint8;
@@ -510,7 +598,12 @@ void inbox_received_handler(DictionaryIterator *iter, void *context) {
  */
 void read_config_uint8_t(const uint32_t key, uint8_t *value) {
     if (persist_exists(key)) {
-        *value = persist_read_int(key);
+        int persisted = persist_read_int(key);
+        if (!is_widget_config_key(key) || (persisted >= 0 && persisted < GRAPHITE_WIDGET_COUNT)) {
+            *value = persisted;
+        } else {
+            persist_write_int(key, *value);
+        }
     } else {
         persist_write_int(key, *value);
     }
@@ -554,6 +647,10 @@ void read_config_all() {
         // make sure we are reading weather info that's consistent with the current version number
         if (tmp.version == GRAPHITE_WEATHER_VERSION) {
             weather = tmp;
+            if (weather.perc_data_len > GRAPHITE_WEATHER_PERC_MAX_LEN) {
+                weather.perc_data_len = GRAPHITE_WEATHER_PERC_MAX_LEN;
+            }
+            weather.location[GRAPHITE_WEATHER_LOCATION_MAXLEN - 1] = '\0';
         } else {
             weather.timestamp = 0;
         }

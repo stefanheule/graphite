@@ -32,16 +32,170 @@ function getUToken() {
     }
 }
 
+var jsReadyRetryTimer = null;
+var jsReadyRetryDelay = 1000;
+
+function sendJsReady() {
+    var data = {
+        "MSG_KEY_JS_READY": 1
+    };
+    Pebble.sendAppMessage(data, function () {
+        jsReadyRetryDelay = 1000;
+        if (jsReadyRetryTimer !== null) {
+            clearTimeout(jsReadyRetryTimer);
+            jsReadyRetryTimer = null;
+        }
+    }, function () {
+        if (jsReadyRetryTimer !== null) return;
+        jsReadyRetryTimer = setTimeout(function () {
+            jsReadyRetryTimer = null;
+            sendJsReady();
+        }, jsReadyRetryDelay);
+        jsReadyRetryDelay = Math.min(jsReadyRetryDelay * 2, 30000);
+    });
+}
+
 Pebble.addEventListener('ready', function () {
 // -- build=debug
 // --     console.log('[ info/app ] PebbleKit JS ready!');
     console.log('[ info/app ] PebbleKit JS ready!');
 // -- end build
-    var data = {
-        "MSG_KEY_JS_READY": 1
-    };
-    Pebble.sendAppMessage(data);
+    sendJsReady();
 });
+
+// -- autogen
+// -- var CONFIG_ITEM_COUNT = {{ configuration | length }};
+// -- var CONFIG_STRING_IDS = [
+// -- ## for key in configuration
+// -- ##   if key["type"] == "string"
+// --     {{ key["id"] }},
+// -- ##   endif
+// -- ## endfor
+// -- ];
+// -- var CONFIG_WATCH_STRING_IDS = [
+// -- ## for key in configuration
+// -- ##   if key["type"] == "string" and not key["local"]
+// --     {{ key["id"] }},
+// -- ##   endif
+// -- ## endfor
+// -- ];
+// -- var CONFIG_UINT16_IDS = [
+// -- ## for key in configuration
+// -- ##   if key["type"] == "uint16_t"
+// --     {{ key["id"] }},
+// -- ##   endif
+// -- ## endfor
+// -- ];
+// -- var CONFIG_WIDGET_IDS = [
+// -- ## for key in configuration
+// -- ##   if key["key"].startswith("CONFIG_WIDGET_")
+// --     {{ key["id"] }},
+// -- ##   endif
+// -- ## endfor
+// -- ];
+// -- var CONFIG_WEATHER_REFRESH_ID = {{ configuration_lookup["CONFIG_WEATHER_REFRESH"]["id"] }};
+// -- var CONFIG_WEATHER_REFRESH_FAILED_ID = {{ configuration_lookup["CONFIG_WEATHER_REFRESH_FAILED"]["id"] }};
+// -- var MAX_WIDGET_ID = {{ (widgets | length) - 1 }};
+var CONFIG_ITEM_COUNT = 69;
+var CONFIG_STRING_IDS = [
+    8,
+    9,
+    40,
+    41,
+    48,
+    49,
+    50,
+    51,
+    52,
+    53,
+    55,
+];
+var CONFIG_WATCH_STRING_IDS = [
+    40,
+    41,
+    51,
+    52,
+    53,
+    55,
+];
+var CONFIG_UINT16_IDS = [
+    10,
+    11,
+    12,
+    47,
+    62,
+    64,
+    67,
+    68,
+];
+var CONFIG_WIDGET_IDS = [
+    33,
+    34,
+    35,
+    36,
+    37,
+    38,
+    56,
+    57,
+    58,
+    59,
+    60,
+    61,
+];
+var CONFIG_WEATHER_REFRESH_ID = 10;
+var CONFIG_WEATHER_REFRESH_FAILED_ID = 12;
+var MAX_WIDGET_ID = 54;
+// -- end autogen
+
+function truncateUtf8(value, maxBytes) {
+    value = String(value);
+    var result = "";
+    var bytes = 0;
+    for (var i = 0; i < value.length; i++) {
+        var code = value.charCodeAt(i);
+        var charLength = 1;
+        var byteLength = code < 0x80 ? 1 : (code < 0x800 ? 2 : 3);
+        if (code >= 0xD800 && code <= 0xDBFF && i + 1 < value.length) {
+            var next = value.charCodeAt(i + 1);
+            if (next >= 0xDC00 && next <= 0xDFFF) {
+                charLength = 2;
+                byteLength = 4;
+            }
+        }
+        if (bytes + byteLength > maxBytes) break;
+        result += value.substr(i, charLength);
+        bytes += byteLength;
+        i += charLength - 1;
+    }
+    return result;
+}
+
+function sanitizeUrlConfig(urlconfig) {
+    if (!urlconfig || typeof urlconfig !== "object") return false;
+    for (var id = 1; id <= CONFIG_ITEM_COUNT; id++) {
+        if (CONFIG_STRING_IDS.indexOf(id) !== -1) {
+            if (urlconfig[id] === undefined || urlconfig[id] === null) return false;
+            urlconfig[id] = String(urlconfig[id]);
+            if (CONFIG_WATCH_STRING_IDS.indexOf(id) !== -1) {
+                urlconfig[id] = truncateUtf8(urlconfig[id], 50);
+            }
+            continue;
+        }
+
+        var value = Number(urlconfig[id]);
+        if (!isFinite(value)) return false;
+        value = Math.round(value);
+        if (CONFIG_WIDGET_IDS.indexOf(id) !== -1 && (value < 0 || value > MAX_WIDGET_ID)) {
+            return false;
+        }
+        var minimum = 0;
+        if (id === CONFIG_WEATHER_REFRESH_ID) minimum = 10;
+        if (id === CONFIG_WEATHER_REFRESH_FAILED_ID) minimum = 1;
+        var maximum = CONFIG_UINT16_IDS.indexOf(id) !== -1 ? 65535 : 255;
+        urlconfig[id] = Math.max(minimum, Math.min(maximum, value));
+    }
+    return true;
+}
 
 Pebble.addEventListener('showConfiguration', function () {
 // -- autogen
@@ -79,6 +233,10 @@ Pebble.addEventListener('webviewclosed', function (e) {
         urlconfig = JSON.parse(decodeURIComponent(e.response).replace(/@/g, "%"));
     } catch (err) {
         console.log('[ info/app ] could not parse configuration response: ' + err);
+        return;
+    }
+    if (!sanitizeUrlConfig(urlconfig)) {
+        console.log('[ info/app ] configuration response contains invalid values');
         return;
     }
 
@@ -294,10 +452,6 @@ Pebble.addEventListener('webviewclosed', function (e) {
     localStorage.setItem("CONFIG_UPDATE_PHONEBAT_ON_SHAKE", urlconfig[69]);
 // -- end autogen
 
-    // don't allow really small (or non-numeric) values for refresh rate
-    if (!(config["CONFIG_WEATHER_REFRESH"] >= 10)) {
-        config["CONFIG_WEATHER_REFRESH"] = 10;
-    }
     // set refresh to 0 to indicate that weather information is off
     if (!need_weather()[0]) {
         config["CONFIG_WEATHER_REFRESH"] = 0;
@@ -347,7 +501,13 @@ Pebble.addEventListener('webviewclosed', function (e) {
     if (!(has_widget([46, 47, 48, 49, 50, 51, 52, 53, 54]))) delete config["CONFIG_UPDATE_PHONEBAT_ON_SHAKE"];
 // -- end autogen
 
+    var weatherGenerationBeforeConfig = weatherRequestGeneration;
     Pebble.sendAppMessage(config, function () {
+        // The watch accepted the new provider/location settings and will
+        // request fresh weather; suppress any older response still in flight.
+        if (weatherRequestGeneration === weatherGenerationBeforeConfig) {
+            weatherRequestGeneration += 1;
+        }
 // -- build=debug
 // --         console.log('[ info/app ] Send successful: ' + JSON.stringify(config));
         console.log('[ info/app ] Send successful: ' + JSON.stringify(config));
@@ -529,8 +689,15 @@ function sameDate(a, b) {
     return a.getDate() == b.getDate() && a.getFullYear() == b.getFullYear() && a.getMonth() == b.getMonth();
 }
 
+var weatherRequestGeneration = 0;
+
+function isCurrentWeatherRequest(generation) {
+    return generation === weatherRequestGeneration;
+}
+
 /** Callback if determining weather conditions failed. */
-function failedWeatherCheck(err) {
+function failedWeatherCheck(err, generation) {
+    if (!isCurrentWeatherRequest(generation)) return;
 // -- build=debug
 // --     console.log('[ info/app ] weather request failed: ' + err);
     console.log('[ info/app ] weather request failed: ' + err);
@@ -541,7 +708,7 @@ function failedWeatherCheck(err) {
     Pebble.sendAppMessage(data);
 }
 
-function concurrentRequests(urls, succ) {
+function concurrentRequests(urls, succ, generation) {
     var i = 0;
     var n = urls.length;
     var ids = urls.map(function() { i = i+1; return i-1; });
@@ -561,16 +728,21 @@ function concurrentRequests(urls, succ) {
         finished = true;
         if (myTimeout !== null) clearTimeout(myTimeout);
         quit();
-        failedWeatherCheck(msg);
+        failedWeatherCheck(msg, generation);
     }
     var maybeFinish = function() {
         if (finished || doneCount != n) return;
+        if (!isCurrentWeatherRequest(generation)) {
+            finished = true;
+            quit();
+            return;
+        }
         finished = true;
         if (myTimeout !== null) clearTimeout(myTimeout);
         try {
             succ(answers);
         } catch (e) {
-            failedWeatherCheck("exception: " + e)
+            failedWeatherCheck("exception: " + e, generation)
         }
     }
     reqs = ids.map(function(i){
@@ -646,7 +818,7 @@ function need_weather() {
     return [load_rain || load_lowhigh || load_cur || load_sun, load_rain, load_lowhigh, load_cur, load_sun];
 }
 
-function fetchWeather(latitude, longitude) {
+function fetchWeather(latitude, longitude, generation) {
 
     var now = new Date();
 
@@ -661,6 +833,7 @@ function fetchWeather(latitude, longitude) {
      * when secondary widgets are visible. Pass '' if the provider cannot
      * supply one (e.g. Open-Meteo). */
     var success = function(low, high, cur, curicon, raindata, ts, sunrise, sunset, location) {
+        if (!isCurrentWeatherRequest(generation)) return;
         if (+readConfig("CONFIG_WEATHER_UNIT_LOCAL") == 2) {
             if (low != temp_unknown) low = low * 9.0/5.0 + 32.0;
             if (high != temp_unknown) high = high * 9.0/5.0 + 32.0;
@@ -728,7 +901,7 @@ function fetchWeather(latitude, longitude) {
     };
 
     var runRequest = function (url, parse) {
-        concurrentRequests([url], function(res) { parse(res[0]); });
+        concurrentRequests([url], function(res) { parse(res[0]); }, generation);
     };
 
     var temp_unknown = 32767;
@@ -930,7 +1103,7 @@ function fetchWeather(latitude, longitude) {
                 if (locSource.country_code) location += (location ? ", " : "") + locSource.country_code;
             }
             success(low, high, cur, icon, raindata, raints, sunrise, sunset, location);
-        });
+        }, generation);
     }
 }
 
@@ -1045,24 +1218,25 @@ Pebble.addEventListener('appmessage',
 // -- end build
         var dict = e.payload;
         if (dict["MSG_KEY_FETCH_WEATHER"]) {
+            var generation = ++weatherRequestGeneration;
             var location = readConfig("CONFIG_WEATHER_LOCATION_LOCAL");
             if (location) {
                 var loc = location.split(",");
                 var lat = parseFloat(loc[0]);
                 var lon = parseFloat(loc[1]);
                 if (isNaN(lat) || isNaN(lon)) {
-                    failedWeatherCheck("invalid custom location: " + location);
+                    failedWeatherCheck("invalid custom location: " + location, generation);
                 } else {
-                    fetchWeather(lat, lon);
+                    fetchWeather(lat, lon, generation);
                 }
             } else {
                 navigator.geolocation.getCurrentPosition(
                     function (pos) {
                         var coordinates = pos.coords;
-                        fetchWeather(coordinates.latitude, coordinates.longitude);
+                        fetchWeather(coordinates.latitude, coordinates.longitude, generation);
                     },
                     function (err) {
-                        failedWeatherCheck("location not found");
+                        failedWeatherCheck("location not found", generation);
                     },
                     {timeout: 15000, maximumAge: 60000}
                 );

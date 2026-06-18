@@ -582,7 +582,7 @@
         <label class="item">
           Expiration for phone battery after losing contact with phone (Minutes)
           <div class="item-input-wrapper">
-            <input type="text" class="item-input" id='CONFIG_PHONE_BATTERY_EXPIRATION'>
+            <input type="number" min="0" max="65535" step="1" class="item-input" id='CONFIG_PHONE_BATTERY_EXPIRATION'>
           </div>
         </label>
       </div>
@@ -590,7 +590,7 @@
         <label class="item">
           Refresh rate for phone battery (Minutes)
           <div class="item-input-wrapper">
-            <input type="text" class="item-input" id='CONFIG_PHONE_BATTERY_REFRESH'>
+            <input type="number" min="0" max="65535" step="1" class="item-input" id='CONFIG_PHONE_BATTERY_REFRESH'>
           </div>
         </label>
       </div>
@@ -614,7 +614,7 @@
 // --        <label class="item">
 // --          Format for Timezone {{ i + 1 }}
 // --          <div class="item-input-wrapper">
-// --            <input type="text" class="item-input" id='CONFIG_TZ_{{ i }}_FORMAT'>
+// --            <input type="text" class="item-input" maxlength="50" id='CONFIG_TZ_{{ i }}_FORMAT'>
 // --          </div>
 // --        </label>
 // --      </div>
@@ -1550,7 +1550,7 @@
        <label class="item">
          Format for Timezone 1
          <div class="item-input-wrapper">
-           <input type="text" class="item-input" id='CONFIG_TZ_0_FORMAT'>
+           <input type="text" class="item-input" maxlength="50" id='CONFIG_TZ_0_FORMAT'>
          </div>
        </label>
      </div>
@@ -2484,7 +2484,7 @@
        <label class="item">
          Format for Timezone 2
          <div class="item-input-wrapper">
-           <input type="text" class="item-input" id='CONFIG_TZ_1_FORMAT'>
+           <input type="text" class="item-input" maxlength="50" id='CONFIG_TZ_1_FORMAT'>
          </div>
        </label>
      </div>
@@ -3418,7 +3418,7 @@
        <label class="item">
          Format for Timezone 3
          <div class="item-input-wrapper">
-           <input type="text" class="item-input" id='CONFIG_TZ_2_FORMAT'>
+           <input type="text" class="item-input" maxlength="50" id='CONFIG_TZ_2_FORMAT'>
          </div>
        </label>
      </div>
@@ -3480,7 +3480,7 @@
         <label class="item">
           Secondary widget timeout (milliseconds)
           <div class="item-input-wrapper">
-            <input type="text" class="item-input" id='CONFIG_TIMEOUT_2ND_WIDGETS'>
+            <input type="number" min="0" max="65535" step="1" class="item-input" id='CONFIG_TIMEOUT_2ND_WIDGETS'>
           </div>
         </label>
       </div>
@@ -3524,7 +3524,7 @@
         <label class="item">
           Step progress bar goal
           <div class="item-input-wrapper">
-            <input type="text" class="item-input" id='CONFIG_STEP_GOAL'>
+            <input type="number" min="0" max="65535" step="1" class="item-input" id='CONFIG_STEP_GOAL'>
           </div>
         </label>
         <div class="item-container-footer">
@@ -3731,7 +3731,7 @@
         <label class="item">
           Refresh Rate (Minutes)
           <div class="item-input-wrapper">
-            <input type="text" class="item-input" id='CONFIG_WEATHER_REFRESH'>
+            <input type="number" min="10" max="65535" step="1" class="item-input" id='CONFIG_WEATHER_REFRESH'>
           </div>
         </label>
       </div>
@@ -3740,7 +3740,7 @@
         <label class="item">
           Expiration (Minutes)
           <div class="item-input-wrapper">
-            <input type="text" class="item-input" id='CONFIG_WEATHER_EXPIRATION'>
+            <input type="number" min="0" max="65535" step="1" class="item-input" id='CONFIG_WEATHER_EXPIRATION'>
           </div>
         </label>
         <div class="item-container-footer">
@@ -3752,7 +3752,7 @@
         <label class="item">
           Expiration for sunrise/sunset times (Hours)
           <div class="item-input-wrapper">
-            <input type="text" class="item-input" id='CONFIG_WEATHER_SUNRISE_EXPIRATION'>
+            <input type="number" min="0" max="65535" step="1" class="item-input" id='CONFIG_WEATHER_SUNRISE_EXPIRATION'>
           </div>
         </label>
       </div>
@@ -3761,7 +3761,7 @@
         <label class="item">
           Retry after failure (Minutes)
           <div class="item-input-wrapper">
-            <input type="text" class="item-input" id='CONFIG_WEATHER_REFRESH_FAILED'>
+            <input type="number" min="1" max="65535" step="1" class="item-input" id='CONFIG_WEATHER_REFRESH_FAILED'>
           </div>
         </label>
         <div class="item-container-footer">
@@ -3996,6 +3996,19 @@
     }
   }
 
+  function normalizeNumericInputs() {
+    $('input.item-input[type="number"]').each(function () {
+      var input = $(this);
+      var value = Number(input.val());
+      var minimum = Number(input.attr('min'));
+      var maximum = Number(input.attr('max'));
+      if (!isFinite(value)) value = minimum;
+      value = Math.round(value);
+      value = Math.max(minimum, Math.min(maximum, value));
+      input.val(value);
+    });
+  }
+
   function readOneConfig(el) {
     var val = undefined;
     if (el.hasClass('item-color')) {
@@ -4010,7 +4023,7 @@
           val = el.val();
       }
     } else if (el.hasClass('item-input')) {
-      val = el.val();
+      val = el.attr('type') == 'number' ? Number(el.val()) : el.val();
     } else {
       console.log("[ error ] Unexpected element:");
       console.log(this);
@@ -4909,6 +4922,7 @@
     submitButton.addEventListener('click', function() {
       console.log('[ info ] user clicked submit');
 
+      normalizeNumericInputs();
       var config = readConfigFromDom();
       post("save", {
         config: config
@@ -5014,8 +5028,8 @@
     }
 
     // update version information
-    document.getElementById("version-info").innerHTML = getVersion();
-    document.getElementById("platform-info").innerHTML = getPlatform();
+    document.getElementById("version-info").textContent = getVersion();
+    document.getElementById("platform-info").textContent = getPlatform();
 
     // my preferences link
     $("#myprefs").on("click", function() {

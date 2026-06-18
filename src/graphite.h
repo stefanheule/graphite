@@ -211,6 +211,11 @@ extern uint8_t config_update_phonebat_on_shake;
 //// Complications
 ////////////////////////////////////////////
 
+// -- autogen
+// -- #define GRAPHITE_WIDGET_COUNT {{ widgets | length }}
+#define GRAPHITE_WIDGET_COUNT 55
+// -- end autogen
+
 // widgets take a parameter draw and only will actually draw the content
 // if draw==true.  Otherwise they just return the width of the widget.
 typedef fixed_t (*widget_render_t)(FContext* fctx, bool draw, FPoint position, GTextAlignment align, uint8_t foreground_color, uint8_t background_color);

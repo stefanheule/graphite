@@ -1,50 +1,66 @@
 #!/usr/bin/env python3
 
 
-import sys
-import humanfriendly
-import os
-import inspect
-import random
-import shutil
-import threading
-import re
-import subprocess
 import base64
+import os
+import re
+import shutil
+import subprocess
+import sys
 
 def error(m):
   print(m)
   sys.exit(1)
 
 def main():
-  base = os.path.abspath(inspect.stack()[1][1] + "/../..")
+  base = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
   tmp = "%s/tmp" % (base)
   target = "%s/index.html" % (tmp)
   screenshotdir = "%s/screenshots/basalt" % (base)
-  
+  source = "%s/screenshots/src/index.html" % (base)
+  save_page_as = "%s/screenshots/automate-save-page-as/save_page_as" % (base)
+  browser = os.environ.get("SAVE_PAGE_AS_BROWSER")
+  supported_browsers = ("chromium-browser", "google-chrome", "firefox")
+  if browser is None:
+    browser = next((name for name in supported_browsers if shutil.which(name)), None)
+
   if os.path.exists(tmp):
     error("tmp folder exists")
+  if not os.path.isfile(save_page_as):
+    error("save_page_as tool not found: %s" % (save_page_as))
+  if browser not in supported_browsers:
+    error("Supported browser not found; set SAVE_PAGE_AS_BROWSER to %s" % (", ".join(supported_browsers)))
 
   os.mkdir(tmp)
+  try:
+    execute_ok([
+      save_page_as,
+      "--save-wait-time", "1",
+      "--load-wait-time", "2",
+      "file://" + source,
+      "-d", target,
+      "-b", browser,
+    ])
 
-  cmd = "screenshots/automate-save-page-as/save_page_as --save-wait-time 1 --load-wait-time 2 \"file:///home/stefan/dev/projects/all/2016-graphite/screenshots/src/index.html\" -d \"%s\" -b chromium-browser" % (target)
-  execute_ok(cmd)
+    if os.path.exists(screenshotdir):
+      shutil.rmtree(screenshotdir)
+    os.mkdir(screenshotdir)
 
-  shutil.rmtree(screenshotdir)
-  os.mkdir(screenshotdir)
+    sshots = re.findall("([0-9a-z\\-]*)::::(.*)", read_file(target))
+    for s in sshots:
+      name = s[0]
+      f = "%s/%s.png" % (screenshotdir, name)
+      if name == "":
+        print(s[1])
+        continue
+      img = base64.b64decode(s[1])
+      write_file(f, img)
 
-  sshots = re.findall("([0-9a-z\\-]*)::::(.*)", read_file(target))
-  for s in sshots:
-    name = s[0]
-    f = "%s/%s.png" % (screenshotdir, name)
-    if s[0] == "": print(s[1])
-    img = base64.b64decode(s[1])
-    write_file(f, img)
-
-    execute_ok("pngcrush -q -rem time \"%s\" tmp.png" % (f))
-    os.rename("tmp.png", f)
-
-  shutil.rmtree(tmp)
+      crushed = f + ".crushed"
+      execute_ok(["pngcrush", "-q", "-rem", "time", f, crushed])
+      os.replace(crushed, f)
+  finally:
+    shutil.rmtree(tmp, ignore_errors=True)
 
 def write_file(f, contents):
   f = open(f,'wb')
@@ -61,42 +77,25 @@ def read_file(f):
 def execute_ok(cmd):
   (retval, out) = execute(cmd)
   if retval != 0:
-    print("cmd: %s" % (cmd))
+    print("cmd: %s" % (" ".join(cmd)))
     print("out: %s" % (out))
     error("Failed command")
   return out
 
 def execute(cmd, timeout = None):
-  """
-  Execute a command and return it's output.
-  """
-  return Command(cmd).run(timeout)
-
-
-# taken from http://stackoverflow.com/questions/1191374/subprocess-with-timeout
-class Command(object):
-  def __init__(self, cmd):
-    self.cmd = cmd
-    self.process = None
-    self.output = ""
-    self.error = ""
-
-  def run(self, timeout):
-    def target():
-      self.process = subprocess.Popen(self.cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-      self.output = self.process.stdout.read()
-      self.error = self.process.stderr.read()
-      self.child = self.process.communicate()[0]
-
-    thread = threading.Thread(target=target)
-    thread.start()
-
-    thread.join(timeout)
-    if thread.is_alive():
-      self.process.terminate()
-      thread.join()
-    retval = self.process.returncode
-    return (retval, self.output + "\n" + self.error)
+  try:
+    completed = subprocess.run(
+      cmd,
+      stdout=subprocess.PIPE,
+      stderr=subprocess.PIPE,
+      text=True,
+      timeout=timeout,
+      check=False,
+    )
+    return (completed.returncode, completed.stdout + completed.stderr)
+  except subprocess.TimeoutExpired as exc:
+    output = (exc.stdout or "") + (exc.stderr or "")
+    return (124, output + "\nCommand timed out")
 
 
 if __name__ == '__main__':

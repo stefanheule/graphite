@@ -13,31 +13,40 @@ GRAPHITE_PHONE_IP="10.0.0.5"
 # platform
 P=$(DEFAULT_PLATFORM)
 
-VERSION=$(shell cat package.json | grep version | grep -o "[0-9][0-9]*\.[0-9][0-9]*")
+VERSION=$(shell python3 -c 'import json; print(json.load(open("package.json"))["version"].rsplit(".", 1)[0])' 2>/dev/null)
 
 all: build install_emulator
 
 release:
-	@status=$$(git status --porcelain -uno); \
+	@status=$$(git status --porcelain --untracked-files=all); \
 	if test "x$${status}" = x; then \
-		echo "Building version $(VERSION) in release mode."; \
+		echo "Building a release from the clean working tree."; \
 	else \
 		echo Working directory is dirty!  Commit all changes first; \
 		exit 1; \
 	fi
-	make build_release
-	@rm -rf releases/$(VERSION)
-	@mkdir -p releases/$(VERSION)
-	@cp build/graphite.pbw releases/$(VERSION)/graphite-$(VERSION).pbw
-	@echo "git-version: $(shell git rev-parse HEAD)" >> releases/$(VERSION)/graphite-$(VERSION).meta.txt
-	@echo "date: $(shell date +%Y-%m-%d) $(shell date +%H:%M:%S)" >> releases/$(VERSION)/graphite-$(VERSION).meta.txt
-	@echo "Done, releases/$(VERSION)/graphite-$(VERSION).pbw is ready for upload."
+	@$(MAKE) build_release
+	@set -e; \
+	version=$$(python3 -c 'import json; print(json.load(open("package.json"))["version"].rsplit(".", 1)[0]'); \
+	test -n "$${version}"; \
+	rm -rf "releases/$${version}"; \
+	mkdir -p "releases/$${version}"; \
+	cp build/graphite.pbw "releases/$${version}/graphite-$${version}.pbw"; \
+	echo "git-version: $$(git rev-parse HEAD)" >> "releases/$${version}/graphite-$${version}.meta.txt"; \
+	echo "date: $$(date +%Y-%m-%d) $$(date +%H:%M:%S)" >> "releases/$${version}/graphite-$${version}.meta.txt"; \
+	echo "Done, releases/$${version}/graphite-$${version}.pbw is ready for upload."
 
 build_release:
-	@./configure --release > /dev/null
-	@$(MAKE) clean > /dev/null
-	@$(MAKE) build_quiet > /dev/null
-	@./configure > /dev/null
+	@set -e; \
+	restore_debug() { \
+		./configure > /dev/null; \
+		scripts/initialize.py > /dev/null; \
+	}; \
+	trap restore_debug EXIT HUP INT TERM; \
+	./configure --release > /dev/null; \
+	scripts/initialize.py > /dev/null; \
+	$(MAKE) clean > /dev/null; \
+	$(MAKE) build_quiet > /dev/null
 
 build: initialize
 	# copy fonts
@@ -95,7 +104,7 @@ screenshots:
 	SUPPORTED_PLATFORMS=$(SUPPORTED_PLATFORMS) scripts/assemble_screenshots.sh
 
 single_screenshot: write_header build_quiet
-	scripts/take_screenshot.sh $(GRAPHITE_FILE)
+	SUPPORTED_PLATFORMS=$(SUPPORTED_PLATFORMS) scripts/screenshot_from_emulator.sh "$(GRAPHITE_FILE)"
 
 write_header:
 	@echo "#define $(GRAPHITE_CONFIG)" > src/config.h

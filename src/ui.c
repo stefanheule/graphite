@@ -17,6 +17,15 @@
 #include "graphite.h"
 
 
+// -- jsalternative
+// -- function safe_widget_id(widget_id) {
+// --     return widget_id >= 0 && widget_id < widgets.length ? widget_id : 0;
+// -- }
+static uint8_t safe_widget_id(uint8_t widget_id) {
+    return widget_id < GRAPHITE_WIDGET_COUNT ? widget_id : 0;
+}
+// -- end jsalternative
+
 /**
  * Is something obstructing our layer?
  */
@@ -359,6 +368,12 @@ void background_update_proc(Layer *layer, GContext *ctx) {
         w5 = config_widget_11;
         w6 = config_widget_12;
     }
+    w1 = safe_widget_id(w1);
+    w2 = safe_widget_id(w2);
+    w3 = safe_widget_id(w3);
+    w4 = safe_widget_id(w4);
+    w5 = safe_widget_id(w5);
+    w6 = safe_widget_id(w6);
 
     // top widgets
     fixed_t widgets_margin_topbottom = REM(6); // gap between watch bounds and widgets
