@@ -91,6 +91,11 @@ deploy: install-phone
 install-phone: build
 	pebble install --phone $(GRAPHITE_PHONE_IP)
 
+# Ship to the watch through Orbit: release build, signed manifest, upload to
+# downloads.terra0.com, push to the phone. See scripts/release.sh.
+publish:
+	@scripts/release.sh
+
 google-drive-copy: build
 	@mkdir -p "$(GOOGLE_DRIVE_PEBBLE_DIR)"
 	cp -f build/graphite.pbw "$(GOOGLE_DRIVE_PBW)"
@@ -188,4 +193,4 @@ coverity_scan:
       https://scan.coverity.com/builds?project=stefanheule%2Fgraphite
 	rm -f graphite-coverity.tgz
 
-.PHONY: all deploy build build_quiet config log resources install_emulator install-phone google-drive-copy menu_icon screenshots screenshot screenshot_config write_header clean clean_header encrypt_apikey deploy_config_online clear_remote_config_cache
+.PHONY: all deploy build build_quiet config log resources install_emulator install-phone publish google-drive-copy menu_icon screenshots screenshot screenshot_config write_header clean clean_header encrypt_apikey deploy_config_online clear_remote_config_cache
