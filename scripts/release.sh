@@ -17,8 +17,10 @@ set -euo pipefail
 # archives a build under releases/ for the public download on the website;
 # neither of those reaches the watch on its own.
 #
-#   --local    build and sign only, no upload and no push
-#   --no-push  upload, but do not tell the phone to install now
+#   --notes "<text>"  required: one line on what is new, shown as the body of
+#                     the "sent to the watch" notification on the phone
+#   --local           build and sign only, no upload and no push
+#   --no-push         upload, but do not tell the phone to install now
 
 readonly here="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 readonly core_dir="${CORE_DIR:-${HOME}/dev/core}"
@@ -28,15 +30,30 @@ readonly publish="${core_dir}/orbit/scripts/publish-pebble-app.sh"
 # bundle whose appinfo.json says otherwise, and so does Orbit.
 readonly uuid="7e5267ac-798f-4953-a645-1b87a5c29d96"
 
-for arg in "$@"; do
-  case "${arg}" in
-    --local | --no-push) ;;
+notes=""
+passthrough=()
+while [[ $# -gt 0 ]]; do
+  case "$1" in
+    --local | --no-push) passthrough+=("$1") ;;
+    --notes)
+      notes="${2:-}"
+      shift
+      ;;
     *)
-      echo "Unknown option: ${arg}" >&2
+      echo "Unknown option: $1" >&2
       exit 1
       ;;
   esac
+  shift
 done
+
+# publish-pebble-app.sh validates the text; this only saves running a whole
+# build before finding out it was forgotten.
+if [[ -z "${notes}" ]]; then
+  echo "Missing --notes: one line on what is new, for the notification on the phone." >&2
+  echo "  make publish NOTES=\"...\"   or   scripts/release.sh --notes \"...\"" >&2
+  exit 1
+fi
 
 if [[ ! -x "${publish}" ]]; then
   echo "No core checkout at ${core_dir} (looked for ${publish})." >&2
@@ -82,4 +99,5 @@ if [[ ! -f build/graphite.pbw ]]; then
   exit 1
 fi
 
-exec "${publish}" build/graphite.pbw --uuid "${uuid}" --dir graphite "$@"
+exec "${publish}" build/graphite.pbw --uuid "${uuid}" --dir graphite \
+  --notes "${notes}" ${passthrough[@]+"${passthrough[@]}"}

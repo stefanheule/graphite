@@ -93,8 +93,10 @@ install-phone: build
 
 # Ship to the watch through Orbit: release build, signed manifest, upload to
 # downloads.terra0.com, push to the phone. See scripts/release.sh.
+# NOTES is the one line the phone shows as what is new, and is required:
+#   make publish NOTES="Weather row shows the hourly chance of rain"
 publish:
-	@scripts/release.sh
+	@scripts/release.sh --notes "$(NOTES)"
 
 google-drive-copy: build
 	@mkdir -p "$(GOOGLE_DRIVE_PEBBLE_DIR)"

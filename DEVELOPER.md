@@ -33,11 +33,13 @@ To release a new version, do the following:
 - Upload and publish new version.
 - Update website if necessary.
 
-To put a build on Stefan's own watch, run `make publish` (`scripts/release.sh`).
-It builds a clean release and hands the `.pbw` to Orbit's publisher in the core
-checkout, which signs and uploads it and pushes it to the phone; Orbit passes it
-to the Pebble app, which sideloads it onto the watch with no interaction. The
-developer connection (`make install-phone`) is only for iterating.
+To put a build on Stefan's own watch, run `make publish NOTES="what's new"`
+(`scripts/release.sh --notes "..."`). It builds a clean release and hands the
+`.pbw` to Orbit's publisher in the core checkout, which signs and uploads it and
+pushes it to the phone; Orbit passes it to the Pebble app, which sideloads it
+onto the watch with no interaction. The notes are the one line shown in the
+notification on the phone. The developer connection (`make install-phone`) is
+only for iterating.
 
 
 ## Crashes

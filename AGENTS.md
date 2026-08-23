@@ -7,15 +7,22 @@ Jinja template system; this file is about getting a build onto the watch.
 
 ## Putting a build on the watch
 
-**Run `make publish`** (`scripts/release.sh`). It builds a clean release
-`.pbw` and hands it to `orbit/scripts/publish-pebble-app.sh` in the `core`
-checkout (`~/dev/core`, or `CORE_DIR`), which signs a manifest with Orbit's
-update key, uploads both to `downloads.terra0.com/graphite/`, and sends a
-`pebble_app_update` command through the notify hub. Orbit on the phone
-downloads and verifies the bundle and gives it to the Core Devices Pebble app,
-which sideloads it onto the watch without asking. Nothing is typed or tapped;
-the watchface is running about a minute later. `--local` builds and signs
-without uploading, `--no-push` uploads without telling the phone.
+**Run `make publish NOTES="<what's new>"`** (`scripts/release.sh --notes
+"..."`). It builds a clean release `.pbw` and hands it to
+`orbit/scripts/publish-pebble-app.sh` in the `core` checkout (`~/dev/core`, or
+`CORE_DIR`), which signs a manifest with Orbit's update key, uploads both to
+`downloads.terra0.com/graphite/`, and sends a `pebble_app_update` command
+through the notify hub. Orbit on the phone downloads and verifies the bundle
+and gives it to the Core Devices Pebble app, which sideloads it onto the watch
+without asking. Nothing is typed or tapped; the watchface is running about a
+minute later. `--local` builds and signs without uploading, `--no-push` uploads
+without telling the phone.
+
+`NOTES` is required, and it is what Stefan sees: the body of the "Graphite 1.7
+sent to the watch" notification on his phone. Write it for that space — one or
+two short phrases on what changed, at most 140 characters, one line, a
+headline rather than a changelog (`"Weather row shows the hourly chance of
+rain"`). The publisher refuses an empty or multi-line one.
 
 The version is read from the bundle's `appinfo.json`, which comes from
 `version` in `scripts/initialize.py` through `package.template.json`. Orbit
