@@ -10,14 +10,18 @@ Usage:
   scripts/encrypt_apikey.py             # interactive (prompts for both)
   scripts/encrypt_apikey.py --decrypt   # reverse a ciphertext to verify
 
-The plaintext API key must be a hex string (typical OpenWeatherMap and
-Weatherbit keys are 32 hex chars). The script prints the encrypted hex
-string to paste into config/index.html as the first argument to xor(...).
+Two modes, chosen automatically when encrypting:
 
-The encryption mirrors the JavaScript `xor` helper at config/index.html
-line ~4254: nibble-wise XOR between two equal-length hex strings, where
-the second operand is md5(password.lower() + '123456789'). Because XOR is
-symmetric, the same operation decrypts the ciphertext.
+- Hex keys (OpenWeatherMap and Weatherbit keys are 32 hex chars): nibble-wise
+  XOR between two equal-length hex strings, mirroring the JavaScript `xor`
+  helper in config/index.html. The key is md5(password.lower() + '123456789').
+- Anything else (Google API keys are base62, e.g. "AIza..."): each byte of
+  the plaintext is XORed with the md5 key's bytes, cycled, and the result is
+  printed as hex (two chars per byte), mirroring the JavaScript `xorStr`
+  helper. Pass --string with --decrypt to reverse this mode, since a
+  ciphertext alone does not say which mode produced it.
+
+Because XOR is symmetric, the same operation decrypts the ciphertext.
 """
 
 import argparse
@@ -32,8 +36,12 @@ import sys
 EXPECTED_PASSWORD_HASH = 'ab86a1e1ef70dff97959067b723c5c24'
 
 
+def is_hex(s: str) -> bool:
+    return all(c in '0123456789abcdef' for c in s)
+
+
 def xor_hex(a: str, b: str) -> str:
-    if any(c not in '0123456789abcdef' for c in a):
+    if not is_hex(a):
         sys.exit('error: input contains non-hex characters; expected lowercase hex')
     if len(a) > len(b):
         sys.exit(
@@ -41,6 +49,20 @@ def xor_hex(a: str, b: str) -> str:
             'the key is an md5 (32 hex chars), so the input must also be at most 32 hex chars'
         )
     return ''.join(format(int(a[i], 16) ^ int(b[i], 16), 'x') for i in range(len(a)))
+
+
+def xor_bytes_encrypt(plaintext: str, key_hex: str) -> str:
+    key = bytes.fromhex(key_hex)
+    data = plaintext.encode()
+    return bytes(b ^ key[i % len(key)] for i, b in enumerate(data)).hex()
+
+
+def xor_bytes_decrypt(cipher_hex: str, key_hex: str) -> str:
+    if not is_hex(cipher_hex) or len(cipher_hex) % 2 != 0:
+        sys.exit('error: ciphertext must be an even-length lowercase hex string')
+    key = bytes.fromhex(key_hex)
+    data = bytes.fromhex(cipher_hex)
+    return bytes(b ^ key[i % len(key)] for i, b in enumerate(data)).decode()
 
 
 def derive_key(password: str) -> str:
@@ -65,24 +87,38 @@ def main():
         action='store_true',
         help='Reverse a ciphertext back to the plaintext API key (xor is symmetric).',
     )
+    parser.add_argument(
+        '--string',
+        action='store_true',
+        help='With --decrypt: the ciphertext was made in byte mode (a non-hex '
+             'key such as a Google API key). Ignored when encrypting, where '
+             'the mode is chosen from the plaintext.',
+    )
     args = parser.parse_args()
 
-    label = 'ciphertext' if args.decrypt else 'plaintext API key'
-    value = input(f'{label} (hex): ').strip().lower()
+    if args.decrypt:
+        value = input('ciphertext (hex): ').strip().lower()
+    else:
+        value = input('plaintext API key: ').strip()
     password = getpass.getpass('magic password: ').strip()
 
     key = derive_key(password)
-    result = xor_hex(value, key)
+    if args.decrypt:
+        result = xor_bytes_decrypt(value, key) if args.string else xor_hex(value, key)
+    elif is_hex(value.lower()) and len(value) <= 32:
+        result = xor_hex(value.lower(), key)
+    else:
+        result = xor_bytes_encrypt(value, key)
 
     out_label = 'plaintext' if args.decrypt else 'ciphertext'
     print(f'\n{out_label}: {result}')
 
     if not args.decrypt:
         print(
-            '\npaste this into config/index.html, replacing\n'
-            '  REPLACE_WITH_ENCRYPTED_OWM_KEY         (for source == 2, OpenWeatherMap)\n'
-            '  REPLACE_WITH_ENCRYPTED_WEATHERBIT_KEY  (for source == 3, Weatherbit)\n'
-            'in the matching xor("...", key) call.'
+            '\npaste this into config/index.html as the first argument of the\n'
+            'matching call:\n'
+            '  xor("...", key)     source == 2 (OpenWeatherMap), 3 (Weatherbit)\n'
+            '  xorStr("...", key)  source == 4 (Google Weather)'
         )
 
 

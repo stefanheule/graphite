@@ -8,6 +8,12 @@ See [stefanheule.com/graphite/](https://stefanheule.com/graphite/).
 
 ## Changelog
 
+**Version 1.7** (2026-08-29)
+
+- Rain bars now show how hard it is expected to rain, not just the chance.  Bar height is the probability of precipitation scaled by the forecast amount: a full bar is near-certain solid rain (>= 4 mm/h), a sure drizzle shows a quarter-height bar, and providers that send no hourly amounts fall back to probability alone.  Previously "100% chance of drizzle" filled the bar exactly like a downpour, making a showery day look like heavy rain all day.
+- Add Google Weather (Maps Platform Weather API) as a weather source.  Requires a Google Cloud API key with the Weather API enabled (10,000 free calls per month; Graphite uses roughly 6,000 at the default 30-minute refresh).  Supports everything: current conditions, low/high, sunrise/sunset, and the hourly rain bars (probability and amount).
+
+
 **Version 1.6** (2026-05-03)
 
 - Replace dead weather providers.  Dark Sky was retired in March 2023 and Weather Underground's free public API has been gone since 2018, so requests to both have been failing with 503 errors.  The provider list is now Open-Meteo (default, no API key required), OpenWeatherMap (One Call API 3.0, requires user key), and Weatherbit (requires user key).
@@ -86,7 +92,8 @@ The watchface itself uses relatively arbitrary version numbers of MAJOR.MINOR.  
 |     1.0 until 1.1 |                     1 |
 |               1.2 |                     2 |
 |     1.3 until 1.5 |                     3 |
-|     1.6 until now |                     4 |
+|               1.6 |                     4 |
+|     1.7 until now |                     5 |
 
 ## Contributing
 

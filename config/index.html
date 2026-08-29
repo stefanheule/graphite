@@ -106,7 +106,8 @@
     <div id="weather-warning">
       <p>Warning: Weatherbit's free tier does not provide hourly rain forecasts,
       so the rain bars will not show when this provider is selected. Use
-      Open-Meteo or OpenWeatherMap if you need the 24h rain preview.</p>
+      Open-Meteo, Google Weather, or OpenWeatherMap if you need the 24h rain
+      preview.</p>
     </div>
 
     <div id="widgets-preview">
@@ -3497,8 +3498,11 @@
           <input id='CONFIG_WEATHER_RAIN_LOCAL' type='checkbox' class='item-toggle'>
         </label>
         <div class="item-container-footer">
-          Requires Open-Meteo or OpenWeatherMap as the weather source below.
-          Weatherbit's free tier does not include hourly data.
+          Requires Open-Meteo, Google Weather, or OpenWeatherMap as the weather
+          source below. Weatherbit's free tier does not include hourly data.
+          Bar height combines the chance of rain with how hard it is expected
+          to rain: a full bar is near-certain solid rain, a short bar is a
+          sprinkle or a small chance.
         </div>
       </div>
 
@@ -3686,14 +3690,16 @@
           Source
           <select id='CONFIG_WEATHER_SOURCE_LOCAL' dir='rtl' class="item-select">
             <option class="item-select-option" value="1">Open-Meteo (recommended, no API key)</option>
+            <option class="item-select-option" value="4">Google Weather (API key required)</option>
             <option class="item-select-option" value="2">OpenWeatherMap (API key required)</option>
             <option class="item-select-option" value="3">Weatherbit (API key required)</option>
           </select>
         </label>
         <div class="item-container-footer">
-          Open-Meteo is free and needs no API key. OpenWeatherMap and Weatherbit
-          require one (see below). For the 24h rain bars, use Open-Meteo or
-          OpenWeatherMap&mdash;Weatherbit's free tier has no hourly forecast.
+          Open-Meteo is free and needs no API key. Google Weather,
+          OpenWeatherMap and Weatherbit require one (see below). For the 24h
+          rain bars, use any source except Weatherbit&mdash;its free tier has
+          no hourly forecast.
         </div>
       </div>
 
@@ -3705,11 +3711,16 @@
           </div>
         </label>
         <div class="item-container-footer">
-          Only required for OpenWeatherMap and Weatherbit. Register for free at
+          Not needed for Open-Meteo. Register for free at
           <a href="https://openweathermap.org/api">openweathermap.org</a> or
           <a href="https://www.weatherbit.io/account/create">weatherbit.io</a>.
           For OpenWeatherMap, enable the One Call API 3.0 subscription in your
-          account after signing up (1000 free calls/day).
+          account after signing up (1000 free calls/day). For Google Weather,
+          create an API key in the
+          <a href="https://console.cloud.google.com/apis/credentials">Google
+          Cloud console</a> with the
+          <a href="https://console.cloud.google.com/apis/library/weather.googleapis.com">Weather
+          API</a> enabled (10,000 free calls/month; Graphite uses about 6,000).
         </div>
       </div>
 
@@ -4293,18 +4304,34 @@
       return c;
     };
 
+    // Like xor, but for keys that are not hex strings (Google API keys are
+    // base62): the ciphertext is hex with two chars per byte, and each byte
+    // is XORed with the md5 key's bytes, cycled. scripts/encrypt_apikey.py
+    // generates the ciphertext (it picks this mode for non-hex plaintext).
+    var xorStr = function(cipherHex, keyHex) {
+      if (!/^[0-9a-f]+$/.test(cipherHex)) return ''; // placeholder not yet replaced
+      var c = '';
+      for (var i = 0; i * 2 < cipherHex.length; i++) {
+        var cByte = parseInt(cipherHex.substr(i * 2, 2), 16);
+        var kByte = parseInt(keyHex.substr((i * 2) % keyHex.length, 2), 16);
+        c += String.fromCharCode(cByte ^ kByte);
+      }
+      return c;
+    };
+
     if (hh(config["CONFIG_WEATHER_APIKEY_LOCAL"].toLowerCase()) === 'ab86a1e1ef70dff97959067b723c5c24') {
       var key = hh(config["CONFIG_WEATHER_APIKEY_LOCAL"].toLowerCase() + 123456789);
       var source = config["CONFIG_WEATHER_SOURCE_LOCAL"];
-      // to generate the encrypted key, do this:
-//      var real = 'apikey';
-//      console.log('secret = ' + xor(real, key));
+      // to generate the encrypted keys, run scripts/encrypt_apikey.py
       if (source == 2) {
         // OpenWeatherMap key (replace placeholder with the encrypted ciphertext).
         config["CONFIG_WEATHER_APIKEY_LOCAL"] = xor("d310eeae323b05cf2a333efdf4721f9c", key);
       } else if (source == 3) {
         // Weatherbit key (replace placeholder with the encrypted ciphertext).
         config["CONFIG_WEATHER_APIKEY_LOCAL"] = xor("72d984c53aa4df1bb6763312839bad22", key);
+      } else if (source == 4) {
+        // Google Weather key (replace placeholder with the encrypted ciphertext).
+        config["CONFIG_WEATHER_APIKEY_LOCAL"] = xorStr("REPLACE_WITH_ENCRYPTED_GOOGLE_KEY", key);
       }
     }
 

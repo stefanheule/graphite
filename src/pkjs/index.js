@@ -200,7 +200,7 @@ function sanitizeUrlConfig(urlconfig) {
 Pebble.addEventListener('showConfiguration', function () {
 // -- autogen
 // --     var url = 'https://stefanheule.com/graphite/config/{{ config_version }}/index.html';
-    var url = 'https://stefanheule.com/graphite/config/4/index.html';
+    var url = 'https://stefanheule.com/graphite/config/5/index.html';
 // -- end autogen
 //     url = 'https://rawgit.com/stefanheule/graphite/master/config/';
 
@@ -212,7 +212,7 @@ Pebble.addEventListener('showConfiguration', function () {
     url += '&watch=' + encodeURIComponent(getDetails());
 // -- autogen
 // --     url += '&version={{ version }}';
-    url += '&version=1.6';
+    url += '&version=1.7';
 // -- end autogen
 
 // -- build=debug
@@ -684,6 +684,60 @@ function parseIconWeatherbit(code, pod) {
     return WEATHERBIT_ICONS[code];
 }
 
+// Google Weather API condition types, day variants. Rain/snow/thunder
+// conditions have no day/night distinction in our icon font, so only the
+// clear/partly-cloudy types appear in the night table below. See
+// https://developers.google.com/maps/documentation/weather/reference/rest/v1/WeatherCondition
+var GOOGLE_ICONS_DAY = {
+    CLEAR: "a", MOSTLY_CLEAR: "a",
+    PARTLY_CLOUDY: "b",
+    MOSTLY_CLOUDY: "d", CLOUDY: "d",
+    WINDY: "d",
+    WIND_AND_RAIN: "f",
+    LIGHT_RAIN_SHOWERS: "f", CHANCE_OF_SHOWERS: "f", SCATTERED_SHOWERS: "f",
+    RAIN_SHOWERS: "f", HEAVY_RAIN_SHOWERS: "f",
+    LIGHT_TO_MODERATE_RAIN: "f", MODERATE_TO_HEAVY_RAIN: "f",
+    RAIN: "f", LIGHT_RAIN: "f", HEAVY_RAIN: "f", RAIN_PERIODICALLY_HEAVY: "f",
+    LIGHT_SNOW_SHOWERS: "h", CHANCE_OF_SNOW_SHOWERS: "h",
+    SCATTERED_SNOW_SHOWERS: "h", SNOW_SHOWERS: "h", HEAVY_SNOW_SHOWERS: "h",
+    LIGHT_TO_MODERATE_SNOW: "h", MODERATE_TO_HEAVY_SNOW: "h",
+    SNOW: "h", LIGHT_SNOW: "h", HEAVY_SNOW: "h",
+    SNOWSTORM: "h", SNOW_PERIODICALLY_HEAVY: "h", HEAVY_SNOW_STORM: "h",
+    BLOWING_SNOW: "h", RAIN_AND_SNOW: "h",
+    HAIL: "h", HAIL_SHOWERS: "h",
+    THUNDERSTORM: "g", THUNDERSHOWER: "g", LIGHT_THUNDERSTORM_RAIN: "g",
+    SCATTERED_THUNDERSTORMS: "g", HEAVY_THUNDERSTORM: "g"
+};
+var GOOGLE_ICONS_NIGHT = {
+    CLEAR: "A", MOSTLY_CLEAR: "A",
+    PARTLY_CLOUDY: "B"
+};
+
+function parseIconGoogle(type, isDay) {
+    if (!isDay && GOOGLE_ICONS_NIGHT.hasOwnProperty(type)) return GOOGLE_ICONS_NIGHT[type];
+    return GOOGLE_ICONS_DAY[type];
+}
+
+/** Height (0..100) of one hourly rain bar.
+ *
+ * `pop` is the probability of precipitation in percent, `mm` the expected
+ * amount in mm/h (or null when the provider has no amount). Bars used to be
+ * pop alone, which drew "100% chance of drizzle" exactly like a downpour and
+ * made a showery day look like rain all day. Height is now pop scaled by
+ * intensity: a full bar needs a near-certain forecast of solid rain
+ * (>= 4 mm/h), a sure drizzle shows a quarter-height bar, and in between the
+ * scale is sqrt so light-but-real rain stays clearly visible. When the
+ * provider sends probability but no amount, pop alone is the honest answer.
+ */
+function rainBarHeight(pop, mm) {
+    if (!pop || pop <= 0) return 0;
+    if (mm === null || mm === undefined) return Math.round(pop);
+    var w = mm > 0 ? Math.sqrt(mm / 4) : 0;
+    if (w < 0.25) w = 0.25;
+    if (w > 1) w = 1;
+    return Math.round(pop * w);
+}
+
 /** Returns true iff a and b represent the same day (ignoring time). */
 function sameDate(a, b) {
     return a.getDate() == b.getDate() && a.getFullYear() == b.getFullYear() && a.getMonth() == b.getMonth();
@@ -926,7 +980,7 @@ function fetchWeather(latitude, longitude, generation) {
         // the location name (best-effort; never blocks the weather send).
         var query = "latitude=" + latitude + "&longitude=" + longitude
             + "&current=temperature_2m,weather_code,is_day"
-            + "&hourly=precipitation_probability"
+            + "&hourly=precipitation_probability,precipitation"
             + "&daily=temperature_2m_max,temperature_2m_min,sunrise,sunset"
             + "&timezone=auto"
             + "&forecast_hours=30"
@@ -961,9 +1015,11 @@ function fetchWeather(latitude, longitude, generation) {
             if (load_rain) {
                 var times = response.hourly.time;
                 var probs = response.hourly.precipitation_probability;
+                var amounts = response.hourly.precipitation;
                 if (times.length > 0) raints = times[0];
                 for (var i = 0; i < probs.length; i++) {
-                    raindata.push(probs[i] == null ? 0 : Math.round(probs[i]));
+                    var amount = (amounts && amounts[i] != null) ? amounts[i] : null;
+                    raindata.push(probs[i] == null ? 0 : rainBarHeight(probs[i], amount));
                 }
             }
             omWeatherArgs = [low, high, cur, icon, raindata, raints, sunrise, sunset];
@@ -1040,7 +1096,9 @@ function fetchWeather(latitude, longitude, generation) {
                 for (var j in response.hourly) {
                     var elem = response.hourly[j];
                     if (raints == 0) raints = elem.dt;
-                    raindata.push(Math.round(elem.pop * 100));
+                    // a dry hour has no `rain` object at all, which is 0 mm
+                    var mm = elem.rain ? (elem.rain["1h"] || 0) : 0;
+                    raindata.push(rainBarHeight(elem.pop * 100, mm));
                 }
             }
             weatherArgs = [low, high, cur, icon, raindata, raints, sunrise, sunset];
@@ -1058,6 +1116,103 @@ function fetchWeather(latitude, longitude, generation) {
             }
             locationDone = true;
             tryFinish();
+        });
+    } else if (source == 4) {
+        // Google Weather API (Maps Platform). Requires a Google Cloud API
+        // key with the Weather API enabled. Three endpoints: current
+        // conditions (temperature + icon), daily forecast (low/high and
+        // sunrise/sunset; note a Google forecast day runs 7am to 7am local),
+        // and hourly forecast (rain bars: probability plus qpf amount in mm,
+        // metric by default). The hourly endpoint pages at 24 records, so 30
+        // hours takes a second request through nextPageToken. Google returns
+        // no place name, so BigDataCloud supplies it, like for Open-Meteo.
+        var gBase = "https://weather.googleapis.com/v1/";
+        var gCommon = "key=" + apikey
+            + "&location.latitude=" + latitude
+            + "&location.longitude=" + longitude;
+        var gUrlCur = !load_cur ? undefined : gBase + "currentConditions:lookup?" + gCommon;
+        var gUrlDaily = (!load_lowhigh && !load_sun) ? undefined : gBase + "forecast/days:lookup?" + gCommon + "&days=1&pageSize=1";
+        var gUrlHours = !load_rain ? undefined : gBase + "forecast/hours:lookup?" + gCommon + "&hours=30&pageSize=24";
+
+        var gWeatherDone = false;
+        var gLocationDone = false;
+        var gWeatherArgs = null;
+        var gLocation = '';
+        var gTryFinish = function () {
+            if (gWeatherDone && gLocationDone) {
+                success(gWeatherArgs[0], gWeatherArgs[1], gWeatherArgs[2], gWeatherArgs[3],
+                        gWeatherArgs[4], gWeatherArgs[5], gWeatherArgs[6], gWeatherArgs[7],
+                        gLocation);
+            }
+        };
+
+        // Zero-valued fields can be omitted from the proto-JSON, so a qpf
+        // without a quantity is 0 mm; a missing qpf object means "no data".
+        var gParseHours = function (response) {
+            var hours = response.forecastHours || [];
+            for (var i = 0; i < hours.length; i++) {
+                var hour = hours[i];
+                if (raints == 0 && hour.interval && hour.interval.startTime) {
+                    raints = Math.round(Date.parse(hour.interval.startTime) / 1000);
+                }
+                var pop = 0;
+                var mm = null;
+                var precip = hour.precipitation;
+                if (precip) {
+                    if (precip.probability && precip.probability.percent) pop = precip.probability.percent;
+                    if (precip.qpf) mm = precip.qpf.quantity || 0;
+                }
+                raindata.push(rainBarHeight(pop, mm));
+            }
+        };
+
+        concurrentRequests([gUrlCur, gUrlDaily, gUrlHours], function (responses) {
+            if (load_cur) {
+                cur = responses[0].temperature.degrees;
+                icon = parseIconGoogle(responses[0].weatherCondition.type, responses[0].isDaytime);
+            }
+            if (load_lowhigh || load_sun) {
+                var today = responses[1].forecastDays[0];
+                if (load_lowhigh) {
+                    low = today.minTemperature.degrees;
+                    high = today.maxTemperature.degrees;
+                }
+                if (load_sun && today.sunEvents) {
+                    if (today.sunEvents.sunriseTime) sunrise = Math.round(Date.parse(today.sunEvents.sunriseTime) / 1000);
+                    if (today.sunEvents.sunsetTime) sunset = Math.round(Date.parse(today.sunEvents.sunsetTime) / 1000);
+                }
+            }
+            var gFinishWeather = function () {
+                gWeatherArgs = [low, high, cur, icon, raindata, raints, sunrise, sunset];
+                gWeatherDone = true;
+                gTryFinish();
+            };
+            if (load_rain) {
+                gParseHours(responses[2]);
+                if (responses[2].nextPageToken) {
+                    // hours 25..30 live on the second page
+                    runRequest(gUrlHours + "&pageToken=" + encodeURIComponent(responses[2].nextPageToken), function (response2) {
+                        gParseHours(response2);
+                        gFinishWeather();
+                    });
+                    return;
+                }
+            }
+            gFinishWeather();
+        }, generation);
+
+        var gBdcUrl = "https://api.bigdatacloud.net/data/reverse-geocode-client?latitude="
+            + latitude + "&longitude=" + longitude + "&localityLanguage=en";
+        tryFetchJson(gBdcUrl, function (data) {
+            if (data) {
+                var gCity = data.city || data.locality || '';
+                if (gCity) {
+                    gLocation = gCity;
+                    if (data.countryCode) gLocation += ", " + data.countryCode;
+                }
+            }
+            gLocationDone = true;
+            gTryFinish();
         });
     } else {
         // source == 3
