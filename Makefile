@@ -31,7 +31,7 @@ release:
 	fi
 	@$(MAKE) build_release
 	@set -e; \
-	version=$$(python3 -c 'import json; print(json.load(open("package.json"))["version"].rsplit(".", 1)[0]'); \
+	version=$$(python3 -c 'import json; print(json.load(open("package.json"))["version"].rsplit(".", 1)[0])'); \
 	test -n "$${version}"; \
 	rm -rf "releases/$${version}"; \
 	mkdir -p "releases/$${version}"; \
