@@ -143,9 +143,6 @@ deploy_config_online:
 	@$(MAKE) clear_remote_config_cache
 	@echo "Done. Server cache cleared; users pick up HTML/JS on next settings open."
 
-encrypt_apikey:
-	@scripts/encrypt_apikey.py
-
 analyze_size_details:
 	arm-none-eabi-nm --print-size --size-sort --radix=d build/basalt/pebble-app.elf
 
@@ -195,4 +192,4 @@ coverity_scan:
       https://scan.coverity.com/builds?project=stefanheule%2Fgraphite
 	rm -f graphite-coverity.tgz
 
-.PHONY: all deploy build build_quiet config log resources install_emulator install-phone publish google-drive-copy menu_icon screenshots screenshot screenshot_config write_header clean clean_header encrypt_apikey deploy_config_online clear_remote_config_cache
+.PHONY: all deploy build build_quiet config log resources install_emulator install-phone publish google-drive-copy menu_icon screenshots screenshot screenshot_config write_header clean clean_header deploy_config_online clear_remote_config_cache

@@ -42,6 +42,23 @@ notification on the phone. The developer connection (`make install-phone`) is
 only for iterating.
 
 
+## Stefan's own API keys (magic password)
+
+The config page never embeds weather API keys, not even encrypted (this repo is
+public, and the old XOR-with-md5 scheme was crackable since the magic
+password's md5 is published in the page). Instead, when the API Key field's md5
+matches the magic hash and the selected source needs a key, `submit()` opens a
+popup to `https://secrets.terra0.com/graphite/weather-keys`. That page sits
+behind Google forward-auth (whitelisted to Stefan alone), reads the keys from
+the core repo's secret-manager, and `postMessage`s them back to the config
+page, which substitutes the right key and closes the save as usual. Other users
+just type a real API key into the field and none of this triggers.
+
+Rotating a key is `yarn --cwd secret-manager sm set-secret <KEY> --env prod` in
+the core repo (keys `GRAPHITE_GOOGLE_WEATHER_API_KEY`,
+`GRAPHITE_OPENWEATHERMAP_API_KEY`, `GRAPHITE_WEATHERBIT_API_KEY`); nothing in
+this repo needs to change or be redeployed.
+
 ## Crashes
 
 If after adding a new feature, Graphite crashes, it might be because Graphite ran out of memory.  The resources need at runtime (fonts and icons), and the buffer used by `pebble-fctx` use a lot of memory.

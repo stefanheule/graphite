@@ -4296,61 +4296,68 @@
     // store settings
     writeToStorage(config);
 
-    var xor = function(a, b) {
-      var c = '';
-      for(var i = 0; i < a.length; i++) {
-        c += (parseInt(a[i], 16) ^ parseInt(b[i], 16)).toString(16);
+    var finishSubmit = function() {
+      var urlconfig = {};
+      for (var k in keys) {
+        urlconfig[keys[k]] = config[k];
       }
-      return c;
+
+      // '%' is transported as '@' to survive double URL-decoding in some phone
+      // apps.  To keep that mapping lossless, any literal '@' in user values is
+      // first turned into its JSON unicode escape \u0040 (which older phone-side
+      // decoders also handle correctly, since JSON.parse restores it).
+      var json = JSON.stringify(urlconfig).replace(/@/g, "\\u0040").replace(/%/g, "@");
+      var url = return_to + encodeURIComponent(json);
+      console.log('[ info ] config: ');
+      console.log(config);
+      console.log('[ info ] return url: ' + url);
+
+      document.location = url;
     };
 
-    // Like xor, but for keys that are not hex strings (Google API keys are
-    // base62): the ciphertext is hex with two chars per byte, and each byte
-    // is XORed with the md5 key's bytes, cycled. scripts/encrypt_apikey.py
-    // generates the ciphertext (it picks this mode for non-hex plaintext).
-    var xorStr = function(cipherHex, keyHex) {
-      if (!/^[0-9a-f]+$/.test(cipherHex)) return ''; // placeholder not yet replaced
-      var c = '';
-      for (var i = 0; i * 2 < cipherHex.length; i++) {
-        var cByte = parseInt(cipherHex.substr(i * 2, 2), 16);
-        var kByte = parseInt(keyHex.substr((i * 2) % keyHex.length, 2), 16);
-        c += String.fromCharCode(cByte ^ kByte);
+    // If the API key field holds the magic password, the real key is fetched
+    // live from the owner's key server rather than being embedded in this
+    // (public) page. The popup URL sits behind a Google login only the key
+    // owner can pass; it postMessages the keys back and closes itself.
+    var magicKeyNames = { 2: 'openweathermap', 3: 'weatherbit', 4: 'google' };
+    var magicKeyName = magicKeyNames[config["CONFIG_WEATHER_SOURCE_LOCAL"]];
+    if (magicKeyName &&
+        hh(config["CONFIG_WEATHER_APIKEY_LOCAL"].toLowerCase()) === 'ab86a1e1ef70dff97959067b723c5c24') {
+      var KEY_SERVER = 'https://secrets.terra0.com';
+      var popup = window.open(KEY_SERVER + '/graphite/weather-keys',
+                              'graphite-weather-keys', 'width=440,height=380');
+      if (!popup) {
+        alert('Could not open the API key window (popup blocked?). Settings were not saved.');
+        return;
       }
-      return c;
-    };
-
-    if (hh(config["CONFIG_WEATHER_APIKEY_LOCAL"].toLowerCase()) === 'ab86a1e1ef70dff97959067b723c5c24') {
-      var key = hh(config["CONFIG_WEATHER_APIKEY_LOCAL"].toLowerCase() + 123456789);
-      var source = config["CONFIG_WEATHER_SOURCE_LOCAL"];
-      // to generate the encrypted keys, run scripts/encrypt_apikey.py
-      if (source == 2) {
-        // OpenWeatherMap key (replace placeholder with the encrypted ciphertext).
-        config["CONFIG_WEATHER_APIKEY_LOCAL"] = xor("d310eeae323b05cf2a333efdf4721f9c", key);
-      } else if (source == 3) {
-        // Weatherbit key (replace placeholder with the encrypted ciphertext).
-        config["CONFIG_WEATHER_APIKEY_LOCAL"] = xor("72d984c53aa4df1bb6763312839bad22", key);
-      } else if (source == 4) {
-        // Google Weather key (replace placeholder with the encrypted ciphertext).
-        config["CONFIG_WEATHER_APIKEY_LOCAL"] = xorStr("REPLACE_WITH_ENCRYPTED_GOOGLE_KEY", key);
-      }
+      var magicDone = false;
+      var onKeyMessage = function(event) {
+        if (event.origin !== KEY_SERVER) return;
+        if (!event.data || event.data.type !== 'graphite-weather-keys') return;
+        if (magicDone) return;
+        magicDone = true;
+        clearTimeout(magicTimeout);
+        window.removeEventListener('message', onKeyMessage);
+        var liveKey = event.data.keys ? event.data.keys[magicKeyName] : null;
+        if (!liveKey) {
+          alert('The key server has no key for this weather source. Settings were not saved.');
+          return;
+        }
+        config["CONFIG_WEATHER_APIKEY_LOCAL"] = liveKey;
+        finishSubmit();
+      };
+      var magicTimeout = setTimeout(function() {
+        if (magicDone) return;
+        magicDone = true;
+        window.removeEventListener('message', onKeyMessage);
+        try { popup.close(); } catch (e) {}
+        alert('Timed out fetching the API key. Settings were not saved.');
+      }, 45000);
+      window.addEventListener('message', onKeyMessage);
+      return;
     }
 
-    var urlconfig = {};
-    for (var k in keys) {
-      urlconfig[keys[k]] = config[k];
-    }
-
-    // '%' is transported as '@' to survive double URL-decoding in some phone
-    // apps.  To keep that mapping lossless, any literal '@' in user values is
-    // first turned into its JSON unicode escape \u0040 (which older phone-side
-    // decoders also handle correctly, since JSON.parse restores it).
-    var json = JSON.stringify(urlconfig).replace(/@/g, "\\u0040").replace(/%/g, "@");
-    var url = return_to + encodeURIComponent(json);
-    console.log('[ info ] config: ');
-    console.log(config);
-    console.log('[ info ] return url: ' + url);
-
-    document.location = url;
+    finishSubmit();
   }
 
   function generateUUID(){
