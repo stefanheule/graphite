@@ -4340,9 +4340,14 @@
         finishSubmit();
         return;
       }
-      localStorage.setItem('graphite_gwkeys_pending', '' + Date.now());
+      // The pending settings travel through the redirect (echoed back by the
+      // key server in the fragment) rather than through localStorage: the
+      // Pebble app's WebView drops localStorage writes across a cross-origin
+      // navigation, so anything stashed here would read back stale.
+      var state = { ts: Date.now(), config: config };
       document.location = 'https://secrets.terra0.com/graphite/weather-keys?redirect='
-        + encodeURIComponent(document.location.href.split('#')[0]);
+        + encodeURIComponent(document.location.href.split('#')[0])
+        + '&state=' + encodeURIComponent(JSON.stringify(state));
       return;
     }
 
@@ -4941,27 +4946,32 @@
     __uid = generateUUID();
 
     // Resume a save that was redirected through the key server: it sends the
-    // browser back to this page with the keys in the URL fragment (see the
-    // magic-password branch in submit()). Guarded by a freshness marker so a
-    // stale fragment in history cannot replay a save later.
+    // browser back to this page with the keys AND the pending settings in the
+    // URL fragment (see the magic-password branch in submit()). The settings
+    // ride in the fragment because the Pebble app's WebView loses localStorage
+    // writes across the round-trip. The embedded timestamp keeps a stale
+    // fragment in history from replaying a save much later.
     var gwkeysMatch = /[#&]gwkeys=([^&]+)/.exec(location.hash);
-    if (gwkeysMatch) {
+    var gwstateMatch = /[#&]gwstate=([^&]+)/.exec(location.hash);
+    if (gwkeysMatch && gwstateMatch) {
       if (window.history && history.replaceState) {
         history.replaceState(null, '', location.pathname + location.search);
       }
-      var gwkeysPending = +localStorage.getItem('graphite_gwkeys_pending') || 0;
-      localStorage.removeItem('graphite_gwkeys_pending');
-      if (Date.now() - gwkeysPending < 10 * 60 * 1000) {
-        try {
-          window.__graphiteFetchedKeys = JSON.parse(decodeURIComponent(gwkeysMatch[1]));
-        } catch (e) {
-          window.__graphiteFetchedKeys = null;
-        }
-        if (window.__graphiteFetchedKeys) {
-          console.log('[ info ] resuming save with keys from the key server');
-          submit(readValuesFromStorage(false));
-          return;
-        }
+      var gwkeys = null;
+      var gwstate = null;
+      try {
+        gwkeys = JSON.parse(decodeURIComponent(gwkeysMatch[1]));
+        gwstate = JSON.parse(decodeURIComponent(gwstateMatch[1]));
+      } catch (e) {
+        gwkeys = null;
+        gwstate = null;
+      }
+      if (gwkeys && gwstate && gwstate.config &&
+          Date.now() - (+gwstate.ts || 0) < 10 * 60 * 1000) {
+        console.log('[ info ] resuming save with keys from the key server');
+        window.__graphiteFetchedKeys = gwkeys;
+        submit(gwstate.config);
+        return;
       }
     }
 
