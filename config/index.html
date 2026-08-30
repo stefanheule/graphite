@@ -4317,43 +4317,32 @@
 
     // If the API key field holds the magic password, the real key is fetched
     // live from the owner's key server rather than being embedded in this
-    // (public) page. The popup URL sits behind a Google login only the key
-    // owner can pass; it postMessages the keys back and closes itself.
+    // (public) page. The settings are already in localStorage (writeToStorage
+    // above), so we navigate this page to the key server -- which sits behind
+    // a Google login only the key owner can pass -- and it redirects straight
+    // back here with the keys in the URL fragment; the fragment handler in
+    // $(document).ready() then re-enters submit() with the keys available and
+    // the save completes. A full-page round-trip rather than a popup because
+    // the Pebble app renders this page in a plain WebView, where window.open
+    // replaces the page and window.close does nothing.
     var magicKeyNames = { 2: 'openweathermap', 3: 'weatherbit', 4: 'google' };
     var magicKeyName = magicKeyNames[config["CONFIG_WEATHER_SOURCE_LOCAL"]];
     if (magicKeyName &&
         hh(config["CONFIG_WEATHER_APIKEY_LOCAL"].toLowerCase()) === 'ab86a1e1ef70dff97959067b723c5c24') {
-      var KEY_SERVER = 'https://secrets.terra0.com';
-      var popup = window.open(KEY_SERVER + '/graphite/weather-keys',
-                              'graphite-weather-keys', 'width=440,height=380');
-      if (!popup) {
-        alert('Could not open the API key window (popup blocked?). Settings were not saved.');
-        return;
-      }
-      var magicDone = false;
-      var onKeyMessage = function(event) {
-        if (event.origin !== KEY_SERVER) return;
-        if (!event.data || event.data.type !== 'graphite-weather-keys') return;
-        if (magicDone) return;
-        magicDone = true;
-        clearTimeout(magicTimeout);
-        window.removeEventListener('message', onKeyMessage);
-        var liveKey = event.data.keys ? event.data.keys[magicKeyName] : null;
+      var fetched = window.__graphiteFetchedKeys;
+      if (fetched) {
+        var liveKey = fetched[magicKeyName];
         if (!liveKey) {
           alert('The key server has no key for this weather source. Settings were not saved.');
           return;
         }
         config["CONFIG_WEATHER_APIKEY_LOCAL"] = liveKey;
         finishSubmit();
-      };
-      var magicTimeout = setTimeout(function() {
-        if (magicDone) return;
-        magicDone = true;
-        window.removeEventListener('message', onKeyMessage);
-        try { popup.close(); } catch (e) {}
-        alert('Timed out fetching the API key. Settings were not saved.');
-      }, 45000);
-      window.addEventListener('message', onKeyMessage);
+        return;
+      }
+      localStorage.setItem('graphite_gwkeys_pending', '' + Date.now());
+      document.location = 'https://secrets.terra0.com/graphite/weather-keys?redirect='
+        + encodeURIComponent(document.location.href.split('#')[0]);
       return;
     }
 
@@ -4950,6 +4939,31 @@
 
   $(document).ready(function() {
     __uid = generateUUID();
+
+    // Resume a save that was redirected through the key server: it sends the
+    // browser back to this page with the keys in the URL fragment (see the
+    // magic-password branch in submit()). Guarded by a freshness marker so a
+    // stale fragment in history cannot replay a save later.
+    var gwkeysMatch = /[#&]gwkeys=([^&]+)/.exec(location.hash);
+    if (gwkeysMatch) {
+      if (window.history && history.replaceState) {
+        history.replaceState(null, '', location.pathname + location.search);
+      }
+      var gwkeysPending = +localStorage.getItem('graphite_gwkeys_pending') || 0;
+      localStorage.removeItem('graphite_gwkeys_pending');
+      if (Date.now() - gwkeysPending < 10 * 60 * 1000) {
+        try {
+          window.__graphiteFetchedKeys = JSON.parse(decodeURIComponent(gwkeysMatch[1]));
+        } catch (e) {
+          window.__graphiteFetchedKeys = null;
+        }
+        if (window.__graphiteFetchedKeys) {
+          console.log('[ info ] resuming save with keys from the key server');
+          submit(readValuesFromStorage(false));
+          return;
+        }
+      }
+    }
 
     // submit button event listener
     var submitButton = document.getElementById('submit_button');
