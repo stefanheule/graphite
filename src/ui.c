@@ -243,7 +243,7 @@ void background_update_proc(Layer *layer, GContext *ctx) {
 
     // top bar (temporarily taller while the Fahrenheit learning mode stacks
     // two temperature lines; topbar_extra is how much taller than normal, and
-    // the time and date below are squeezed down by half of it)
+    // the time and date below are squeezed down by two thirds of it)
     fixed_t fontsize_weather = fontsize_widgets;
     fixed_t topbar_height = FIXED_ROUND(temp_learning_stack_height() + REM(4));
     fixed_t topbar_extra = topbar_height - FIXED_ROUND(fontsize_weather + REM(4));
@@ -320,7 +320,7 @@ void background_update_proc(Layer *layer, GContext *ctx) {
     remove_leading_zero(buffer_1, sizeof(buffer_1));
     fixed_t fontsize_time = (fixed_t)(width * 9/20); // 1/2.2
     fixed_t fontsize_time_real = find_fontsize(fctx, fontsize_time, REM(15), buffer_1);
-    draw_string(fctx, buffer_1, FPoint(width / 2, height_full / 2 - fontsize_time_real / 2 - time_y_offset + topbar_extra / 2), font_main, config_color_time, fontsize_time_real, GTextAlignmentCenter);
+    draw_string(fctx, buffer_1, FPoint(width / 2, height_full / 2 - fontsize_time_real / 2 - time_y_offset + topbar_extra * 2 / 3), font_main, config_color_time, fontsize_time_real, GTextAlignmentCenter);
 
     // date
     strftime(buffer_1, sizeof(buffer_1), config_info_below, t);
@@ -330,7 +330,7 @@ void background_update_proc(Layer *layer, GContext *ctx) {
     remove_leading_zero(buffer_1, sizeof(buffer_1));
     fixed_t fontsize_date = REM(28);
     fixed_t fontsize_date_real = find_fontsize(fctx, fontsize_date, REM(15), buffer_1);
-    draw_string(fctx, buffer_1, FPoint(width / 2, height_full / 2 + fontsize_time / 3 - time_y_offset + topbar_extra / 2), font_main, config_color_info_below_local, fontsize_date_real, GTextAlignmentCenter);
+    draw_string(fctx, buffer_1, FPoint(width / 2, height_full / 2 + fontsize_time / 3 - time_y_offset + topbar_extra * 2 / 3), font_main, config_color_info_below_local, fontsize_date_real, GTextAlignmentCenter);
 
     // progress bar
     int progress_cur = 0;

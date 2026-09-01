@@ -212,7 +212,7 @@ Pebble.addEventListener('showConfiguration', function () {
     url += '&watch=' + encodeURIComponent(getDetails());
 // -- autogen
 // --     url += '&version={{ version }}';
-    url += '&version=1.8';
+    url += '&version=1.9';
 // -- end autogen
 
 // -- build=debug

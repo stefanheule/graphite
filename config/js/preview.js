@@ -726,7 +726,7 @@ function temp_learning_to_f(c) {
     return Math.round(c * 9 / 5 + 32);
 }
 function temp_learning_fontsize() {
-    return REM(21);
+    return REM(24);
 }
 function temp_learning_line_advance() {
     return temp_learning_fontsize() - REM(2);
@@ -1086,13 +1086,13 @@ function background_update_proc(layer, ctx) {
     remove_leading_zero(buffer_1, sizeof(buffer_1));
     var fontsize_time = (width * 9/20); // 1/2.2
     var fontsize_time_real = find_fontsize(fctx, fontsize_time, REM(15), buffer_1);
-    draw_string(fctx, buffer_1, FPoint(width / 2, height_full / 2 - fontsize_time_real / 2 - time_y_offset + topbar_extra / 2), font_main, config_color_time, fontsize_time_real, GTextAlignmentCenter);
+    draw_string(fctx, buffer_1, FPoint(width / 2, height_full / 2 - fontsize_time_real / 2 - time_y_offset + topbar_extra * 2 / 3), font_main, config_color_time, fontsize_time_real, GTextAlignmentCenter);
     buffer_1 = strftime(config_info_below, t);
     buffer_1 = 
     remove_leading_zero(buffer_1, sizeof(buffer_1));
     var fontsize_date = REM(28);
     var fontsize_date_real = find_fontsize(fctx, fontsize_date, REM(15), buffer_1);
-    draw_string(fctx, buffer_1, FPoint(width / 2, height_full / 2 + fontsize_time / 3 - time_y_offset + topbar_extra / 2), font_main, config_color_info_below_local, fontsize_date_real, GTextAlignmentCenter);
+    draw_string(fctx, buffer_1, FPoint(width / 2, height_full / 2 + fontsize_time / 3 - time_y_offset + topbar_extra * 2 / 3), font_main, config_color_info_below_local, fontsize_date_real, GTextAlignmentCenter);
     var progress_cur = 0;
     var progress_max = 0;
     var progress_no = config_progress == 0;

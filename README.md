@@ -8,6 +8,11 @@ See [stefanheule.com/graphite/](https://stefanheule.com/graphite/).
 
 ## Changelog
 
+**Version 1.9** (2026-09-01)
+
+- Fahrenheit learning mode: larger temperature font; the time and date sit slightly lower to make room.
+
+
 **Version 1.8** (2026-08-31)
 
 - Temporary Fahrenheit learning mode: every temperature in the top row is drawn twice, Fahrenheit above Celsius, in a slightly taller top bar (the phone keeps sending the configured unit; Fahrenheit is derived on the watch).  Not configurable; meant to be removed once Fahrenheit feels natural.
