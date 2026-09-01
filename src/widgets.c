@@ -421,7 +421,7 @@ int16_t temp_learning_to_f(int16_t c) {
 }
 
 fixed_t temp_learning_fontsize(void) {
-    return REM(24);
+    return REM(27);
 }
 
 // distance between the cap tops of the two stacked lines

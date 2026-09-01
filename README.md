@@ -8,6 +8,11 @@ See [stefanheule.com/graphite/](https://stefanheule.com/graphite/).
 
 ## Changelog
 
+**Version 1.10** (2026-09-01)
+
+- Fahrenheit learning mode: temperatures at the full widget font size.
+
+
 **Version 1.9** (2026-09-01)
 
 - Fahrenheit learning mode: larger temperature font; the time and date sit slightly lower to make room.

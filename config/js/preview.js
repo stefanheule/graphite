@@ -726,7 +726,7 @@ function temp_learning_to_f(c) {
     return Math.round(c * 9 / 5 + 32);
 }
 function temp_learning_fontsize() {
-    return REM(24);
+    return REM(27);
 }
 function temp_learning_line_advance() {
     return temp_learning_fontsize() - REM(2);
