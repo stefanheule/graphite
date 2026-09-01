@@ -722,16 +722,43 @@ function widget_day_of_week(fctx, draw, position, align, foreground_color, backg
   if (draw) draw_string(fctx, buffer_1, position, font_main, foreground_color, fontsize_widgets, align);
   return string_width(fctx, buffer_1, font_main, fontsize_widgets);
 }
+function temp_learning_to_f(c) {
+    return Math.round(c * 9 / 5 + 32);
+}
+function temp_learning_fontsize() {
+    return REM(21);
+}
+function temp_learning_line_advance() {
+    return temp_learning_fontsize() - REM(2);
+}
+function temp_learning_stack_height() {
+    return temp_learning_line_advance() + temp_learning_fontsize();
+}
+function is_temp_widget(widget_id) {
+    return widget_id == 1 || widget_id == 2 || widget_id == 4 || widget_id == 5;
+}
+function draw_temp_learning(fctx, draw, position, align, color, temp) {
+    var fontsize_temp = temp_learning_fontsize();
+    if (weather.failed) {
+        buffer_1 = sprintf("%d", temp_learning_to_f(temp));
+        buffer_2 = sprintf("%d", temp);
+    } else {
+        buffer_1 = sprintf("%d°", temp_learning_to_f(temp));
+        buffer_2 = sprintf("%d°", temp);
+    }
+    var w1 = string_width(fctx, buffer_1, font_main, fontsize_temp);
+    var w2 = string_width(fctx, buffer_2, font_main, fontsize_temp);
+    var w = w1 > w2 ? w1 : w2;
+    if (draw) {
+        draw_string(fctx, buffer_1, position, font_main, color, fontsize_temp, align);
+        draw_string(fctx, buffer_2, FPoint(position.x, position.y + temp_learning_line_advance()), font_main, color, fontsize_temp, align);
+    }
+    return w;
+}
 function widget_weather_temp(fctx, draw, position, align, foreground_color, temp) {
   if (show_weather()) {
     if (temp == GRAPHITE_UNKNOWN_WEATHER) return 0;
-    if (weather.failed) {
-        buffer_1 = sprintf("%d", temp);
-    } else {
-        buffer_1 = sprintf("%d°", temp);
-    }
-    if (draw) draw_string(fctx, buffer_1, position, font_main, foreground_color, fontsize_widgets, align);
-    return string_width(fctx, buffer_1, font_main, fontsize_widgets);
+    return draw_temp_learning(fctx, draw, position, align, foreground_color, temp);
   }
   return 0;
 }
@@ -750,13 +777,22 @@ buffer_2 = "";
 function widget_weather_cur_temp_icon(fctx, draw, position, align, foreground_color, background_color) {
   if (show_weather()) {
     if (weather.temp_cur == GRAPHITE_UNKNOWN_WEATHER) return 0;
+    var weather_fontsize = (fontsize_widgets * 23 / 20); // 1.15
     buffer_1 = sprintf("%c", weather.icon);
-    if (weather.failed) {
-        buffer_2 = sprintf("%d", weather.temp_cur);
-    } else {
-        buffer_2 = sprintf("%d°", weather.temp_cur);
+    var w1 = string_width(fctx, buffer_1, font_weather, weather_fontsize);
+    var w2 = draw_temp_learning(fctx, false, position, align, foreground_color, weather.temp_cur);
+    var sep = REM(2);
+    var w = w1 + w2 + sep;
+    if (draw) {
+        var x = position.x;
+        if (align == GTextAlignmentCenter) x -= w / 2;
+        if (align == GTextAlignmentRight) x -= w;
+        var icon_y = position.y + (temp_learning_stack_height() - weather_fontsize) / 2 + weather_fontsize / 8;
+        buffer_1 = sprintf("%c", weather.icon);
+        draw_string(fctx, buffer_1, FPoint(x, icon_y), font_weather, foreground_color, weather_fontsize, GTextAlignmentLeft);
+        draw_temp_learning(fctx, true, FPoint(x + w1 + sep, position.y), GTextAlignmentLeft, foreground_color, weather.temp_cur);
     }
-    return draw_weather(fctx, draw, buffer_1, buffer_2, position, foreground_color, fontsize_widgets, align, false);
+    return w;
   }
   return 0;
 }
@@ -992,7 +1028,8 @@ function background_update_proc(layer, ctx) {
     }
     draw_rect(fctx, bounds_full, config_color_background);
     var fontsize_weather = fontsize_widgets;
-    var topbar_height = FIXED_ROUND(fontsize_weather + REM(4));
+    var topbar_height = FIXED_ROUND(temp_learning_stack_height() + REM(4));
+    var topbar_extra = topbar_height - FIXED_ROUND(fontsize_weather + REM(4));
     draw_rect(fctx, FRect(bounds.origin, FSize(width, topbar_height)), config_color_topbar_bg_local);
     if (show_weather() && show_secondary_widgets && weather.location[0]) {
         var fontsize_loc = REM(20);
@@ -1049,13 +1086,13 @@ function background_update_proc(layer, ctx) {
     remove_leading_zero(buffer_1, sizeof(buffer_1));
     var fontsize_time = (width * 9/20); // 1/2.2
     var fontsize_time_real = find_fontsize(fctx, fontsize_time, REM(15), buffer_1);
-    draw_string(fctx, buffer_1, FPoint(width / 2, height_full / 2 - fontsize_time_real / 2 - time_y_offset), font_main, config_color_time, fontsize_time_real, GTextAlignmentCenter);
+    draw_string(fctx, buffer_1, FPoint(width / 2, height_full / 2 - fontsize_time_real / 2 - time_y_offset + topbar_extra / 2), font_main, config_color_time, fontsize_time_real, GTextAlignmentCenter);
     buffer_1 = strftime(config_info_below, t);
     buffer_1 = 
     remove_leading_zero(buffer_1, sizeof(buffer_1));
     var fontsize_date = REM(28);
     var fontsize_date_real = find_fontsize(fctx, fontsize_date, REM(15), buffer_1);
-    draw_string(fctx, buffer_1, FPoint(width / 2, height_full / 2 + fontsize_time / 3 - time_y_offset), font_main, config_color_info_below_local, fontsize_date_real, GTextAlignmentCenter);
+    draw_string(fctx, buffer_1, FPoint(width / 2, height_full / 2 + fontsize_time / 3 - time_y_offset + topbar_extra / 2), font_main, config_color_info_below_local, fontsize_date_real, GTextAlignmentCenter);
     var progress_cur = 0;
     var progress_max = 0;
     var progress_no = config_progress == 0;
@@ -1100,9 +1137,10 @@ function background_update_proc(layer, ctx) {
     w6 = safe_widget_id(w6);
     var widgets_margin_topbottom = REM(6); // gap between watch bounds and widgets
     var widgets_margin_leftright = REM(8);
-    widgets[w1](fctx, true, FPoint(widgets_margin_leftright, widgets_margin_topbottom), GTextAlignmentLeft, config_color_widget_1, config_color_topbar_bg_local);
-    widgets[w2](fctx, true, FPoint(width / 2, widgets_margin_topbottom), GTextAlignmentCenter, config_color_widget_2, config_color_topbar_bg_local);
-    widgets[w3](fctx, true, FPoint(width - widgets_margin_leftright, widgets_margin_topbottom), GTextAlignmentRight, config_color_widget_3, config_color_topbar_bg_local);
+    var top_widgets_y = widgets_margin_topbottom + topbar_extra / 2;
+    widgets[w1](fctx, true, FPoint(widgets_margin_leftright, is_temp_widget(w1) ? widgets_margin_topbottom : top_widgets_y), GTextAlignmentLeft, config_color_widget_1, config_color_topbar_bg_local);
+    widgets[w2](fctx, true, FPoint(width / 2, is_temp_widget(w2) ? widgets_margin_topbottom : top_widgets_y), GTextAlignmentCenter, config_color_widget_2, config_color_topbar_bg_local);
+    widgets[w3](fctx, true, FPoint(width - widgets_margin_leftright, is_temp_widget(w3) ? widgets_margin_topbottom : top_widgets_y), GTextAlignmentRight, config_color_widget_3, config_color_topbar_bg_local);
     var compl_y = height_full - fontsize_widgets;
     var compl_y2 = compl_y - progress_height + REM(1);
     widgets[w4](fctx, true, FPoint(widgets_margin_leftright, progress_no ? compl_y : compl_y2), GTextAlignmentLeft, config_color_widget_4, config_color_background);

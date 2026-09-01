@@ -241,9 +241,12 @@ void background_update_proc(Layer *layer, GContext *ctx) {
     // background
     draw_rect(fctx, bounds_full, config_color_background);
 
-    // top bar
+    // top bar (temporarily taller while the Fahrenheit learning mode stacks
+    // two temperature lines; topbar_extra is how much taller than normal, and
+    // the time and date below are squeezed down by half of it)
     fixed_t fontsize_weather = fontsize_widgets;
-    fixed_t topbar_height = FIXED_ROUND(fontsize_weather + REM(4));
+    fixed_t topbar_height = FIXED_ROUND(temp_learning_stack_height() + REM(4));
+    fixed_t topbar_extra = topbar_height - FIXED_ROUND(fontsize_weather + REM(4));
     draw_rect(fctx, FRect(bounds.origin, FSize(width, topbar_height)), config_color_topbar_bg_local);
 
     // rain preview, OR location text when the user shakes their wrist
@@ -317,7 +320,7 @@ void background_update_proc(Layer *layer, GContext *ctx) {
     remove_leading_zero(buffer_1, sizeof(buffer_1));
     fixed_t fontsize_time = (fixed_t)(width * 9/20); // 1/2.2
     fixed_t fontsize_time_real = find_fontsize(fctx, fontsize_time, REM(15), buffer_1);
-    draw_string(fctx, buffer_1, FPoint(width / 2, height_full / 2 - fontsize_time_real / 2 - time_y_offset), font_main, config_color_time, fontsize_time_real, GTextAlignmentCenter);
+    draw_string(fctx, buffer_1, FPoint(width / 2, height_full / 2 - fontsize_time_real / 2 - time_y_offset + topbar_extra / 2), font_main, config_color_time, fontsize_time_real, GTextAlignmentCenter);
 
     // date
     strftime(buffer_1, sizeof(buffer_1), config_info_below, t);
@@ -327,7 +330,7 @@ void background_update_proc(Layer *layer, GContext *ctx) {
     remove_leading_zero(buffer_1, sizeof(buffer_1));
     fixed_t fontsize_date = REM(28);
     fixed_t fontsize_date_real = find_fontsize(fctx, fontsize_date, REM(15), buffer_1);
-    draw_string(fctx, buffer_1, FPoint(width / 2, height_full / 2 + fontsize_time / 3 - time_y_offset), font_main, config_color_info_below_local, fontsize_date_real, GTextAlignmentCenter);
+    draw_string(fctx, buffer_1, FPoint(width / 2, height_full / 2 + fontsize_time / 3 - time_y_offset + topbar_extra / 2), font_main, config_color_info_below_local, fontsize_date_real, GTextAlignmentCenter);
 
     // progress bar
     int progress_cur = 0;
@@ -378,9 +381,12 @@ void background_update_proc(Layer *layer, GContext *ctx) {
     // top widgets
     fixed_t widgets_margin_topbottom = REM(6); // gap between watch bounds and widgets
     fixed_t widgets_margin_leftright = REM(8);
-    widgets[w1](fctx, true, FPoint(widgets_margin_leftright, widgets_margin_topbottom), GTextAlignmentLeft, config_color_widget_1, config_color_topbar_bg_local);
-    widgets[w2](fctx, true, FPoint(width / 2, widgets_margin_topbottom), GTextAlignmentCenter, config_color_widget_2, config_color_topbar_bg_local);
-    widgets[w3](fctx, true, FPoint(width - widgets_margin_leftright, widgets_margin_topbottom), GTextAlignmentRight, config_color_widget_3, config_color_topbar_bg_local);
+    // temperature widgets fill the taller learning-mode bar from the top;
+    // everything else is centered vertically in it
+    fixed_t top_widgets_y = widgets_margin_topbottom + topbar_extra / 2;
+    widgets[w1](fctx, true, FPoint(widgets_margin_leftright, is_temp_widget(w1) ? widgets_margin_topbottom : top_widgets_y), GTextAlignmentLeft, config_color_widget_1, config_color_topbar_bg_local);
+    widgets[w2](fctx, true, FPoint(width / 2, is_temp_widget(w2) ? widgets_margin_topbottom : top_widgets_y), GTextAlignmentCenter, config_color_widget_2, config_color_topbar_bg_local);
+    widgets[w3](fctx, true, FPoint(width - widgets_margin_leftright, is_temp_widget(w3) ? widgets_margin_topbottom : top_widgets_y), GTextAlignmentRight, config_color_widget_3, config_color_topbar_bg_local);
 
     // bottom widgets
     fixed_t compl_y = height_full - fontsize_widgets;

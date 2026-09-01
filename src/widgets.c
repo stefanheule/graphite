@@ -407,16 +407,62 @@ fixed_t widget_day_of_week(FContext* fctx, bool draw, FPoint position, GTextAlig
   return string_width(fctx, buffer_1, font_main, fontsize_widgets);
 }
 
+// Temporary Fahrenheit learning mode: every temperature (top row only) is
+// drawn twice, Fahrenheit above Celsius, so Stefan can get used to
+// Fahrenheit. The phone sends temperatures in the configured unit (Celsius),
+// so Fahrenheit is derived here. To retire the mode, remove these helpers,
+// restore the single-line temperature widgets, and drop the topbar_extra
+// logic in ui.c.
+int16_t temp_learning_to_f(int16_t c) {
+// -- jsalternative
+// --     return Math.round(c * 9 / 5 + 32);
+    return (int16_t)((c * 18 + (c >= 0 ? 5 : -5)) / 10 + 32);
+// -- end jsalternative
+}
+
+fixed_t temp_learning_fontsize(void) {
+    return REM(21);
+}
+
+// distance between the cap tops of the two stacked lines
+fixed_t temp_learning_line_advance(void) {
+    return temp_learning_fontsize() - REM(2);
+}
+
+fixed_t temp_learning_stack_height(void) {
+    return temp_learning_line_advance() + temp_learning_fontsize();
+}
+
+bool is_temp_widget(uint8_t widget_id) {
+    // ids of weather_cur_temp_icon, weather_cur_temp, weather_low_temp and
+    // weather_high_temp in the widgets array above
+    return widget_id == 1 || widget_id == 2 || widget_id == 4 || widget_id == 5;
+}
+
+// Draws one temperature as two stacked lines, Fahrenheit on top.
+fixed_t draw_temp_learning(FContext* fctx, bool draw, FPoint position, GTextAlignment align, uint8_t color, int16_t temp) {
+    fixed_t fontsize_temp = temp_learning_fontsize();
+    if (weather.failed) {
+        snprintf(buffer_1, 10, "%d", temp_learning_to_f(temp));
+        snprintf(buffer_2, 10, "%d", temp);
+    } else {
+        snprintf(buffer_1, 10, "%d°", temp_learning_to_f(temp));
+        snprintf(buffer_2, 10, "%d°", temp);
+    }
+    fixed_t w1 = string_width(fctx, buffer_1, font_main, fontsize_temp);
+    fixed_t w2 = string_width(fctx, buffer_2, font_main, fontsize_temp);
+    fixed_t w = w1 > w2 ? w1 : w2;
+    if (draw) {
+        draw_string(fctx, buffer_1, position, font_main, color, fontsize_temp, align);
+        draw_string(fctx, buffer_2, FPoint(position.x, position.y + temp_learning_line_advance()), font_main, color, fontsize_temp, align);
+    }
+    return w;
+}
+
 fixed_t widget_weather_temp(FContext* fctx, bool draw, FPoint position, GTextAlignment align, uint8_t foreground_color, int16_t temp) {
   if (show_weather()) {
     if (temp == GRAPHITE_UNKNOWN_WEATHER) return 0;
-    if (weather.failed) {
-        snprintf(buffer_1, 10, "%d", temp);
-    } else {
-        snprintf(buffer_1, 10, "%d°", temp);
-    }
-    if (draw) draw_string(fctx, buffer_1, position, font_main, foreground_color, fontsize_widgets, align);
-    return string_width(fctx, buffer_1, font_main, fontsize_widgets);
+    return draw_temp_learning(fctx, draw, position, align, foreground_color, temp);
   }
   return 0;
 }
@@ -441,13 +487,24 @@ fixed_t widget_weather_cur_icon(FContext* fctx, bool draw, FPoint position, GTex
 fixed_t widget_weather_cur_temp_icon(FContext* fctx, bool draw, FPoint position, GTextAlignment align, uint8_t foreground_color, uint8_t background_color) {
   if (show_weather()) {
     if (weather.temp_cur == GRAPHITE_UNKNOWN_WEATHER) return 0;
+    // learning mode: icon on the left, centered against the two stacked
+    // temperature lines on the right
+    fixed_t weather_fontsize = (fixed_t)(fontsize_widgets * 23 / 20); // 1.15
     snprintf(buffer_1, 10, "%c", weather.icon);
-    if (weather.failed) {
-        snprintf(buffer_2, 10, "%d", weather.temp_cur);
-    } else {
-        snprintf(buffer_2, 10, "%d°", weather.temp_cur);
+    fixed_t w1 = string_width(fctx, buffer_1, font_weather, weather_fontsize);
+    fixed_t w2 = draw_temp_learning(fctx, false, position, align, foreground_color, weather.temp_cur);
+    fixed_t sep = REM(2);
+    fixed_t w = w1 + w2 + sep;
+    if (draw) {
+        fixed_t x = position.x;
+        if (align == GTextAlignmentCenter) x -= w / 2;
+        if (align == GTextAlignmentRight) x -= w;
+        fixed_t icon_y = position.y + (temp_learning_stack_height() - weather_fontsize) / 2 + weather_fontsize / 8;
+        snprintf(buffer_1, 10, "%c", weather.icon);
+        draw_string(fctx, buffer_1, FPoint(x, icon_y), font_weather, foreground_color, weather_fontsize, GTextAlignmentLeft);
+        draw_temp_learning(fctx, true, FPoint(x + w1 + sep, position.y), GTextAlignmentLeft, foreground_color, weather.temp_cur);
     }
-    return draw_weather(fctx, draw, buffer_1, buffer_2, position, foreground_color, fontsize_widgets, align, false);
+    return w;
   }
   return 0;
 }

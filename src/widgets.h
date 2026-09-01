@@ -78,5 +78,9 @@ fixed_t widget_calories_all_short_icon(FContext* fctx, bool draw, FPoint positio
 fixed_t widget_calories_all_short(FContext* fctx, bool draw, FPoint position, GTextAlignment align, uint8_t foreground_color, uint8_t background_color);
 // -- end autogen
 
+// Temporary Fahrenheit learning mode helpers (see widgets.c).
+bool is_temp_widget(uint8_t widget_id);
+fixed_t temp_learning_stack_height(void);
+
 
 #endif //GRAPHITE_WIDGETS_H

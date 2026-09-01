@@ -8,6 +8,11 @@ See [stefanheule.com/graphite/](https://stefanheule.com/graphite/).
 
 ## Changelog
 
+**Version 1.8** (2026-08-31)
+
+- Temporary Fahrenheit learning mode: every temperature in the top row is drawn twice, Fahrenheit above Celsius, in a slightly taller top bar (the phone keeps sending the configured unit; Fahrenheit is derived on the watch).  Not configurable; meant to be removed once Fahrenheit feels natural.
+
+
 **Version 1.7** (2026-08-29)
 
 - Rain bars now show how hard it is expected to rain, not just the chance.  Bar height is the probability of precipitation scaled by the forecast amount: a full bar is near-certain solid rain (>= 4 mm/h), a sure drizzle shows a quarter-height bar, and providers that send no hourly amounts fall back to probability alone.  Previously "100% chance of drizzle" filled the bar exactly like a downpour, making a showery day look like heavy rain all day.
