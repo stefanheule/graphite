@@ -728,17 +728,21 @@ function temp_learning_to_f(c) {
 function temp_learning_fontsize() {
     return REM(27);
 }
+function temp_learning_fontsize_small() {
+    return REM(20);
+}
 function temp_learning_line_advance() {
-    return temp_learning_fontsize() - REM(2);
+    return temp_learning_fontsize() - REM(3);
 }
 function temp_learning_stack_height() {
-    return temp_learning_line_advance() + temp_learning_fontsize();
+    return temp_learning_line_advance() + temp_learning_fontsize_small();
 }
 function is_temp_widget(widget_id) {
     return widget_id == 1 || widget_id == 2 || widget_id == 4 || widget_id == 5;
 }
 function draw_temp_learning(fctx, draw, position, align, color, temp) {
-    var fontsize_temp = temp_learning_fontsize();
+    var fontsize_f = temp_learning_fontsize();
+    var fontsize_c = temp_learning_fontsize_small();
     if (weather.failed) {
         buffer_1 = sprintf("%d", temp_learning_to_f(temp));
         buffer_2 = sprintf("%d", temp);
@@ -746,12 +750,12 @@ function draw_temp_learning(fctx, draw, position, align, color, temp) {
         buffer_1 = sprintf("%d°", temp_learning_to_f(temp));
         buffer_2 = sprintf("%d°", temp);
     }
-    var w1 = string_width(fctx, buffer_1, font_main, fontsize_temp);
-    var w2 = string_width(fctx, buffer_2, font_main, fontsize_temp);
+    var w1 = string_width(fctx, buffer_1, font_main, fontsize_f);
+    var w2 = string_width(fctx, buffer_2, font_main, fontsize_c);
     var w = w1 > w2 ? w1 : w2;
     if (draw) {
-        draw_string(fctx, buffer_1, position, font_main, color, fontsize_temp, align);
-        draw_string(fctx, buffer_2, FPoint(position.x, position.y + temp_learning_line_advance()), font_main, color, fontsize_temp, align);
+        draw_string(fctx, buffer_1, position, font_main, color, fontsize_f, align);
+        draw_string(fctx, buffer_2, FPoint(position.x, position.y + temp_learning_line_advance()), font_main, color, fontsize_c, align);
     }
     return w;
 }

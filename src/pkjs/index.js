@@ -212,7 +212,7 @@ Pebble.addEventListener('showConfiguration', function () {
     url += '&watch=' + encodeURIComponent(getDetails());
 // -- autogen
 // --     url += '&version={{ version }}';
-    url += '&version=1.10';
+    url += '&version=1.11';
 // -- end autogen
 
 // -- build=debug
@@ -888,7 +888,11 @@ function fetchWeather(latitude, longitude, generation) {
      * supply one (e.g. Open-Meteo). */
     var success = function(low, high, cur, curicon, raindata, ts, sunrise, sunset, location) {
         if (!isCurrentWeatherRequest(generation)) return;
-        if (+readConfig("CONFIG_WEATHER_UNIT_LOCAL") == 2) {
+        // Temporary Fahrenheit learning mode: the watch always receives
+        // Celsius and derives Fahrenheit itself, so the unit setting is
+        // deliberately ignored while the mode is on. Restore the conversion
+        // below when the mode is retired.
+        if (false && +readConfig("CONFIG_WEATHER_UNIT_LOCAL") == 2) {
             if (low != temp_unknown) low = low * 9.0/5.0 + 32.0;
             if (high != temp_unknown) high = high * 9.0/5.0 + 32.0;
             if (cur != temp_unknown) cur = cur * 9.0/5.0 + 32.0;

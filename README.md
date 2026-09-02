@@ -8,6 +8,11 @@ See [stefanheule.com/graphite/](https://stefanheule.com/graphite/).
 
 ## Changelog
 
+**Version 1.11** (2026-09-01)
+
+- Fahrenheit learning mode: Fahrenheit stays at the full widget size with a smaller Celsius line below it, and the phone now always sends Celsius while the mode is on, so the display is correct whichever unit is selected in the settings.
+
+
 **Version 1.10** (2026-09-01)
 
 - Fahrenheit learning mode: temperatures at the full widget font size.

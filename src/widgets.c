@@ -420,17 +420,23 @@ int16_t temp_learning_to_f(int16_t c) {
 // -- end jsalternative
 }
 
+// size of the Fahrenheit line (the same size the top-row widgets normally use)
 fixed_t temp_learning_fontsize(void) {
     return REM(27);
 }
 
+// size of the smaller Celsius line below it
+fixed_t temp_learning_fontsize_small(void) {
+    return REM(20);
+}
+
 // distance between the cap tops of the two stacked lines
 fixed_t temp_learning_line_advance(void) {
-    return temp_learning_fontsize() - REM(2);
+    return temp_learning_fontsize() - REM(3);
 }
 
 fixed_t temp_learning_stack_height(void) {
-    return temp_learning_line_advance() + temp_learning_fontsize();
+    return temp_learning_line_advance() + temp_learning_fontsize_small();
 }
 
 bool is_temp_widget(uint8_t widget_id) {
@@ -439,9 +445,13 @@ bool is_temp_widget(uint8_t widget_id) {
     return widget_id == 1 || widget_id == 2 || widget_id == 4 || widget_id == 5;
 }
 
-// Draws one temperature as two stacked lines, Fahrenheit on top.
+// Draws one temperature as two stacked lines: Fahrenheit on top at the
+// normal widget size, Celsius below it in a smaller font. The incoming
+// value is always Celsius (the phone skips its unit conversion while the
+// learning mode is on, whatever the settings say).
 fixed_t draw_temp_learning(FContext* fctx, bool draw, FPoint position, GTextAlignment align, uint8_t color, int16_t temp) {
-    fixed_t fontsize_temp = temp_learning_fontsize();
+    fixed_t fontsize_f = temp_learning_fontsize();
+    fixed_t fontsize_c = temp_learning_fontsize_small();
     if (weather.failed) {
         snprintf(buffer_1, 10, "%d", temp_learning_to_f(temp));
         snprintf(buffer_2, 10, "%d", temp);
@@ -449,12 +459,12 @@ fixed_t draw_temp_learning(FContext* fctx, bool draw, FPoint position, GTextAlig
         snprintf(buffer_1, 10, "%d°", temp_learning_to_f(temp));
         snprintf(buffer_2, 10, "%d°", temp);
     }
-    fixed_t w1 = string_width(fctx, buffer_1, font_main, fontsize_temp);
-    fixed_t w2 = string_width(fctx, buffer_2, font_main, fontsize_temp);
+    fixed_t w1 = string_width(fctx, buffer_1, font_main, fontsize_f);
+    fixed_t w2 = string_width(fctx, buffer_2, font_main, fontsize_c);
     fixed_t w = w1 > w2 ? w1 : w2;
     if (draw) {
-        draw_string(fctx, buffer_1, position, font_main, color, fontsize_temp, align);
-        draw_string(fctx, buffer_2, FPoint(position.x, position.y + temp_learning_line_advance()), font_main, color, fontsize_temp, align);
+        draw_string(fctx, buffer_1, position, font_main, color, fontsize_f, align);
+        draw_string(fctx, buffer_2, FPoint(position.x, position.y + temp_learning_line_advance()), font_main, color, fontsize_c, align);
     }
     return w;
 }
