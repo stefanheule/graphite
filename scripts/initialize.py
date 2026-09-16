@@ -38,8 +38,8 @@ def enum_widget(compl, m):
 # --- configuration
 # ------------------------------------------------------------------------------
 
-version = '1.11'
-config_version = '5'
+version = '1.12'
+config_version = '6'
 
 # number of timezone widgets
 num_tzs = 3
@@ -388,6 +388,20 @@ configuration = [
     'default': 'false',
     'mydefault': 'true',
     'show_only_if': 'has_widget(ALL_PHONEBAT_WIDGET_IDS)',
+  },
+  # Watch battery reporting: with every message the watch sends the phone
+  # (the weather fetch, every CONFIG_WEATHER_REFRESH minutes) it includes its
+  # own battery, and the JS POSTs it to this URL with this bearer token when
+  # both are set. Local: the phone keeps them, the watch never sees them.
+  {
+    'key': 'CONFIG_WATCHBAT_URL_LOCAL',
+    'default': '""',
+    'type': 'string',
+  },
+  {
+    'key': 'CONFIG_WATCHBAT_TOKEN_LOCAL',
+    'default': '""',
+    'type': 'string',
   },
 ]
 
@@ -750,6 +764,8 @@ msg_keys = [
   'PHONEBAT',
   'FETCH_PHONEBAT',
   'WEATHER_LOCATION',
+  'WATCHBAT',
+  'WATCHBAT_CHARGING',
 ]
 
 persist_keys = [

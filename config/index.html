@@ -601,6 +601,28 @@
           <input id='CONFIG_UPDATE_PHONEBAT_ON_SHAKE' type='checkbox' class='item-toggle'>
         </label>
       </div>
+      <div class="item-container-content">
+        <label class="item">
+          Report URL
+          <div class="item-input-wrapper">
+            <input type="text" class="item-input" id='CONFIG_WATCHBAT_URL_LOCAL' placeholder="https://.../api/report/pebble">
+          </div>
+        </label>
+      </div>
+      <div class="item-container-content">
+        <label class="item">
+          Report token
+          <div class="item-input-wrapper">
+            <input type="text" class="item-input" id='CONFIG_WATCHBAT_TOKEN_LOCAL'>
+          </div>
+        </label>
+        <div class="item-container-footer">
+          Watch battery reporting: with every weather refresh the phone posts
+          the watch's battery level to this URL with this token, so something
+          can remind you to charge it before it runs out. Leave both empty to
+          send nothing.
+        </div>
+      </div>
 
 <!--
 // -- autogen
@@ -3956,6 +3978,8 @@
       "CONFIG_TZ_1_FORMAT",
       "CONFIG_TZ_2_FORMAT",
       "CONFIG_SUNRISE_FORMAT",
+      "CONFIG_WATCHBAT_URL_LOCAL",
+      "CONFIG_WATCHBAT_TOKEN_LOCAL",
 // -- end autogen
   ];
 
@@ -4290,6 +4314,8 @@
         "CONFIG_PHONE_BATTERY_EXPIRATION": 67,
         "CONFIG_PHONE_BATTERY_REFRESH": 68,
         "CONFIG_UPDATE_PHONEBAT_ON_SHAKE": 69,
+        "CONFIG_WATCHBAT_URL_LOCAL": 70,
+        "CONFIG_WATCHBAT_TOKEN_LOCAL": 71,
 // -- end autogen
     };
 

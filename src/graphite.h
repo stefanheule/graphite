@@ -97,7 +97,7 @@
 
 // -- autogen
 // -- #define GRAPHITE_N_CONFIG {{ num_config_items }}
-#define GRAPHITE_N_CONFIG 69
+#define GRAPHITE_N_CONFIG 71
 // -- end autogen
 
 // -- autogen
@@ -125,6 +125,8 @@
 #define MSG_KEY_PHONEBAT 118
 #define MSG_KEY_FETCH_PHONEBAT 119
 #define MSG_KEY_WEATHER_LOCATION 120
+#define MSG_KEY_WATCHBAT 121
+#define MSG_KEY_WATCHBAT_CHARGING 122
 #define PERSIST_KEY_WEATHER 201
 #define PERSIST_KEY_TZ 202
 #define PERSIST_KEY_PHONEBAT 203

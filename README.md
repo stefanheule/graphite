@@ -8,6 +8,11 @@ See [stefanheule.com/graphite/](https://stefanheule.com/graphite/).
 
 ## Changelog
 
+**Version 1.12** (2026-09-16)
+
+- Watch battery reporting: the watch sends its battery level and charging state with every message to the phone, and the phone posts them to a report URL with a bearer token when both are set on the settings page (config version 6), so Charge can say when to put it on the charger.
+
+
 **Version 1.11** (2026-09-01)
 
 - Fahrenheit learning mode: Fahrenheit stays at the full widget size with a smaller Celsius line below it, and the phone now always sends Celsius while the mode is on, so the display is correct whichever unit is selected in the settings.

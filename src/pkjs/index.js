@@ -96,7 +96,7 @@ Pebble.addEventListener('ready', function () {
 // -- var CONFIG_WEATHER_REFRESH_ID = {{ configuration_lookup["CONFIG_WEATHER_REFRESH"]["id"] }};
 // -- var CONFIG_WEATHER_REFRESH_FAILED_ID = {{ configuration_lookup["CONFIG_WEATHER_REFRESH_FAILED"]["id"] }};
 // -- var MAX_WIDGET_ID = {{ (widgets | length) - 1 }};
-var CONFIG_ITEM_COUNT = 69;
+var CONFIG_ITEM_COUNT = 71;
 var CONFIG_STRING_IDS = [
     8,
     9,
@@ -109,6 +109,8 @@ var CONFIG_STRING_IDS = [
     52,
     53,
     55,
+    70,
+    71,
 ];
 var CONFIG_WATCH_STRING_IDS = [
     40,
@@ -200,7 +202,7 @@ function sanitizeUrlConfig(urlconfig) {
 Pebble.addEventListener('showConfiguration', function () {
 // -- autogen
 // --     var url = 'https://stefanheule.com/graphite/config/{{ config_version }}/index.html';
-    var url = 'https://stefanheule.com/graphite/config/5/index.html';
+    var url = 'https://stefanheule.com/graphite/config/6/index.html';
 // -- end autogen
 //     url = 'https://rawgit.com/stefanheule/graphite/master/config/';
 
@@ -212,7 +214,7 @@ Pebble.addEventListener('showConfiguration', function () {
     url += '&watch=' + encodeURIComponent(getDetails());
 // -- autogen
 // --     url += '&version={{ version }}';
-    url += '&version=1.11';
+    url += '&version=1.12';
 // -- end autogen
 
 // -- build=debug
@@ -450,6 +452,10 @@ Pebble.addEventListener('webviewclosed', function (e) {
     fullconfig["CONFIG_UPDATE_PHONEBAT_ON_SHAKE"] = urlconfig[69];
     config["CONFIG_UPDATE_PHONEBAT_ON_SHAKE"] = +urlconfig[69];
     localStorage.setItem("CONFIG_UPDATE_PHONEBAT_ON_SHAKE", urlconfig[69]);
+    fullconfig["CONFIG_WATCHBAT_URL_LOCAL"] = urlconfig[70];
+    localStorage.setItem("CONFIG_WATCHBAT_URL_LOCAL", urlconfig[70]);
+    fullconfig["CONFIG_WATCHBAT_TOKEN_LOCAL"] = urlconfig[71];
+    localStorage.setItem("CONFIG_WATCHBAT_TOKEN_LOCAL", urlconfig[71]);
 // -- end autogen
 
     // set refresh to 0 to indicate that weather information is off
@@ -579,6 +585,10 @@ function readConfig(key) {
             return "America/Los_Angeles";
         } else if (key == "CONFIG_TZ_2_LOCAL") {
             return "America/Los_Angeles";
+        } else if (key == "CONFIG_WATCHBAT_URL_LOCAL") {
+            return "";
+        } else if (key == "CONFIG_WATCHBAT_TOKEN_LOCAL") {
+            return "";
 // -- end autogen
         }
         if (NONLOCAL_DEFAULTS.hasOwnProperty(key)) {
@@ -1343,6 +1353,34 @@ function sendTzUpdate(idx) {
 }
 
 
+// The watch's battery, as it arrived on the last message, POSTed to Charge
+// (charge.xyzsh.us) when the config page has a report URL and token. Nothing
+// is retried: the next message is at most a weather refresh away.
+function reportWatchBattery(percent, charging) {
+    var url = readConfig("CONFIG_WATCHBAT_URL_LOCAL");
+    var token = readConfig("CONFIG_WATCHBAT_TOKEN_LOCAL");
+    if (!url || !token) return;
+    if (typeof percent !== "number" || percent < 0 || percent > 100) return;
+    try {
+        var req = new XMLHttpRequest();
+        req.open("POST", url, true);
+        req.setRequestHeader("Content-Type", "application/json");
+        req.setRequestHeader("Authorization", "Bearer " + token);
+        req.timeout = 15000;
+        req.onload = function () {
+            if (req.status < 200 || req.status >= 300) {
+                console.log("[ info/app ] watch battery report failed: HTTP " + req.status);
+            }
+        };
+        req.onerror = function () {
+            console.log("[ info/app ] watch battery report failed");
+        };
+        req.send(JSON.stringify({ percent: percent, charging: charging === 1 }));
+    } catch (err) {
+        console.log("[ info/app ] watch battery report error: " + err);
+    }
+}
+
 function sendBatteryLevel() {
     if (!navigator.getBattery) {
         var data = {
@@ -1376,6 +1414,9 @@ Pebble.addEventListener('appmessage',
         console.log('[ info/app ] app message received: ' + JSON.stringify(e));
 // -- end build
         var dict = e.payload;
+        if (dict["MSG_KEY_WATCHBAT"] !== undefined) {
+            reportWatchBattery(dict["MSG_KEY_WATCHBAT"], dict["MSG_KEY_WATCHBAT_CHARGING"]);
+        }
         if (dict["MSG_KEY_FETCH_WEATHER"]) {
             var generation = ++weatherRequestGeneration;
             var location = readConfig("CONFIG_WEATHER_LOCATION_LOCAL");

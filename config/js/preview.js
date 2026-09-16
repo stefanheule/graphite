@@ -118,6 +118,8 @@ var GraphitePreview = (function () {
      var config_phone_battery_expiration;
      var config_phone_battery_refresh;
      var config_update_phonebat_on_shake;
+     var config_watchbat_url_local;
+     var config_watchbat_token_local;
 // -- end autogen
 
     function get(k) {
@@ -372,6 +374,8 @@ var GraphitePreview = (function () {
         config_phone_battery_expiration = config["CONFIG_PHONE_BATTERY_EXPIRATION"];
         config_phone_battery_refresh = config["CONFIG_PHONE_BATTERY_REFRESH"];
         config_update_phonebat_on_shake = config["CONFIG_UPDATE_PHONEBAT_ON_SHAKE"];
+        config_watchbat_url_local = config["CONFIG_WATCHBAT_URL_LOCAL"];
+        config_watchbat_token_local = config["CONFIG_WATCHBAT_TOKEN_LOCAL"];
 // -- end autogen
 
         weather = getWeather(platform);
@@ -1315,6 +1319,8 @@ function background_update_proc(layer, ctx) {
             CONFIG_PHONE_BATTERY_EXPIRATION: +30,
             CONFIG_PHONE_BATTERY_REFRESH: +30,
             CONFIG_UPDATE_PHONEBAT_ON_SHAKE: +false,
+            CONFIG_WATCHBAT_URL_LOCAL: "",
+            CONFIG_WATCHBAT_TOKEN_LOCAL: "",
 // -- end autogen
         };
         return cloneConfig(defaults);
@@ -1398,6 +1404,8 @@ function background_update_proc(layer, ctx) {
             CONFIG_PHONE_BATTERY_EXPIRATION: +30,
             CONFIG_PHONE_BATTERY_REFRESH: +30,
             CONFIG_UPDATE_PHONEBAT_ON_SHAKE: +true,
+            CONFIG_WATCHBAT_URL_LOCAL: "",
+            CONFIG_WATCHBAT_TOKEN_LOCAL: "",
 // -- end autogen
         };
         return cloneConfig(defaults);

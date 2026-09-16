@@ -69,6 +69,11 @@ static void flush_pending_requests() {
         return;
     }
     uint8_t requests = pending_requests;
+    // The watch's own battery rides on every request, so the phone side can
+    // report it (to Charge) without a message of its own.
+    BatteryChargeState battery = battery_state_service_peek();
+    dict_write_uint8(iter, MSG_KEY_WATCHBAT, battery.charge_percent);
+    dict_write_uint8(iter, MSG_KEY_WATCHBAT_CHARGING, (battery.is_charging || battery.is_plugged) ? 1 : 0);
     if (requests & request_bit(MSG_KEY_FETCH_WEATHER))  dict_write_uint8(iter, MSG_KEY_FETCH_WEATHER, 1);
     if (requests & request_bit(MSG_KEY_FETCH_PHONEBAT)) dict_write_uint8(iter, MSG_KEY_FETCH_PHONEBAT, 1);
     if (requests & request_bit(MSG_KEY_FETCH_TZ_0))     dict_write_uint8(iter, MSG_KEY_FETCH_TZ_0, 1);
